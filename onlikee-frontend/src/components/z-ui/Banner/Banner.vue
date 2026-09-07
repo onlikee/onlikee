@@ -286,7 +286,7 @@ defineExpose<BannerExposed>({
   left: 50%;
   transform: translateX(-50%);
   width: min(92vw, 760px);
-  z-index: 9999;
+  z-index: 10000;
   pointer-events: none;
   display: flex;
   flex-direction: column;
