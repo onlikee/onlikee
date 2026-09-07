@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 public class UserProfileMarkdownDTO {
     @NotNull(message = "content不能为空")
-    @Size(max = 1000, message = "content不得超过1000个字符")
+    @Size(max = 20000, message = "content不得超过20000个字符")
     private String content;
 }

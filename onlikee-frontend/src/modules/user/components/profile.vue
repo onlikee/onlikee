@@ -63,12 +63,19 @@
           >
             预览
           </Button>
+          <span
+            class="markdown-editor__count"
+            :data-invalid="markdownDraft.length > 20000"
+          >
+            {{ markdownDraft.length }} / 20000 字符
+          </span>
         </div>
         <Textarea
           v-if="markdownMode === 'edit'"
           v-model="markdownDraft"
           class="markdown-editor__textarea"
           rows="16"
+          :maxlength="20000"
           placeholder="用 Markdown 介绍你自己、项目和正在做的事情。"
           autofocus
         />
@@ -101,6 +108,7 @@
       <Button
         :variant="'primary'"
         :loading="markdownSaving"
+        :disabled="markdownDraft.length > 20000"
         @click="saveMarkdown"
       >
         保存
@@ -170,6 +178,11 @@ const saveMarkdown = async () => {
     return
   }
 
+  if (markdownDraft.value.length > 20000) {
+    Banner.warning('README 不得超过20000个字符。')
+    return
+  }
+
   markdownSaving.value = true
   try {
     await saveCurrentUserMarkdown({ content: markdownDraft.value })
@@ -227,8 +240,19 @@ onMounted(async () => {
 
 .markdown-editor__toolbar {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
   gap: 8px;
+}
+
+.markdown-editor__count {
+  margin-left: auto;
+  color: var(--fgColor-muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.markdown-editor__count[data-invalid='true'] {
+  color: var(--fgColor-danger);
 }
 
 .markdown-editor__textarea {
