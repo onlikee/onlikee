@@ -14,39 +14,39 @@ public interface UserProfileMapper {
 
     @Select("""
             select *
-            from `user`
-            where `nickname` = #{nickname}
+            from "user"
+            where nickname = #{nickname}
             """)
     UserEntity getUserByNickname(@Param("nickname") String nickname);
 
     @Select("""
             select *
-            from `user_profile_markdown`
-            where `uuid` = #{uuid}
+            from user_profile_markdown
+            where uuid = #{uuid}
             """)
     UserProfileMarkdownEntity getMarkdownByUuid(@Param("uuid") String uuid);
 
     @Insert("""
-            insert into `user_profile_markdown`
-            (`uuid`, `content`)
+            insert into user_profile_markdown
+            (uuid, content)
             values
             (#{uuid}, #{content})
-            on duplicate key update
-                `content` = #{content},
-                `updated_at` = current_timestamp
+            on conflict (uuid) do update set
+                content = excluded.content,
+                updated_at = current_timestamp
             """)
     int upsertMarkdown(@Param("uuid") String uuid, @Param("content") String content);
 
     @Update("""
-            update `user`
-            set `bio` = #{bio},
-                `pronoun` = #{pronoun},
-                `location` = #{location},
-                `social_account_0` = #{socialAccount0},
-                `social_account_1` = #{socialAccount1},
-                `social_account_2` = #{socialAccount2},
-                `updated_at` = current_timestamp
-            where `uuid` = #{uuid}
+            update "user"
+            set bio = #{bio},
+                pronoun = #{pronoun},
+                location = #{location},
+                social_account_0 = #{socialAccount0},
+                social_account_1 = #{socialAccount1},
+                social_account_2 = #{socialAccount2},
+                updated_at = current_timestamp
+            where uuid = #{uuid}
             """)
     int updateCurrentUserProfile(@Param("uuid") String uuid,
                                  @Param("bio") String bio,

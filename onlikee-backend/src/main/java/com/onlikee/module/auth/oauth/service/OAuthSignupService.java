@@ -241,14 +241,16 @@ public class OAuthSignupService {
     }
 
     private void throwDuplicateKeyBizException(DuplicateKeyException ex) {
-        String message = ex.getMessage();
-        if (message != null && (message.contains("uk_user_nickname") || message.contains("nickname"))) {
+        // MyBatis 包装异常包含整条 INSERT，必须从底层异常的约束名识别冲突字段。
+        String message = ex.getMostSpecificCause().getMessage();
+        if (message != null && message.contains("uk_user_nickname")) {
             throw new BizException(ErrorCode.NICKNAME_ALREADY_EXISTS);
         }
-        if (message != null && (message.contains("uk_user_email") || message.contains("email"))) {
+        if (message != null && message.contains("uk_user_email")) {
             throw new BizException(ErrorCode.EMAIL_ALREADY_EXISTS);
         }
-        if (message != null && (message.contains("github_id") || message.contains("gitee_id"))) {
+        if (message != null && (message.contains("uk_user_github_github_id")
+                || message.contains("uk_user_gitee_gitee_id"))) {
             throw new BizException(ErrorCode.OAUTH_ACCOUNT_ALREADY_BOUND);
         }
         throw new BizException(ErrorCode.INTERNAL_ERROR);

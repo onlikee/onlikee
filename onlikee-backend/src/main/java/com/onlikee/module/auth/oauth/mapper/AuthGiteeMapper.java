@@ -18,16 +18,16 @@ public interface AuthGiteeMapper {
 
     //gitee登录时注册插入user_gitee和user表记录
     @Insert("""
-            insert into `user_gitee`
-            (`uuid`, `gitee_id`, `name`, `avatar_url`, `email`, `bio`, `html_url`, `gitee_token`)
+            insert into user_gitee
+            (uuid, gitee_id, name, avatar_url, email, bio, html_url, gitee_token)
             values
             (#{uuid}, #{giteeId}, #{name}, #{avatarUrl}, #{email}, #{bio}, #{htmlUrl}, #{giteeToken})
             """)
     int insertUserGitee(UserGiteeEntity userGitee);
 
     @Insert("""
-            insert into `user`
-            (`uuid`, `nickname`, `email`, `avatar_url`, `last_login_source`)
+            insert into "user"
+            (uuid, nickname, email, avatar_url, last_login_source)
             values
             (#{uuid}, #{nickName}, #{email}, #{avatarUrl}, #{lastLoginSource})
             """)
@@ -39,14 +39,14 @@ public interface AuthGiteeMapper {
     }
 
     @Update("""
-            update `user_gitee`
-            set `name` = #{name},
-                `avatar_url` = #{avatarUrl},
-                `email` = #{email},
-                `bio` = #{bio},
-                `html_url` = #{htmlUrl},
-                `gitee_token` = #{giteeToken}
-            where `gitee_id` = #{giteeId}
+            update user_gitee
+            set name = #{name},
+                avatar_url = #{avatarUrl},
+                email = #{email},
+                bio = #{bio},
+                html_url = #{htmlUrl},
+                gitee_token = #{giteeToken}
+            where gitee_id = #{giteeId}
             """)
     int updateUserGiteeByGiteeId(UserGiteeEntity userGitee);
 }

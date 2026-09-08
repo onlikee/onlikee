@@ -16,7 +16,7 @@
 
 ## 项目定位
 
-- 技术栈以仓库当前内容为准：Spring Boot 4.0.2、Java 25、Maven、MyBatis、MySQL、Redis、JWT、JustAuth、Lombok。
+- 技术栈以仓库当前内容为准：Spring Boot 4.0.2、Java 25、Maven、MyBatis、PostgreSQL、Redis、JWT、JustAuth、Lombok。
 - 当前后端的业务模块统一放在 `com.onlikee.module` 下：`module.application`、`module.user`、`module.auth`，业务内部按 `controller`、`service`（按需设置 `impl`）、`mapper`、`converter`、`model` 分层。OAuth 登录注册放在 `module.auth.oauth`。
 - `infrastructure.cache/storage/web` 分别放 Redis、Light OSS 客户端和 Web 配置；`common.response/exception/util` 放统一响应、异常和通用工具。只创建已有实现需要的目录。
 
@@ -70,7 +70,7 @@
 - 多行 SQL 使用 Java 文本块 `"""`，并保持与现有 mapper 一致的排版。
 - 有多个简单参数时使用 `@Param` 明确命名。
 - 数据库字段保持下划线命名，Java 字段保持驼峰命名，依赖现有的 `map-underscore-to-camel-case=true`。
-- 涉及 `user`、`application` 等表时，沿用现有 SQL 中的反引号写法，不要混用多套风格。
+- SQL 使用 PostgreSQL 语法；保留字表名 `user` 统一使用 `"user"`，其余小写下划线标识符不加引号，不使用 MySQL 反引号。
 - 写操作返回受影响行数时，由 service 判断结果是否符合预期；不要在 mapper 层吞掉失败。
 
 ## 参数校验与异常处理

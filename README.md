@@ -4,7 +4,7 @@ onlikee 是一个前后端分离的项目仓库，包含 Spring Boot 后端与 V
 
 ## 技术栈
 
-- 后端：Spring Boot 3、Java 21、MyBatis、MySQL、JWT（jjwt）、JustAuth（GitHub/Gitee OAuth）
+- 后端：Spring Boot 4.0.2、Java 25、MyBatis、PostgreSQL 18、JWT（jjwt）、JustAuth（GitHub/Gitee OAuth）
 - 前端：Vue 3、Vite、TypeScript、Tailwind CSS、Vue Router、Axios、Reka UI、GSAP、Monaco Editor
 
 ## 目录结构
@@ -17,7 +17,7 @@ onlikee 是一个前后端分离的项目仓库，包含 Spring Boot 后端与 V
 ### 后端
 
 1) 配置 `onlikee-backend/src/main/resources/application.properties`（数据库、OAuth、JWT）。
-2) 启动服务：
+2) 确认 PostgreSQL 已具备所需业务表后启动服务：
 
 ```bash
 cd onlikee-backend
@@ -59,6 +59,8 @@ npm run dev
 - `security.jwt.secret` / `security.jwt.expire-seconds`
 
 建议将敏感信息替换为本地或环境变量配置，避免直接提交到仓库。
+
+PostgreSQL 连接固定使用 `Asia/Shanghai` 时区，历史日期保留本地时间语义。昵称、邮箱及 URL 采用 PostgreSQL 默认的大小写敏感比较。
 
 ### 前端配置（Vite）
 
