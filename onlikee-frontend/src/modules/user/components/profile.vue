@@ -44,7 +44,7 @@
     v-model:open="markdownDialogOpen"
     title="编辑 README"
     subtitle="使用 Markdown 编写你的个人资料内容。"
-    width="xlarge"
+    width="1024px"
   >
     <Dialog.Body>
       <div class="markdown-editor">
@@ -74,7 +74,6 @@
           v-if="markdownMode === 'edit'"
           v-model="markdownDraft"
           class="markdown-editor__textarea"
-          rows="16"
           :maxlength="20000"
           placeholder="用 Markdown 介绍你自己、项目和正在做的事情。"
           autofocus
@@ -257,14 +256,13 @@ onMounted(async () => {
 
 .markdown-editor__textarea {
   width: 100%;
-  min-height: 360px;
+  height: 480px;
   resize: vertical;
 }
 
 .markdown-editor__preview {
   box-sizing: border-box;
-  height: 360px;
-  min-height: 0;
+  height: 480px;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 12px;
