@@ -40,10 +40,10 @@
 <script setup lang="ts">
 import { HtmlMonacoEditor } from '@/components/monaco-editor'
 import LightBulbIcon from '@/components/octicons-vue3/icons/light-bulb.vue'
-import { Upload } from '@/components/z-ui/Upload'
-import type { UploadFile } from '@/components/z-ui/Upload'
+import { Upload } from '@/components/primer-vue/Upload'
+import type { UploadFile } from '@/components/primer-vue/Upload'
 import type { FrameworkValue } from './useCreateApplicationForm'
-import { FormControlValidation } from '@/components/z-ui/FormControl'
+import { FormControlValidation } from '@/components/primer-vue/FormControl'
 
 interface Props {
   selectedFramework: FrameworkValue | null

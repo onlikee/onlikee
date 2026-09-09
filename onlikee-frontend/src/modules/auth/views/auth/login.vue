@@ -52,7 +52,7 @@
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { Banner } from '@/components/z-ui/Banner'
+import { Banner } from '@/components/primer-vue/Banner'
 import { LogoGiteeIcon, MarkGithubIcon } from '@/components/octicons-vue3'
 import { getOAuthRenderUrl, loginWithOAuthCallback } from '../../api/login'
 import {

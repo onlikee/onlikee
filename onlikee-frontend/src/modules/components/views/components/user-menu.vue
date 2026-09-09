@@ -77,9 +77,9 @@ import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDoc
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
-import { ActionList } from '@/components/z-ui/ActionList'
-import { Avatar } from '@/components/z-ui/Avatar'
-import { Dropdown } from '@/components/z-ui/Dropdown'
+import { ActionList } from '@/components/primer-vue/ActionList'
+import { Avatar } from '@/components/primer-vue/Avatar'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
 import { GearIcon, MarkGithubIcon, PersonIcon, SignOutIcon } from '@/components/octicons-vue3'
 
 const demo1Code = `<template>
@@ -123,9 +123,9 @@ const demo1Code = `<template>
 </template>
 
 <script setup lang="ts">
-import { ActionList } from '@/components/z-ui/ActionList'
-import { Avatar } from '@/components/z-ui/Avatar'
-import { Dropdown } from '@/components/z-ui/Dropdown'
+import { ActionList } from '@/components/primer-vue/ActionList'
+import { Avatar } from '@/components/primer-vue/Avatar'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
 import { GearIcon, MarkGithubIcon, PersonIcon, SignOutIcon } from '@/components/octicons-vue3'
 <\/script>
 

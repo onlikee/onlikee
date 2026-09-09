@@ -132,9 +132,9 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { FormControl } from '@/components/z-ui/FormControl'
-import { Input } from '@/components/z-ui/Input'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
+import { FormControl } from '@/components/primer-vue/FormControl'
+import { Input } from '@/components/primer-vue/Input'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -159,8 +159,8 @@ const basicDemoCode = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { FormControl } from '@/components/z-ui/FormControl'
-import { Input } from '@/components/z-ui/Input'
+import { FormControl } from '@/components/primer-vue/FormControl'
+import { Input } from '@/components/primer-vue/Input'
 
 const appName = ref('')
 <\/script>`
@@ -175,8 +175,8 @@ const requiredDemoCode = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { FormControl } from '@/components/z-ui/FormControl'
-import { Input } from '@/components/z-ui/Input'
+import { FormControl } from '@/components/primer-vue/FormControl'
+import { Input } from '@/components/primer-vue/Input'
 
 const appUrlPrefix = ref('onlikee-app')
 <\/script>`
@@ -194,8 +194,8 @@ const validationDemoCode = `<template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { FormControl } from '@/components/z-ui/FormControl'
-import { Input } from '@/components/z-ui/Input'
+import { FormControl } from '@/components/primer-vue/FormControl'
+import { Input } from '@/components/primer-vue/Input'
 
 const releaseSlug = ref('onlikee-app')
 const isReleaseSlugValid = computed(() => /^[a-z0-9-]+$/.test(releaseSlug.value) && releaseSlug.value.length >= 4)
@@ -216,8 +216,8 @@ const compositionDemoCode = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { FormControl } from '@/components/z-ui/FormControl'
-import { Input } from '@/components/z-ui/Input'
+import { FormControl } from '@/components/primer-vue/FormControl'
+import { Input } from '@/components/primer-vue/Input'
 
 const domainPrefix = ref('podcast-hub')
 <\/script>`

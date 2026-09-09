@@ -107,9 +107,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Upload } from '@/components/z-ui/Upload'
-import type { UploadFile } from '@/components/z-ui/Upload'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
+import { Upload } from '@/components/primer-vue/Upload'
+import type { UploadFile } from '@/components/primer-vue/Upload'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import { UploadIcon } from '@/components/octicons-vue3'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
@@ -129,8 +129,8 @@ const demo1Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Upload } from '@/components/z-ui/Upload'
-import type { UploadFile } from '@/components/z-ui/Upload'
+import { Upload } from '@/components/primer-vue/Upload'
+import type { UploadFile } from '@/components/primer-vue/Upload'
 
 const files = ref<UploadFile[]>([])
 <\/script>`
@@ -145,8 +145,8 @@ const demo2Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Upload } from '@/components/z-ui/Upload'
-import type { UploadFile } from '@/components/z-ui/Upload'
+import { Upload } from '@/components/primer-vue/Upload'
+import type { UploadFile } from '@/components/primer-vue/Upload'
 
 const files = ref<UploadFile[]>([])
 <\/script>`
@@ -161,8 +161,8 @@ const demo3Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Upload } from '@/components/z-ui/Upload'
-import type { UploadFile } from '@/components/z-ui/Upload'
+import { Upload } from '@/components/primer-vue/Upload'
+import type { UploadFile } from '@/components/primer-vue/Upload'
 
 const files = ref<UploadFile[]>([])
 <\/script>`
@@ -173,8 +173,8 @@ const demo4Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Upload } from '@/components/z-ui/Upload'
-import type { UploadFile } from '@/components/z-ui/Upload'
+import { Upload } from '@/components/primer-vue/Upload'
+import type { UploadFile } from '@/components/primer-vue/Upload'
 
 const files = ref<UploadFile[]>([])
 <\/script>`
@@ -191,8 +191,8 @@ const demo5Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Upload } from '@/components/z-ui/Upload'
-import type { UploadFile } from '@/components/z-ui/Upload'
+import { Upload } from '@/components/primer-vue/Upload'
+import type { UploadFile } from '@/components/primer-vue/Upload'
 import { UploadIcon } from '@/components/octicons-vue3'
 
 const files = ref<UploadFile[]>([])

@@ -48,9 +48,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { Tooltip } from '@/components/z-ui/Tooltip'
+import { Tooltip } from '@/components/primer-vue/Tooltip'
 import { CodeIcon } from '@/components/octicons-vue3/index.ts'
-import { CopyButton } from '@/components/z-ui/CopyButton'
+import { CopyButton } from '@/components/primer-vue/CopyButton'
 
 const props = defineProps<{ code: string }>()
 

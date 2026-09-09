@@ -154,7 +154,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { Link } from '@/components/z-ui/Link'
+import { Link } from '@/components/primer-vue/Link'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'

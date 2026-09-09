@@ -233,9 +233,9 @@ import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDoc
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
-import { ActionList } from '@/components/z-ui/ActionList'
-import { Button } from '@/components/z-ui/Button'
-import { Dropdown } from '@/components/z-ui/Dropdown'
+import { ActionList } from '@/components/primer-vue/ActionList'
+import { Button } from '@/components/primer-vue/Button'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
 import {
   ChevronRightIcon,
   CopyIcon,
@@ -286,9 +286,9 @@ const demo1Code = `<template>
 </template>
 
 <script setup lang="ts">
-import { ActionList } from '@/components/z-ui/ActionList'
-import { Button } from '@/components/z-ui/Button'
-import { Dropdown } from '@/components/z-ui/Dropdown'
+import { ActionList } from '@/components/primer-vue/ActionList'
+import { Button } from '@/components/primer-vue/Button'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
 import { CopyIcon, FileIcon, PlusIcon, RepoIcon, TriangleDownIcon } from '@/components/octicons-vue3'
 
 const handleClick = (action: string) => {
@@ -324,9 +324,9 @@ const demo2Code = `<template>
 </template>
 
 <script setup lang="ts">
-import { ActionList } from '@/components/z-ui/ActionList'
-import { Button } from '@/components/z-ui/Button'
-import { Dropdown } from '@/components/z-ui/Dropdown'
+import { ActionList } from '@/components/primer-vue/ActionList'
+import { Button } from '@/components/primer-vue/Button'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
 import { CopyIcon, KebabHorizontalIcon, PencilIcon, TrashIcon } from '@/components/octicons-vue3'
 <\/script>`
 
@@ -358,9 +358,9 @@ const demo3Code = `<template>
 </template>
 
 <script setup lang="ts">
-import { ActionList } from '@/components/z-ui/ActionList'
-import { Button } from '@/components/z-ui/Button'
-import { Dropdown } from '@/components/z-ui/Dropdown'
+import { ActionList } from '@/components/primer-vue/ActionList'
+import { Button } from '@/components/primer-vue/Button'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
 import { LinkExternalIcon, TriangleDownIcon } from '@/components/octicons-vue3'
 <\/script>`
 
@@ -390,9 +390,9 @@ const demo4Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ActionList } from '@/components/z-ui/ActionList'
-import { Button } from '@/components/z-ui/Button'
-import { Dropdown } from '@/components/z-ui/Dropdown'
+import { ActionList } from '@/components/primer-vue/ActionList'
+import { Button } from '@/components/primer-vue/Button'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
 import { RepoIcon, TriangleDownIcon } from '@/components/octicons-vue3'
 
 const labels = ['新建文件', '打开文件', '保存文件']
@@ -432,9 +432,9 @@ const demo5Code = `<template>
 </template>
 
 <script setup lang="ts">
-import { ActionList } from '@/components/z-ui/ActionList'
-import { Button } from '@/components/z-ui/Button'
-import { Dropdown } from '@/components/z-ui/Dropdown'
+import { ActionList } from '@/components/primer-vue/ActionList'
+import { Button } from '@/components/primer-vue/Button'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
 import { ChevronRightIcon, TriangleDownIcon } from '@/components/octicons-vue3'
 <\/script>`
 </script>

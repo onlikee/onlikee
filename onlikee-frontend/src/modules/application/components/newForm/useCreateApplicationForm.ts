@@ -1,5 +1,5 @@
 import { computed, ref } from 'vue'
-import type { UploadFile } from '@/components/z-ui/Upload'
+import type { UploadFile } from '@/components/primer-vue/Upload'
 
 import type {
   CreateApplicationRequest

@@ -104,8 +104,8 @@
 </template>
 
 <script setup lang="ts">
-import { Container } from '@/components/z-ui/Container'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
+import { Container } from '@/components/primer-vue/Container'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -118,7 +118,7 @@ const demo1Code = `<template>
 </template>
 
 <script setup lang="ts">
-import { Container } from '@/components/z-ui/Container'
+import { Container } from '@/components/primer-vue/Container'
 <\/script>`
 
 const demo2Code = `<template>
@@ -134,7 +134,7 @@ const demo2Code = `<template>
 </template>
 
 <script setup lang="ts">
-import { Container } from '@/components/z-ui/Container'
+import { Container } from '@/components/primer-vue/Container'
 <\/script>`
 
 const demo3Code = `<!-- 在小屏设备（≤768px）下内边距自动缩小为 1rem -->
@@ -145,7 +145,7 @@ const demo3Code = `<!-- 在小屏设备（≤768px）下内边距自动缩小为
 </template>
 
 <script setup lang="ts">
-import { Container } from '@/components/z-ui/Container'
+import { Container } from '@/components/primer-vue/Container'
 <\/script>`
 
 const demo4Code = `<template>
@@ -155,7 +155,7 @@ const demo4Code = `<template>
 </template>
 
 <script setup lang="ts">
-import { Container } from '@/components/z-ui/Container'
+import { Container } from '@/components/primer-vue/Container'
 <\/script>`
 
 const apiCols: TableColumn[] = [

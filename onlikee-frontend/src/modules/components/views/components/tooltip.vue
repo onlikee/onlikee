@@ -163,8 +163,8 @@
 </template>
 
 <script setup lang="ts">
-import { Tooltip } from '@/components/z-ui/Tooltip'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
+import { Tooltip } from '@/components/primer-vue/Tooltip'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -177,7 +177,7 @@ const demo1Code = `<template>
 </template>
 
 <script setup lang="ts">
-import { Tooltip } from '@/components/z-ui/Tooltip'
+import { Tooltip } from '@/components/primer-vue/Tooltip'
 <\/script>`
 
 const demo2Code = `<template>
@@ -208,7 +208,7 @@ const demo2Code = `<template>
 </template>
 
 <script setup lang="ts">
-import { Tooltip } from '@/components/z-ui/Tooltip'
+import { Tooltip } from '@/components/primer-vue/Tooltip'
 <\/script>`
 
 const demo3Code = `<template>
@@ -221,7 +221,7 @@ const demo3Code = `<template>
 </template>
 
 <script setup lang="ts">
-import { Tooltip } from '@/components/z-ui/Tooltip'
+import { Tooltip } from '@/components/primer-vue/Tooltip'
 <\/script>`
 
 const demo4Code = `<template>
@@ -231,7 +231,7 @@ const demo4Code = `<template>
 </template>
 
 <script setup lang="ts">
-import { Tooltip } from '@/components/z-ui/Tooltip'
+import { Tooltip } from '@/components/primer-vue/Tooltip'
 <\/script>`
 
 const apiCols: TableColumn[] = [

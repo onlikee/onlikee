@@ -81,9 +81,9 @@
 </template>
 
 <script setup lang="ts">
-import { Tag } from '@/components/z-ui/Tag'
+import { Tag } from '@/components/primer-vue/Tag'
 import type { FrameworkValue } from './useCreateApplicationForm'
-import { FormControlValidation } from '@/components/z-ui/FormControl'
+import { FormControlValidation } from '@/components/primer-vue/FormControl'
 
 interface Props {
   selectedFramework: FrameworkValue | null

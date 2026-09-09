@@ -59,9 +59,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { Container } from '@/components/z-ui/Container'
-import { Button } from '@/components/z-ui/Button'
-import { Timeline } from '@/components/z-ui/Timeline'
+import { Container } from '@/components/primer-vue/Container'
+import { Button } from '@/components/primer-vue/Button'
+import { Timeline } from '@/components/primer-vue/Timeline'
 import { applicationCreateConnect } from '@/modules/application/api/create-connect'
 import FirstStep from '@/modules/application/components/connectForm/FirstStep.vue'
 import { useConnectApplicationForm } from '@/modules/application/components/connectForm/useConnectApplicationForm'

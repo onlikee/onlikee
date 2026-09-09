@@ -148,9 +148,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Button } from '@/components/z-ui/Button'
-import { Dialog } from '@/components/z-ui/Dialog'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
+import { Button } from '@/components/primer-vue/Button'
+import { Dialog } from '@/components/primer-vue/Dialog'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -169,8 +169,8 @@ const largeDialogItems = [
 
 const basicDemoCode = `<script setup lang="ts">
 import { ref } from 'vue'
-import { Button } from '@/components/z-ui/Button'
-import { Dialog } from '@/components/z-ui/Dialog'
+import { Button } from '@/components/primer-vue/Button'
+import { Dialog } from '@/components/primer-vue/Dialog'
 
 const open = ref(false)
 <\/script>
@@ -187,8 +187,8 @@ const open = ref(false)
 
 const footerDemoCode = `<script setup lang="ts">
 import { ref } from 'vue'
-import { Button } from '@/components/z-ui/Button'
-import { Dialog } from '@/components/z-ui/Dialog'
+import { Button } from '@/components/primer-vue/Button'
+import { Dialog } from '@/components/primer-vue/Dialog'
 
 const open = ref(false)
 <\/script>
@@ -214,8 +214,8 @@ const open = ref(false)
 
 const dimensionsDemoCode = `<script setup lang="ts">
 import { ref } from 'vue'
-import { Button } from '@/components/z-ui/Button'
-import { Dialog } from '@/components/z-ui/Dialog'
+import { Button } from '@/components/primer-vue/Button'
+import { Dialog } from '@/components/primer-vue/Dialog'
 
 const smallOpen = ref(false)
 const largeOpen = ref(false)

@@ -108,9 +108,9 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { FormControl } from '@/components/z-ui/FormControl'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
-import { Textarea } from '@/components/z-ui/Textarea'
+import { FormControl } from '@/components/primer-vue/FormControl'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { Textarea } from '@/components/primer-vue/Textarea'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -129,7 +129,7 @@ const demo1Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Textarea } from '@/components/z-ui/Textarea'
+import { Textarea } from '@/components/primer-vue/Textarea'
 
 const val = ref('')
 <\/script>`
@@ -146,7 +146,7 @@ const demo2Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Textarea } from '@/components/z-ui/Textarea'
+import { Textarea } from '@/components/primer-vue/Textarea'
 
 const val = ref('支持多行文本输入，适合描述、备注和说明等场景。')
 <\/script>`
@@ -157,7 +157,7 @@ const demo3Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Textarea } from '@/components/z-ui/Textarea'
+import { Textarea } from '@/components/primer-vue/Textarea'
 
 const val = ref('Disabled textarea value')
 <\/script>`
@@ -175,8 +175,8 @@ const demo4Code = `<template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { FormControl } from '@/components/z-ui/FormControl'
-import { Textarea } from '@/components/z-ui/Textarea'
+import { FormControl } from '@/components/primer-vue/FormControl'
+import { Textarea } from '@/components/primer-vue/Textarea'
 
 const description = ref('Build a collaborative audio workspace for distributed teams.')
 const descriptionTooLong = computed(() => description.value.length > 80)

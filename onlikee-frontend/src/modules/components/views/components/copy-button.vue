@@ -78,8 +78,8 @@
 </template>
 
 <script setup lang="ts">
-import { CopyButton } from '@/components/z-ui/CopyButton'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
+import { CopyButton } from '@/components/primer-vue/CopyButton'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -94,7 +94,7 @@ function copyText(text: string) {
 }
 
 const basicDemoCode = `<script setup lang="ts">
-import { CopyButton } from '@/components/z-ui/CopyButton'
+import { CopyButton } from '@/components/primer-vue/CopyButton'
 
 function copyText(text: string) {
   navigator.clipboard.writeText(text)
@@ -106,7 +106,7 @@ function copyText(text: string) {
 </template>`
 
 const sizeDemoCode = `<script setup lang="ts">
-import { CopyButton } from '@/components/z-ui/CopyButton'
+import { CopyButton } from '@/components/primer-vue/CopyButton'
 <\/script>
 
 <template>
@@ -118,7 +118,7 @@ import { CopyButton } from '@/components/z-ui/CopyButton'
 </template>`
 
 const codeBlockDemoCode = `<script setup lang="ts">
-import { CopyButton } from '@/components/z-ui/CopyButton'
+import { CopyButton } from '@/components/primer-vue/CopyButton'
 
 const code = \`const greet = (name: string) => {
   return \\\`Hello, \\\${name}!\\\`

@@ -276,8 +276,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Dropdown } from '@/components/z-ui/Dropdown'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -313,7 +313,7 @@ const demo1Code = `<template>
 </template>
 
 <script setup lang="ts">
-import { Dropdown } from '@/components/z-ui/Dropdown'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
 <\/script>
 
 <style scoped>
@@ -429,7 +429,7 @@ const demoPlacementCode = `<template>
 </template>
 
 <script setup lang="ts">
-import { Dropdown } from '@/components/z-ui/Dropdown'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
 <\/script>
 
 <style scoped>
@@ -459,7 +459,7 @@ import { Dropdown } from '@/components/z-ui/Dropdown'
 <\/style>`
 
 const demoWidthCode = `<script setup lang="ts">
-import { Dropdown } from '@/components/z-ui/Dropdown'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
 
 type DropdownContentWidth = 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'auto'
 
@@ -598,7 +598,7 @@ const demoKeepOpenCode = `<template>
 </template>
 
 <script setup lang="ts">
-import { Dropdown } from '@/components/z-ui/Dropdown'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
 <\/script>`
 
 const demoExposeCode = `<template>
@@ -614,7 +614,7 @@ const demoExposeCode = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Dropdown } from '@/components/z-ui/Dropdown'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
 
 const dropdownRef = ref<InstanceType<typeof Dropdown>>()
 <\/script>`

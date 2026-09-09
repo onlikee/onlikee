@@ -1,6 +1,6 @@
 import { strToU8, zip } from 'fflate'
 import type { AsyncZippable } from 'fflate'
-import type { UploadFile } from '@/components/z-ui/Upload'
+import type { UploadFile } from '@/components/primer-vue/Upload'
 
 export async function createHtmlZip(
   htmlSource: string

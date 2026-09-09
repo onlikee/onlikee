@@ -79,8 +79,8 @@
 </template>
 
 <script setup lang="ts">
-import { Admonition } from '@/components/z-ui/Admonition'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
+import { Admonition } from '@/components/primer-vue/Admonition'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -89,7 +89,7 @@ import ComponentDocsSection from '@/modules/components/components/ComponentDocsP
 // ---------- demo code strings ----------
 
 const demoBasicCode = `<script setup lang="ts">
-import { Admonition } from '@/components/z-ui/Admonition'
+import { Admonition } from '@/components/primer-vue/Admonition'
 <\/script>
 
 <template>
@@ -101,7 +101,7 @@ import { Admonition } from '@/components/z-ui/Admonition'
 </template>`
 
 const demoTitleCode = `<script setup lang="ts">
-import { Admonition } from '@/components/z-ui/Admonition'
+import { Admonition } from '@/components/primer-vue/Admonition'
 <\/script>
 
 <template>

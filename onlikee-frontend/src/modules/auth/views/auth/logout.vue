@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Avatar } from '@/components/z-ui/Avatar'
+import { Avatar } from '@/components/primer-vue/Avatar'
 import { useUserStore } from '@/stores/user'
 import { logout, logoutAll } from '../../api/logout'
 

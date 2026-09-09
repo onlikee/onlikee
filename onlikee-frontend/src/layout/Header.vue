@@ -95,9 +95,9 @@
 import { onMounted, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { Dropdown } from '@/components/z-ui/Dropdown'
-import { Avatar } from '@/components/z-ui/Avatar'
-import { ActionList } from '@/components/z-ui/ActionList'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
+import { Avatar } from '@/components/primer-vue/Avatar'
+import { ActionList } from '@/components/primer-vue/ActionList'
 import { PersonIcon, AppsIcon, SignOutIcon, LogoOnlikeeIcon } from '@/components/octicons-vue3'
 
 interface NavigationItem {

@@ -173,8 +173,8 @@
 </template>
 
 <script setup lang="ts">
-import { Tag } from '@/components/z-ui/Tag'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
+import { Tag } from '@/components/primer-vue/Tag'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import { StarIcon, CheckIcon, AlertIcon } from '@/components/octicons-vue3'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
@@ -230,7 +230,7 @@ const demo3Code = `<template>
 </style>`
 
 const demo4Code = `<script setup lang="ts">
-import { Tag } from '@/components/z-ui/Tag'
+import { Tag } from '@/components/primer-vue/Tag'
 import { StarIcon, CheckIcon, AlertIcon } from '@/components/octicons-vue3'
 <\/script>
 
@@ -260,7 +260,7 @@ import { StarIcon, CheckIcon, AlertIcon } from '@/components/octicons-vue3'
 </style>`
 
 const demo5Code = `<script setup lang="ts">
-import { Tag } from '@/components/z-ui/Tag'
+import { Tag } from '@/components/primer-vue/Tag'
 import { StarIcon, CheckIcon } from '@/components/octicons-vue3'
 
 const handleRemove = (label: string) => {

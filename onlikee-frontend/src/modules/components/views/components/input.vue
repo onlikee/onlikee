@@ -155,9 +155,9 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { FormControl } from '@/components/z-ui/FormControl'
-import { Input } from '@/components/z-ui/Input'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
+import { FormControl } from '@/components/primer-vue/FormControl'
+import { Input } from '@/components/primer-vue/Input'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -182,7 +182,7 @@ const demo1Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Input } from '@/components/z-ui/Input'
+import { Input } from '@/components/primer-vue/Input'
 
 const val = ref('')
 <\/script>`
@@ -193,7 +193,7 @@ const demo2Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Input } from '@/components/z-ui/Input'
+import { Input } from '@/components/primer-vue/Input'
 
 const val = ref('Disabled value')
 <\/script>`
@@ -207,7 +207,7 @@ const demo3Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Input } from '@/components/z-ui/Input'
+import { Input } from '@/components/primer-vue/Input'
 
 const email = ref('')
 const password = ref('')
@@ -226,7 +226,7 @@ const demo4Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Input } from '@/components/z-ui/Input'
+import { Input } from '@/components/primer-vue/Input'
 
 const domainPrefix = ref('docs')
 <\/script>
@@ -251,8 +251,8 @@ const demo5Code = `<template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { FormControl } from '@/components/z-ui/FormControl'
-import { Input } from '@/components/z-ui/Input'
+import { FormControl } from '@/components/primer-vue/FormControl'
+import { Input } from '@/components/primer-vue/Input'
 
 const name = ref('Mona L!$a')
 const hasInvalidChars = computed(() => /[^a-zA-Z\\s]/.test(name.value))
@@ -268,7 +268,7 @@ const demo6Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Input } from '@/components/z-ui/Input'
+import { Input } from '@/components/primer-vue/Input'
 
 const valSmall = ref('')
 const valMedium = ref('')

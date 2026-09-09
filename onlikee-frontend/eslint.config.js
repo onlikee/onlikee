@@ -73,7 +73,7 @@ export default [
   },
 
   {
-    files: ["src/components/z-ui/icon/Octicons-vue/icons/**/*.vue"],
+    files: ["src/components/primer-vue/icon/Octicons-vue/icons/**/*.vue"],
     rules: {
       "vue/require-default-prop": "off",
     },

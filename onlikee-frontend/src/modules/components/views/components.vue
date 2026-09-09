@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { Container } from '@/components/z-ui/Container'
+import { Container } from '@/components/primer-vue/Container'
 </script>
 
 <style scoped>

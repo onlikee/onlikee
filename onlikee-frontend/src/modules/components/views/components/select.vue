@@ -176,8 +176,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Select } from '@/components/z-ui/Select'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
+import { Select } from '@/components/primer-vue/Select'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -226,7 +226,7 @@ const demo1Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Select } from '@/components/z-ui/Select'
+import { Select } from '@/components/primer-vue/Select'
 
 const val = ref('')
 <\/script>`
@@ -255,7 +255,7 @@ const demo2Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Select } from '@/components/z-ui/Select'
+import { Select } from '@/components/primer-vue/Select'
 
 const small = ref('')
 const medium = ref('')
@@ -268,7 +268,7 @@ const demo3Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Select } from '@/components/z-ui/Select'
+import { Select } from '@/components/primer-vue/Select'
 
 const val = ref('apple')
 const options = [
@@ -287,7 +287,7 @@ const demo4Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Select } from '@/components/z-ui/Select'
+import { Select } from '@/components/primer-vue/Select'
 
 const a = ref('')
 const b = ref('')
@@ -314,7 +314,7 @@ const demo5Code = `<!-- 聚焦后使用 ↑ ↓ Enter Space Esc 进行键盘操�
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Select } from '@/components/z-ui/Select'
+import { Select } from '@/components/primer-vue/Select'
 
 const val = ref('')
 const options = [

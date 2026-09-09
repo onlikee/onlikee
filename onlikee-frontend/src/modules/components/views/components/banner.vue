@@ -194,9 +194,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Banner } from '@/components/z-ui/Banner'
-import BannerView, { type BannerExposed } from '@/components/z-ui/Banner/Banner.vue'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
+import { Banner } from '@/components/primer-vue/Banner'
+import BannerView, { type BannerExposed } from '@/components/primer-vue/Banner/Banner.vue'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -304,7 +304,7 @@ const serviceDemoCode = `<template>
 </template>
 
 <script setup lang="ts">
-import { Banner } from '@/components/z-ui/Banner'
+import { Banner } from '@/components/primer-vue/Banner'
 
 const showInfoBanner = () => Banner.info('这是一条信息提示，请根据说明继续操作。')
 const showSuccessBanner = () => Banner.success('保存成功，配置已经生效。')
@@ -342,7 +342,7 @@ const durationDemoCode = `<template>
 </template>
 
 <script setup lang="ts">
-import { Banner } from '@/components/z-ui/Banner'
+import { Banner } from '@/components/primer-vue/Banner'
 
 const showDurationBanner = () => {
   Banner.success('3 秒后自动关闭。', { duration: 3000 })
@@ -358,7 +358,7 @@ const actionsDemoCode = `<template>
 </template>
 
 <script setup lang="ts">
-import { Banner } from '@/components/z-ui/Banner'
+import { Banner } from '@/components/primer-vue/Banner'
 
 const showDefaultActionsBanner = () => {
   Banner.warning('检测到新版本，建议尽快升级。', {
@@ -416,8 +416,8 @@ const instanceDemoCode = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Banner } from '@/components/z-ui/Banner'
-import BannerView, { type BannerExposed } from '@/components/z-ui/Banner/Banner.vue'
+import { Banner } from '@/components/primer-vue/Banner'
+import BannerView, { type BannerExposed } from '@/components/primer-vue/Banner/Banner.vue'
 
 const bannerRef = ref<BannerExposed | null>(null)
 

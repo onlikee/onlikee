@@ -1,6 +1,6 @@
 import axios, { type AxiosRequestConfig } from 'axios'
 
-import { Banner } from '@/components/z-ui/Banner'
+import { Banner } from '@/components/primer-vue/Banner'
 import { API_BASE_URL } from './config'
 import { unwrapApiResponse } from './response'
 import type { ApiResponse } from './types'

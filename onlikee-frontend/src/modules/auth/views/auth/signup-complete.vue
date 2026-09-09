@@ -84,11 +84,11 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/user'
-import { Avatar } from '@/components/z-ui/Avatar'
-import { FormControl } from '@/components/z-ui/FormControl'
-import { Input } from '@/components/z-ui/Input'
-import { Button } from '@/components/z-ui/Button'
-import { Banner } from '@/components/z-ui/Banner'
+import { Avatar } from '@/components/primer-vue/Avatar'
+import { FormControl } from '@/components/primer-vue/FormControl'
+import { Input } from '@/components/primer-vue/Input'
+import { Button } from '@/components/primer-vue/Button'
+import { Banner } from '@/components/primer-vue/Banner'
 import { completeOAuthSignup } from '../../api/login'
 import {
   clearOAuthSignupContext,

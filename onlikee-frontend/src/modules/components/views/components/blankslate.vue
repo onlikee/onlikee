@@ -178,16 +178,16 @@
 </template>
 
 <script setup lang="ts">
-import { Blankslate } from '@/components/z-ui/Blankslate'
+import { Blankslate } from '@/components/primer-vue/Blankslate'
 import { BookIcon, ChecklistIcon, CodeOfConductIcon, InboxIcon, RepoIcon } from '@/components/octicons-vue3'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
 
 const basicDemoCode = `<script setup lang="ts">
-import { Blankslate } from '@/components/z-ui/Blankslate'
+import { Blankslate } from '@/components/primer-vue/Blankslate'
 import { BookIcon } from '@/components/octicons-vue3'
 <\/script>
 
@@ -205,7 +205,7 @@ import { BookIcon } from '@/components/octicons-vue3'
 </template>`
 
 const secondaryDemoCode = `<script setup lang="ts">
-import { Blankslate } from '@/components/z-ui/Blankslate'
+import { Blankslate } from '@/components/primer-vue/Blankslate'
 import { RepoIcon } from '@/components/octicons-vue3'
 <\/script>
 
@@ -226,7 +226,7 @@ import { RepoIcon } from '@/components/octicons-vue3'
 </template>`
 
 const narrowDemoCode = `<script setup lang="ts">
-import { Blankslate } from '@/components/z-ui/Blankslate'
+import { Blankslate } from '@/components/primer-vue/Blankslate'
 import { ChecklistIcon } from '@/components/octicons-vue3'
 <\/script>
 
@@ -254,7 +254,7 @@ import { ChecklistIcon } from '@/components/octicons-vue3'
 </style>`
 
 const spaciousDemoCode = `<script setup lang="ts">
-import { Blankslate } from '@/components/z-ui/Blankslate'
+import { Blankslate } from '@/components/primer-vue/Blankslate'
 import { CodeOfConductIcon } from '@/components/octicons-vue3'
 <\/script>
 
@@ -272,7 +272,7 @@ import { CodeOfConductIcon } from '@/components/octicons-vue3'
 </template>`
 
 const borderDemoCode = `<script setup lang="ts">
-import { Blankslate } from '@/components/z-ui/Blankslate'
+import { Blankslate } from '@/components/primer-vue/Blankslate'
 import { InboxIcon } from '@/components/octicons-vue3'
 <\/script>
 

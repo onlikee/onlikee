@@ -182,16 +182,16 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/z-ui/Button'
+import { Button } from '@/components/primer-vue/Button'
 import { BellIcon, ArrowUpRightIcon, SearchIcon, CheckIcon } from '@/components/octicons-vue3'
-import { Table, type TableColumn } from '@/components/z-ui/Table'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
 
 const basicDemoCode = `<script setup lang="ts">
-import { Button } from '@/components/z-ui/Button'
+import { Button } from '@/components/primer-vue/Button'
 <\/script>
 
 <template>
@@ -199,7 +199,7 @@ import { Button } from '@/components/z-ui/Button'
 </template>`
 
 const variantDemoCode = `<script setup lang="ts">
-import { Button } from '@/components/z-ui/Button'
+import { Button } from '@/components/primer-vue/Button'
 <\/script>
 
 <template>
@@ -222,7 +222,7 @@ import { Button } from '@/components/z-ui/Button'
 </style>`
 
 const sizeDemoCode = `<script setup lang="ts">
-import { Button } from '@/components/z-ui/Button'
+import { Button } from '@/components/primer-vue/Button'
 <\/script>
 
 <template>
@@ -242,7 +242,7 @@ import { Button } from '@/components/z-ui/Button'
 </style>`
 
 const stateDemoCode = `<script setup lang="ts">
-import { Button } from '@/components/z-ui/Button'
+import { Button } from '@/components/primer-vue/Button'
 <\/script>
 
 <template>
@@ -264,7 +264,7 @@ import { Button } from '@/components/z-ui/Button'
 </style>`
 
 const visualDemoCode = `<script setup lang="ts">
-import { Button } from '@/components/z-ui/Button'
+import { Button } from '@/components/primer-vue/Button'
 import { BellIcon, ArrowUpRightIcon, SearchIcon, CheckIcon } from '@/components/octicons-vue3'
 <\/script>
 
@@ -306,7 +306,7 @@ import { BellIcon, ArrowUpRightIcon, SearchIcon, CheckIcon } from '@/components/
 </style>`
 
 const typeDemoCode = `<script setup lang="ts">
-import { Button } from '@/components/z-ui/Button'
+import { Button } from '@/components/primer-vue/Button'
 <\/script>
 
 <template>

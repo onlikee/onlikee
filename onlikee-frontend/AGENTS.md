@@ -31,7 +31,7 @@
 | `src/main.ts` | 创建 Vue app，注册 Pinia、Router，加载全局样式，初始化用户态后挂载。 |
 | `src/App.vue` | 应用根组件，控制全局 Header 与 `router-view`。 |
 | `src/api` | 全局请求层：环境配置、Axios 实例、响应解包、通用请求类型。 |
-| `src/components/z-ui` | 通用 UI 组件库，组件目录内通常有 `index.ts` 和 `Xxx.vue`，复合组件可有 `context.ts` 与子组件。 |
+| `src/components/primer-vue` | 通用 UI 组件库，组件目录内通常有 `index.ts` 和 `Xxx.vue`，复合组件可有 `context.ts` 与子组件。 |
 | `src/components/monaco-editor` | Monaco 编辑器初始化与相关配置。 |
 | `src/css` | 全局样式入口、亮色/暗色主题 token。 |
 | `src/layout` | 全局布局组件，例如 `Header.vue`。 |
@@ -75,13 +75,13 @@ src/modules/<domain>/
 - 优先使用 `@/...` 别名导入 `src` 内文件；同目录内部文件可使用相对路径。
 - 组合函数使用 `useXxx` 命名。局部表单状态、校验、请求参数构造优先放到相邻 `useXxx`，例如 `useCreateApplicationForm.ts`。
 - 页面层只负责拼装页面、触发动作、消费状态和组织布局；不要把大量校验、请求体构造、流程状态机写进单个页面。
-- 组件名、类型名使用 `PascalCase`；组件库文件和目录遵循现有 `z-ui/<kebab-case>/Xxx.vue` 风格；URL path 使用小写或 kebab-case。
+- 组件名、类型名使用 `PascalCase`；组件库文件和目录遵循现有 `primer-vue/<kebab-case>/Xxx.vue` 风格；URL path 使用小写或 kebab-case。
 - 代码注释、用户可见文案、错误提示语言跟随所在模块现状，不要擅自全局切换语言。
 - 不要引入宽泛 `try/catch`、静默 fallback 或防御性分支，除非这是当前失败路径真实需要且符合现有模式。
 
 ## UI and Styling Guidelines
 
-- 页面和业务组件优先复用 `src/components/z-ui` 中已有组件，例如 `Button`、`Input`、`Dropdown`、`Table`、`Banner`、`FormControl`、`ActionList`。
+- 页面和业务组件优先复用 `src/components/primer-vue` 中已有组件，例如 `Button`、`Input`、`Dropdown`、`Table`、`Banner`、`FormControl`、`ActionList`。
 - 样式可使用 Tailwind 工具类，但必须与现有 GitHub Primer 风格的 CSS 变量体系兼容。
 - 颜色、背景、边框、阴影、圆角、字号等优先使用 `src/css/themes/light.css`、`src/css/themes/dark.css` 中的 `var(--...)` token，并提供合理 fallback。
 - 全局样式入口是 `src/css/style.css`，不要在业务改动中随意重写全局基础样式。
@@ -155,19 +155,19 @@ npm run build
 - 对已有未改动代码只做必要理解，不做顺手重构、格式化、重排、抽象或迁移。
 - 设计规范提供方向，当前源码提供事实；冲突时按当前源码实现，并在回复中说明取舍。
 - 新增功能按数据流定位落点：`view -> useXxx -> modules/*/api -> src/api -> store/view`。
-- 修改 UI 时先找 `z-ui` 是否已有组件；只有现有组件不能表达需求时才新增组件。
+- 修改 UI 时先找 `primer-vue` 是否已有组件；只有现有组件不能表达需求时才新增组件。
 - 修改请求、登录、路由守卫、全局 store 时，必须说明影响范围并运行更完整的检查。
 - 最终回复列出变更摘要、受影响文件、验证命令和结果、未解决事项。
 
 ## Do Not
 
-- 不要生成通用 Vue 模板式代码，必须贴合当前 `src/modules`、`z-ui`、`src/api` 结构。
+- 不要生成通用 Vue 模板式代码，必须贴合当前 `src/modules`、`primer-vue`、`src/api` 结构。
 - 不要大规模重构、批量格式化、移动目录或重命名公共组件。
 - 不要随意更换依赖、升级框架、改构建工具或引入新状态库。
 - 不要改变公共接口、路由 path、响应结构、组件公开 props/emits/slots，除非任务明确要求。
 - 不要删除现有功能、页面、路由、组件导出或主题 token。
 - 不要绕开 `@` alias 配置改成不可维护的深层相对路径。
 - 不要把页面临时状态塞进 Pinia。
-- 不要在 `src/components/z-ui` 中写业务逻辑、接口请求或业务文案。
+- 不要在 `src/components/primer-vue` 中写业务逻辑、接口请求或业务文案。
 - 不要伪造未读取到的设计规范、依赖版本、命令或测试结果。
 - 不要把无法确认的约定写成确定规则；应写“未在当前项目中确认”。

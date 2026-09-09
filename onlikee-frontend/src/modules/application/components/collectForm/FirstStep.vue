@@ -114,12 +114,12 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { FormControl } from '@/components/z-ui/FormControl'
-import { Input } from '@/components/z-ui/Input'
-import { Textarea } from '@/components/z-ui/Textarea'
-import { Button } from '@/components/z-ui/Button'
-import { Dropdown } from '@/components/z-ui/Dropdown'
-import { ActionList } from '@/components/z-ui/ActionList'
+import { FormControl } from '@/components/primer-vue/FormControl'
+import { Input } from '@/components/primer-vue/Input'
+import { Textarea } from '@/components/primer-vue/Textarea'
+import { Button } from '@/components/primer-vue/Button'
+import { Dropdown } from '@/components/primer-vue/Dropdown'
+import { ActionList } from '@/components/primer-vue/ActionList'
 import RepoIcon from '@/components/octicons-vue3/icons/repo.vue'
 import TriangleDownIcon from '@/components/octicons-vue3/icons/triangle-down.vue'
 import LockIcon from '@/components/octicons-vue3/icons/lock.vue'

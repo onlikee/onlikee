@@ -151,7 +151,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Table, type RowData, type TableColumn } from '@/components/z-ui/Table'
+import { Table, type RowData, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -288,7 +288,7 @@ const basicDemoCode = `<template>
 </template>
 
 <script setup lang="ts">
-import { type TableColumn } from '@/components/z-ui/Table/Table'
+import { type TableColumn } from '@/components/primer-vue/Table/Table'
 
 interface Row {
   id: number
@@ -328,7 +328,7 @@ const compactDemoCode = `<template>
 </template>
 
 <script setup lang="ts">
-import { type TableColumn } from '@/components/z-ui/Table/Table'
+import { type TableColumn } from '@/components/primer-vue/Table/Table'
 
 interface Row {
   id: number
@@ -367,7 +367,7 @@ const clickableDemoCode = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { type RowData, type TableColumn } from '@/components/z-ui/Table/Table'
+import { type RowData, type TableColumn } from '@/components/primer-vue/Table/Table'
 
 interface Row {
   id: number
@@ -407,7 +407,7 @@ const emptyDemoCode = `<template>
 </template>
 
 <script setup lang="ts">
-import { type TableColumn } from '@/components/z-ui/Table/Table'
+import { type TableColumn } from '@/components/primer-vue/Table/Table'
 
 interface Row {
   id: number
@@ -443,7 +443,7 @@ const wrapDemoCode = `<template>
 </template>
 
 <script setup lang="ts">
-import { type TableColumn } from '@/components/z-ui/Table/Table'
+import { type TableColumn } from '@/components/primer-vue/Table/Table'
 
 interface Row {
   id: number
