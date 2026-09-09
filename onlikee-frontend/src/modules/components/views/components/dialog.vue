@@ -62,10 +62,10 @@
 
     <ComponentDocsSection title="尺寸">
       <template #description>
-        使用 <code>size</code> 控制宽度。Dialog 会限制在当前视口内，内容过长时主体区域独立滚动。
+        使用 <code>width</code> 控制宽度，支持预设、CSS 宽度和像素数值。使用 <code>height</code> 控制高度：small 为 480px，large 为 640px，默认 auto 随内容变化。Dialog 会限制在当前视口内，内容过长时主体区域独立滚动。
       </template>
 
-      <ComponentDocsDemoBlock :code="sizeDemoCode">
+      <ComponentDocsDemoBlock :code="dimensionsDemoCode">
         <div class="dialog-demo-actions">
           <Button @click="smallDialogOpen = true">
             Small
@@ -78,7 +78,8 @@
         <Dialog
           v-model:open="smallDialogOpen"
           title="小型 Dialog"
-          size="small"
+          width="small"
+          height="small"
         >
           <Dialog.Body>
             <p>小尺寸适合非常短的确认或说明内容。</p>
@@ -89,7 +90,8 @@
           v-model:open="largeDialogOpen"
           title="大型 Dialog"
           subtitle="用于需要更多空间的编辑或选择任务。"
-          size="xlarge"
+          width="xlarge"
+          height="large"
         >
           <Dialog.Body>
             <div class="dialog-large-content">
@@ -210,7 +212,7 @@ const open = ref(false)
   </Dialog>
 </template>`
 
-const sizeDemoCode = `<script setup lang="ts">
+const dimensionsDemoCode = `<script setup lang="ts">
 import { ref } from 'vue'
 import { Button } from '@/components/z-ui/Button'
 import { Dialog } from '@/components/z-ui/Dialog'
@@ -223,11 +225,11 @@ const largeOpen = ref(false)
   <Button @click="smallOpen = true">Small</Button>
   <Button @click="largeOpen = true">Large</Button>
 
-  <Dialog v-model:open="smallOpen" title="小型 Dialog" size="small">
+  <Dialog v-model:open="smallOpen" title="小型 Dialog" width="small" height="small">
     <Dialog.Body>小尺寸适合非常短的确认或说明内容。</Dialog.Body>
   </Dialog>
 
-  <Dialog v-model:open="largeOpen" title="大型 Dialog" size="xlarge">
+  <Dialog v-model:open="largeOpen" title="大型 Dialog" width="xlarge" height="large">
     <Dialog.Body>大型内容区域会独立滚动。</Dialog.Body>
   </Dialog>
 </template>`
@@ -259,10 +261,16 @@ const dialogPropsRows = [
     description: '标题下方的辅助说明，同时作为 aria-describedby 的来源。'
   },
   {
-    name: 'size',
-    default: "'medium'",
-    type: "'small' | 'medium' | 'large' | 'xlarge'",
-    description: '控制 Dialog 宽度。'
+    name: 'width',
+    default: "'xlarge'",
+    type: "'small' | 'medium' | 'large' | 'xlarge' | string | number",
+    description: '控制 Dialog 宽度：small 为 296px，medium 为 320px，large 为 480px，xlarge 为 640px。也支持有效 CSS 宽度（如 400px、80rem），数字按像素处理。最小宽度为 296px，最大宽度通常为视口宽度减 64px。'
+  },
+  {
+    name: 'height',
+    default: "'auto'",
+    type: "'small' | 'large' | 'auto'",
+    description: '控制 Dialog 高度：small 为 480px，large 为 640px，auto 根据内容变化。最大高度通常为视口高度减 64px；视口宽度不超过 767px 且高度不超过 280px 时，宽高的视口预留均改为 12px。'
   },
   {
     name: 'role',

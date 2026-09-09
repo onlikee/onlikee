@@ -44,7 +44,7 @@
     v-model:open="markdownDialogOpen"
     title="编辑 README"
     subtitle="使用 Markdown 编写你的个人资料内容。"
-    size="xlarge"
+    width="xlarge"
   >
     <Dialog.Body>
       <div class="markdown-editor">

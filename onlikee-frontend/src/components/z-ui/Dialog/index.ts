@@ -10,5 +10,6 @@ export const Dialog = Object.assign(DialogRoot, {
 export { DialogBody, DialogFooter }
 export type {
   DialogCloseGesture,
-  DialogSize
+  DialogWidth,
+  DialogHeight
 } from './Dialog.vue'

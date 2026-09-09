@@ -27,14 +27,16 @@ function unlockDocumentScroll() {
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 
 export type DialogCloseGesture = 'close-button' | 'escape' | 'backdrop'
-export type DialogSize = 'small' | 'medium' | 'large' | 'xlarge'
+export type DialogWidth = 'small' | 'medium' | 'large' | 'xlarge' | string | number
+export type DialogHeight = 'small' | 'large' | 'auto'
 
 const props = withDefaults(
   defineProps<{
     open?: boolean
     title: string
     subtitle?: string
-    size?: DialogSize
+    width?: DialogWidth
+    height?: DialogHeight
     role?: 'dialog' | 'alertdialog'
     closeOnEscape?: boolean
     closeOnBackdrop?: boolean
@@ -42,7 +44,8 @@ const props = withDefaults(
   {
     open: false,
     subtitle: '',
-    size: 'medium',
+    width: 'xlarge',
+    height: 'auto',
     role: 'dialog',
     closeOnEscape: true,
     closeOnBackdrop: true
@@ -53,6 +56,13 @@ const emit = defineEmits<{
   'update:open': [open: boolean]
   close: [gesture: DialogCloseGesture]
 }>()
+
+const isPresetWidth = computed(() =>
+  typeof props.width === 'string' && ['small', 'medium', 'large', 'xlarge'].includes(props.width)
+)
+const customWidth = computed(() =>
+  isPresetWidth.value ? undefined : typeof props.width === 'number' ? `${props.width}px` : props.width
+)
 
 const dialogRef = ref<HTMLElement | null>(null)
 const closeButtonRef = ref<HTMLButtonElement | null>(null)
@@ -205,7 +215,9 @@ onBeforeUnmount(unlockPageScroll)
         <section
           ref="dialogRef"
           class="dialog"
-          :data-size="size"
+          :style="{ '--dialog-width': customWidth }"
+          :data-width="isPresetWidth ? width : undefined"
+          :data-height="height"
           :role="role"
           aria-modal="true"
           :aria-labelledby="titleId"
@@ -269,37 +281,53 @@ onBeforeUnmount(unlockPageScroll)
   display: flex;
   inset: 0;
   justify-content: center;
-  padding: 1rem;
   position: fixed;
   z-index: 10000;
 }
 
 .dialog {
-  --dialog-width: 20rem;
   background: var(--overlay-bgColor, var(--bgColor-default, #ffffff));
   border-radius: var(--borderRadius-large, 0.75rem);
   box-shadow: var(--shadow-floating-small, 0 0 0 1px #d1d9e080,0 6px 12px -3px #25292e0a,0 6px 18px 0 #25292e1f);
   color: var(--fgColor-default, #1f2328);
   display: flex;
   flex-direction: column;
-  max-height: calc(100dvh - 2rem);
+  height: auto;
+  max-height: calc(100dvh - 64px);
   min-height: 0;
   outline: none;
   overflow: hidden;
   transform-origin: center;
-  width: min(var(--dialog-width), calc(100vw - 2rem));
+  width: var(--dialog-width, 640px);
+  min-width: 296px;
+  max-width: calc(100dvw - 64px);
 }
 
-.dialog[data-size='small'] {
-  --dialog-width: 18.5rem;
+.dialog:where([data-width='small']) {
+  width: 296px;
 }
 
-.dialog[data-size='large'] {
-  --dialog-width: 30rem;
+.dialog:where([data-width='medium']) {
+  width: 320px;
 }
 
-.dialog[data-size='xlarge'] {
-  --dialog-width: 40rem;
+.dialog:where([data-width='large']) {
+  width: 480px;
+}
+
+.dialog:where([data-height='small']) {
+  height: 480px;
+}
+
+.dialog:where([data-height='large']) {
+  height: 640px;
+}
+
+@media (max-width: 767px) and (max-height: 280px) {
+  .dialog {
+    max-height: calc(100dvh - 12px);
+    max-width: calc(100dvw - 12px);
+  }
 }
 
 .dialog__header {
