@@ -227,7 +227,8 @@ const navSections = ref([
       { path: '/component/input', label: 'Input 输入框' },
       { path: '/component/select', label: 'Select 选择器' },
       { path: '/component/textarea', label: 'Textarea 文本域' },
-      { path: '/component/upload', label: 'Upload 上传' }
+      { path: '/component/upload', label: 'Upload 上传' },
+      { path: '/component/image-upload', label: 'ImageUpload 图片上传' }
     ]
   },
   {

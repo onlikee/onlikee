@@ -119,6 +119,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
                 name: 'Upload',
                 component: () => import('../views/components/upload.vue')
             },
+            {
+                path: 'image-upload',
+                name: 'ImageUpload',
+                component: () => import('../views/components/image-upload.vue')
+            },
             // Data
             {
                 path: 'table',
