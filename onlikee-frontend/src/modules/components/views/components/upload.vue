@@ -2,15 +2,18 @@
   <ComponentDocsPage>
     <ComponentDocsHeader
       title="Upload 上传"
-      description="通过拖拽或点击选择文件，也可通过 directory 模式选择文件夹。"
+      description="支持文件和文件夹选择，展示已选文件信息。通过 v-model 获取文件，上传请求由业务侧处理。"
     />
 
     <ComponentDocsSection title="基础用法">
       <template #description>
-        通过 <code>v-model</code> 绑定选中的文件数组，默认保持单文件交互。
+        点击或拖拽选择单个文件，通过 <code>v-model</code> 获取 <code>UploadFile[]</code>。选择后显示文件名和大小，点击移除按钮可清空选择。
       </template>
       <ComponentDocsDemoBlock :code="demo1Code">
-        <Upload v-model="files1" />
+        <Upload
+          v-model="files1"
+          text="选择文件"
+        />
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
@@ -22,6 +25,7 @@
         <Upload
           v-model="files2"
           accept=".zip,.html"
+          text="选择文件"
           hint="仅支持 .zip 和 .html 文件"
         />
       </ComponentDocsDemoBlock>
@@ -37,38 +41,39 @@
         <Upload
           v-model="files3"
           directory
-          hint="点击选择文件夹，或拖拽文件夹到此处"
+          text="点击选择文件夹，或拖拽文件夹到此处"
         />
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="提示文案">
       <template #description>
-        通过 <code>hint</code> 属性在上传区域底部展示辅助说明。
+        通过 <code>text</code> 设置主文案、<code>hint</code> 设置辅助说明，两者默认均为空，为空时不渲染。文案会随属性值更新；文件夹模式的提示也需通过 <code>text</code> 设置。
       </template>
       <ComponentDocsDemoBlock :code="demo4Code">
         <Upload
           v-model="files4"
-          hint="支持 .zip 格式的 dist 构建包或 .html 文件"
+          text="点击或拖拽文件到此处"
+          hint="选择后可查看文件名和大小"
         />
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="自定义插槽">
       <template #description>
-        使用默认插槽替换上传区域的内部内容。
+        使用默认插槽替换图标和主文案，<code>hint</code> 仍会独立显示。上传区域整体可点击，也可聚焦后按 Enter 或空格键选择文件；插槽内请使用非交互内容。
       </template>
       <ComponentDocsDemoBlock :code="demo5Code">
         <Upload v-model="files5">
-          <div class="custom-upload-content">
+          <span class="custom-upload-content">
             <UploadIcon />
-            <p class="custom-upload-text">
+            <span class="custom-upload-text">
               点击或拖拽文件到这里
-            </p>
-            <p class="custom-upload-hint">
-              最大支持 10 MB
-            </p>
-          </div>
+            </span>
+            <span class="custom-upload-hint">
+              选择后可查看文件信息
+            </span>
+          </span>
         </Upload>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -123,8 +128,7 @@ const files4 = ref<UploadFile[]>([])
 const files5 = ref<UploadFile[]>([])
 
 const demo1Code = `<template>
-  <Upload v-model="files" />
-  <p v-if="files.length">{{ files[0].file.name }}</p>
+  <Upload v-model="files" text="选择文件" />
 </template>
 
 <script setup lang="ts">
@@ -139,6 +143,7 @@ const demo2Code = `<template>
   <Upload
     v-model="files"
     accept=".zip,.html"
+    text="选择文件"
     hint="仅支持 .zip 和 .html 文件"
   />
 </template>
@@ -155,7 +160,7 @@ const demo3Code = `<template>
   <Upload
     v-model="files"
     directory
-    hint="点击选择文件夹，或拖拽文件夹到此处"
+    text="点击选择文件夹，或拖拽文件夹到此处"
   />
 </template>
 
@@ -168,7 +173,7 @@ const files = ref<UploadFile[]>([])
 <\/script>`
 
 const demo4Code = `<template>
-  <Upload v-model="files" hint="支持 .zip 格式的 dist 构建包或 .html 文件" />
+  <Upload v-model="files" text="点击或拖拽文件到此处" hint="选择后可查看文件名和大小" />
 </template>
 
 <script setup lang="ts">
@@ -181,11 +186,11 @@ const files = ref<UploadFile[]>([])
 
 const demo5Code = `<template>
   <Upload v-model="files">
-    <div class="custom-upload-content">
+    <span class="custom-upload-content">
       <UploadIcon />
-      <p>点击或拖拽文件到这里</p>
-      <p>最大支持 10 MB</p>
-    </div>
+      <span class="custom-upload-text">点击或拖拽文件到这里</span>
+      <span class="custom-upload-hint">选择后可查看文件信息</span>
+    </span>
   </Upload>
 </template>
 
@@ -206,9 +211,12 @@ const apiCols: TableColumn[] = [
 ]
 
 const apiRows = [
-  { name: 'modelValue', description: '绑定的文件数组（v-model）', type: 'UploadFile[]', default: '[]' },
+  { name: 'modelValue', description: '绑定的文件数组（v-model），设为空数组可清空选择。', type: 'UploadFile[]', default: '[]' },
   { name: 'accept', description: '接受的文件类型，格式同原生 input accept', type: 'string', default: "''" },
-  { name: 'hint', description: '上传区域底部的提示文案', type: 'string', default: "''" },
+  { name: 'text', description: '上传区域的主文案，为空时不渲染；文件夹模式也使用此文案。', type: 'string', default: "''" },
+  { name: 'hint', description: '上传区域的辅助说明，为空时不渲染。', type: 'string', default: "''" },
+  { name: 'width', description: '根容器 .upload 的宽度，支持 CSS 尺寸值，如 320px、100%。', type: 'string', default: "''" },
+  { name: 'height', description: '根容器 .upload 的高度，包含上传区域和已选文件信息，支持 CSS 尺寸值。', type: 'string', default: "''" },
   { name: 'directory', description: '启用文件夹上传模式，并返回包含 file 和 relativePath 的扁平化数组', type: 'boolean', default: 'false' }
 ]
 
@@ -219,7 +227,7 @@ const eventCols: TableColumn[] = [
 ]
 
 const eventRows = [
-  { name: 'update:modelValue', description: '选择文件、文件夹或移除文件时触发', type: 'UploadFile[]' }
+  { name: 'update:modelValue', description: '选择文件或文件夹时返回筛选后的文件数组；点击移除按钮时返回空数组。', type: 'UploadFile[]' }
 ]
 
 const slotCols: TableColumn[] = [
@@ -228,7 +236,7 @@ const slotCols: TableColumn[] = [
 ]
 
 const slotRows = [
-  { name: 'default', description: '自定义上传区域的内部内容（替换默认图标和文字）' }
+  { name: 'default', description: '替换默认图标和主文案，保留 hint；请使用非交互内容。' }
 ]
 </script>
 

@@ -1,12 +1,17 @@
 <template>
-  <div class="upload">
-    <div
+  <div
+    class="upload"
+    :style="{ width, height }"
+  >
+    <button
       class="upload-drop"
-      :class="{ 'upload-drop--over': dragging }"
+      type="button"
+      :data-dragging="dragging"
+      :aria-label="directory ? '选择文件夹' : '选择文件'"
+      @click="openFileDialog"
       @dragover.prevent="dragging = true"
       @dragleave="onDragLeave"
       @drop.prevent="onDrop"
-      @click="openFileDialog"
     >
       <slot>
         <svg
@@ -18,25 +23,28 @@
           <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Z" />
           <path d="M11.78 4.72a.749.749 0 1 1-1.06 1.06L8.75 3.811V9.5a.75.75 0 0 1-1.5 0V3.811L5.28 5.78a.749.749 0 1 1-1.06-1.06l3.25-3.25a.749.749 0 0 1 1.06 0l3.25 3.25Z" />
         </svg>
-        <p class="upload-text">
-          {{ dropzoneText }}
-        </p>
+        <span
+          v-if="text"
+          class="upload-text"
+        >
+          {{ text }}
+        </span>
       </slot>
-      <p
+      <span
         v-if="hint"
         class="upload-hint"
       >
         {{ hint }}
-      </p>
-      <input
-        ref="inputRef"
-        type="file"
-        :accept="accept"
-        v-bind="inputAttrs"
-        hidden
-        @change="onFileChange"
-      >
-    </div>
+      </span>
+    </button>
+    <input
+      ref="inputRef"
+      type="file"
+      :accept="accept"
+      v-bind="inputAttrs"
+      hidden
+      @change="onFileChange"
+    >
 
     <div
       v-if="selectedFiles.length"
@@ -71,14 +79,20 @@ import { collectFilesFromDrop, collectFilesFromInput } from './fileSelection'
 interface Props {
   modelValue?: UploadFile[]
   accept?: string
+  text?: string
   hint?: string
+  width?: string
+  height?: string
   directory?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: () => [],
   accept: '',
+  text: '',
   hint: '',
+  width: '',
+  height: '',
   directory: false
 })
 
@@ -101,12 +115,6 @@ const inputAttrs = computed(() => {
     webkitdirectory: '',
     multiple: true
   }
-})
-
-const dropzoneText = computed(() => {
-  return props.directory
-    ? '拖拽文件夹到此处，或点击选择文件夹'
-    : '拖拽文件到此处，或点击选择'
 })
 
 const selectedFileLabel = computed(() => {
@@ -187,7 +195,7 @@ function formatFileSize(size: number): string {
 
 <style scoped>
 .upload {
-	display: grid;
+	display: block;
 }
 
 .upload-drop {
@@ -196,29 +204,36 @@ function formatFileSize(size: number): string {
 	align-items: center;
 	justify-content: center;
 	gap: 8px;
-	padding: 3rem 2rem;
+	padding: 1.5rem;
 	border: 2px dashed var(--borderColor-default);
 	border-radius: 6px;
 	background: var(--bgColor-muted);
+	color: var(--fgColor-default);
+	font: inherit;
 	cursor: pointer;
 	transition: border-color 0.2s, background 0.2s;
 }
 
 .upload-drop:hover,
-.upload-drop--over {
+.upload-drop[data-dragging='true'] {
 	border-color: var(--borderColor-accent-emphasis);
 	background: color-mix(in srgb, var(--bgColor-accent-emphasis) 6%, var(--bgColor-muted));
 }
 
+.upload-drop:focus-visible {
+	outline: 2px solid var(--focus-outlineColor, #0969da);
+	outline-offset: -3px;
+}
+
 .upload-icon {
-	width: 32px;
-	height: 32px;
+	width: 24px;
+	height: 24px;
 	color: var(--fgColor-muted);
 }
 
 .upload-text {
 	margin: 0;
-	font-size: 1rem;
+	font-size: 14px;
 	color: var(--fgColor-default);
 }
 

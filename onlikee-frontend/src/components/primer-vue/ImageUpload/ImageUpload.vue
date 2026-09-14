@@ -6,14 +6,20 @@ import { cropImage, getImageAccept, isImageAccepted, moveCrop, resizeCrop, type 
 const props = withDefaults(defineProps<{
   modelValue?: ImageUploadFile[]
   accept?: string
+  text?: string
   hint?: string
+  width?: string
   disabled?: boolean
+  circle?: boolean
   crop?: boolean
 }>(), {
   modelValue: () => [],
   accept: '',
+  text: '',
   hint: '',
+  width: '',
   disabled: false,
+  circle: false,
   crop: false
 })
 
@@ -21,7 +27,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: ImageUploadFile[]]
 }>()
 
-const inputRef = useTemplateRef<HTMLInputElement>('input')
+const inputRef = useTemplateRef<HTMLInputElement>('inputRef')
 const dialogRef = useTemplateRef<HTMLDialogElement>('dialog')
 const imageRef = useTemplateRef<HTMLImageElement>('image')
 const stageRef = useTemplateRef<HTMLDivElement>('stage')
@@ -31,7 +37,6 @@ const previewUrl = shallowRef('')
 const sourceUrl = shallowRef('')
 const dragging = shallowRef(false)
 const saving = shallowRef(false)
-const error = shallowRef('')
 const cropError = shallowRef('')
 const dimensions = shallowRef({ width: 0, height: 0 })
 const cropRect = shallowRef<CropRect>({ x: 0, y: 0, size: 0 })
@@ -62,7 +67,6 @@ const selectionStyle = computed(() => ({
 watch(() => props.modelValue.slice(0, 1), value => {
   cancelCrop()
   selectedFiles.value = value
-  error.value = ''
 }, { immediate: true })
 
 watch(() => selectedFiles.value[0]?.file, (file, _previous, onCleanup) => {
@@ -107,11 +111,7 @@ function openFileDialog() {
 
 function selectImage(file: File | undefined) {
   if (!file || props.disabled || pendingFile.value) return
-  if (!isImageAccepted(file, props.accept)) {
-    error.value = '请选择符合 accept 限制的 JPG、JPEG、PNG、WEBP 或 SVG 图片。'
-    return
-  }
-  error.value = ''
+  if (!isImageAccepted(file, props.accept)) return
   if (props.crop) {
     pendingFile.value = file
   } else {
@@ -121,7 +121,6 @@ function selectImage(file: File | undefined) {
 
 function commitImage(file: File) {
   selectedFiles.value = [{ file, relativePath: file.name }]
-  error.value = ''
   emit('update:modelValue', selectedFiles.value)
 }
 
@@ -235,12 +234,14 @@ async function confirmCrop() {
 <template>
   <div
     class="image-upload"
+    :style="{ width }"
     :data-disabled="disabled"
     :data-preview="Boolean(previewUrl)"
   >
     <button
       class="upload-drop"
       type="button"
+      :data-circle="circle"
       :data-dragging="dragging"
       :disabled="disabled"
       :aria-label="previewUrl ? '更换图片' : '选择图片'"
@@ -269,26 +270,29 @@ async function confirmCrop() {
             <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Z" />
             <path d="M11.78 4.72a.749.749 0 1 1-1.06 1.06L8.75 3.811V9.5a.75.75 0 0 1-1.5 0V3.811L5.28 5.78a.749.749 0 1 1-1.06-1.06l3.25-3.25a.749.749 0 0 1 1.06 0l3.25 3.25Z" />
           </svg>
-          <span class="upload-text">拖拽图片到此处，或点击选择</span>
+          <span
+            v-if="text"
+            class="upload-text"
+          >
+            {{ text }}
+          </span>
         </slot>
-        <span class="upload-hint">{{ hint || (props.crop ? '支持 JPG、JPEG、PNG、WEBP、SVG，选择后可裁剪' : '支持 JPG、JPEG、PNG、WEBP、SVG') }}</span>
+        <span
+          v-if="hint"
+          class="upload-hint"
+        >
+          {{ hint }}
+        </span>
       </span>
     </button>
     <input
-      ref="input"
+      ref="inputRef"
       type="file"
       :accept="inputAccept || 'application/x-image-upload-unavailable'"
       :disabled="disabled"
       hidden
       @change="onFileChange"
     >
-    <p
-      v-if="error"
-      class="image-upload-error"
-      role="alert"
-    >
-      {{ error }}
-    </p>
     <Teleport to="body">
       <dialog
         ref="dialog"
@@ -435,10 +439,9 @@ async function confirmCrop() {
 
 <style scoped>
 .image-upload {
-  display: grid;
+  display: block;
   width: 100%;
   min-width: 0;
-  gap: 8px;
 }
 
 .upload-drop {
@@ -458,6 +461,10 @@ async function confirmCrop() {
   font: inherit;
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
+}
+
+.upload-drop[data-circle='true'] {
+  border-radius: 50%;
 }
 
 .upload-drop:hover:not(:disabled),
@@ -487,17 +494,18 @@ async function confirmCrop() {
   justify-content: center;
   box-sizing: border-box;
   gap: 8px;
-  padding: 3rem 2rem;
   overflow-wrap: anywhere;
 }
 
 .upload-icon {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   color: var(--fgColor-muted, #59636e);
 }
 
-.upload-text { font-size: 1rem; }
+.upload-text { 
+  font-size: 14px; 
+}
 
 .upload-hint {
   font-size: 0.85rem;
@@ -806,6 +814,6 @@ async function confirmCrop() {
 }
 
 @media (max-width: 768px) {
-  .image-upload-placeholder { padding: 2rem 1.25rem; }
+  .image-upload-placeholder { padding: 1.25rem; }
 }
 </style>
