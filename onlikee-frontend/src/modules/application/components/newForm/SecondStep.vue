@@ -21,6 +21,7 @@
 
       <Upload
         v-if="selectedFramework === 'vue' || selectedFramework === 'react'"
+        height="160px"
         :model-value="files"
         directory
         hint="请上传dist构建包文件夹"

@@ -234,13 +234,13 @@ async function confirmCrop() {
 <template>
   <div
     class="image-upload"
-    :style="{ width }"
     :data-disabled="disabled"
     :data-preview="Boolean(previewUrl)"
   >
     <button
       class="upload-drop"
       type="button"
+      :style="{ width }"
       :data-circle="circle"
       :data-dragging="dragging"
       :disabled="disabled"

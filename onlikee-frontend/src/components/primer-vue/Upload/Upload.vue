@@ -1,11 +1,9 @@
 <template>
-  <div
-    class="upload"
-    :style="{ width, height }"
-  >
+  <div class="upload">
     <button
       class="upload-drop"
       type="button"
+      :style="{ width, height }"
       :data-dragging="dragging"
       :aria-label="directory ? '选择文件夹' : '选择文件'"
       @click="openFileDialog"
@@ -203,6 +201,7 @@ function formatFileSize(size: number): string {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+  width: 100%;
 	gap: 8px;
 	padding: 1.5rem;
 	border: 2px dashed var(--borderColor-default);

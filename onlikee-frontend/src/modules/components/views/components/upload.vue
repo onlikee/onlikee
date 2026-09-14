@@ -215,8 +215,8 @@ const apiRows = [
   { name: 'accept', description: '接受的文件类型，格式同原生 input accept', type: 'string', default: "''" },
   { name: 'text', description: '上传区域的主文案，为空时不渲染；文件夹模式也使用此文案。', type: 'string', default: "''" },
   { name: 'hint', description: '上传区域的辅助说明，为空时不渲染。', type: 'string', default: "''" },
-  { name: 'width', description: '根容器 .upload 的宽度，支持 CSS 尺寸值，如 320px、100%。', type: 'string', default: "''" },
-  { name: 'height', description: '根容器 .upload 的高度，包含上传区域和已选文件信息，支持 CSS 尺寸值。', type: 'string', default: "''" },
+  { name: 'width', description: '上传区域 .upload-drop 的宽度，支持 CSS 尺寸值，如 320px、100%。', type: 'string', default: "''" },
+  { name: 'height', description: '上传区域 .upload-drop 的高度，不包含已选文件信息，支持 CSS 尺寸值。', type: 'string', default: "''" },
   { name: 'directory', description: '启用文件夹上传模式，并返回包含 file 和 relativePath 的扁平化数组', type: 'boolean', default: 'false' }
 ]
 
