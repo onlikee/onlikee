@@ -40,6 +40,7 @@ import com.onlikee.module.user.mapper.UserProfileMapper;
 @SpringBootTest(properties = {
         "spring.config.location=optional:classpath:/package-structure-test.properties",
         "spring.sql.init.mode=never",
+        "light-oss.api-base-url=https://oss.example.com",
         "security.jwt.secret=package-structure-test-secret-32-characters",
         "security.jwt.expire-seconds=3600",
         "app.domain-suffix=.example.com",
@@ -78,7 +79,7 @@ class PackageStructureTest {
                 LightOssConfig.class, CorsConfig.class, ApplicationUrlUtils.class)) {
             assertNotNull(context.getBean(type));
         }
-        assertEquals(6, context.getBeansWithAnnotation(RestController.class).size());
+        assertEquals(7, context.getBeansWithAnnotation(RestController.class).size());
     }
 
     @Test
@@ -100,7 +101,7 @@ class PackageStructureTest {
         Set<String> routes = requestMappingHandlerMapping.getHandlerMethods().keySet().stream()
                 .flatMap(mapping -> mapping.getPatternValues().stream())
                 .collect(Collectors.toSet());
-        assertTrue(routes.containsAll(Set.of("/auth/me", "/auth/logout", "/auth/logout-all",
+        assertTrue(routes.containsAll(Set.of("/resources/images/avatars/upload-tickets", "/auth/me", "/auth/logout", "/auth/logout-all",
                 "/oauth/github/render", "/oauth/github/callback",
                 "/oauth/gitee/render", "/oauth/gitee/callback")));
     }

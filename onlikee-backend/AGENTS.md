@@ -17,8 +17,84 @@
 ## 项目定位
 
 - 技术栈以仓库当前内容为准：Spring Boot 4.0.2、Java 25、Maven、MyBatis、PostgreSQL、Redis、JWT、JustAuth、Lombok。
-- 当前后端的业务模块统一放在 `com.onlikee.module` 下：`module.application`、`module.user`、`module.auth`，业务内部按 `controller`、`service`（按需设置 `impl`）、`mapper`、`converter`、`model` 分层。OAuth 登录注册放在 `module.auth.oauth`。
+- 当前后端的业务模块统一放在 `com.onlikee.module` 下：`module.application`、`module.user`、`module.auth`、`module.resource`，业务内部按 `controller`、`service`（按需设置 `impl`）、`mapper`、`converter`、`model` 分层。OAuth 登录注册放在 `module.auth.oauth`。
 - `infrastructure.cache/storage/web` 分别放 Redis、Light OSS 客户端和 Web 配置；`common.response/exception/util` 放统一响应、异常和通用工具。只创建已有实现需要的目录。
+
+## 目录架构
+
+以下按当前实际目录展示，模块及其子目录后标注职责。新增模块或调整目录时同步维护此图，只创建实际需要的分层目录。
+
+```text
+onlikee-backend/
+├── pom.xml                              # Maven 依赖、Java 版本与构建配置
+├── AGENTS.md                            # 后端代理工作约定与架构说明
+└── src/
+    ├── main/
+    │   ├── java/com/onlikee/
+    │   │   ├── OnlikeeBackendApplication.java  # Spring Boot 启动入口与根包扫描
+    │   │   ├── common/                  # 跨业务模块共享的基础能力
+    │   │   │   ├── exception/           # 业务异常、错误码与全局异常处理
+    │   │   │   ├── response/            # 统一 API 响应结构
+    │   │   │   └── util/                # 字符串、URL、文件大小及短 UUID 工具
+    │   │   ├── infrastructure/          # 外部依赖及框架基础设施配置
+    │   │   │   ├── cache/               # Redis 与缓存配置
+    │   │   │   ├── storage/             # 共享 Light OSS SDK 客户端配置
+    │   │   │   └── web/                 # Web 跨域配置
+    │   │   └── module/                  # 按业务职责划分的功能模块
+    │   │       ├── application/         # 应用创建、收录、关联与站点发布
+    │   │       │   ├── controller/      # 应用创建相关 HTTP 接口
+    │   │       │   ├── converter/       # 应用实体与展示对象转换
+    │   │       │   ├── mapper/          # 应用数据的 MyBatis 注解 SQL
+    │   │       │   ├── model/           # 应用模块的数据模型
+    │   │       │   │   ├── dto/         # 创建、收录及关联应用的请求参数
+    │   │       │   │   ├── entity/      # 应用数据库实体
+    │   │       │   │   └── vo/          # 应用创建结果的展示对象
+    │   │       │   ├── service/         # 应用创建编排与站点发布契约
+    │   │       │   │   └── impl/        # Light OSS 站点发布及失败补偿实现
+    │   │       │   └── util/            # 应用 URL 构建与应用 UUID 生成
+    │   │       ├── auth/                # 登录态、认证与 OAuth 登录注册
+    │   │       │   ├── controller/      # 当前登录用户、登出及会话失效接口
+    │   │       │   ├── converter/       # 内部登录数据与前端登录结果转换
+    │   │       │   ├── model/           # 认证模块的数据模型
+    │   │       │   │   ├── dto/         # 含 Token 的内部登录传输对象
+    │   │       │   │   └── vo/          # 前端登录结果展示对象
+    │   │       │   ├── service/         # JWT、Cookie、Redis 会话白名单与当前用户解析
+    │   │       │   └── oauth/           # GitHub/Gitee 第三方认证与注册流程
+    │   │       │       ├── controller/  # OAuth 授权、回调及补全注册接口
+    │   │       │       ├── converter/   # 第三方用户、回调及注册数据转换
+    │   │       │       ├── mapper/      # 第三方账号绑定数据访问
+    │   │       │       ├── model/       # OAuth 子模块的数据模型
+    │   │       │       │   ├── dto/     # 第三方用户、回调及待注册流程传输对象
+    │   │       │       │   ├── entity/  # GitHub/Gitee 账号绑定实体
+    │   │       │       │   └── vo/      # OAuth 回调展示对象
+    │   │       │       └── service/     # 第三方登录处理与注册编排
+    │   │       ├── resource/            # 资源上传授权，当前支持头像预签名上传
+    │   │       │   ├── controller/      # 按资源类型与用途划分的上传凭证接口
+    │   │       │   ├── converter/       # SDK 签发结果到前端上传凭证的转换
+    │   │       │   ├── model/           # 资源模块的数据模型
+    │   │       │   │   ├── dto/         # 上传凭证请求及文件名、格式、大小校验
+    │   │       │   │   └── vo/          # 上传地址、方法、签名头与有效期展示对象
+    │   │       │   └── service/         # 资源业务策略、用户路径与 SDK 签发编排
+    │   │       └── user/                # 用户查询、公开资料及个人 Markdown 维护
+    │   │           ├── controller/      # 公开资料查询与当前用户资料保存接口
+    │   │           ├── converter/       # 用户实体、传输对象及展示对象转换
+    │   │           ├── mapper/          # 用户与个人资料的数据库访问
+    │   │           ├── model/           # 用户模块的数据模型
+    │   │           │   ├── dto/         # 用户信息传输及资料更新参数
+    │   │           │   ├── entity/      # 用户与个人 Markdown 数据库实体
+    │   │           │   └── vo/          # 用户信息、公开资料及 Markdown 展示对象
+    │   │           └── service/         # 用户模块对外契约与资料维护编排
+    │   │               └── impl/        # 用户服务契约实现
+    │   └── resources/                  # 应用运行配置
+    │       ├── application.properties  # 当前环境的实际配置
+    │       └── application-template.properties  # 配置项示例模板
+    └── test/java/com/onlikee/           # 后端测试，子包与被测模块对应
+        ├── common/                     # 公共工具测试
+        ├── infrastructure/             # 基础设施配置及 SDK 兼容性测试
+        ├── module/                     # application、auth、resource、user 业务测试
+        ├── PackageStructureTest.java   # 包扫描、组件装配与路由测试
+        └── PostgresMapperIntegrationTest.java  # 显式启用的 PostgreSQL 集成测试
+```
 
 ## 分层职责
 
