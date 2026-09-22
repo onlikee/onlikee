@@ -80,12 +80,12 @@ class ResourceUploadSigningServiceTest {
         assertEquals("POST", method.get());
         assertEquals("Bearer test-management-token", authorization.get());
         JsonNode sent = json.readTree(body.get());
-        assertEquals("image", sent.get("bucket").asText());
-        assertEquals("42/avatar/头像 %20 #?.png", sent.get("object_key").asText());
-        assertEquals("头像 %20 #?.png", sent.get("original_filename").asText());
+        assertEquals("image", sent.get("bucket").asString());
+        assertEquals("42/avatar/头像 %20 #?.png", sent.get("object_key").asString());
+        assertEquals("头像 %20 #?.png", sent.get("original_filename").asString());
         assertEquals(102400, sent.get("max_size_bytes").asLong());
-        assertEquals("image/png", sent.get("content_type").asText());
-        assertEquals("public", sent.get("visibility").asText());
+        assertEquals("image/png", sent.get("content_type").asString());
+        assertEquals("public", sent.get("visibility").asString());
         assertTrue(sent.get("allow_overwrite").asBoolean());
         assertEquals(300, sent.get("expires_in_seconds").asLong());
         assertEquals(baseUrl + path, result.getUploadUrl());
@@ -98,9 +98,9 @@ class ResourceUploadSigningServiceTest {
 
         // 同一文件名重复签发仍允许覆盖；另一用户始终使用自己的目录。
         imageService.createAvatarUploadTicket(user(42), request());
-        assertEquals("42/avatar/头像 %20 #?.png", json.readTree(body.get()).get("object_key").asText());
+        assertEquals("42/avatar/头像 %20 #?.png", json.readTree(body.get()).get("object_key").asString());
         imageService.createAvatarUploadTicket(user(99), request());
-        assertEquals("99/avatar/头像 %20 #?.png", json.readTree(body.get()).get("object_key").asText());
+        assertEquals("99/avatar/头像 %20 #?.png", json.readTree(body.get()).get("object_key").asString());
     }
 
     @Test
