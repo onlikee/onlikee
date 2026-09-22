@@ -12,6 +12,7 @@ const circleImages = ref<ImageUploadFile[]>([])
 const croppedImages = ref<ImageUploadFile[]>([])
 const jpegImages = ref<ImageUploadFile[]>([])
 const customImages = ref<ImageUploadFile[]>([])
+const existingImages = ref<ImageUploadFile[]>([])
 
 const demoCode = `<script setup lang="ts">
 import { ref } from 'vue'
@@ -25,6 +26,7 @@ const images = ref<ImageUploadFile[]>([])
 </template>`
 
 const circleCode = `<ImageUpload v-model="images" circle text="选择头像" width="100px" />`
+const previewCode = `<ImageUpload v-model="images" :preview-url="user.avatarUrl" circle width="100px" />`
 const cropCode = `<ImageUpload v-model="images" crop width="100px" />`
 const acceptCode = `<ImageUpload v-model="images" accept="image/jpeg" hint="仅支持 JPG、JPEG 图片" width="100px" />`
 const disabledCode = `<ImageUpload disabled width="100px" />`
@@ -48,13 +50,14 @@ const apiCols: TableColumn[] = [
   { key: 'description', label: '说明', minWidth: '260px', wrap: true }
 ]
 const apiRows = [
-  { name: 'modelValue', default: '[]', type: 'ImageUploadFile[]', description: '最多一张已选择或已确认裁剪的图片；置空可清除预览。不绑定时也可在组件内预览。' },
+  { name: 'modelValue', default: '[]', type: 'ImageUploadFile[]', description: '最多一张已选择或已确认裁剪的图片；置空后回退显示 previewUrl，两者均为空时显示空态。不绑定时也可在组件内预览。' },
+  { name: 'previewUrl', default: "''", type: 'string', description: '已有图片的预览地址，支持动态更新；本地选择或确认裁剪后的图片优先展示。仅用于回显，不写入 modelValue，也不触发上传或裁剪。' },
   { name: 'width', default: "''", type: 'string', description: '上传区域 .upload-drop 的宽度，支持 CSS 尺寸值，如 100px、100%；未设置时占满父容器宽度。' },
   { name: 'circle', default: 'false', type: 'boolean', description: '以圆形显示上传区域和图片预览，不改变返回文件的形状。可与 crop 搭配使用。' },
   { name: 'crop', default: 'false', type: 'boolean', description: '是否启用裁剪。默认直接返回原图；启用后确认裁剪才提交。关闭时取消正在进行的裁剪并保留旧值。' },
   { name: 'accept', default: "''", type: 'string', description: '在 JPG、JPEG、PNG、WEBP、SVG 中进一步筛选，支持扩展名、MIME 和 image/*；不能扩大默认范围。' },
-  { name: 'text', default: "''", type: 'string', description: '未选择图片时显示的主文案，为空时不渲染。' },
-  { name: 'hint', default: "''", type: 'string', description: '未选择图片时显示的辅助说明，为空时不渲染。' },
+  { name: 'text', default: "''", type: 'string', description: '无图片预览时显示的主文案，为空时不渲染。' },
+  { name: 'hint', default: "''", type: 'string', description: '无图片预览时显示的辅助说明，为空时不渲染。' },
   { name: 'disabled', default: 'false', type: 'boolean', description: '禁用选择和拖拽；切换为禁用时取消当前裁剪。' }
 ]
 const fileCols: TableColumn[] = [
@@ -109,6 +112,22 @@ const slotRows = [
         />
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
+    <ComponentDocsSection title="已有图片回显">
+      <template #description>
+        通过 <code>previewUrl</code> 显示已保存的头像或封面，无需将远程图片转换为 File。
+        新选择或确认裁剪后的图片优先展示，取消裁剪保留原预览。
+        清空 <code>v-model</code> 后恢复已有图片；若要显示空态，还需将 <code>previewUrl</code> 置空。
+        此地址仅用于显示，不会写入 <code>v-model</code> 或触发上传。
+      </template>
+      <ComponentDocsDemoBlock :code="previewCode">
+        <ImageUpload
+          v-model="existingImages"
+          preview-url="https://avatars.githubusercontent.com/u/131276691?v=4"
+          circle
+          width="100px"
+        />
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
     <ComponentDocsSection title="启用裁剪">
       <template #description>
         设置 <code>crop</code> 后，选择图片会打开裁剪窗口。拖动选区移动位置，拖动四角调整大小；圆形虚线可用于预览头像范围。
@@ -148,8 +167,8 @@ const slotRows = [
     </ComponentDocsSection>
     <ComponentDocsSection title="自定义插槽">
       <template #description>
-        使用默认插槽替换未选择图片时的图标和主文案，<code>hint</code> 仍会独立显示。
-        选择图片后显示预览，清空绑定值后恢复插槽内容。上传区域整体可点击，插槽内请使用非交互内容。
+        使用默认插槽替换无图片预览时的图标和主文案，<code>hint</code> 仍会独立显示。
+        选择图片后显示预览，清空绑定值且 <code>previewUrl</code> 为空时恢复插槽内容。上传区域整体可点击，插槽内请使用非交互内容。
       </template>
       <ComponentDocsDemoBlock :code="customCode">
         <ImageUpload
@@ -165,7 +184,7 @@ const slotRows = [
     <ComponentDocsSection title="ImageUploadFile 类型">
       <template #description>
         通过 import type { ImageUploadFile } from '@/components/primer-vue/ImageUpload' 引入类型。
-        绑定值包含原图或已确认的裁剪结果，最多一个元素；外部将绑定值设为空数组可清除预览。
+        绑定值包含原图或已确认的裁剪结果，最多一个元素；外部将绑定值设为空数组后回退显示 <code>previewUrl</code>，两者均为空时清除预览。
       </template>
       <Table
         :columns="fileCols"

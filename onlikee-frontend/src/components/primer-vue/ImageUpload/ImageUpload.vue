@@ -5,6 +5,7 @@ import { cropImage, getImageAccept, isImageAccepted, moveCrop, resizeCrop, type 
 
 const props = withDefaults(defineProps<{
   modelValue?: ImageUploadFile[]
+  previewUrl?: string
   accept?: string
   text?: string
   hint?: string
@@ -14,6 +15,7 @@ const props = withDefaults(defineProps<{
   crop?: boolean
 }>(), {
   modelValue: () => [],
+  previewUrl: '',
   accept: '',
   text: '',
   hint: '',
@@ -33,7 +35,8 @@ const imageRef = useTemplateRef<HTMLImageElement>('image')
 const stageRef = useTemplateRef<HTMLDivElement>('stage')
 const selectedFiles = shallowRef<ImageUploadFile[]>([])
 const pendingFile = shallowRef<File | null>(null)
-const previewUrl = shallowRef('')
+const localPreviewUrl = shallowRef('')
+const previewUrl = computed(() => localPreviewUrl.value || props.previewUrl)
 const sourceUrl = shallowRef('')
 const dragging = shallowRef(false)
 const saving = shallowRef(false)
@@ -70,8 +73,8 @@ watch(() => props.modelValue.slice(0, 1), value => {
 }, { immediate: true })
 
 watch(() => selectedFiles.value[0]?.file, (file, _previous, onCleanup) => {
-  previewUrl.value = file ? URL.createObjectURL(file) : ''
-  const url = previewUrl.value
+  localPreviewUrl.value = file ? URL.createObjectURL(file) : ''
+  const url = localPreviewUrl.value
   onCleanup(() => { if (url) URL.revokeObjectURL(url) })
 }, { immediate: true })
 
@@ -254,7 +257,7 @@ async function confirmCrop() {
         v-if="previewUrl"
         class="image-upload-preview"
         :src="previewUrl"
-        :alt="selectedFiles[0]?.file.name"
+        :alt="selectedFiles[0]?.file.name || '图片预览'"
       >
       <span
         v-else
