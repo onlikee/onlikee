@@ -9,11 +9,17 @@
       <div class="left-column">
         <div class="profile">
           <div class="profile-header">
-            <Avatar
+            <ImageUpload
               class="avatar"
-              :src="profile?.avatarUrl"
-              :alt="profile?.nickname"
-              :size="128"
+              :model-value="avatarFiles"
+              :disabled="!isOwn || avatarUploading"
+              :aria-busy="avatarUploading"
+              :hint="avatarUploading ? '正在上传头像…' : ''"
+              :preview-url="profile?.avatarUrl"
+              circle
+              crop
+              text="选择头像"
+              @update:model-value="uploadAvatar"
             />
             <div
               v-if="!profileEditing"
@@ -222,7 +228,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { Avatar } from '@/components/primer-vue/Avatar'
+import { ImageUpload, type ImageUploadFile } from '@/components/primer-vue/ImageUpload'
 import { Button } from '@/components/primer-vue/Button'
 import { Banner } from '@/components/primer-vue/Banner'
 import { Container } from '@/components/primer-vue/Container'
@@ -234,6 +240,7 @@ import { useUserStore } from '@/stores/user'
 import {
   getPublicUserProfile,
   saveCurrentUserProfile,
+  uploadCurrentUserAvatar,
   type UserProfile
 } from '../api/user'
 import UserApplicationTab from '../components/application.vue'
@@ -250,6 +257,8 @@ const nickname = String(route.params.nickname ?? '')
 const profile = ref<UserProfile | null | undefined>(undefined)
 const profileEditing = ref(false)
 const profileSaving = ref(false)
+const avatarFiles = ref<ImageUploadFile[]>([])
+const avatarUploading = ref(false)
 const profileEditDraft = reactive({
   nickname: '',
   bio: '',
@@ -266,6 +275,30 @@ const activeTab = computed<UserTab>(() => {
 })
 
 const isOwn = useIsOwn(profile)
+
+const uploadAvatar = async (files: ImageUploadFile[]) => {
+  const file = files[0]?.file
+  if (!file || !isOwn.value || avatarUploading.value) return
+
+  const previousFiles = avatarFiles.value
+  avatarFiles.value = files
+  if (file.size === 0 || file.size > 1048576) {
+    avatarFiles.value = [...previousFiles]
+    Banner.error(file.size === 0 ? '文件不能为空。' : '头像大小不能超过 1 MiB。')
+    return
+  }
+
+  avatarUploading.value = true
+  try {
+    await uploadCurrentUserAvatar(file)
+    Banner.success('头像文件上传成功。')
+  } catch (error) {
+    avatarFiles.value = [...previousFiles]
+    Banner.error(error instanceof Error ? error.message : '头像上传失败，请重试。')
+  } finally {
+    avatarUploading.value = false
+  }
+}
 
 const fillProfileEditDraft = () => {
   if (!profile.value) {

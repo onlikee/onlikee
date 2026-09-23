@@ -18,7 +18,7 @@ public class ImageResourceService {
 
     // bucket、用途和覆盖权限由业务接口固定，客户端不能指定其他用户的目标路径。
     public ResourceUploadTicketVO createAvatarUploadTicket(UserEntity user, AvatarUploadTicketDTO request) {
-        String objectKey = user.getId() + "/avatar/" + request.getOriginalFilename();
+        String objectKey = user.getUuid() + "/avatar/" + request.getOriginalFilename();
         return signingService.signUpload(SignUploadRequest.builder("image", objectKey, request.getSizeBytes())
                 .visibility(Visibility.PUBLIC)
                 .allowOverwrite(true)

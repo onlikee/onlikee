@@ -28,7 +28,7 @@ public class AvatarUploadTicketDTO {
     @Max(value = 1048576, message = "头像大小不能超过1 MiB")
     private Long sizeBytes;
 
-    // 文件名不得改变当前用户的目录；为最长 Long 用户 ID 和 /avatar/ 预留路径长度。
+    // 文件名不得改变当前用户的目录；保留 485 字节上限，为用户短 UUID 和 /avatar/ 预留路径长度。
     @AssertTrue(message = "文件名不能包含路径或控制字符，且UTF-8长度不能超过485字节")
     public boolean isFilenameValid() {
         return originalFilename == null || (originalFilename.getBytes(StandardCharsets.UTF_8).length <= 485

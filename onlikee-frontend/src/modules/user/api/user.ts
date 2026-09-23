@@ -1,4 +1,5 @@
 import { get, post } from '@/api'
+import { uploadWithPresignedTicket, type PresignedUploadTicket } from '@/api/common/presigned-upload'
 
 export type UserProfile = {
   uuid: string
@@ -54,3 +55,27 @@ export const saveCurrentUserMarkdown = (request: SaveCurrentUserMarkdownRequest)
 
 export const saveCurrentUserProfile = (request: SaveCurrentUserProfileRequest) =>
   post<CurrentUserProfile>('/users/me/profile', request, { withCredentials: true })
+
+export type AvatarUploadTicketRequest = {
+  originalFilename: string
+  contentType: string
+  sizeBytes: number
+}
+
+export type AvatarUploadTicket = PresignedUploadTicket & {
+  expiresAt: number
+  bucket: string
+  objectKey: string
+}
+
+export const createAvatarUploadTicket = (request: AvatarUploadTicketRequest) =>
+  post<AvatarUploadTicket>('/resources/images/avatars/upload-tickets', request, { withCredentials: true })
+
+export const uploadCurrentUserAvatar = async (file: File) => {
+  const ticket = await createAvatarUploadTicket({
+    originalFilename: file.name,
+    contentType: file.type,
+    sizeBytes: file.size
+  })
+  await uploadWithPresignedTicket(ticket, file)
+}
