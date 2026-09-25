@@ -24,6 +24,8 @@ public final class ToEntity {
         application.setOwnerUuid(user.getUuid());
         application.setFramework(request.getFramework());
         application.setAppName(request.getAppName());
+        // 应用图片地址暂不由创建请求提供，待后续接入资源流程。
+        application.setAppAvatarUrl(null);
         application.setAppSubDomain(request.getAppSubDomain());
         application.setVisibility(request.getVisibility());
         application.setAppDescription(request.getAppDescription());

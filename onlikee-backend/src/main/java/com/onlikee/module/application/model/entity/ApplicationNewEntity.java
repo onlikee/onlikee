@@ -11,6 +11,7 @@ public class ApplicationNewEntity {
     private String ownerUuid;
     private String framework;
     private String appName;
+    private String appAvatarUrl;
     private String appSubDomain;
     private String visibility;
     private String appDescription;

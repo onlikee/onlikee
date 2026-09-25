@@ -21,11 +21,11 @@ public interface ApplicationCreateMapper {
 
     @Insert("""
             insert into application_new
-            (appid, owner_uuid, framework, app_name, app_subdomain,
+            (appid, owner_uuid, framework, app_name, app_avatar_url, app_subdomain,
              visibility, app_description, original_filename,
              original_file_type, original_file_size)
             values
-            (#{appid}, #{ownerUuid}, #{framework}, #{appName}, #{appSubDomain},
+            (#{appid}, #{ownerUuid}, #{framework}, #{appName}, #{appAvatarUrl}, #{appSubDomain},
              #{visibility}, #{appDescription}, #{originalFilename},
              #{originalFileType}, #{originalFileSize})
             """)

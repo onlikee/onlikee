@@ -2,6 +2,7 @@ package com.onlikee.module.application.converter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
@@ -39,6 +40,7 @@ class ToEntityTest {
         assertEquals("user-1", application.getOwnerUuid());
         assertEquals("html", application.getFramework());
         assertEquals("Demo", application.getAppName());
+        assertNull(application.getAppAvatarUrl());
         assertEquals("demo", application.getAppSubDomain());
         assertEquals("public", application.getVisibility());
         assertEquals("description", application.getAppDescription());
