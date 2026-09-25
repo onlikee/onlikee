@@ -71,6 +71,9 @@ export type AvatarUploadTicket = PresignedUploadTicket & {
 export const createAvatarUploadTicket = (request: AvatarUploadTicketRequest) =>
   post<AvatarUploadTicket>('/resources/images/avatars/upload-tickets', request, { withCredentials: true })
 
+export const saveCurrentUserAvatar = (avatarUrl: string) =>
+  post<CurrentUserProfile>('/users/me/avatar', { avatarUrl }, { withCredentials: true })
+
 export const uploadCurrentUserAvatar = async (file: File) => {
   const ticket = await createAvatarUploadTicket({
     originalFilename: file.name,
@@ -78,4 +81,8 @@ export const uploadCurrentUserAvatar = async (file: File) => {
     sizeBytes: file.size
   })
   await uploadWithPresignedTicket(ticket, file)
+  // 上传凭证的查询参数只用于 PUT 签名，公开资源地址只保留对象路径。
+  const resourceUrl = new URL(ticket.uploadUrl)
+  resourceUrl.search = ''
+  return saveCurrentUserAvatar(resourceUrl.toString())
 }

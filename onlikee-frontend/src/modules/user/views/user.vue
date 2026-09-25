@@ -290,8 +290,11 @@ const uploadAvatar = async (files: ImageUploadFile[]) => {
 
   avatarUploading.value = true
   try {
-    await uploadCurrentUserAvatar(file)
-    Banner.success('头像文件上传成功。')
+    const updatedProfile = await uploadCurrentUserAvatar(file)
+    profile.value = updatedProfile
+    userStore.setUserInfo(updatedProfile)
+    avatarFiles.value = []
+    Banner.success('头像更新成功。')
   } catch (error) {
     avatarFiles.value = [...previousFiles]
     Banner.error(error instanceof Error ? error.message : '头像上传失败，请重试。')

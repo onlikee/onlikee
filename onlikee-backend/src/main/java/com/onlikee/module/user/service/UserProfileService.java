@@ -8,6 +8,8 @@ import com.onlikee.common.exception.BizException;
 import com.onlikee.common.exception.ErrorCode;
 import com.onlikee.module.user.mapper.UserProfileMapper;
 import com.onlikee.module.user.model.dto.UserProfileDTO;
+import com.onlikee.module.user.model.dto.UserAvatarDTO;
+import com.onlikee.module.resource.service.ImageResourceService;
 import com.onlikee.module.user.model.dto.UserProfileMarkdownDTO;
 import com.onlikee.module.user.model.entity.UserEntity;
 import com.onlikee.module.user.model.entity.UserProfileMarkdownEntity;
@@ -18,6 +20,8 @@ public class UserProfileService {
 
     @Autowired
     private UserProfileMapper userProfileMapper;
+    @Autowired
+    private ImageResourceService imageResourceService;
 
     // 公开资料页使用昵称作为稳定入口，查询不到时复用用户不存在业务错误。
     public UserEntity getUserByNickname(String nickname) {
@@ -81,6 +85,20 @@ public class UserProfileService {
         user.setSocialAccount0(socialAccount0);
         user.setSocialAccount1(socialAccount1);
         user.setSocialAccount2(socialAccount2);
+        return user;
+    }
+
+    @CacheEvict(cacheNames = "user:info", key = "#user.uuid")
+    // 验证已上传的头像后按登录态 uuid 更新，并使用户信息缓存失效。
+    public UserEntity saveCurrentUserAvatar(UserEntity user, UserAvatarDTO request) {
+        if (user == null || user.getUuid() == null || user.getUuid().isBlank() || request == null) {
+            throw new BizException(ErrorCode.INTERNAL_ERROR);
+        }
+        String avatarUrl = imageResourceService.validateCurrentUserAvatarUrl(user, request.getAvatarUrl());
+        if (userProfileMapper.updateCurrentUserAvatar(user.getUuid(), avatarUrl) != 1) {
+            throw new BizException(ErrorCode.INTERNAL_ERROR);
+        }
+        user.setAvatarUrl(avatarUrl);
         return user;
     }
 }

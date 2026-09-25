@@ -15,6 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.onlikee.common.exception.BizException;
 import com.onlikee.common.exception.ErrorCode;
 import com.onlikee.module.user.mapper.UserProfileMapper;
+import com.onlikee.module.resource.service.ImageResourceService;
+import com.onlikee.module.user.model.dto.UserAvatarDTO;
 import com.onlikee.module.user.model.dto.UserProfileDTO;
 import com.onlikee.module.user.model.dto.UserProfileMarkdownDTO;
 import com.onlikee.module.user.model.entity.UserEntity;
@@ -25,6 +27,8 @@ class UserProfileServiceTest {
 
     @Mock
     private UserProfileMapper userProfileMapper;
+    @Mock
+    private ImageResourceService imageResourceService;
 
     @InjectMocks
     private UserProfileService userProfileService;
@@ -150,6 +154,37 @@ class UserProfileServiceTest {
 
         BizException exception = assertThrows(BizException.class,
                 () -> userProfileService.saveCurrentUserProfile(user(), request));
+
+        assertEquals(ErrorCode.INTERNAL_ERROR.getCode(), exception.getCode());
+    }
+
+    @Test
+    // 头像更新使用当前用户 uuid，资源验证通过后才写入数据库。
+    void saveCurrentUserAvatarShouldPersistValidatedUrl() {
+        String url = "https://oss.example.com/api/v1/buckets/image/objects/user-1/avatar/a.png";
+        UserAvatarDTO request = new UserAvatarDTO();
+        request.setAvatarUrl(url);
+        when(imageResourceService.validateCurrentUserAvatarUrl(org.mockito.ArgumentMatchers.any(),
+                org.mockito.ArgumentMatchers.eq(url))).thenReturn(url);
+        when(userProfileMapper.updateCurrentUserAvatar("user-1", url)).thenReturn(1);
+
+        UserEntity result = userProfileService.saveCurrentUserAvatar(user(), request);
+
+        assertEquals(url, result.getAvatarUrl());
+        verify(userProfileMapper).updateCurrentUserAvatar("user-1", url);
+    }
+
+    @Test
+    // 数据库未写入时不能将上传完成误报为头像更新成功。
+    void saveCurrentUserAvatarShouldThrowWhenUpdateFails() {
+        String url = "https://oss.example.com/api/v1/buckets/image/objects/user-1/avatar/a.png";
+        UserAvatarDTO request = new UserAvatarDTO();
+        request.setAvatarUrl(url);
+        when(imageResourceService.validateCurrentUserAvatarUrl(org.mockito.ArgumentMatchers.any(),
+                org.mockito.ArgumentMatchers.eq(url))).thenReturn(url);
+
+        BizException exception = assertThrows(BizException.class,
+                () -> userProfileService.saveCurrentUserAvatar(user(), request));
 
         assertEquals(ErrorCode.INTERNAL_ERROR.getCode(), exception.getCode());
     }
