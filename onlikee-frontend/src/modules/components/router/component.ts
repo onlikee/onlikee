@@ -143,6 +143,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
             },
             // Feedback 反馈组件
             {
+                path: 'progress-bar',
+                name: 'ProgressBar',
+                component: () => import('../views/components/progress-bar.vue')
+            },
+            {
                 path: 'admonition',
                 name: 'Admonition',
                 component: () => import('../views/components/admonition.vue')

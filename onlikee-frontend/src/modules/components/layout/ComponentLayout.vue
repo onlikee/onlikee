@@ -245,6 +245,7 @@ const navSections = ref([
   {
     title: 'Feedback 反馈组件',
     items: [
+      { path: '/component/progress-bar', label: 'ProgressBar 进度条' },
       { path: '/component/admonition', label: 'Admonition 提示块' },
       { path: '/component/blankslate', label: 'Blankslate 空状态' },
       { path: '/component/dialog', label: 'Dialog 对话框' },
