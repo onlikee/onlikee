@@ -357,11 +357,8 @@
       <ComponentDocsDemoBlock :code="demo8Code">
         <Dropdown>
           <Dropdown.trigger>
-            <Button>
+            <Button :trailing-visual="TriangleDownIcon">
               更多操作
-              <Button.trailingVisual>
-                <TriangleDownIcon />
-              </Button.trailingVisual>
             </Button>
           </Dropdown.trigger>
           <Dropdown.content>
@@ -743,9 +740,8 @@ import { BookIcon, LinkExternalIcon, MarkGithubIcon, ZapIcon } from '@/component
 const demo8Code = `<template>
   <Dropdown>
     <Dropdown.trigger>
-      <Button>
+      <Button :trailing-visual="TriangleDownIcon">
         更多操作
-        <Button.trailingVisual><TriangleDownIcon /></Button.trailingVisual>
       </Button>
     </Dropdown.trigger>
     <Dropdown.content>

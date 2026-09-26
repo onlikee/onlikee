@@ -7,29 +7,29 @@
     :data-loading="loading"
     :data-size="size"
     :data-variant="variant"
-    :data-icon-button="isIconButton ? 'true' : 'false'"
+    :data-icon-button="hasLabel() ? 'false' : 'true'"
   >
     <span
       class="button__content"
     >
       <span class="button__content-row">
         <span
-          v-if="hasLeadingVisual"
+          v-if="leadingVisual"
           class="button__visual"
         >
-          <RenderNodes :nodes="parsedChildren.leadingVisual" />
+          <component :is="leadingVisual" />
         </span>
         <span
-          v-if="hasLabel"
+          v-if="hasLabel()"
           class="button__label"
         >
-          <RenderNodes :nodes="parsedChildren.label" />
+          <slot />
         </span>
         <span
-          v-if="hasTrailingVisual"
+          v-if="trailingVisual"
           class="button__visual"
         >
-          <RenderNodes :nodes="parsedChildren.trailingVisual" />
+          <component :is="trailingVisual" />
         </span>
       </span>
       <svg
@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { Comment, Fragment, Text, computed, useSlots, type VNode } from 'vue'
+import { Comment, Fragment, Text, useSlots, type Component, type VNode } from 'vue'
 
 interface Props {
   type?: 'button' | 'submit' | 'reset'
@@ -74,6 +74,8 @@ interface Props {
   size?: 'small' | 'medium' | 'large'
   loading?: boolean
   disabled?: boolean
+  leadingVisual?: Component
+  trailingVisual?: Component
 }
 
 withDefaults(defineProps<Props>(), {
@@ -81,87 +83,27 @@ withDefaults(defineProps<Props>(), {
   variant: 'default',
   size: 'medium',
   loading: false,
-  disabled: false
+  disabled: false,
+  leadingVisual: undefined,
+  trailingVisual: undefined
 })
 
 const slots = useSlots()
 
-interface ButtonMarkerType {
-  name?: string
-  __name?: string
-}
-
-interface ParsedButtonChildren {
-  label: VNode[]
-  leadingVisual: VNode[]
-  trailingVisual: VNode[]
-}
-
-const RenderNodes = (props: { nodes: VNode[] }) => props.nodes
-
-function getComponentName(type: VNode['type']) {
-  if (typeof type !== 'object' && typeof type !== 'function') return ''
-
-  const marker = type as ButtonMarkerType
-  return marker.name ?? marker.__name ?? ''
-}
-
-function readSlotChildren(node: VNode) {
-  if (typeof node.children === 'object' && node.children && 'default' in node.children) {
-    const slot = node.children.default
-    return typeof slot === 'function' ? slot() : []
-  }
-
-  return []
-}
-
-function isWhitespaceNode(node: VNode) {
-  return node.type === Text && typeof node.children === 'string' && node.children.trim() === ''
-}
-
-function flattenChildren(nodes: VNode[]): VNode[] {
-  return nodes.flatMap(node => {
-    if (node.type === Fragment && Array.isArray(node.children)) {
-      return flattenChildren(node.children as VNode[])
+function hasContent(nodes: VNode[]): boolean {
+  return nodes.some(node => {
+    if (node.type === Comment) return false
+    if (node.type === Text) return String(node.children ?? '').trim().length > 0
+    if (node.type === Fragment) {
+      return Array.isArray(node.children) && hasContent(node.children as VNode[])
     }
-
-    return [node]
+    return true
   })
 }
 
-function parseButtonChildren(nodes: VNode[]): ParsedButtonChildren {
-  const parsed: ParsedButtonChildren = {
-    label: [],
-    leadingVisual: [],
-    trailingVisual: []
-  }
-
-  for (const node of flattenChildren(nodes)) {
-    if (node.type === Comment || isWhitespaceNode(node)) continue
-
-    const componentName = getComponentName(node.type)
-
-    if (componentName === 'ButtonLeadingVisual') {
-      parsed.leadingVisual.push(...readSlotChildren(node))
-      continue
-    }
-
-    if (componentName === 'ButtonTrailingVisual') {
-      parsed.trailingVisual.push(...readSlotChildren(node))
-      continue
-    }
-
-    parsed.label.push(node)
-  }
-
-  return parsed
+function hasLabel() {
+  return hasContent(slots.default?.() ?? [])
 }
-
-const parsedChildren = computed(() => parseButtonChildren(slots.default?.() ?? []))
-const hasLabel = computed(() => Boolean(parsedChildren.value.label.length))
-const hasLeadingVisual = computed(() => Boolean(parsedChildren.value.leadingVisual.length))
-const hasTrailingVisual = computed(() => Boolean(parsedChildren.value.trailingVisual.length))
-const isIconButton = computed(() => !hasLabel.value)
 </script>
 
 <style scoped>
@@ -229,6 +171,28 @@ const isIconButton = computed(() => !hasLabel.value)
   align-items: center;
   display: inline-flex;
   flex-shrink: 0;
+}
+
+.button[data-variant='default']:not(:disabled) .button__visual {
+  color: var(--fgColor-muted, #59636e);
+}
+
+.button[data-variant='danger']:not(:disabled) .button__visual {
+  color: var(--button-danger-iconColor-rest, var(--fgColor-danger, #cf222e));
+}
+
+.button[data-variant='danger']:hover:not(:disabled) .button__visual,
+.button[data-variant='danger']:active:not(:disabled) .button__visual {
+  color: var(--button-danger-iconColor-hover, #ffffff);
+}
+
+.button[data-variant='invisible']:not(:disabled) .button__visual {
+  color: var(--button-invisible-iconColor-rest, var(--fgColor-muted, #59636e));
+}
+
+.button[data-variant='invisible']:hover:not(:disabled) .button__visual,
+.button[data-variant='invisible']:active:not(:disabled) .button__visual {
+  color: var(--button-invisible-iconColor-hover, var(--fgColor-muted, #59636e));
 }
 
 .button__spinner {
