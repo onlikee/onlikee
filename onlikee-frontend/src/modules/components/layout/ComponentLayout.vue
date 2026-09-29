@@ -211,6 +211,7 @@ const navSections = ref([
     items: [
       { path: '/component/action-list', label: 'ActionList 操作列表' },
       { path: '/component/avatar', label: 'Avatar 头像' },
+      { path: '/component/avatar-stack', label: 'AvatarStack 头像堆叠' },
       { path: '/component/button', label: 'Button 按钮' },
       { path: '/component/copy-button', label: 'CopyButton 复制按钮' },
       { path: '/component/container', label: 'Container 布局容器' },
