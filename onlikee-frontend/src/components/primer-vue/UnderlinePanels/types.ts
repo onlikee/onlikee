@@ -12,7 +12,7 @@ export interface UnderlinePanelsProps {
 export interface UnderlinePanelsTabProps {
   value?: string
   counter?: number | string
-  icon?: Component
+  leadingVisual?: Component
   disabled?: boolean
 }
 

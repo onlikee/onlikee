@@ -21,16 +21,19 @@ import { UnderlineNav } from '@/components/primer-vue/UnderlineNav'
 
 const featuresCode = `<template>
   <UnderlineNav aria-label="Repository" variant="flush">
-    <UnderlineNav.Item href="#" aria-current="page" :counter="8">
-      <template #leadingVisual><CodeIcon /></template>
+    <UnderlineNav.Item href="#" aria-current="page" :counter="8" :leading-visual="CodeIcon">
       Code
     </UnderlineNav.Item>
-    <UnderlineNav.Item href="#" :counter="12">
-      <template #leadingVisual><IssueOpenedIcon /></template>
+    <UnderlineNav.Item href="#" :counter="12" :leading-visual="IssueOpenedIcon">
       Issues
     </UnderlineNav.Item>
   </UnderlineNav>
-</template>`
+</template>
+
+<script setup lang="ts">
+import { UnderlineNav } from '@/components/primer-vue/UnderlineNav'
+import { CodeIcon, IssueOpenedIcon } from '@/components/octicons-vue3'
+<\/script>`
 
 const columns: TableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '160px' },
@@ -52,7 +55,7 @@ const itemRows = [
   { name: 'aria-current', type: 'string | boolean', default: '—', description: '标记当前页面或当前位置。' },
   { name: 'counter', type: 'number | string', default: '—', description: '导航项后的计数。' },
   { name: 'as', type: 'string | Component', default: 'a', description: '链接元素或自定义导航组件。' },
-  { name: 'leadingVisual', type: 'slot', default: '—', description: '标签前的图标。' },
+  { name: 'leadingVisual', type: 'Component', default: '—', description: '标签前的图标组件。' },
   { name: 'select', type: 'event', default: '—', description: '点击或按 Enter、Space 时触发。' }
 ]
 </script>
@@ -93,19 +96,15 @@ const itemRows = [
             href="#"
             aria-current="page"
             :counter="8"
+            :leading-visual="CodeIcon"
           >
-            <template #leadingVisual>
-              <CodeIcon />
-            </template>
             Code
           </UnderlineNav.Item>
           <UnderlineNav.Item
             href="#"
             :counter="12"
+            :leading-visual="IssueOpenedIcon"
           >
-            <template #leadingVisual>
-              <IssueOpenedIcon />
-            </template>
             Issues
           </UnderlineNav.Item>
         </UnderlineNav>

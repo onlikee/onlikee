@@ -70,9 +70,9 @@ function handleKeydown(event: KeyboardEvent) {
     @keydown="handleKeydown"
   >
     <span
-      v-if="icon"
+      v-if="leadingVisual"
       data-component="icon"
-    ><component :is="icon" /></span>
+    ><component :is="leadingVisual" /></span>
     <span
       data-component="text"
       :data-content="textContent || undefined"

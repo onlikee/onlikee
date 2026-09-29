@@ -36,6 +36,17 @@ test('pairs tabs and panels by value and exposes the selected panel', async () =
   assert.match(html, /id="refs-panel-tag"[^>]*data-selected(?:\s|>)/)
 })
 
+test('renders a tab leadingVisual component before its label', async () => {
+  const LeadingVisual = () => h('svg', { 'data-test-icon': 'code' })
+  const html = await render({ id: 'visual' }, [
+    h(UnderlinePanels.Tab, { value: 'code', leadingVisual: LeadingVisual }, () => 'Code'),
+    h(UnderlinePanels.Panel, { value: 'code' }, () => 'Repository files')
+  ])
+
+  assert.match(html, /data-component="icon"[^>]*><svg[^>]*data-test-icon="code"/)
+  assert.match(html, /data-test-icon="code"[\s\S]*data-component="text"[^>]*>[\s\S]*Code/)
+})
+
 test('pairs omitted values by their order and honors aria-selected', async () => {
   const html = await render({ id: 'ordered' }, [
     h(UnderlinePanels.Tab, null, () => 'One'),

@@ -2,6 +2,7 @@
 import { shallowRef } from 'vue'
 import { UnderlinePanels } from '@/components/primer-vue/UnderlinePanels'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { CodeIcon, IssueOpenedIcon } from '@/components/octicons-vue3'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -12,14 +13,15 @@ const selected = shallowRef('code')
 const basicCode = `<script setup lang="ts">
 import { shallowRef } from 'vue'
 import { UnderlinePanels } from '@/components/primer-vue/UnderlinePanels'
+import { CodeIcon, IssueOpenedIcon } from '@/components/octicons-vue3'
 
 const selected = shallowRef('code')
 <\/script>
 
 <template>
   <UnderlinePanels v-model:value="selected" aria-label="Repository sections">
-    <UnderlinePanels.Tab value="code">Code</UnderlinePanels.Tab>
-    <UnderlinePanels.Tab value="issues" :counter="12">Issues</UnderlinePanels.Tab>
+    <UnderlinePanels.Tab value="code" :leading-visual="CodeIcon">Code</UnderlinePanels.Tab>
+    <UnderlinePanels.Tab value="issues" :leading-visual="IssueOpenedIcon" :counter="12">Issues</UnderlinePanels.Tab>
     <UnderlinePanels.Panel value="code">Repository files</UnderlinePanels.Panel>
     <UnderlinePanels.Panel value="issues">Open issues</UnderlinePanels.Panel>
   </UnderlinePanels>
@@ -54,8 +56,13 @@ const rootRows = [
 const tabRows = [
   { name: 'value', type: 'string', default: '按位置配对', description: '与 Panel 的 value 对应。' },
   { name: 'counter', type: 'number | string', default: '—', description: '标签后的计数。' },
-  { name: 'icon', type: 'Component', default: '—', description: '标签前的图标。' },
+  { name: 'leadingVisual', type: 'Component', default: '—', description: '标签前的图标组件。' },
   { name: 'select', type: 'event', default: '—', description: '点击或按 Enter、Space 时触发。' }
+]
+
+const panelRows = [
+  { name: 'value', type: 'string', default: '按位置配对', description: '与 Tab 的 value 对应；选中时显示面板。' },
+  { name: 'default', type: 'slot', default: '—', description: '面板内容。' }
 ]
 </script>
 
@@ -72,12 +79,16 @@ const tabRows = [
           v-model:value="selected"
           aria-label="Repository sections"
         >
-          <UnderlinePanels.Tab value="code">
+          <UnderlinePanels.Tab
+            value="code"
+            :leading-visual="CodeIcon"
+          >
             Code
           </UnderlinePanels.Tab>
           <UnderlinePanels.Tab
             value="issues"
             :counter="12"
+            :leading-visual="IssueOpenedIcon"
           >
             Issues
           </UnderlinePanels.Tab>
@@ -133,6 +144,14 @@ const tabRows = [
       <Table
         :columns="columns"
         :data="tabRows"
+        row-key="name"
+        compact
+        :hoverable="false"
+      />
+      <h3>UnderlinePanels.Panel</h3>
+      <Table
+        :columns="columns"
+        :data="panelRows"
         row-key="name"
         compact
         :hoverable="false"

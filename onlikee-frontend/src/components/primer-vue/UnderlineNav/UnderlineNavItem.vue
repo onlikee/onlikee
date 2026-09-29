@@ -11,13 +11,15 @@ const props = withDefaults(defineProps<{
   rel?: string
   ariaCurrent?: UnderlineNavCurrent
   counter?: number | string
+  leadingVisual?: Component
 }>(), {
   as: 'a',
   href: undefined,
   target: undefined,
   rel: undefined,
   ariaCurrent: undefined,
-  counter: undefined
+  counter: undefined,
+  leadingVisual: undefined
 })
 
 const emit = defineEmits<{ select: [event: MouseEvent | KeyboardEvent] }>()
@@ -82,11 +84,11 @@ onBeforeUnmount(() => context?.unregister(id))
       @keydown="handleKeydown"
     >
       <span
-        v-if="slots.leadingVisual"
+        v-if="leadingVisual"
         class="underline-nav-icon"
         data-component="icon"
       >
-        <slot name="leadingVisual" />
+        <component :is="leadingVisual" />
       </span>
       <span
         ref="label"

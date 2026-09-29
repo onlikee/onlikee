@@ -114,7 +114,7 @@ provide(underlinePanelsKey, {
   focusTab: value => { focusedValue.value = value }
 })
 
-const tabsHaveIcons = computed(() => children.value.tabs.some(tab => Boolean(tab.props?.icon)))
+const tabsHaveIcons = computed(() => children.value.tabs.some(tab => Boolean(tab.props?.leadingVisual)))
 
 function updateIconsVisibility() {
   if (!tabsHaveIcons.value || !wrapperRef.value || !listRef.value) {
