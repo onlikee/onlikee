@@ -163,6 +163,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
                 component: () => import('../views/components/progress-bar.vue')
             },
             {
+                path: 'spinner',
+                name: 'Spinner',
+                component: () => import('../views/components/spinner.vue')
+            },
+            {
                 path: 'admonition',
                 name: 'Admonition',
                 component: () => import('../views/components/admonition.vue')
