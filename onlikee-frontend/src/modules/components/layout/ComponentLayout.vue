@@ -217,6 +217,7 @@ const navSections = ref([
       { path: '/component/divider', label: 'Divider 分隔线' },
       { path: '/component/dropdown', label: 'Dropdown 下拉菜单' },
       { path: '/component/link', label: 'Link 链接' },
+      { path: '/component/truncate', label: 'Truncate 文本截断' },
       { path: '/component/tag', label: 'Tag 标签' }
     ]
   },
@@ -240,7 +241,11 @@ const navSections = ref([
   },
   {
     title: 'Navigation 导航',
-    items: [{ path: '/component/steps', label: 'Steps 步骤条' }]
+    items: [
+      { path: '/component/steps', label: 'Steps 步骤条' },
+      { path: '/component/underline-nav', label: 'UnderlineNav 下划线导航' },
+      { path: '/component/underline-panels', label: 'UnderlinePanels 下划线选项卡' }
+    ]
   },
   {
     title: 'Feedback 反馈组件',

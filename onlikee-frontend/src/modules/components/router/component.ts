@@ -69,6 +69,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
                 component: () => import('../views/components/link.vue')
             },
             {
+                path: 'truncate',
+                name: 'Truncate',
+                component: () => import('../views/components/truncate.vue')
+            },
+            {
                 path: 'divider',
                 name: 'Divider',
                 component: () => import('../views/components/divider.vue')
@@ -140,6 +145,16 @@ export const componentRoutes: Array<RouteRecordRaw> = [
                 path: 'steps',
                 name: 'Steps',
                 component: () => import('../views/components/steps.vue')
+            },
+            {
+                path: 'underline-nav',
+                name: 'UnderlineNav',
+                component: () => import('../views/components/underline-nav.vue')
+            },
+            {
+                path: 'underline-panels',
+                name: 'UnderlinePanels',
+                component: () => import('../views/components/underline-panels.vue')
             },
             // Feedback 反馈组件
             {
