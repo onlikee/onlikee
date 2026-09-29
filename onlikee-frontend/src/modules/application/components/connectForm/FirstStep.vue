@@ -51,17 +51,11 @@
       <div class="visibility-select-wrap">
         <Dropdown ref="visibilityDropdownRef">
           <Dropdown.trigger>
-            <Button>
-              <Button.leadingVisual>
-                <component
-                  :is="selectedVisibilityOption.icon"
-                  color="var(--fgColor-muted)"
-                />
-              </Button.leadingVisual>
-              {{ label }}
-              <Button.trailingVisual>
-                <TriangleDownIcon color="var(--fgColor-muted)" />
-              </Button.trailingVisual>
+            <Button
+              :leading-visual="visibility === '私有的' ? LockIcon : RepoIcon"
+              :trailing-visual="TriangleDownIcon"
+            >
+              {{ visibility === '私有的' ? '私有的' : '公开的' }}
             </Button>
           </Dropdown.trigger>
           <Dropdown.content
@@ -113,7 +107,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { Input } from '@/components/primer-vue/Input'
 import { Textarea } from '@/components/primer-vue/Textarea'
@@ -123,12 +117,6 @@ import { ActionList } from '@/components/primer-vue/ActionList'
 import RepoIcon from '@/components/octicons-vue3/icons/repo.vue'
 import TriangleDownIcon from '@/components/octicons-vue3/icons/triangle-down.vue'
 import LockIcon from '@/components/octicons-vue3/icons/lock.vue'
-
-interface VisibilityOption {
-  value: string
-  description: string
-  icon: typeof RepoIcon
-}
 
 interface Props {
   appName: string
@@ -140,7 +128,7 @@ interface Props {
   appDescriptionError?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   appNameError: '',
   appUrlError: '',
   appDescriptionError: ''
@@ -153,7 +141,7 @@ const emit = defineEmits<{
   'update:app-description': [value: string]
 }>()
 
-const visibilityOptions: VisibilityOption[] = [
+const visibilityOptions = [
   {
     value: '公开的',
     description: '你的应用被公开，所有人都能够在应用广场上看见它。',
@@ -167,12 +155,6 @@ const visibilityOptions: VisibilityOption[] = [
 ]
 
 const visibilityDropdownRef = ref<InstanceType<typeof Dropdown>>()
-
-const selectedVisibilityOption = computed(() => {
-  return visibilityOptions.find(item => item.value === props.visibility) ?? visibilityOptions[0]
-})
-
-const label = computed(() => selectedVisibilityOption.value.value)
 
 function selectVisibility(value: string) {
   emit('update:visibility', value)

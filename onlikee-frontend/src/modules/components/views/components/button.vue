@@ -95,32 +95,168 @@
 
     <ComponentDocsSection title="前后视觉元素">
       <template #description>
-        通过 <code>Button.leadingVisual</code> 和 <code>Button.trailingVisual</code> 子组件在文本前后放置图标。按钮会从默认插槽中提取这两个子组件，其余节点作为按钮文案渲染。
+        通过 <code>leadingVisual</code> 和 <code>trailingVisual</code> 属性传入图标组件，在按钮文案前后显示。默认插槽承载文案；需要自定义图标参数时，可传入使用 <code>h()</code> 封装的函数式组件。
       </template>
 
       <ComponentDocsDemoBlock :code="visualDemoCode">
         <div class="button-row">
-          <Button>
-            <Button.leadingVisual>
-              <BellIcon />
-            </Button.leadingVisual>
+          <Button :leading-visual="BellIcon">
             通知设置
           </Button>
-          <Button variant="primary">
+          <Button
+            variant="primary"
+            :trailing-visual="ArrowUpRightIcon"
+          >
             继续前往
-            <Button.trailingVisual>
-              <ArrowUpRightIcon />
-            </Button.trailingVisual>
           </Button>
-          <Button variant="invisible">
-            <Button.leadingVisual>
-              <SearchIcon />
-            </Button.leadingVisual>
+          <Button
+            variant="invisible"
+            :leading-visual="SearchIcon"
+            :trailing-visual="CheckIcon"
+          >
             搜索项目
-            <Button.trailingVisual>
-              <CheckIcon />
-            </Button.trailingVisual>
           </Button>
+        </div>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
+    <ComponentDocsSection title="图标颜色与变体">
+      <template #description>
+        前后图标使用相同的颜色规则。默认按钮的图标使用弱化色，与文字区分；其他变体使用对应颜色。悬停或按下按钮可查看交互态。
+      </template>
+
+      <ComponentDocsDemoBlock :code="visualVariantDemoCode">
+        <div class="button-row">
+          <Button
+            variant="default"
+            :leading-visual="BellIcon"
+            :trailing-visual="ArrowUpRightIcon"
+          >
+            Default
+          </Button>
+          <Button
+            variant="primary"
+            :leading-visual="BellIcon"
+            :trailing-visual="ArrowUpRightIcon"
+          >
+            Primary
+          </Button>
+          <Button
+            variant="danger"
+            :leading-visual="BellIcon"
+            :trailing-visual="ArrowUpRightIcon"
+          >
+            Danger
+          </Button>
+          <Button
+            variant="invisible"
+            :leading-visual="BellIcon"
+            :trailing-visual="ArrowUpRightIcon"
+          >
+            Invisible
+          </Button>
+          <Button
+            variant="link"
+            :leading-visual="BellIcon"
+            :trailing-visual="ArrowUpRightIcon"
+          >
+            Link
+          </Button>
+        </div>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
+    <ComponentDocsSection title="带图标的禁用与加载状态">
+      <template #description>
+        禁用时，前后图标跟随按钮的禁用文字颜色；加载时，图标与文案一起隐藏，并显示居中的加载指示器。
+      </template>
+
+      <ComponentDocsDemoBlock :code="visualStateDemoCode">
+        <div class="button-type-demo">
+          <div class="button-row">
+            <Button
+              variant="default"
+              :leading-visual="BellIcon"
+              :trailing-visual="ArrowUpRightIcon"
+              disabled
+            >
+              Default
+            </Button>
+            <Button
+              variant="primary"
+              :leading-visual="BellIcon"
+              :trailing-visual="ArrowUpRightIcon"
+              disabled
+            >
+              Primary
+            </Button>
+            <Button
+              variant="danger"
+              :leading-visual="BellIcon"
+              :trailing-visual="ArrowUpRightIcon"
+              disabled
+            >
+              Danger
+            </Button>
+            <Button
+              variant="invisible"
+              :leading-visual="BellIcon"
+              :trailing-visual="ArrowUpRightIcon"
+              disabled
+            >
+              Invisible
+            </Button>
+            <Button
+              variant="link"
+              :leading-visual="BellIcon"
+              :trailing-visual="ArrowUpRightIcon"
+              disabled
+            >
+              Link
+            </Button>
+          </div>
+          <div class="button-row">
+            <Button
+              variant="default"
+              :leading-visual="BellIcon"
+              :trailing-visual="ArrowUpRightIcon"
+              loading
+            >
+              Default
+            </Button>
+            <Button
+              variant="primary"
+              :leading-visual="BellIcon"
+              :trailing-visual="ArrowUpRightIcon"
+              loading
+            >
+              Primary
+            </Button>
+            <Button
+              variant="danger"
+              :leading-visual="BellIcon"
+              :trailing-visual="ArrowUpRightIcon"
+              loading
+            >
+              Danger
+            </Button>
+            <Button
+              variant="invisible"
+              :leading-visual="BellIcon"
+              :trailing-visual="ArrowUpRightIcon"
+              loading
+            >
+              Invisible
+            </Button>
+            <Button
+              variant="link"
+              :leading-visual="BellIcon"
+              :trailing-visual="ArrowUpRightIcon"
+              loading
+            >
+              Link
+            </Button>
+          </div>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -169,7 +305,7 @@
         :hoverable="false"
       />
 
-      <h3>内容与子组件</h3>
+      <h3>插槽</h3>
       <Table
         :columns="contentTableColumns"
         :data="contentTableRows"
@@ -270,33 +406,190 @@ import { BellIcon, ArrowUpRightIcon, SearchIcon, CheckIcon } from '@/components/
 
 <template>
   <div class="button-row">
-    <Button>
-      <Button.leadingVisual>
-        <BellIcon />
-      </Button.leadingVisual>
+    <Button :leading-visual="BellIcon">
       通知设置
     </Button>
 
-    <Button variant="primary">
+    <Button
+      variant="primary"
+      :trailing-visual="ArrowUpRightIcon"
+    >
       继续前往
-      <Button.trailingVisual>
-        <ArrowUpRightIcon />
-      </Button.trailingVisual>
     </Button>
 
-    <Button variant="invisible">
-      <Button.leadingVisual>
-        <SearchIcon />
-      </Button.leadingVisual>
+    <Button
+      variant="invisible"
+      :leading-visual="SearchIcon"
+      :trailing-visual="CheckIcon"
+    >
       搜索项目
-      <Button.trailingVisual>
-        <CheckIcon />
-      </Button.trailingVisual>
     </Button>
   </div>
 </template>
 
 <style scoped>
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+</style>`
+
+const visualVariantDemoCode = `<script setup lang="ts">
+import { Button } from '@/components/primer-vue/Button'
+import { BellIcon, ArrowUpRightIcon } from '@/components/octicons-vue3'
+<\/script>
+
+<template>
+  <div class="button-row">
+    <Button
+      variant="default"
+      :leading-visual="BellIcon"
+      :trailing-visual="ArrowUpRightIcon"
+    >
+      Default
+    </Button>
+    <Button
+      variant="primary"
+      :leading-visual="BellIcon"
+      :trailing-visual="ArrowUpRightIcon"
+    >
+      Primary
+    </Button>
+    <Button
+      variant="danger"
+      :leading-visual="BellIcon"
+      :trailing-visual="ArrowUpRightIcon"
+    >
+      Danger
+    </Button>
+    <Button
+      variant="invisible"
+      :leading-visual="BellIcon"
+      :trailing-visual="ArrowUpRightIcon"
+    >
+      Invisible
+    </Button>
+    <Button
+      variant="link"
+      :leading-visual="BellIcon"
+      :trailing-visual="ArrowUpRightIcon"
+    >
+      Link
+    </Button>
+  </div>
+</template>
+
+<style scoped>
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+</style>`
+
+const visualStateDemoCode = `<script setup lang="ts">
+import { Button } from '@/components/primer-vue/Button'
+import { BellIcon, ArrowUpRightIcon } from '@/components/octicons-vue3'
+<\/script>
+
+<template>
+  <div class="button-states">
+    <div class="button-row">
+      <Button
+        variant="default"
+        :leading-visual="BellIcon"
+        :trailing-visual="ArrowUpRightIcon"
+        disabled
+      >
+        Default
+      </Button>
+      <Button
+        variant="primary"
+        :leading-visual="BellIcon"
+        :trailing-visual="ArrowUpRightIcon"
+        disabled
+      >
+        Primary
+      </Button>
+      <Button
+        variant="danger"
+        :leading-visual="BellIcon"
+        :trailing-visual="ArrowUpRightIcon"
+        disabled
+      >
+        Danger
+      </Button>
+      <Button
+        variant="invisible"
+        :leading-visual="BellIcon"
+        :trailing-visual="ArrowUpRightIcon"
+        disabled
+      >
+        Invisible
+      </Button>
+      <Button
+        variant="link"
+        :leading-visual="BellIcon"
+        :trailing-visual="ArrowUpRightIcon"
+        disabled
+      >
+        Link
+      </Button>
+    </div>
+    <div class="button-row">
+      <Button
+        variant="default"
+        :leading-visual="BellIcon"
+        :trailing-visual="ArrowUpRightIcon"
+        loading
+      >
+        Default
+      </Button>
+      <Button
+        variant="primary"
+        :leading-visual="BellIcon"
+        :trailing-visual="ArrowUpRightIcon"
+        loading
+      >
+        Primary
+      </Button>
+      <Button
+        variant="danger"
+        :leading-visual="BellIcon"
+        :trailing-visual="ArrowUpRightIcon"
+        loading
+      >
+        Danger
+      </Button>
+      <Button
+        variant="invisible"
+        :leading-visual="BellIcon"
+        :trailing-visual="ArrowUpRightIcon"
+        loading
+      >
+        Invisible
+      </Button>
+      <Button
+        variant="link"
+        :leading-visual="BellIcon"
+        :trailing-visual="ArrowUpRightIcon"
+        loading
+      >
+        Link
+      </Button>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.button-states {
+  display: grid;
+  gap: 0.75rem;
+}
+
 .button-row {
   display: flex;
   flex-wrap: wrap;
@@ -385,6 +678,20 @@ const apiTableRows = [
     type: 'boolean',
     options: 'true / false',
     default: 'false'
+  },
+  {
+    name: 'leadingVisual',
+    description: '前置视觉组件，模板中使用 :leading-visual 传入；支持 Vue 单文件组件和函数式组件。',
+    type: 'Component',
+    options: 'Vue 组件',
+    default: 'undefined'
+  },
+  {
+    name: 'trailingVisual',
+    description: '后置视觉组件，模板中使用 :trailing-visual 传入；支持 Vue 单文件组件和函数式组件。',
+    type: 'Component',
+    options: 'Vue 组件',
+    default: 'undefined'
   }
 ]
 
@@ -396,15 +703,7 @@ const contentTableColumns: TableColumn[] = [
 const contentTableRows = [
   {
     name: 'default',
-    description: '按钮的主文案内容。除 Button.leadingVisual 和 Button.trailingVisual 外，其余默认插槽节点都会作为 label 渲染。'
-  },
-  {
-    name: 'Button.leadingVisual',
-    description: '前置视觉元素子组件，通常用于放置图标或状态标记；会被提取到按钮文案前方的视觉区域。'
-  },
-  {
-    name: 'Button.trailingVisual',
-    description: '后置视觉元素子组件，通常用于放置方向、完成态等辅助图标；会被提取到按钮文案后方的视觉区域。'
+    description: '按钮的主文案内容。不包含有效内容时，按钮自动采用纯图标布局。'
   }
 ]
 </script>

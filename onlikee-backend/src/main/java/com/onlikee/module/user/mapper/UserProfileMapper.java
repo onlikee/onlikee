@@ -55,4 +55,12 @@ public interface UserProfileMapper {
                                  @Param("socialAccount0") String socialAccount0,
                                  @Param("socialAccount1") String socialAccount1,
                                  @Param("socialAccount2") String socialAccount2);
+
+    @Update("""
+            update "user"
+            set avatar_url = #{avatarUrl},
+                updated_at = current_timestamp
+            where uuid = #{uuid}
+            """)
+    int updateCurrentUserAvatar(@Param("uuid") String uuid, @Param("avatarUrl") String avatarUrl);
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.onlikee.module.user.converter.ToVO;
 import com.onlikee.module.user.model.dto.UserProfileDTO;
+import com.onlikee.module.user.model.dto.UserAvatarDTO;
 import com.onlikee.module.user.model.dto.UserProfileMarkdownDTO;
 import com.onlikee.module.user.model.vo.UserInfoVO;
 import com.onlikee.module.user.model.vo.UserProfileVO;
@@ -64,6 +65,16 @@ public class UserProfileController {
             @RequestBody UserProfileDTO request) {
         UserEntity user = sessionAuthService.getCurrentUser(token);
         UserEntity updatedUser = userProfileService.saveCurrentUserProfile(user, request);
+        return ApiResponse.success(ToVO.toUserInfoVO(updatedUser));
+    }
+
+    @PostMapping("/me/avatar")
+    // 头像地址由当前登录用户确认，实际资源归属与存在性在业务层校验。
+    public ApiResponse<UserInfoVO> saveAvatar(
+            @CookieValue(value = "auth_token", required = false) String token,
+            @Valid @RequestBody UserAvatarDTO request) {
+        UserEntity user = sessionAuthService.getCurrentUser(token);
+        UserEntity updatedUser = userProfileService.saveCurrentUserAvatar(user, request);
         return ApiResponse.success(ToVO.toUserInfoVO(updatedUser));
     }
 }

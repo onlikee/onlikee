@@ -23,6 +23,7 @@ import com.onlikee.common.exception.BizException;
 import com.onlikee.common.exception.ErrorCode;
 import com.onlikee.common.exception.GlobalExceptionHandler;
 import com.onlikee.module.user.model.dto.UserProfileDTO;
+import com.onlikee.module.user.model.dto.UserAvatarDTO;
 import com.onlikee.module.user.model.dto.UserProfileMarkdownDTO;
 import com.onlikee.module.user.model.entity.UserEntity;
 import com.onlikee.module.user.model.entity.UserProfileMarkdownEntity;
@@ -251,6 +252,36 @@ class UserProfileControllerTest {
                 .andExpect(jsonPath("$.code").value("NOT_LOGIN"))
                 .andExpect(jsonPath("$.message").value("未登录或登录已过期"))
                 .andExpect(jsonPath("$.data").value(nullValue()));
+    }
+
+    @Test
+    // 上传成功后由登录用户确认资源地址并返回更新后的资料。
+    void saveAvatarShouldUseCurrentUserAndReturnUpdatedProfile() throws Exception {
+        when(sessionAuthService.getCurrentUser("token")).thenReturn(user());
+        UserEntity updated = user();
+        updated.setAvatarUrl("https://oss.example.com/api/v1/buckets/image/objects/user-1/avatar/a.png");
+        when(userProfileService.saveCurrentUserAvatar(any(UserEntity.class), any(UserAvatarDTO.class)))
+                .thenReturn(updated);
+
+        mockMvc.perform(post("/users/me/avatar")
+                .cookie(new Cookie("auth_token", "token"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {"avatarUrl":"https://oss.example.com/api/v1/buckets/image/objects/user-1/avatar/a.png"}
+                        """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.avatarUrl").value(updated.getAvatarUrl()));
+    }
+
+    @Test
+    // 空资源地址应在请求边界被拒绝。
+    void saveAvatarShouldRejectBlankUrl() throws Exception {
+        mockMvc.perform(post("/users/me/avatar")
+                .cookie(new Cookie("auth_token", "token"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"avatarUrl\":\" \"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value("VALIDATION_FAILED"));
     }
 
     private UserEntity user() {

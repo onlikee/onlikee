@@ -238,7 +238,6 @@ async function confirmCrop() {
   <div
     class="image-upload"
     :data-disabled="disabled"
-    :data-preview="Boolean(previewUrl)"
   >
     <button
       class="upload-drop"
@@ -246,6 +245,7 @@ async function confirmCrop() {
       :style="{ width }"
       :data-circle="circle"
       :data-dragging="dragging"
+      :data-preview="Boolean(previewUrl)"
       :disabled="disabled"
       :aria-label="previewUrl ? '更换图片' : '选择图片'"
       @click="openFileDialog"
@@ -474,6 +474,10 @@ async function confirmCrop() {
 .upload-drop[data-dragging='true'] {
   border-color: var(--borderColor-accent-emphasis, #0969da);
   background: color-mix(in srgb, var(--bgColor-accent-emphasis, #0969da) 6%, var(--bgColor-muted, #f6f8fa));
+}
+
+.upload-drop[data-preview='true'] {
+  border-color: var(--bgColor-transparent, #ffffff00);
 }
 
 .image-upload-preview,

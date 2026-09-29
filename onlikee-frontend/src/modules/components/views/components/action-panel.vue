@@ -12,14 +12,11 @@
       <ComponentDocsDemoBlock :code="demo1Code">
         <Dropdown>
           <Dropdown.trigger>
-            <Button>
-              <Button.leadingVisual>
-                <PlusIcon />
-              </Button.leadingVisual>
+            <Button
+              :leading-visual="PlusIcon"
+              :trailing-visual="TriangleDownIcon"
+            >
               新建
-              <Button.trailingVisual>
-                <TriangleDownIcon />
-              </Button.trailingVisual>
             </Button>
           </Dropdown.trigger>
           <Dropdown.content>
@@ -56,11 +53,10 @@
       <ComponentDocsDemoBlock :code="demo2Code">
         <Dropdown side="outside-bottom">
           <Dropdown.trigger>
-            <Button variant="invisible">
-              <Button.leadingVisual>
-                <KebabHorizontalIcon />
-              </Button.leadingVisual>
-            </Button>
+            <Button
+              variant="invisible"
+              :leading-visual="KebabHorizontalIcon"
+            />
           </Dropdown.trigger>
           <Dropdown.content>
             <ActionList>
@@ -96,11 +92,8 @@
       <ComponentDocsDemoBlock :code="demo3Code">
         <Dropdown>
           <Dropdown.trigger>
-            <Button>
+            <Button :trailing-visual="TriangleDownIcon">
               导航
-              <Button.trailingVisual>
-                <TriangleDownIcon />
-              </Button.trailingVisual>
             </Button>
           </Dropdown.trigger>
           <Dropdown.content>
@@ -145,14 +138,11 @@
       <ComponentDocsDemoBlock :code="demo4Code">
         <Dropdown>
           <Dropdown.trigger>
-            <Button>
-              <Button.leadingVisual>
-                <RepoIcon />
-              </Button.leadingVisual>
+            <Button
+              :leading-visual="RepoIcon"
+              :trailing-visual="TriangleDownIcon"
+            >
               {{ selectedLabel }}
-              <Button.trailingVisual>
-                <TriangleDownIcon />
-              </Button.trailingVisual>
             </Button>
           </Dropdown.trigger>
           <Dropdown.content>
@@ -178,11 +168,8 @@
       <ComponentDocsDemoBlock :code="demo5Code">
         <Dropdown>
           <Dropdown.trigger>
-            <Button>
+            <Button :trailing-visual="TriangleDownIcon">
               打开菜单
-              <Button.trailingVisual>
-                <TriangleDownIcon />
-              </Button.trailingVisual>
             </Button>
           </Dropdown.trigger>
           <Dropdown.content>
@@ -259,10 +246,11 @@ const handleClick = (action: string) => {
 const demo1Code = `<template>
   <Dropdown>
     <Dropdown.trigger>
-      <Button>
-        <Button.leadingVisual><PlusIcon /></Button.leadingVisual>
+      <Button
+        :leading-visual="PlusIcon"
+        :trailing-visual="TriangleDownIcon"
+      >
         新建
-        <Button.trailingVisual><TriangleDownIcon /></Button.trailingVisual>
       </Button>
     </Dropdown.trigger>
     <Dropdown.content>
@@ -299,9 +287,10 @@ const handleClick = (action: string) => {
 const demo2Code = `<template>
   <Dropdown side="outside-bottom">
     <Dropdown.trigger>
-      <Button variant="invisible">
-        <Button.leadingVisual><KebabHorizontalIcon /></Button.leadingVisual>
-      </Button>
+      <Button
+        variant="invisible"
+        :leading-visual="KebabHorizontalIcon"
+      />
     </Dropdown.trigger>
     <Dropdown.content>
       <ActionList>
@@ -333,9 +322,8 @@ import { CopyIcon, KebabHorizontalIcon, PencilIcon, TrashIcon } from '@/componen
 const demo3Code = `<template>
   <Dropdown>
     <Dropdown.trigger>
-      <Button>
+      <Button :trailing-visual="TriangleDownIcon">
         导航
-        <Button.trailingVisual><TriangleDownIcon /></Button.trailingVisual>
       </Button>
     </Dropdown.trigger>
     <Dropdown.content>
@@ -367,10 +355,11 @@ import { LinkExternalIcon, TriangleDownIcon } from '@/components/octicons-vue3'
 const demo4Code = `<template>
   <Dropdown>
     <Dropdown.trigger>
-      <Button>
-        <Button.leadingVisual><RepoIcon /></Button.leadingVisual>
+      <Button
+        :leading-visual="RepoIcon"
+        :trailing-visual="TriangleDownIcon"
+      >
         {{ selectedLabel }}
-        <Button.trailingVisual><TriangleDownIcon /></Button.trailingVisual>
       </Button>
     </Dropdown.trigger>
     <Dropdown.content>
@@ -402,9 +391,8 @@ const selectedLabel = ref(labels[0])
 const demo5Code = `<template>
   <Dropdown>
     <Dropdown.trigger>
-      <Button>
+      <Button :trailing-visual="TriangleDownIcon">
         打开菜单
-        <Button.trailingVisual><TriangleDownIcon /></Button.trailingVisual>
       </Button>
     </Dropdown.trigger>
     <Dropdown.content>

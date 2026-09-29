@@ -20,41 +20,37 @@
             content="BoldIcon"
             placement="bottom"
           >
-            <Button variant="invisible">
-              <Button.leadingVisual>
-                <BoldIcon />
-              </Button.leadingVisual>
-            </Button>
+            <Button
+              variant="invisible"
+              :leading-visual="BoldIcon"
+            />
           </Tooltip>
           <Tooltip
             content="ItalicIcon"
             placement="bottom"
           >
-            <Button variant="invisible">
-              <Button.leadingVisual>
-                <ItalicIcon />
-              </Button.leadingVisual>
-            </Button>
+            <Button
+              variant="invisible"
+              :leading-visual="ItalicIcon"
+            />
           </Tooltip>
           <Tooltip
             content="CodeIcon"
             placement="bottom"
           >
-            <Button variant="invisible">
-              <Button.leadingVisual>
-                <CodeIcon />
-              </Button.leadingVisual>
-            </Button>
+            <Button
+              variant="invisible"
+              :leading-visual="CodeIcon"
+            />
           </Tooltip>
           <Tooltip
             content="LinkIcon"
             placement="bottom"
           >
-            <Button variant="invisible">
-              <Button.leadingVisual>
-                <LinkIcon />
-              </Button.leadingVisual>
-            </Button>
+            <Button
+              variant="invisible"
+              :leading-visual="LinkIcon"
+            />
           </Tooltip>
           <Divider
             direction="vertical"
@@ -64,21 +60,19 @@
             content="File Added"
             placement="bottom"
           >
-            <Button variant="invisible">
-              <Button.leadingVisual>
-                <FileAddedIcon />
-              </Button.leadingVisual>
-            </Button>
+            <Button
+              variant="invisible"
+              :leading-visual="FileAddedIcon"
+            />
           </Tooltip>
           <Tooltip
             content="SearchIcon"
             placement="bottom"
           >
-            <Button variant="invisible">
-              <Button.leadingVisual>
-                <SearchIcon />
-              </Button.leadingVisual>
-            </Button>
+            <Button
+              variant="invisible"
+              :leading-visual="SearchIcon"
+            />
           </Tooltip>
         </div>
       </ComponentDocsDemoBlock>
@@ -99,37 +93,43 @@ import { Button } from '@/components/primer-vue/Button'
 const demo1Code = `<template>
   <div class="demo-actions">
     <Tooltip content="BoldIcon" placement="bottom">
-      <Button variant="invisible">
-        <Button.leadingVisual><BoldIcon /></Button.leadingVisual>
-      </Button>
+      <Button
+        variant="invisible"
+        :leading-visual="BoldIcon"
+      />
     </Tooltip>
     <Tooltip content="ItalicIcon" placement="bottom">
-      <Button variant="invisible">
-        <Button.leadingVisual><ItalicIcon /></Button.leadingVisual>
-      </Button>
+      <Button
+        variant="invisible"
+        :leading-visual="ItalicIcon"
+      />
     </Tooltip>
     <Tooltip content="CodeIcon" placement="bottom">
-      <Button variant="invisible">
-        <Button.leadingVisual><CodeIcon /></Button.leadingVisual>
-      </Button>
+      <Button
+        variant="invisible"
+        :leading-visual="CodeIcon"
+      />
     </Tooltip>
     <Tooltip content="LinkIcon" placement="bottom">
-      <Button variant="invisible">
-        <Button.leadingVisual><LinkIcon /></Button.leadingVisual>
-      </Button>
+      <Button
+        variant="invisible"
+        :leading-visual="LinkIcon"
+      />
     </Tooltip>
 
     <Divider direction="vertical" height="20px" />
 
     <Tooltip content="File Added" placement="bottom">
-      <Button variant="invisible">
-        <Button.leadingVisual><FileAddedIcon /></Button.leadingVisual>
-      </Button>
+      <Button
+        variant="invisible"
+        :leading-visual="FileAddedIcon"
+      />
     </Tooltip>
     <Tooltip content="SearchIcon" placement="bottom">
-      <Button variant="invisible">
-        <Button.leadingVisual><SearchIcon /></Button.leadingVisual>
-      </Button>
+      <Button
+        variant="invisible"
+        :leading-visual="SearchIcon"
+      />
     </Tooltip>
   </div>
 </template>

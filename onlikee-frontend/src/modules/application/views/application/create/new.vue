@@ -74,13 +74,11 @@
     </Timeline>
     <div class="submit-actions">
       <Button
+        :leading-visual="RocketIcon"
         variant="primary"
         :loading="isUploading"
         @click="submit"
       >
-        <Button.leadingVisual>
-          <RocketIcon />
-        </Button.leadingVisual>
         创建应用
       </Button>
     </div>

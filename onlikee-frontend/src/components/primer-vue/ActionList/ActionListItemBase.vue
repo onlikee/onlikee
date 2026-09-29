@@ -223,11 +223,12 @@ function parseActionListChildren(nodes: VNode[]): ParsedActionListChildren {
     }
 
     if (componentName === 'ActionListDescription') {
-      const props = node.props as { variant?: ActionListDescriptionVariant, truncate?: boolean } | null
+      const props = node.props as { variant?: ActionListDescriptionVariant, truncate?: boolean | string } | null
 
       parsed.description.push(...readSlotChildren(node))
       parsed.descriptionVariant = props?.variant ?? 'inline'
-      parsed.truncateDescription = props?.truncate ?? false
+      // Marker VNodes are read before Vue casts Boolean props.
+      parsed.truncateDescription = props?.truncate === '' || props?.truncate === 'truncate' || props?.truncate === true
       continue
     }
 
