@@ -49,6 +49,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
             },
             // Basic
             {
+                path: 'stack',
+                name: 'Stack',
+                component: () => import('../views/components/stack.vue')
+            },
+            {
                 path: 'container',
                 name: 'Container',
                 component: () => import('../views/components/container.vue')
