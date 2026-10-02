@@ -1,5 +1,4 @@
-import assert from 'node:assert/strict'
-import test from 'node:test'
+import { expect, test } from 'vitest'
 
 import { strFromU8, unzipSync } from 'fflate'
 
@@ -11,10 +10,10 @@ test('HTML source is preserved in a root index.html entry', async () => {
   const archive = await createHtmlZip(htmlSource)
   const entries = unzipSync(new Uint8Array(await archive.arrayBuffer()))
 
-  assert.equal(archive.name, 'dist.zip')
-  assert.equal(archive.type, 'application/zip')
-  assert.deepEqual(Object.keys(entries), ['index.html'])
-  assert.equal(strFromU8(entries['index.html']), htmlSource)
+  expect(archive.name).toBe('dist.zip')
+  expect(archive.type).toBe('application/zip')
+  expect(Object.keys(entries)).toStrictEqual(['index.html'])
+  expect(strFromU8(entries['index.html'])).toBe(htmlSource)
 })
 
 test('folder archive preserves nested paths, same-name files and binary contents', async () => {
@@ -29,11 +28,11 @@ test('folder archive preserves nested paths, same-name files and binary contents
   const archive = await createFolderZip(files)
   const entries = unzipSync(new Uint8Array(await archive.arrayBuffer()))
 
-  assert.equal(archive.name, 'dist.zip')
-  assert.equal(archive.type, 'application/zip')
-  assert.deepEqual(Object.keys(entries).sort(), files.map(item => item.relativePath).sort())
+  expect(archive.name).toBe('dist.zip')
+  expect(archive.type).toBe('application/zip')
+  expect(Object.keys(entries).sort()).toStrictEqual(files.map(item => item.relativePath).sort())
   for (const { file, relativePath } of files) {
-    assert.deepEqual(entries[relativePath], new Uint8Array(await file.arrayBuffer()))
+    expect(entries[relativePath]).toStrictEqual(new Uint8Array(await file.arrayBuffer()))
   }
 })
 
@@ -44,8 +43,8 @@ test('folder archive rejects file read failures instead of returning a partial Z
     value: async () => { throw error }
   })
 
-  await assert.rejects(createFolderZip([
+  await expect(createFolderZip([
     { file: new File(['ok'], 'index.html'), relativePath: 'dist/index.html' },
     { file: unreadableFile, relativePath: 'dist/broken.txt' }
-  ]), error)
+  ])).rejects.toBe(error)
 })

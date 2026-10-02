@@ -1,51 +1,26 @@
 /* eslint-disable vue/one-component-per-file -- Slot matching tests require independent component fixtures. */
-import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
-import { after, test } from 'node:test'
-import { Comment, Fragment, createSSRApp, defineComponent, h, ref } from 'vue'
+import { expect, test, vi } from 'vitest'
+import { Comment, Fragment, createSSRApp, defineComponent, h, ref, type Component, type VNodeChild } from 'vue'
 import { renderToString } from '@vue/server-renderer'
-import vue from '@vitejs/plugin-vue'
-import { createServer, transformWithEsbuild } from 'vite'
-
-const server = await createServer({
-  configFile: false,
-  plugins: [vue()],
-  optimizeDeps: { noDiscovery: true, entries: [] },
-  server: { middlewareMode: true },
-  appType: 'custom'
-})
-after(() => server.close())
-
-const { useSlots, asSlot, isSlot, slotChildren } = await server.ssrLoadModule(
-  '/src/components/primer-vue/composables/useSlots.ts'
-)
-const { FormControl } = await server.ssrLoadModule('/src/components/primer-vue/FormControl/index.ts')
-const { RadioGroup } = await server.ssrLoadModule('/src/components/primer-vue/RadioGroup/index.ts')
-const { Radio } = await server.ssrLoadModule('/src/components/primer-vue/Radio/index.ts')
-
-const productionSource = await transformWithEsbuild(
-  await readFile(new URL('./useSlots.ts', import.meta.url), 'utf8'),
-  'useSlots.ts',
-  { format: 'esm', define: { 'import.meta.env.DEV': 'false' } }
-)
-const productionCode = productionSource.code.replace(/from (["'])vue\1/g, `from ${JSON.stringify(import.meta.resolve('vue'))}`)
-const { useSlots: useProductionSlots } = await import(`data:text/javascript;base64,${Buffer.from(productionCode).toString('base64')}`)
+import { useSlots, asSlot, isSlot, slotChildren } from './useSlots'
+import { FormControl } from '../FormControl'
+import { RadioGroup } from '../RadioGroup'
+import { Radio } from '../Radio'
 
 const Label = defineComponent({ name: 'SlotLabel', __SLOT__: Symbol('Label'), render: () => null })
 const Caption = defineComponent({ name: 'SlotCaption', render: () => null })
 
-function captureWarnings(run) {
-  const original = console.warn
-  const warnings = []
-  console.warn = message => warnings.push(message)
+function captureWarnings<T>(run: () => T) {
+  const warnings: string[] = []
+  const spy = vi.spyOn(console, 'warn').mockImplementation((message: string) => { warnings.push(message) })
   try {
     return { value: run(), warnings }
   } finally {
-    console.warn = original
+    spy.mockRestore()
   }
 }
 
-async function render(component, props, children) {
+async function render(component: Component, props: Record<string, unknown>, children: VNodeChild[]) {
   return renderToString(createSSRApp({
     render: () => h(component, props, { default: () => children })
   }))
@@ -59,19 +34,19 @@ test('extracts configured components in any order, initializes missing slots and
   const [slots, rest] = useSlots(['text', caption, null, false, label, 0, comment, element], {
     label: Label, caption: Caption, missing: 'aside'
   })
-  assert.equal(slots.label, label)
-  assert.equal(slots.caption, caption)
-  assert.ok(Object.hasOwn(slots, 'missing'))
-  assert.equal(slots.missing, undefined)
-  assert.deepEqual(rest, ['text', null, false, 0, comment, element])
+  expect(slots.label).toBe(label)
+  expect(slots.caption).toBe(caption)
+  expect(Object.hasOwn(slots, 'missing')).toBeTruthy()
+  expect(slots.missing).toBe(undefined)
+  expect(rest).toStrictEqual(['text', null, false, 0, comment, element])
 })
 
 test('handles empty children and config without discarding unmatched content', () => {
-  assert.deepEqual(useSlots(undefined, { label: Label }), [{ label: undefined }, []])
-  assert.deepEqual(useSlots(null, { label: Label }), [{ label: undefined }, []])
-  assert.deepEqual(useSlots([], { label: Label }), [{ label: undefined }, []])
+  expect(useSlots(undefined, { label: Label })).toStrictEqual([{ label: undefined }, []])
+  expect(useSlots(null, { label: Label })).toStrictEqual([{ label: undefined }, []])
+  expect(useSlots([], { label: Label })).toStrictEqual([{ label: undefined }, []])
   const children = ['text', h(Label), h('span')]
-  assert.deepEqual(useSlots(children, {}), [{}, children])
+  expect(useSlots(children, {})).toStrictEqual([{}, children])
 })
 
 test('flattens Vue template/v-for Fragments and arrays without traversing DOM or component boundaries', () => {
@@ -82,9 +57,9 @@ test('flattens Vue template/v-for Fragments and arrays without traversing DOM or
   const [slots, rest] = useSlots([h(Fragment, [nestedDOM, h(Fragment, [label])]), [nestedComponent]], {
     label: Label, caption: Caption
   })
-  assert.equal(slots.label, label)
-  assert.equal(slots.caption, undefined)
-  assert.deepEqual(rest, [nestedDOM, nestedComponent])
+  expect(slots.label).toBe(label)
+  expect(slots.caption).toBe(undefined)
+  expect(rest).toStrictEqual([nestedDOM, nestedComponent])
 })
 
 test('supports multiple prop predicates for the same component and leaves rejected variants in rest', () => {
@@ -95,24 +70,25 @@ test('supports multiple prop predicates for the same component and leaves reject
     block: [Label, props => props.variant === 'block'],
     inline: [Label, props => props.variant === 'inline']
   }))
-  assert.equal(slots.block, block)
-  assert.equal(slots.inline, inline)
-  assert.deepEqual(rest, [rejected])
-  assert.deepEqual(warnings, [])
+  expect(slots.block).toBe(block)
+  expect(slots.inline).toBe(inline)
+  expect(rest).toStrictEqual([rejected])
+  expect(warnings).toStrictEqual([])
 })
 
 test('recognizes object/function wrappers by marker, including prop predicates', () => {
   const objectWrapper = defineComponent({ name: 'ObjectWrapper', render: () => h(Label) })
   const functionWrapper = () => h(Label)
-  assert.equal(asSlot(objectWrapper, Label), objectWrapper)
+  expect(asSlot(objectWrapper, Label)).toBe(objectWrapper)
   asSlot(functionWrapper, Label)
-  for (const wrapper of [objectWrapper, functionWrapper]) {
+  const wrappers: Component[] = [objectWrapper, functionWrapper]
+  for (const wrapper of wrappers) {
     const node = h(wrapper, { variant: 'block' })
-    assert.ok(isSlot(node, Label))
-    assert.equal(useSlots([node], { label: [Label, props => props.variant === 'block'] })[0].label, node)
+    expect(isSlot(node, Label)).toBeTruthy()
+    expect(useSlots([node], { label: [Label, props => props.variant === 'block'] })[0].label).toBe(node)
   }
-  assert.equal(isSlot(null, Label), false)
-  assert.equal(isSlot(h(Caption), Caption), false)
+  expect(isSlot(null, Label)).toBe(false)
+  expect(isSlot(h(Caption), Caption)).toBe(false)
 })
 
 test('warns when asSlot has no source marker and when same-name components lack a shared marker', () => {
@@ -120,12 +96,12 @@ test('warns when asSlot has no source marker and when same-name components lack 
   const { warnings } = captureWarnings(() => {
     asSlot(wrapper, Caption)
     const [slots, rest] = useSlots([h(wrapper)], { label: Label })
-    assert.equal(slots.label, undefined)
-    assert.equal(rest.length, 1)
+    expect(slots.label).toBe(undefined)
+    expect(rest.length).toBe(1)
   })
-  assert.equal(warnings.length, 2)
-  assert.match(warnings[0], /source has no/)
-  assert.match(warnings[1], /missing the `__SLOT__` marker/)
+  expect(warnings.length).toBe(2)
+  expect(warnings[0]).toMatch(/source has no/)
+  expect(warnings[1]).toMatch(/missing the `__SLOT__` marker/)
 })
 
 test('keeps the first duplicate and warns before and after all slots are filled in development', () => {
@@ -134,34 +110,35 @@ test('keeps the first duplicate and warns before and after all slots are filled 
   const { value: [slots, rest], warnings } = captureWarnings(() => useSlots([
     first, h(Label), h(Caption), h(Label), extra
   ], { label: Label, caption: Caption }))
-  assert.equal(slots.label, first)
-  assert.deepEqual(rest, [extra])
-  assert.equal(warnings.length, 2)
-  assert.ok(warnings.every(warning => warning === 'Found duplicate "label" slot. Only the first will be rendered.'))
+  expect(slots.label).toBe(first)
+  expect(rest).toStrictEqual([extra])
+  expect(warnings.length).toBe(2)
+  expect(warnings.every(warning => warning === 'Found duplicate "label" slot. Only the first will be rendered.')).toBeTruthy()
 })
 
 test('preserves React production behavior: ignores early duplicates and skips matching once every slot is filled', () => {
+  vi.stubEnv('DEV', false)
   const first = h(Label)
   const last = h(Label)
   let checks = 0
-  const { value: [slots, rest], warnings } = captureWarnings(() => useProductionSlots([
+  const { value: [slots, rest], warnings } = captureWarnings(() => useSlots([
     first, h(Label), h(Caption), last
   ], {
     label: [Label, () => { checks++; return true }],
     caption: Caption
   }))
-  assert.equal(slots.label, first)
-  assert.deepEqual(rest, [last])
-  assert.equal(checks, 2)
-  assert.deepEqual(warnings, [])
+  expect(slots.label).toBe(first)
+  expect(rest).toStrictEqual([last])
+  expect(checks).toBe(2)
+  expect(warnings).toStrictEqual([])
 })
 
 test('reads default slot functions, array children and string children for validation content', () => {
   const text = h('strong', 'Required')
-  assert.deepEqual(slotChildren(h(Label, null, { default: () => [text] })), [text])
-  assert.deepEqual(slotChildren(h('span', [text])), [text])
-  assert.deepEqual(slotChildren(h('span', 'Required')), ['Required'])
-  assert.deepEqual(slotChildren(), [])
+  expect(slotChildren(h(Label, null, { default: () => [text] }))).toStrictEqual([text])
+  expect(slotChildren(h('span', [text]))).toStrictEqual([text])
+  expect(slotChildren(h('span', 'Required'))).toStrictEqual(['Required'])
+  expect(slotChildren()).toStrictEqual([])
 })
 
 test('FormControl recognizes a marked label wrapper inside Fragments and forwards radio accessibility attributes', async () => {
@@ -176,9 +153,9 @@ test('FormControl recognizes a marked label wrapper inside Fragments and forward
     h(wrapper, null, () => 'Option one'),
     h(FormControl.Caption, null, () => 'Caption')
   ])])
-  assert.match(html, /<input(?=[^>]*id="choice")(?=[^>]*aria-describedby="choice-caption")[^>]*>/)
-  assert.match(html, /<label(?=[^>]*id="choice-label")(?=[^>]*for="choice")[^>]*>/)
-  assert.match(html, /Option one/)
+  expect(html).toMatch(/<input(?=[^>]*id="choice")(?=[^>]*aria-describedby="choice-caption")[^>]*>/)
+  expect(html).toMatch(/<label(?=[^>]*id="choice-label")(?=[^>]*for="choice")[^>]*>/)
+  expect(html).toMatch(/Option one/)
 })
 
 test('RadioGroup uses extracted slots for its legend and accessible validation text', async () => {
@@ -192,10 +169,10 @@ test('RadioGroup uses extracted slots for its legend and accessible validation t
       h(Radio, { value: 'one' }), h(FormControl.Label, null, () => 'Option')
     ])
   ])
-  assert.match(html, /<legend[^>]*>[\s\S]*Choose one[\s\S]*Help text[\s\S]*Pick an option[\s\S]*<\/legend>/)
-  assert.match(html, /<div aria-hidden="true"[^>]*>/)
-  assert.equal(html.match(/Pick an option/g)?.length, 2)
-  assert.match(html, /<input[^>]*name="group"/)
+  expect(html).toMatch(/<legend[^>]*>[\s\S]*Choose one[\s\S]*Help text[\s\S]*Pick an option[\s\S]*<\/legend>/)
+  expect(html).toMatch(/<div aria-hidden="true"[^>]*>/)
+  expect(html.match(/Pick an option/g)?.length).toBe(2)
+  expect(html).toMatch(/<input[^>]*name="group"/)
 })
 
 test('FormControl evaluates a dynamic default slot once per render, including its ordinary input branch', async () => {
@@ -213,11 +190,11 @@ test('FormControl evaluates a dynamic default slot once per render, including it
     })
   }
   const first = await renderToString(createSSRApp(root))
-  assert.equal(calls, 1)
-  assert.match(first, /class="form-control"/)
+  expect(calls).toBe(1)
+  expect(first).toMatch(/class="form-control"/)
   mode.value = 'radio'
   const second = await renderToString(createSSRApp(root))
-  assert.equal(calls, 2)
-  assert.match(second, /class="form-control--horizontal"/)
-  assert.match(second, /for="dynamic"/)
+  expect(calls).toBe(2)
+  expect(second).toMatch(/class="form-control--horizontal"/)
+  expect(second).toMatch(/for="dynamic"/)
 })

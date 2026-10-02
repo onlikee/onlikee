@@ -1,28 +1,35 @@
-import assert from 'node:assert/strict'
-import test from 'node:test'
+import { expect, test } from 'vitest'
 
 import { collectFilesFromDrop, collectFilesFromInput } from './fileSelection.ts'
 
-function fileEntry(file, fullPath) {
-  return { isFile: true, isDirectory: false, fullPath, file: resolve => resolve(file) }
+function fileEntry(file: File, fullPath: string): FileSystemEntry {
+  return { isFile: true, isDirectory: false, fullPath, file: (resolve: FileCallback) => resolve(file) } as FileSystemFileEntry
 }
 
-function directoryEntry(chunks) {
+function directoryEntry(chunks: FileSystemEntry[][]): FileSystemEntry {
   return {
     isFile: false,
     isDirectory: true,
     createReader() {
       let index = 0
-      return { readEntries: resolve => resolve(chunks[index++] ?? []) }
+      return { readEntries: (resolve: FileSystemEntriesCallback) => resolve(chunks[index++] ?? []) }
     }
-  }
+  } as FileSystemDirectoryEntry
 }
 
-function dropEntries(...entries) {
+function dropEntries(...entries: FileSystemEntry[]): DataTransfer {
   return {
     items: entries.map(entry => ({ kind: 'file', webkitGetAsEntry: () => entry })),
     files: []
-  }
+  } as unknown as DataTransfer
+}
+
+function fileList(...files: File[]): FileList {
+  return Object.assign(files, { item: (index: number) => files[index] ?? null }) as unknown as FileList
+}
+
+function transfer(files: File[], items?: Partial<DataTransferItem>[]): DataTransfer {
+  return { files: fileList(...files), items } as unknown as DataTransfer
 }
 
 test('nested drops retain same-name files, paths, original files and chunk order', async () => {
@@ -36,20 +43,20 @@ test('nested drops retain same-name files, paths, original files and chunk order
 
   const result = await collectFilesFromDrop(dropEntries(root), { directory: true })
 
-  assert.deepEqual(result.map(item => item.relativePath), ['photos/a/1.jpg', 'photos/b/1.jpg'])
-  assert.equal(result[0].file, first)
-  assert.equal(result[1].file, second)
-  assert.deepEqual(Object.getOwnPropertyDescriptors(first), before)
+  expect(result.map(item => item.relativePath)).toStrictEqual(['photos/a/1.jpg', 'photos/b/1.jpg'])
+  expect(result[0].file).toBe(first)
+  expect(result[1].file).toBe(second)
+  expect(Object.getOwnPropertyDescriptors(first)).toStrictEqual(before)
 })
 
 test('directory input and drop use the same relative path', async () => {
   const file = new File(['content'], 'file.txt')
   Object.defineProperty(file, 'webkitRelativePath', { value: 'folder/sub/file.txt' })
-  const input = collectFilesFromInput([file], { directory: true })
+  const input = collectFilesFromInput(fileList(file), { directory: true })
   const drop = await collectFilesFromDrop(dropEntries(fileEntry(file, '/folder/sub/file.txt')), { directory: true })
-  assert.deepEqual(input, drop)
-  assert.equal(input[0].file, file)
-  assert.equal(file.webkitRelativePath, 'folder/sub/file.txt')
+  expect(input).toStrictEqual(drop)
+  expect(input[0].file).toBe(file)
+  expect(file.webkitRelativePath).toBe('folder/sub/file.txt')
 })
 
 test('ordinary selection keeps the first file and uses its name without mutation', async () => {
@@ -57,9 +64,9 @@ test('ordinary selection keeps the first file and uses its name without mutation
   const extra = new File(['other'], 'other.zip')
   const before = Object.getOwnPropertyDescriptors(file)
   const expected = [{ file, relativePath: 'dist.zip' }]
-  assert.deepEqual(collectFilesFromInput([file, extra]), expected)
-  assert.deepEqual(await collectFilesFromDrop({ files: [file, extra] }), expected)
-  assert.deepEqual(Object.getOwnPropertyDescriptors(file), before)
+  expect(collectFilesFromInput(fileList(file, extra))).toStrictEqual(expected)
+  expect(await collectFilesFromDrop(transfer([file, extra]))).toStrictEqual(expected)
+  expect(Object.getOwnPropertyDescriptors(file)).toStrictEqual(before)
 })
 
 test('directory fallbacks wrap files from items and from the file list', async () => {
@@ -69,9 +76,9 @@ test('directory fallbacks wrap files from items and from the file list', async (
     { kind: 'file', getAsFile: () => file },
     { kind: 'file', webkitGetAsEntry: () => null, getAsFile: () => file }
   ]) {
-    assert.deepEqual(await collectFilesFromDrop({ items: [item], files: [] }, { directory: true }), expected)
+    expect(await collectFilesFromDrop(transfer([], [item]), { directory: true })).toStrictEqual(expected)
   }
-  assert.deepEqual(await collectFilesFromDrop({ files: [file] }, { directory: true }), expected)
+  expect(await collectFilesFromDrop(transfer([file]), { directory: true })).toStrictEqual(expected)
 })
 
 test('accept filters original file metadata and retains selected paths', async () => {
@@ -81,26 +88,26 @@ test('accept filters original file metadata and retains selected paths', async (
     const result = await collectFilesFromDrop(dropEntries(directoryEntry([[
       fileEntry(text, '/photos/note.txt'), fileEntry(image, '/photos/a/1.JPG')
     ]])), { directory: true, accept })
-    assert.deepEqual(result, [{ file: image, relativePath: 'photos/a/1.JPG' }])
+    expect(result).toStrictEqual([{ file: image, relativePath: 'photos/a/1.JPG' }])
   }
-  assert.deepEqual(collectFilesFromInput([text, image], { accept: '.jpg' }), [])
+  expect(collectFilesFromInput(fileList(text, image), { accept: '.jpg' })).toStrictEqual([])
 })
 
 test('empty directories and missing selections produce no records', async () => {
-  assert.deepEqual(await collectFilesFromDrop(dropEntries(directoryEntry([])), { directory: true }), [])
-  assert.deepEqual(await collectFilesFromDrop(null), [])
-  assert.deepEqual(collectFilesFromInput(null), [])
+  expect(await collectFilesFromDrop(dropEntries(directoryEntry([])), { directory: true })).toStrictEqual([])
+  expect(await collectFilesFromDrop(null)).toStrictEqual([])
+  expect(collectFilesFromInput(null)).toStrictEqual([])
 })
 
 test('file and directory read errors reject instead of returning partial success', async () => {
-  const error = new Error('read failed')
-  const failedFile = { isFile: true, file: (resolve, reject) => reject(error) }
+  const error = new DOMException('read failed', 'NotReadableError')
+  const failedFile = { isFile: true, file: (_resolve: FileCallback, reject: ErrorCallback) => reject(error) } as unknown as FileSystemFileEntry
   const failedDirectory = {
     isFile: false,
     isDirectory: true,
-    createReader: () => ({ readEntries: (resolve, reject) => reject(error) })
-  }
+    createReader: () => ({ readEntries: (_resolve: FileSystemEntriesCallback, reject: ErrorCallback) => reject(error) })
+  } as unknown as FileSystemDirectoryEntry
   for (const entry of [failedFile, failedDirectory]) {
-    await assert.rejects(collectFilesFromDrop(dropEntries(entry), { directory: true }), error)
+    await expect(collectFilesFromDrop(dropEntries(entry), { directory: true })).rejects.toBe(error)
   }
 })

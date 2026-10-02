@@ -1,0 +1,26 @@
+# 测试
+
+使用 Node 22.18 或兼容的更新版本，在当前目录运行 `npm ci` 安装依赖。
+Vue Test Utils 的间接格式化依赖 `js-beautify` 通过 npm overrides 固定为 1.15.4，避免其新版依赖要求 Node 22.22.2；升级时需重新验证 Node 兼容性。
+
+```sh
+npm test                  # 监听模式，修改测试或相关源码后重跑
+npm run test:run          # 一次性运行所有测试
+npm run typecheck:test    # 严格检查测试及其导入的源码
+npm run lint
+npm run build
+```
+
+运行单个文件或筛选用例：
+
+```sh
+npm run test:run -- src/components/primer-vue/RadioGroup/RadioGroup.test.ts
+npm run test:run -- -t "controlled"
+```
+
+测试就近放在源码旁，使用 `.test.ts` 后缀并显式从 `vitest` 导入 API。
+默认使用 Node 环境，SSR 测试保留 `renderToString()`；需要 DOM 的交互测试在文件首行声明 `// @vitest-environment jsdom`。
+焦点、标签点击和原生单选行为需要挂载到 document，并在测试后卸载和移除挂载容器。
+mock、环境变量和全局变量在每个用例后恢复；修改这些状态的用例不要并发运行。
+
+测试由独立的 `tsconfig.test.json` 检查，不参与应用构建。运行 Vitest 本身不会替代类型检查。
