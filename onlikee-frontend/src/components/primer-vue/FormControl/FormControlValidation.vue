@@ -34,7 +34,8 @@ import { onBeforeUnmount, watch } from 'vue'
 import { useFormControlContext, type FormControlValidationVariant } from './context'
 
 defineOptions({
-  name: 'FormControlValidation'
+  name: 'FormControlValidation',
+  __SLOT__: Symbol('FormControlValidation')
 })
 
 const props = withDefaults(defineProps<{

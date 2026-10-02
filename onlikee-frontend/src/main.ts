@@ -4,6 +4,7 @@ import { loader } from '@guolao/vue-monaco-editor'
 
 //引入全局样式
 import './css/style.css'
+import './css/themes/typography.css'
 import './css/themes/light.css'
 import './css/themes/dark.css'
 

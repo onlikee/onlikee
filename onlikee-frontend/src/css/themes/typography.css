@@ -1,0 +1,18 @@
+:root {
+  --base-text-size-xs: 0.75rem;
+  --base-text-size-sm: 0.875rem;
+  --base-text-size-md: 1rem;
+  --base-text-lineHeight-normal: 1.5;
+  --base-text-lineHeight-relaxed: 1.625;
+  --base-text-weight-light: 300;
+  --base-text-weight-normal: 400;
+  --base-text-weight-medium: 500;
+  --base-text-weight-semibold: 600;
+
+  --text-body-size-small: var(--base-text-size-xs, 0.75rem);
+  --text-body-size-medium: var(--base-text-size-sm, 0.875rem);
+  --text-body-size-large: var(--base-text-size-md, 1rem);
+  --text-body-lineHeight-small: var(--base-text-lineHeight-relaxed, 1.625);
+  --text-body-lineHeight-medium: var(--base-text-lineHeight-normal, 1.5);
+  --text-body-lineHeight-large: var(--base-text-lineHeight-normal, 1.5);
+}

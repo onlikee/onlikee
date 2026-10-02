@@ -220,6 +220,7 @@ const navSections = ref([
       { path: '/component/dropdown', label: 'Dropdown 下拉菜单' },
       { path: '/component/link', label: 'Link 链接' },
       { path: '/component/truncate', label: 'Truncate 文本截断' },
+      { path: '/component/text', label: 'Text 文本' },
       { path: '/component/tag', label: 'Tag 标签' }
     ]
   },
@@ -229,6 +230,8 @@ const navSections = ref([
       { path: '/component/form-control', label: 'FormControl 表单控件' },
       { path: '/component/input', label: 'Input 输入框' },
       { path: '/component/select', label: 'Select 选择器' },
+      { path: '/component/radio', label: 'Radio 单选框' },
+      { path: '/component/radio-group', label: 'RadioGroup 单选框组' },
       { path: '/component/textarea', label: 'Textarea 文本域' },
       { path: '/component/upload', label: 'Upload 上传' },
       { path: '/component/image-upload', label: 'ImageUpload 图片上传' }

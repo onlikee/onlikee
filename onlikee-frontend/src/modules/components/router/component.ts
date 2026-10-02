@@ -79,6 +79,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
                 component: () => import('../views/components/truncate.vue')
             },
             {
+                path: 'text',
+                name: 'Text',
+                component: () => import('../views/components/text.vue')
+            },
+            {
                 path: 'divider',
                 name: 'Divider',
                 component: () => import('../views/components/divider.vue')
@@ -128,6 +133,16 @@ export const componentRoutes: Array<RouteRecordRaw> = [
                 path: 'select',
                 name: 'Select',
                 component: () => import('../views/components/select.vue')
+            },
+            {
+                path: 'radio',
+                name: 'Radio',
+                component: () => import('../views/components/radio.vue')
+            },
+            {
+                path: 'radio-group',
+                name: 'RadioGroup',
+                component: () => import('../views/components/radio-group.vue')
             },
             {
                 path: 'upload',

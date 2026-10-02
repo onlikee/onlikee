@@ -5,14 +5,30 @@ export type FormControlValidationVariant = 'success' | 'error'
 export interface FormControlContextValue {
   validationVariant: Ref<FormControlValidationVariant | null>
   required: Ref<boolean>
+  id: Readonly<Ref<string>>
+  disabled: Readonly<Ref<boolean>>
+  controlId: Ref<string | undefined>
+  captionId: Ref<string | undefined>
+  labelId: Ref<string | undefined>
+  choice: Ref<boolean>
 }
 
 const formControlContextKey: InjectionKey<FormControlContextValue> = Symbol('FormControlContext')
 
-export function createFormControlContext(required: Ref<boolean>): FormControlContextValue {
+export function createFormControlContext(
+  required: Ref<boolean>,
+  id: Readonly<Ref<string>>,
+  disabled: Readonly<Ref<boolean>>
+): FormControlContextValue {
   return {
     validationVariant: ref<FormControlValidationVariant | null>(null),
-    required
+    required,
+    id,
+    disabled,
+    controlId: ref(),
+    captionId: ref(),
+    labelId: ref(),
+    choice: ref(false)
   }
 }
 
