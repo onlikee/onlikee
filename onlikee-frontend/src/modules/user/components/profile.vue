@@ -1,5 +1,8 @@
 <template>
-  <div class="profile-markdown" v-if="profileMarkdown !== undefined">
+  <div
+    v-if="profileMarkdown !== undefined"
+    class="profile-markdown"
+  >
     <div class="markdown-header">
       <div>{{ profile.nickname }} / README.md</div>
       <Button
@@ -72,8 +75,10 @@
         </div>
         <Textarea
           v-if="markdownMode === 'edit'"
-          v-model="markdownDraft"
+          v-model:value="markdownDraft"
           class="markdown-editor__textarea"
+          block
+          resize="vertical"
           :maxlength="20000"
           placeholder="用 Markdown 介绍你自己、项目和正在做的事情。"
           autofocus
@@ -256,8 +261,10 @@ onMounted(async () => {
 
 .markdown-editor__textarea {
   width: 100%;
+}
+
+.markdown-editor__textarea :deep(textarea) {
   height: 480px;
-  resize: vertical;
 }
 
 .markdown-editor__preview {

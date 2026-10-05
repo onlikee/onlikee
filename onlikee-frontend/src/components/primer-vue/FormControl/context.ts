@@ -1,41 +1,45 @@
-import { inject, provide, ref, type InjectionKey, type Ref } from 'vue'
+import { computed, inject, provide, toValue, type ComputedRef, type InjectionKey, type MaybeRefOrGetter, type Ref } from 'vue'
 
 export type FormControlValidationVariant = 'success' | 'error'
 
 export interface FormControlContextValue {
-  validationVariant: Ref<FormControlValidationVariant | null>
-  required: Ref<boolean>
+  required: Readonly<Ref<boolean | undefined>>
   id: Readonly<Ref<string>>
-  disabled: Readonly<Ref<boolean>>
-  controlId: Ref<string | undefined>
-  captionId: Ref<string | undefined>
-  labelId: Ref<string | undefined>
-  choice: Ref<boolean>
+  disabled: Readonly<Ref<boolean | undefined>>
+  captionId: Readonly<Ref<string | undefined>>
+  validationMessageId: Readonly<Ref<string | undefined>>
+  labelId: Readonly<Ref<string | undefined>>
+  isReferenced: Readonly<Ref<boolean>>
 }
-
+export interface FormControlForwardedProps {
+  id?: string
+  disabled?: boolean
+  required?: boolean
+  'aria-describedby'?: string
+}
 const formControlContextKey: InjectionKey<FormControlContextValue> = Symbol('FormControlContext')
-
-export function createFormControlContext(
-  required: Ref<boolean>,
-  id: Readonly<Ref<string>>,
-  disabled: Readonly<Ref<boolean>>
-): FormControlContextValue {
-  return {
-    validationVariant: ref<FormControlValidationVariant | null>(null),
-    required,
-    id,
-    disabled,
-    controlId: ref(),
-    captionId: ref(),
-    labelId: ref(),
-    choice: ref(false)
-  }
-}
-
 export function provideFormControlContext(context: FormControlContextValue) {
   provide(formControlContextKey, context)
 }
 
 export function useFormControlContext() {
   return inject(formControlContextKey, null)
+}
+
+/** Vue port of useFormControlForwardedProps: explicit external attributes win. */
+export function useFormControlForwardedProps<P extends object = FormControlForwardedProps>(
+  externalProps: MaybeRefOrGetter<P> = {} as P
+): ComputedRef<P & FormControlForwardedProps> {
+  const context = useFormControlContext()
+  return computed(() => {
+    const external = toValue(externalProps)
+    if (!context) return external
+    return {
+      disabled: context.disabled.value,
+      id: context.id.value,
+      required: context.required.value,
+      'aria-describedby': [context.validationMessageId.value, context.captionId.value].filter(Boolean).join(' ') || undefined,
+      ...external
+    }
+  })
 }

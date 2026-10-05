@@ -39,19 +39,20 @@
             class="profile-edit-form"
             @submit.prevent="saveProfileEdit"
           >
-            <FormControl>
+            <FormControl disabled>
               <FormControl.Label>昵称</FormControl.Label>
-              <Input
-                v-model="profileEditDraft.nickname"
+              <TextInput
+                v-model:value="profileEditDraft.nickname"
+                block
                 class="profile-edit-input"
                 placeholder="昵称"
-                disabled
               />
             </FormControl>
             <FormControl>
               <FormControl.Label>简介</FormControl.Label>
               <Textarea
-                v-model="profileEditDraft.bio"
+                v-model:value="profileEditDraft.bio"
+                block
                 class="profile-edit-textarea"
                 rows="3"
                 placeholder="添加简介"
@@ -59,8 +60,9 @@
             </FormControl>
             <FormControl>
               <FormControl.Label>称呼</FormControl.Label>
-              <Input
-                v-model="profileEditDraft.pronoun"
+              <TextInput
+                v-model:value="profileEditDraft.pronoun"
+                block
                 class="profile-edit-input"
                 placeholder="选择一个你喜欢的称谓吧"
               />
@@ -72,8 +74,9 @@
                   color="#5a5a5a"
                   class="input-icon"
                 />
-                <Input
-                  v-model="profileEditDraft.location"
+                <TextInput
+                  v-model:value="profileEditDraft.location"
+                  block
                   class="profile-edit-input"
                   size="small"
                   placeholder="位置"
@@ -85,8 +88,9 @@
                   color="#5a5a5a"
                   class="input-icon"
                 />
-                <Input
-                  v-model="profileEditDraft.email"
+                <TextInput
+                  v-model:value="profileEditDraft.email"
+                  block
                   class="profile-edit-input"
                   size="small"
                   disabled
@@ -104,8 +108,9 @@
                   color="#5a5a5a"
                   class="input-icon"
                 />
-                <Input
-                  v-model="profileEditDraft.socialAccount0"
+                <TextInput
+                  v-model:value="profileEditDraft.socialAccount0"
+                  block
                   class="profile-edit-input"
                   size="small"
                   placeholder="https://github.com/UnderHear"
@@ -117,8 +122,9 @@
                   color="#5a5a5a"
                   class="input-icon"
                 />
-                <Input
-                  v-model="profileEditDraft.socialAccount1"
+                <TextInput
+                  v-model:value="profileEditDraft.socialAccount1"
+                  block
                   class="profile-edit-input"
                   size="small"
                   placeholder="https://x.com/github"
@@ -130,8 +136,9 @@
                   color="#5a5a5a"
                   class="input-icon"
                 />
-                <Input
-                  v-model="profileEditDraft.socialAccount2"
+                <TextInput
+                  v-model:value="profileEditDraft.socialAccount2"
+                  block
                   class="profile-edit-input"
                   size="small"
                   placeholder="12345678@gmail.com"
@@ -210,12 +217,13 @@
         </div>
       </div>
       <div class="right-column">
+        <!-- 外层 .layout 已保证 profile 非空；此处的 truthy 守卫仅为向 vue-tsc 传递类型收窄（子组件 prop 为必填 UserProfile） -->
         <UserApplicationTab
-          v-if="activeTab === 'application'"
+          v-if="activeTab === 'application' && profile"
           :profile="profile"
         />
         <UserProfileTab
-          v-else
+          v-else-if="profile"
           :profile="profile"
           :is-own="isOwn"
         />
@@ -233,7 +241,7 @@ import { Button } from '@/components/primer-vue/Button'
 import { Banner } from '@/components/primer-vue/Banner'
 import { Container } from '@/components/primer-vue/Container'
 import { FormControl } from '@/components/primer-vue/FormControl'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 import { Textarea } from '@/components/primer-vue/Textarea'
 import { LocationIcon, MailIcon, LinkIcon } from '@/components/octicons-vue3'
 import { useUserStore } from '@/stores/user'
@@ -440,7 +448,7 @@ onMounted(async () => {
   flex-shrink: 0;
 }
 
-.profile-icon-input :deep(.input) {
+.profile-icon-input :deep(.TextInput-wrapper) {
   box-sizing: border-box;
   flex: 1;
 }
@@ -451,7 +459,7 @@ onMounted(async () => {
   color: var(--fgColor-default, #1f2328);
 }
 
-.profile-edit-textarea {
+.profile-edit-textarea :deep(textarea) {
   min-height: 88px;
 }
 

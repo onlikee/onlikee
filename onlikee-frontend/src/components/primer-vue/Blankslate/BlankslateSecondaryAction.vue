@@ -70,7 +70,7 @@ const handleClick = (event: MouseEvent) => {
 
 .blankslate-secondary-action:disabled,
 .blankslate-secondary-action[aria-disabled='true'] {
-  color: var(--control-fgColor-disabled, #8c959f);
+  color: var(--control-fgColor-disabled, #818b98);
   cursor: not-allowed;
 }
 </style>

@@ -84,8 +84,8 @@ const getState = (i: number) =>
 	border-radius: 50%;
 	font-size: 14px;
 	font-weight: 600;
-	background-color: var(--bgColor-neutral-muted, #d1d9e080);
-	color: var(--fgColor-muted, #656d76);
+	background-color: var(--bgColor-neutral-muted, #818b981f);
+	color: var(--fgColor-muted, #59636e);
 	transition: background-color 0.2s, color 0.2s;
 }
 
@@ -106,7 +106,7 @@ const getState = (i: number) =>
 	top: calc(var(--step-indicator-size) / 2 - var(--step-separator-size) / 2);
 	height: var(--step-separator-size);
 	border-radius: 2px;
-	background-color: var(--borderColor-muted, #d1d9e0);
+	background-color: var(--borderColor-muted, #d1d9e0b3);
 	transition: background-color 0.2s;
 }
 
@@ -130,7 +130,7 @@ const getState = (i: number) =>
 
 .steps__description {
 	font-size: 12px;
-	color: var(--fgColor-muted, #656d76);
+	color: var(--fgColor-muted, #59636e);
 }
 
 /* vertical */

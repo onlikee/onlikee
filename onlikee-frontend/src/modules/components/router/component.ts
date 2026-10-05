@@ -121,8 +121,12 @@ export const componentRoutes: Array<RouteRecordRaw> = [
             },
             {
                 path: 'input',
-                name: 'Input',
-                component: () => import('../views/components/input.vue')
+                redirect: '/component/text-input'
+            },
+            {
+                path: 'text-input',
+                name: 'TextInput',
+                component: () => import('../views/components/text-input.vue')
             },
             {
                 path: 'textarea',
@@ -133,6 +137,26 @@ export const componentRoutes: Array<RouteRecordRaw> = [
                 path: 'select',
                 name: 'Select',
                 component: () => import('../views/components/select.vue')
+            },
+            {
+                path: 'checkbox',
+                name: 'Checkbox',
+                component: () => import('../views/components/checkbox.vue')
+            },
+            {
+                path: 'autocomplete',
+                name: 'Autocomplete',
+                component: () => import('../views/components/autocomplete.vue')
+            },
+            {
+                path: 'text-input-with-tokens',
+                name: 'TextInputWithTokens',
+                component: () => import('../views/components/text-input-with-tokens.vue')
+            },
+            {
+                path: 'select-panel',
+                name: 'SelectPanel',
+                component: () => import('../views/components/select-panel.vue')
             },
             {
                 path: 'radio',

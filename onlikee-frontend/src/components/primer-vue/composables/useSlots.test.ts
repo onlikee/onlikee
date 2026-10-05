@@ -170,7 +170,7 @@ test('RadioGroup uses extracted slots for its legend and accessible validation t
     ])
   ])
   expect(html).toMatch(/<legend[^>]*>[\s\S]*Choose one[\s\S]*Help text[\s\S]*Pick an option[\s\S]*<\/legend>/)
-  expect(html).toMatch(/<div aria-hidden="true"[^>]*>/)
+  expect(html).toMatch(/<div[^>]*aria-hidden="true"[^>]*>/)
   expect(html.match(/Pick an option/g)?.length).toBe(2)
   expect(html).toMatch(/<input[^>]*name="group"/)
 })
@@ -191,7 +191,7 @@ test('FormControl evaluates a dynamic default slot once per render, including it
   }
   const first = await renderToString(createSSRApp(root))
   expect(calls).toBe(1)
-  expect(first).toMatch(/class="form-control"/)
+  expect(first).toMatch(/class="form-control--vertical"/)
   mode.value = 'radio'
   const second = await renderToString(createSSRApp(root))
   expect(calls).toBe(2)

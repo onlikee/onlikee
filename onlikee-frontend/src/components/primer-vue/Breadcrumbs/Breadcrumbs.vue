@@ -240,7 +240,7 @@ function RenderBreadcrumbs() {
   background: var(--control-transparent-bgColor-hover, #818b981a);
 }
 .breadcrumbs :deep(.breadcrumbs-trigger:focus-visible) {
-  outline: 2px solid var(--focus-outlineColor, #0969da);
+  outline: 2px solid var(--focus-outline-color, var(--focus-outlineColor, #0969da));
   outline-offset: 2px;
 }
 .breadcrumbs :deep(.breadcrumbs-overlay) {
@@ -258,7 +258,7 @@ function RenderBreadcrumbs() {
   white-space: normal;
   border-radius: var(--borderRadius-large, 12px);
   background: var(--overlay-bgColor, #fff);
-  box-shadow: var(--shadow-floating-small, 0 8px 24px #1f232833);
+  box-shadow: var(--shadow-floating-small, 0 0 0 1px #d1d9e080, 0 6px 12px -3px #25292e0a, 0 6px 18px 0 #25292e1f);
 }
 .breadcrumbs :deep(.breadcrumbs-overlay .breadcrumbs-link) {
   display: block;

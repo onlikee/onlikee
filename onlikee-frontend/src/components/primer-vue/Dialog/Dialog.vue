@@ -277,7 +277,7 @@ onBeforeUnmount(unlockPageScroll)
 
 .dialog-layer {
   align-items: center;
-  background: var(--overlay-backdrop-bgColor, rgba(140, 149, 159, 0.32));
+  background: var(--overlay-backdrop-bgColor, #c8d1da66);
   display: flex;
   inset: 0;
   justify-content: center;

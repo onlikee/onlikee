@@ -35,8 +35,9 @@
       <div class="signup-fields">
         <FormControl required>
           <FormControl.Label>用户名</FormControl.Label>
-          <Input
-            v-model="nickname"
+          <TextInput
+            v-model:value="nickname"
+            block
             autocomplete="username"
             placeholder="onlikee"
           />
@@ -53,8 +54,9 @@
 
         <FormControl required>
           <FormControl.Label>邮箱</FormControl.Label>
-          <Input
-            v-model="email"
+          <TextInput
+            v-model:value="email"
+            block
             type="email"
             autocomplete="email"
             placeholder="you@example.com"
@@ -86,7 +88,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { Avatar } from '@/components/primer-vue/Avatar'
 import { FormControl } from '@/components/primer-vue/FormControl'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 import { Button } from '@/components/primer-vue/Button'
 import { Banner } from '@/components/primer-vue/Banner'
 import { completeOAuthSignup } from '../../api/login'
@@ -251,7 +253,7 @@ onMounted(() => {
   gap: 18px;
 }
 
-.signup-fields :deep(.input) {
+.signup-fields :deep(.TextInput-wrapper) {
   width: 100%;
 }
 

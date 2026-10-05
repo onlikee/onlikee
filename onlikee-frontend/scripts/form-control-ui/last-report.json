@@ -1,0 +1,138 @@
+{
+  "commit": "8c0b708fc43a3535b643cadc5a7ba97e937555c8",
+  "browser": "154.0.8037.95",
+  "date": "2026-10-05T01:08:41.166Z",
+  "method": "All standard computed properties (excluding custom variables), DOM element hierarchy, rect tolerance 0.02px, exact RGBA pixels; viewport 1024x768; animations frozen on the verification page.",
+  "normalization": [
+    "Vue useId and React useId intentionally produce different identifiers (attributes are not compared)."
+  ],
+  "cases": [
+    {
+      "scenario": "error",
+      "theme": "light",
+      "id": "1-error-light",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "error",
+      "theme": "dark",
+      "id": "2-error-dark",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "success",
+      "theme": "light",
+      "id": "3-success-light",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "success",
+      "theme": "dark",
+      "id": "4-success-dark",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "required",
+      "theme": "light",
+      "id": "5-required-light",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "required",
+      "theme": "dark",
+      "id": "6-required-dark",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "plain",
+      "theme": "light",
+      "id": "7-plain-light",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "plain",
+      "theme": "dark",
+      "id": "8-plain-dark",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "disabled",
+      "theme": "light",
+      "id": "9-disabled-light",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "disabled",
+      "theme": "dark",
+      "id": "10-disabled-dark",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "checkbox",
+      "theme": "light",
+      "id": "11-checkbox-light",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "checkbox",
+      "theme": "dark",
+      "id": "12-checkbox-dark",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "hidden-label",
+      "theme": "light",
+      "id": "13-hidden-label-light",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "hidden-label",
+      "theme": "dark",
+      "id": "14-hidden-label-dark",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "textarea",
+      "theme": "light",
+      "id": "15-textarea-light",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "textarea",
+      "theme": "dark",
+      "id": "16-textarea-dark",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "tokens",
+      "theme": "light",
+      "id": "17-tokens-light",
+      "differences": [],
+      "pixels": 0
+    },
+    {
+      "scenario": "tokens",
+      "theme": "dark",
+      "id": "18-tokens-dark",
+      "differences": [],
+      "pixels": 0
+    }
+  ],
+  "standardPropertyCount": 478
+}

@@ -1,0 +1,11 @@
+/* Vendored verbatim from @primer/primitives@11.5.1 — functional/size/size-coarse.css
+ * 源文件: C:/Users/25336/Desktop/project/react/node_modules/@primer/primitives/dist/css/functional/size/size-coarse.css
+ * 不要手工编辑；如需更新请重跑 scripts/vendor-primitives-base.mjs 并核对 diff。 */
+@media (pointer: coarse) {
+  :root {
+    --control-minTarget-auto: 2.75rem; /** Minimum touch target size for coarse pointer devices (touch screens) */
+    --controlStack-large-gap-auto: 0.75rem; /** Gap between stacked controls in large density layouts for touch devices */
+    --controlStack-medium-gap-auto: 0.75rem; /** Gap between stacked controls in medium density layouts for touch devices */
+    --controlStack-small-gap-auto: 1rem; /** Gap between stacked controls in small density layouts for touch devices */
+  }
+}

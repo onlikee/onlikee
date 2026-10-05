@@ -228,8 +228,12 @@ const navSections = ref([
     title: 'Form 表单组件',
     items: [
       { path: '/component/form-control', label: 'FormControl 表单控件' },
-      { path: '/component/input', label: 'Input 输入框' },
+      { path: '/component/text-input', label: 'TextInput 输入框' },
       { path: '/component/select', label: 'Select 选择器' },
+      { path: '/component/select-panel', label: 'SelectPanel 选择面板' },
+      { path: '/component/autocomplete', label: 'Autocomplete 自动补全' },
+      { path: '/component/text-input-with-tokens', label: 'TextInputWithTokens 标签输入' },
+      { path: '/component/checkbox', label: 'Checkbox 复选框与分组' },
       { path: '/component/radio', label: 'Radio 单选框' },
       { path: '/component/radio-group', label: 'RadioGroup 单选框组' },
       { path: '/component/textarea', label: 'Textarea 文本域' },

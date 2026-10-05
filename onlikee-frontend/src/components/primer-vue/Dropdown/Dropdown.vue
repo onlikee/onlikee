@@ -748,8 +748,8 @@ defineExpose({ close: () => { isOpen.value = false } })
 
 /* 弹出时自动给 trigger 内的 Button 添加激活样式 */
 .dropdown-trigger[data-open] :deep(.button[data-variant='default']) {
-  background-color: var(--button-default-bgColor-active, var(--control-bgColor-active, #ebecf0));
-  border-color: var(--button-default-borderColor-active, var(--button-default-borderColor-rest, #d0d7de));
+  background-color: var(--button-default-bgColor-active, var(--control-bgColor-active, #e6eaef));
+  border-color: var(--button-default-borderColor-active, var(--button-default-borderColor-rest, #d1d9e0));
 }
 
 .dropdown-trigger[data-open] :deep(.button[data-variant='primary']) {
@@ -766,7 +766,7 @@ defineExpose({ close: () => { isOpen.value = false } })
 }
 
 .dropdown-trigger[data-open] :deep(.button[data-variant='invisible']) {
-  background-color: var(--button-invisible-bgColor-active, var(--control-transparent-bgColor-active, rgba(129, 139, 152, 0.16)));
+  background-color: var(--button-invisible-bgColor-active, var(--control-transparent-bgColor-active, #818b9826));
 }
 
 .dropdown-trigger[data-open] :deep(.button[data-variant='link']) {

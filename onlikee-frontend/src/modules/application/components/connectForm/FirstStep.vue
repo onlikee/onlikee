@@ -7,11 +7,12 @@
       <FormControl.Label>
         应用名称
       </FormControl.Label>
-      <Input
-        :model-value="appName"
+      <TextInput
+        block
+        :value="appName"
         placeholder="请输入应用名称"
         maxlength="100"
-        @update:model-value="value => emit('update:app-name', value)"
+        @update:value="value => emit('update:app-name', value)"
       />
       <FormControl.Validation
         v-if="appNameError"
@@ -25,10 +26,11 @@
       <FormControl.Label>
         网站地址
       </FormControl.Label>
-      <Input
-        :model-value="appUrl"
+      <TextInput
+        block
+        :value="appUrl"
         placeholder="请输入网站地址"
-        @update:model-value="value => emit('update:app-url', value)"
+        @update:value="value => emit('update:app-url', value)"
       />
       <FormControl.Validation
         v-if="appUrlError"
@@ -87,11 +89,12 @@
         应用描述
       </FormControl.Label>
       <Textarea
-        :model-value="appDescription"
+        block
+        :value="appDescription"
         placeholder="请输入应用描述"
         maxlength="1000"
         rows="7"
-        @update:model-value="value => emit('update:app-description', value)"
+        @update:value="value => emit('update:app-description', value)"
       />
       <FormControl.Validation
         v-if="appDescriptionError"
@@ -109,7 +112,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 import { Textarea } from '@/components/primer-vue/Textarea'
 import { Button } from '@/components/primer-vue/Button'
 import { Dropdown } from '@/components/primer-vue/Dropdown'

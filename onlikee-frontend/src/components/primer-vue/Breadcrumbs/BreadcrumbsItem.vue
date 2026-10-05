@@ -31,7 +31,7 @@ withDefaults(defineProps<BreadcrumbsItemProps>(), { as: 'a', selected: false, to
 }
 .breadcrumbs-link:focus-visible {
   border-radius: var(--borderRadius-small, 3px);
-  outline: 2px solid var(--focus-outlineColor, #0969da);
+  outline: 2px solid var(--focus-outline-color, var(--focus-outlineColor, #0969da));
   outline-offset: 2px;
   text-decoration: none;
 }

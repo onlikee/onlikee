@@ -13,10 +13,12 @@
 }
 
 html, body {
-  color: var(--fgColor-default, #1f2328);
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+/* 字体/行高/颜色由 base-styles.css（Primer BaseStyles 等价物）统一提供：
+ * font-family: var(--fontStack-system); line-height: 1.5; color: var(--fgColor-default)。
+ * 旧值 'Segoe UI', Tahoma… 与 Primer 不一致（审计 M23），已移除。 */
 
 h1 {
   font-size: 2em;

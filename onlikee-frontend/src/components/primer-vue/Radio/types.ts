@@ -20,5 +20,6 @@ export interface RadioOptions {
 export type RadioProps = RadioOptions & Omit<InputHTMLAttributes, keyof RadioOptions>
 
 export interface RadioEmits {
+  'update:checked': [checked: boolean]
   change: [event: Event]
 }

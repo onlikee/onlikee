@@ -42,7 +42,8 @@ const props = withDefaults(
   }
 )
 
+// shared.ts:20 —— onSelect 事件可为 click 或 keypress（Item.tsx:186-208）
 const emit = defineEmits<{
-  select: [event: MouseEvent]
+  select: [event: MouseEvent | KeyboardEvent]
 }>()
 </script>

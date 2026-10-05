@@ -116,7 +116,7 @@ function handleKeydown(event: KeyboardEvent) {
 
 @media (hover: hover) {
   .underline-panels__tab:hover {
-    background: var(--bgColor-neutral-muted, #d1d9e080);
+    background: var(--bgColor-neutral-muted, #818b981f);
     transition: background-color 0.12s ease-out;
   }
 }
@@ -161,7 +161,7 @@ function handleKeydown(event: KeyboardEvent) {
   font-weight: 500;
   line-height: 18px;
   color: var(--fgColor-muted, #59636e);
-  background: var(--bgColor-neutral-muted, #d1d9e080);
+  background: var(--bgColor-neutral-muted, #818b981f);
   border-radius: 999px;
 }
 
@@ -169,7 +169,7 @@ function handleKeydown(event: KeyboardEvent) {
   display: inline-block;
   width: 24px;
   height: 16px;
-  background: var(--bgColor-neutral-muted, #d1d9e080);
+  background: var(--bgColor-neutral-muted, #818b981f);
   border-radius: 20px;
   animation: loading-counter 1.2s ease-in-out infinite alternate;
 }

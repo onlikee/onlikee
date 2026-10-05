@@ -2,16 +2,16 @@
   <ComponentDocsPage>
     <ComponentDocsHeader
       title="Textarea 文本域"
-      description="多行文本输入组件，支持 v-model 与原生 textarea 属性透传。"
+      description="原生多行输入组件，支持 v-model:value、自动高度、字符计数与校验状态。"
     />
 
     <ComponentDocsSection title="基础用法">
       <template #description>
-        通过 <code>v-model</code> 双向绑定多行文本内容。
+        通过 <code>v-model:value</code> 双向绑定多行文本内容。
       </template>
       <ComponentDocsDemoBlock :code="demo1Code">
         <Textarea
-          v-model="val1"
+          v-model:value="val1"
           class="demo-textarea"
           rows="4"
           placeholder="请输入详细描述"
@@ -25,7 +25,7 @@
       </template>
       <ComponentDocsDemoBlock :code="demo2Code">
         <Textarea
-          v-model="val2"
+          v-model:value="val2"
           class="demo-textarea"
           rows="6"
           maxlength="120"
@@ -40,7 +40,7 @@
       </template>
       <ComponentDocsDemoBlock :code="demo3Code">
         <Textarea
-          v-model="val3"
+          v-model:value="val3"
           class="demo-textarea"
           rows="4"
           disabled
@@ -56,7 +56,7 @@
         <FormControl>
           <FormControl.Label>Project Description</FormControl.Label>
           <Textarea
-            v-model="description"
+            v-model:value="description"
             class="demo-textarea"
             rows="5"
             maxlength="120"
@@ -71,6 +71,24 @@
             This will be shown on the project detail page
           </FormControl.Caption>
         </FormControl>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
+    <ComponentDocsSection title="自动高度与字符计数">
+      <template #description>
+        <code>autoSize</code> 根据内容增长，<code>minHeight</code> 和 <code>maxHeight</code> 限制高度。
+        <code>characterLimit</code> 显示剩余字符及超限错误，不阻止继续输入。
+      </template>
+      <ComponentDocsDemoBlock :code="autoSizeDemoCode">
+        <Textarea
+          v-model:value="autoSizeValue"
+          auto-size
+          block
+          :min-height="60"
+          :max-height="180"
+          :character-limit="120"
+          placeholder="输入多行内容，文本域会自动增长"
+        />
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
@@ -120,11 +138,13 @@ const val1 = ref('')
 const val2 = ref('支持多行文本输入，适合描述、备注和说明等场景。')
 const val3 = ref('Disabled textarea value')
 const description = ref('Build a collaborative audio workspace for distributed teams.')
+const autoSizeValue = ref('')
+const autoSizeDemoCode = `<Textarea v-model:value="description" auto-size block :min-height="60" :max-height="180" :character-limit="120" />`
 
 const descriptionTooLong = computed(() => description.value.length > 80)
 
 const demo1Code = `<template>
-  <Textarea v-model="val" rows="4" placeholder="请输入详细描述" />
+  <Textarea v-model:value="val" rows="4" placeholder="请输入详细描述" />
 </template>
 
 <script setup lang="ts">
@@ -136,7 +156,7 @@ const val = ref('')
 
 const demo2Code = `<template>
   <Textarea
-    v-model="val"
+    v-model:value="val"
     rows="6"
     maxlength="120"
     placeholder="最多输入 120 个字符"
@@ -152,7 +172,7 @@ const val = ref('支持多行文本输入，适合描述、备注和说明等场
 <\/script>`
 
 const demo3Code = `<template>
-  <Textarea v-model="val" rows="4" disabled />
+  <Textarea v-model:value="val" rows="4" disabled />
 </template>
 
 <script setup lang="ts">
@@ -165,7 +185,7 @@ const val = ref('Disabled textarea value')
 const demo4Code = `<template>
   <FormControl>
     <FormControl.Label>Project Description</FormControl.Label>
-    <Textarea v-model="description" rows="5" maxlength="120" />
+    <Textarea v-model:value="description" rows="5" maxlength="120" />
     <FormControl.Validation v-if="descriptionTooLong" variant="error">
       Keep the description under 80 characters
     </FormControl.Validation>
@@ -190,12 +210,19 @@ const apiCols: TableColumn[] = [
 ]
 
 const apiRows = [
-  { name: 'modelValue', description: '绑定值（v-model）', type: 'string', default: "''" }
+  { name: 'value', description: '受控绑定值（v-model:value）', type: 'string | number', default: '—' },
+  { name: 'defaultValue', description: '非受控初始值', type: 'string | number', default: '—' },
+  { name: 'resize', description: '允许用户调整尺寸的方向', type: "'none' | 'both' | 'horizontal' | 'vertical'", default: "'both'" },
+  { name: 'autoSize', description: '根据内容自动调整高度', type: 'boolean', default: 'false' },
+  { name: 'minHeight / maxHeight', description: '文本域高度限制，单位 px', type: 'number', default: '—' },
+  { name: 'characterLimit', description: '字符计数与超限错误状态，不阻止输入', type: 'number', default: '—' },
+  { name: 'validationStatus', description: '错误或成功状态', type: "'error' | 'success'", default: '—' },
+  { name: 'block / contrast', description: '占满容器和高对比背景', type: 'boolean', default: 'false' }
 ]
 
 const nativeRows = [
   { name: 'placeholder', description: '占位文本', type: 'string', default: '-' },
-  { name: 'rows', description: '默认可见行数', type: 'number | string', default: '-' },
+  { name: 'rows / cols', description: '默认可见行数与列数', type: 'number | string', default: '7 / 30' },
   { name: 'disabled', description: '禁用文本域', type: 'boolean', default: 'false' },
   { name: 'maxlength', description: '最大输入长度', type: 'number | string', default: '-' },
   { name: 'id / name / aria-*', description: '其他原生属性会透传到 textarea 元素', type: 'string', default: '-' }
@@ -208,7 +235,7 @@ const eventCols: TableColumn[] = [
 ]
 
 const eventRows = [
-  { name: 'update:modelValue', description: '输入值变化时触发（IME 组合输入在 compositionend 后更新）', type: 'string' }
+  { name: 'update:value', description: '输入值变化时触发（IME 组合输入在 compositionend 后更新）', type: 'string' }
 ]
 </script>
 

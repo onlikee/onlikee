@@ -11,11 +11,17 @@
     "lint:fix": "eslint . --fix",
     "test": "vitest --watch",
     "test:run": "vitest run",
-    "typecheck:test": "vue-tsc --noEmit -p tsconfig.test.json"
+    "typecheck:test": "vue-tsc --noEmit -p tsconfig.test.json",
+    "test:ui:select-panel": "node scripts/select-panel-ui-parity.mjs",
+    "test:ui:form-control": "node scripts/form-control-ui-parity.mjs"
   },
   "dependencies": {
     "@guolao/vue-monaco-editor": "^1.6.0",
+    "@oddbird/popover-polyfill": "^0.5.2",
+    "@primer/behaviors": "1.10.3",
+    "@primer/live-region-element": "0.8.0",
     "@tailwindcss/vite": "^4.1.12",
+    "@tanstack/vue-virtual": "3.13.18",
     "axios": "^1.13.5",
     "canvas-confetti": "^1.9.4",
     "dompurify": "^3.4.2",

@@ -548,7 +548,7 @@ async function confirmCrop() {
   display: flex;
 }
 
-.avatar-cropper-dialog::backdrop { background: var(--overlay-backdrop-bgColor, rgba(140, 149, 159, 0.32)); }
+.avatar-cropper-dialog::backdrop { background: var(--overlay-backdrop-bgColor, #c8d1da66); }
 
 .avatar-cropper-header {
   align-items: start;

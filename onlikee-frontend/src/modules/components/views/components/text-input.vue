@@ -1,17 +1,17 @@
 <template>
   <ComponentDocsPage>
     <ComponentDocsHeader
-      title="Input 输入框"
-      description="基础文本输入组件，支持 v-model 与原生 input 属性透传。"
+      title="TextInput 输入框"
+      description="原生文本输入组件，支持 v-model:value、视觉元素、加载和字符计数。"
     />
 
     <ComponentDocsSection title="基础用法">
       <template #description>
-        通过 <code>v-model</code> 双向绑定输入值。
+        通过 <code>v-model:value</code> 双向绑定输入值。
       </template>
       <ComponentDocsDemoBlock :code="demo1Code">
-        <Input
-          v-model="val1"
+        <TextInput
+          v-model:value="val1"
           placeholder="请输入内容"
         />
         <p class="demo-info">
@@ -25,8 +25,8 @@
         设置原生属性 <code>disabled</code> 后输入框不可编辑。
       </template>
       <ComponentDocsDemoBlock :code="demo2Code">
-        <Input
-          v-model="val2"
+        <TextInput
+          v-model:value="val2"
           disabled
         />
       </ComponentDocsDemoBlock>
@@ -38,14 +38,14 @@
       </template>
       <ComponentDocsDemoBlock :code="demo3Code">
         <div class="demo-row">
-          <Input
-            v-model="email"
+          <TextInput
+            v-model:value="email"
             type="email"
             placeholder="you@example.com"
             autocomplete="email"
           />
-          <Input
-            v-model="password"
+          <TextInput
+            v-model:value="password"
             type="password"
             placeholder="请输入密码"
             autocomplete="current-password"
@@ -56,14 +56,14 @@
 
     <ComponentDocsSection title="前后缀文本">
       <template #description>
-        使用 <code>leadingText</code> 与 <code>trailingText</code> 展示固定文本，原生 input 属性仍会透传到内部输入框。
+        使用 <code>leadingVisual</code> 与 <code>trailingVisual</code> 展示固定文本，原生 input 属性仍会透传到内部输入框。
       </template>
       <ComponentDocsDemoBlock :code="demo4Code">
-        <Input
-          v-model="domainPrefix"
+        <TextInput
+          v-model:value="domainPrefix"
           class="affix-input"
-          leading-text="https://"
-          trailing-text=".onlikee.com"
+          leading-visual="https://"
+          trailing-visual=".onlikee.com"
           placeholder="my-app"
           maxlength="63"
         />
@@ -79,7 +79,7 @@
           <FormControl.Label>
             Name <span class="required-mark">*</span>
           </FormControl.Label>
-          <Input v-model="profileName" />
+          <TextInput v-model:value="profileName" />
           <FormControl.Validation
             v-if="hasInvalidChars"
             variant="error"
@@ -102,22 +102,51 @@
           class="demo-row"
           style="align-items: center;"
         >
-          <Input
-            v-model="valSmall"
+          <TextInput
+            v-model:value="valSmall"
             size="small"
-            placeholder="small (29.6px)"
+            placeholder="small (28px)"
           />
-          <Input
-            v-model="valMedium"
+          <TextInput
+            v-model:value="valMedium"
             size="medium"
             placeholder="medium (32px)"
           />
-          <Input
-            v-model="valLarge"
+          <TextInput
+            v-model:value="valLarge"
             size="large"
             placeholder="large (40px)"
           />
         </div>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
+    <ComponentDocsSection title="加载、操作与字符计数">
+      <template #description>
+        通过 <code>loading</code> 告知加载状态，<code>TextInput.Action</code> 提供操作按钮；
+        <code>characterLimit</code> 显示剩余字符并在超限时标记错误，不截断输入。
+      </template>
+      <ComponentDocsDemoBlock :code="counterDemoCode">
+        <TextInput
+          v-model:value="search"
+          :loading="searchLoading"
+          :character-limit="20"
+          leading-visual="搜索"
+          placeholder="最多建议输入 20 个字符"
+        >
+          <template #trailingAction>
+            <TextInput.Action
+              aria-label="清空搜索"
+              @click="search = ''"
+            >
+              清空
+            </TextInput.Action>
+          </template>
+        </TextInput>
+        <label class="loading-toggle"><input
+          v-model="searchLoading"
+          type="checkbox"
+        >显示加载状态</label>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
@@ -156,7 +185,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
@@ -172,53 +201,60 @@ const profileName = ref('Mona L!$a')
 const valSmall = ref('')
 const valMedium = ref('')
 const valLarge = ref('')
+const search = ref('')
+const searchLoading = ref(false)
+const counterDemoCode = `<TextInput v-model:value="search" :loading="loading" :character-limit="20" leading-visual="搜索">
+  <template #trailingAction>
+    <TextInput.Action aria-label="清空搜索" @click="search = ''">清空</TextInput.Action>
+  </template>
+</TextInput>`
 
 const hasInvalidChars = computed(() => /[^a-zA-Z\s]/.test(profileName.value))
 
 const demo1Code = `<template>
-  <Input v-model="val" placeholder="请输入内容" />
+  <TextInput v-model:value="val" placeholder="请输入内容" />
   <p>当前值：{{ val || '未输入' }}</p>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 
 const val = ref('')
 <\/script>`
 
 const demo2Code = `<template>
-  <Input v-model="val" disabled />
+  <TextInput v-model:value="val" disabled />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 
 const val = ref('Disabled value')
 <\/script>`
 
 const demo3Code = `<template>
   <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-    <Input v-model="email" type="email" placeholder="you@example.com" autocomplete="email" />
-    <Input v-model="password" type="password" placeholder="请输入密码" autocomplete="current-password" />
+    <TextInput v-model:value="email" type="email" placeholder="you@example.com" autocomplete="email" />
+    <TextInput v-model:value="password" type="password" placeholder="请输入密码" autocomplete="current-password" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 
 const email = ref('')
 const password = ref('')
 <\/script>`
 
 const demo4Code = `<template>
-  <Input
-    v-model="domainPrefix"
+  <TextInput
+    v-model:value="domainPrefix"
     class="affix-input"
-    leading-text="https://"
-    trailing-text=".onlikee.com"
+    leading-visual="https://"
+    trailing-visual=".onlikee.com"
     placeholder="my-app"
     maxlength="63"
   />
@@ -226,7 +262,7 @@ const demo4Code = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 
 const domainPrefix = ref('docs')
 <\/script>
@@ -236,12 +272,13 @@ const domainPrefix = ref('docs')
   width: 100%;
   max-width: 360px;
 }
+.loading-toggle { display: flex; align-items: center; gap: 8px; font-size: 12px; margin-top: 12px; }
 <\/style>`
 
 const demo5Code = `<template>
   <FormControl>
     <FormControl.Label>Name <span>*</span></FormControl.Label>
-    <Input v-model="name" />
+    <TextInput v-model:value="name" />
     <FormControl.Validation v-if="hasInvalidChars" variant="error">
       Names may not contain symbols
     </FormControl.Validation>
@@ -252,7 +289,7 @@ const demo5Code = `<template>
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 
 const name = ref('Mona L!$a')
 const hasInvalidChars = computed(() => /[^a-zA-Z\\s]/.test(name.value))
@@ -260,15 +297,15 @@ const hasInvalidChars = computed(() => /[^a-zA-Z\\s]/.test(name.value))
 
 const demo6Code = `<template>
   <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-    <Input v-model="valSmall" size="small" placeholder="small" />
-    <Input v-model="valMedium" size="medium" placeholder="medium" />
-    <Input v-model="valLarge" size="large" placeholder="large" />
+    <TextInput v-model:value="valSmall" size="small" placeholder="small" />
+    <TextInput v-model:value="valMedium" size="medium" placeholder="medium" />
+    <TextInput v-model:value="valLarge" size="large" placeholder="large" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 
 const valSmall = ref('')
 const valMedium = ref('')
@@ -283,10 +320,15 @@ const apiCols: TableColumn[] = [
 ]
 
 const apiRows = [
-  { name: 'modelValue', description: '绑定值（v-model）', type: 'string', default: "''" },
+  { name: 'value', description: '受控绑定值（v-model:value）', type: 'string | number', default: '—' },
+  { name: 'defaultValue', description: '非受控初始值', type: 'string | number', default: '—' },
   { name: 'size', description: '输入框尺寸', type: "'small' | 'medium' | 'large'", default: "'medium'" },
-  { name: 'leadingText', description: '输入框前缀固定文本', type: 'string', default: "''" },
-  { name: 'trailingText', description: '输入框后缀固定文本', type: 'string', default: "''" }
+  { name: 'leadingVisual / trailingVisual', description: '输入框前后视觉元素；支持同名具名插槽', type: 'VNodeChild | Component', default: '—' },
+  { name: 'trailingAction', description: '输入框操作按钮，通常使用 TextInput.Action', type: 'VNodeChild | Component', default: '—' },
+  { name: 'loading / loaderPosition / loaderText', description: '加载状态、位置和无障碍提示', type: "boolean / 'auto' | 'leading' | 'trailing' / string", default: "— / 'auto' / 'Loading'" },
+  { name: 'characterLimit', description: '字符计数与超限错误状态，不阻止输入', type: 'number', default: '—' },
+  { name: 'validationStatus', description: '错误或成功状态', type: "'error' | 'success'", default: '—' },
+  { name: 'block / contrast / monospace', description: '占满容器、高对比背景和等宽字体', type: 'boolean', default: 'false' }
 ]
 
 const nativeRows = [
@@ -305,7 +347,9 @@ const eventCols: TableColumn[] = [
 ]
 
 const eventRows = [
-  { name: 'update:modelValue', description: '输入值变化时触发（IME 组合输入在 compositionend 后更新）', type: 'string' }
+  { name: 'update:value', description: '输入值变化时触发（IME 组合输入在 compositionend 后更新）', type: 'string' },
+  { name: 'change / input', description: '原生输入事件；change 随文本修改触发', type: 'Event' },
+  { name: 'focus / blur', description: '原生焦点事件', type: 'FocusEvent' }
 ]
 </script>
 
@@ -313,7 +357,7 @@ const eventRows = [
 .demo-info {
   margin-top: 8px;
   font-size: 0.85rem;
-  color: var(--fgColor-muted);
+  color: var(--fgColor-muted, #656d76);
 }
 
 .demo-row {

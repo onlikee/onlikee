@@ -13,8 +13,8 @@
       <ComponentDocsDemoBlock :code="basicDemoCode">
         <FormControl>
           <FormControl.Label>应用名称</FormControl.Label>
-          <Input
-            v-model="appName"
+          <TextInput
+            v-model:value="appName"
             placeholder="请输入应用名称"
           />
           <FormControl.Caption>
@@ -32,8 +32,8 @@
       <ComponentDocsDemoBlock :code="requiredDemoCode">
         <FormControl required>
           <FormControl.Label>应用地址前缀</FormControl.Label>
-          <Input
-            v-model="appUrlPrefix"
+          <TextInput
+            v-model:value="appUrlPrefix"
             placeholder="onlikee-app"
           />
           <FormControl.Caption>
@@ -46,21 +46,20 @@
     <ComponentDocsSection title="校验状态">
       <template #description>
         <code>FormControl.Validation</code> 支持 <code>error</code> 和 <code>success</code>
-        两种状态；它会显示对应图标，并把状态同步到根容器，从而联动内部
-        <code>.input</code> 与 <code>.textarea</code> 的边框样式。使用时建议放在
+        两种状态；纵向普通输入由 FormControl 读取校验插槽状态。横向输入不渲染校验消息；选择控件在组级校验。使用时建议放在
         <code>FormControl.Caption</code> 上方。
       </template>
       <ComponentDocsDemoBlock :code="validationDemoCode">
         <FormControl>
           <FormControl.Label>发布地址</FormControl.Label>
-          <Input
-            v-model="releaseSlug"
+          <TextInput
+            v-model:value="releaseSlug"
             placeholder="onlikee-app"
           />
           <FormControl.Validation :variant="isReleaseSlugValid ? 'success' : 'error'">
             {{
               isReleaseSlugValid
-                ? '格式正确，根容器已同步 success 状态。'
+                ? '格式正确，输入控件显示 success 状态。'
                 : '仅支持小写字母、数字和连字符，且至少 4 个字符。'
             }}
           </FormControl.Validation>
@@ -73,19 +72,17 @@
 
     <ComponentDocsSection title="灵活组合">
       <template #description>
-        这些子组件只是结构块。你可以在它们之间插入自定义布局或额外信息，而不是依赖固定的 prop 排布。
+        输入控件应作为直接子组件。通过 leadingVisual 和 trailingVisual 添加前后缀；自定义包装组件使用 asSlot 和 useFormControlForwardedProps 接入。
       </template>
       <ComponentDocsDemoBlock :code="compositionDemoCode">
         <FormControl required>
           <FormControl.Label>应用域名前缀</FormControl.Label>
-          <div class="domain-row">
-            <span class="domain-affix">https://</span>
-            <Input
-              v-model="domainPrefix"
-              placeholder="my-app"
-            />
-            <span class="domain-affix">.onlikee.com</span>
-          </div>
+          <TextInput
+            v-model:value="domainPrefix"
+            leading-visual="https://"
+            trailing-visual=".onlikee.com"
+            placeholder="my-app"
+          />
           <FormControl.Caption>
             你可以在结构块之间插入任意自定义内容。
           </FormControl.Caption>
@@ -133,7 +130,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
@@ -152,7 +149,7 @@ const isReleaseSlugValid = computed(() => {
 const basicDemoCode = `<template>
   <FormControl>
     <FormControl.Label>应用名称</FormControl.Label>
-    <Input v-model="appName" placeholder="请输入应用名称" />
+    <TextInput v-model:value="appName" placeholder="请输入应用名称" />
     <FormControl.Caption>将显示在应用卡片和页面标题中。</FormControl.Caption>
   </FormControl>
 </template>
@@ -160,7 +157,7 @@ const basicDemoCode = `<template>
 <script setup lang="ts">
 import { ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 
 const appName = ref('')
 <\/script>`
@@ -168,7 +165,7 @@ const appName = ref('')
 const requiredDemoCode = `<template>
   <FormControl required>
     <FormControl.Label>应用地址前缀</FormControl.Label>
-    <Input v-model="appUrlPrefix" placeholder="onlikee-app" />
+    <TextInput v-model:value="appUrlPrefix" placeholder="onlikee-app" />
     <FormControl.Caption>Label 会自动显示必填标记。</FormControl.Caption>
   </FormControl>
 </template>
@@ -176,7 +173,7 @@ const requiredDemoCode = `<template>
 <script setup lang="ts">
 import { ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 
 const appUrlPrefix = ref('onlikee-app')
 <\/script>`
@@ -184,9 +181,9 @@ const appUrlPrefix = ref('onlikee-app')
 const validationDemoCode = `<template>
   <FormControl>
     <FormControl.Label>发布地址</FormControl.Label>
-    <Input v-model="releaseSlug" placeholder="onlikee-app" />
+    <TextInput v-model:value="releaseSlug" placeholder="onlikee-app" />
     <FormControl.Validation :variant="isReleaseSlugValid ? 'success' : 'error'">
-      {{ isReleaseSlugValid ? '格式正确，根容器已同步 success 状态。' : '仅支持小写字母、数字和连字符，且至少 4 个字符。' }}
+      {{ isReleaseSlugValid ? '格式正确，输入控件显示 success 状态。' : '仅支持小写字母、数字和连字符，且至少 4 个字符。' }}
     </FormControl.Validation>
     <FormControl.Caption>仅支持小写字母、数字和连字符，且至少 4 个字符。</FormControl.Caption>
   </FormControl>
@@ -195,7 +192,7 @@ const validationDemoCode = `<template>
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 
 const releaseSlug = ref('onlikee-app')
 const isReleaseSlugValid = computed(() => /^[a-z0-9-]+$/.test(releaseSlug.value) && releaseSlug.value.length >= 4)
@@ -204,11 +201,7 @@ const isReleaseSlugValid = computed(() => /^[a-z0-9-]+$/.test(releaseSlug.value)
 const compositionDemoCode = `<template>
   <FormControl required>
     <FormControl.Label>应用域名前缀</FormControl.Label>
-    <div class="domain-row">
-      <span class="domain-affix">https://</span>
-      <Input v-model="domainPrefix" placeholder="my-app" />
-      <span class="domain-affix">.onlikee.com</span>
-    </div>
+    <TextInput v-model:value="domainPrefix" leading-visual="https://" trailing-visual=".onlikee.com" placeholder="my-app" />
     <FormControl.Caption>你可以在结构块之间插入任意自定义内容。</FormControl.Caption>
     <p class="demo-preview">预览地址：https://{{ domainPrefix || 'your-app' }}.onlikee.com</p>
   </FormControl>
@@ -217,7 +210,7 @@ const compositionDemoCode = `<template>
 <script setup lang="ts">
 import { ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
-import { Input } from '@/components/primer-vue/Input'
+import { TextInput } from '@/components/primer-vue/TextInput'
 
 const domainPrefix = ref('podcast-hub')
 <\/script>`
@@ -230,6 +223,10 @@ const apiCols: TableColumn[] = [
 ]
 
 const rootPropRows = [
+  { name: 'id', description: '输入控件的 ID；未指定时生成稳定 ID。', type: 'string', default: '自动生成' },
+  { name: 'disabled', description: '禁用输入及标签，并继承选择控件组的禁用状态。', type: 'boolean', default: 'false' },
+  { name: 'layout', description: '普通输入默认纵向；选择控件始终横向。横向普通输入不渲染校验消息。', type: "'vertical' | 'horizontal'", default: "'vertical'" },
+  { name: 'className / style', description: '根容器类名与行内样式；也支持 Vue 的 class 属性。', type: 'string / CSSProperties', default: '—' },
   {
     name: 'required',
     description: '标记当前表单项为必填，并让 FormControl.Label 自动追加 *。',
@@ -248,49 +245,36 @@ const subComponentRows = [
   {
     name: 'FormControl.Label',
     description: '标签区域；读取根组件的 required 上下文并自动显示必填标记。',
-    publicProps: '无'
+    publicProps: 'id、as、htmlFor、visuallyHidden、className、style'
   },
   {
     name: 'FormControl.Validation',
-    description: '校验消息区域；通常放在 Caption 上方，显示状态图标，并把 variant 同步到根容器。',
+    description: '校验消息区域；通常放在 Caption 上方，显示状态图标，FormControl 自动读取 variant。',
     publicProps: '见下方 Validation Props'
   },
   {
     name: 'FormControl.Caption',
     description: '辅助说明区域；通常用于提示、说明或补充文案。',
-    publicProps: '无'
+    publicProps: 'id、className、style'
+  },
+  {
+    name: 'FormControl.LeadingVisual',
+    description: '仅用于 Checkbox 和 Radio 左侧的视觉元素。',
+    publicProps: 'className、style'
   }
 ]
 
 const validationPropRows = [
   {
     name: 'variant',
-    description: '校验信息的视觉状态；同时影响图标、文字颜色和根容器的 data-validation-variant。',
+    description: '校验信息的视觉状态；同时影响图标、文字颜色和纵向普通输入的校验状态。',
     type: "'error' | 'success'",
-    default: "'error'"
+    default: '必填'
   }
 ]
 </script>
 
 <style scoped>
-.domain-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.domain-affix {
-  font-size: 13px;
-  line-height: 1.4;
-  color: var(--fgColor-muted, #656d76);
-}
-
-.domain-row :deep(.input) {
-  flex: 1 1 220px;
-  min-width: 0;
-}
-
 .demo-preview {
   margin: 0;
   font-size: 12px;

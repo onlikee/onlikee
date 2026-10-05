@@ -1,0 +1,79 @@
+# ============================================
+# 行尾（EOL）统一策略
+# ============================================
+# 目标：仓库内（索引 / 提交）与工作区统一使用 LF。
+# 背景：此前依赖 core.autocrlf=true，Windows 与 Linux/CI 之间反复出现
+#       "LF will be replaced by CRLF" 警告，并混入大量行尾差异。
+# 说明：本文件的规则优先级高于 core.autocrlf / core.eol 配置项。
+#       新增或修改文件后无需再手工处理行尾。
+
+# 默认：自动识别文本文件，检出与提交统一为 LF
+* text=auto eol=lf
+
+# ============================================
+# 二进制文件：禁止任何行尾转换与文本 diff
+# ============================================
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.avif  binary
+*.bmp   binary
+*.ico   binary
+*.tiff  binary
+*.pdf   binary
+*.zip   binary
+*.gz    binary
+*.tgz   binary
+*.7z    binary
+*.rar   binary
+*.jar   binary
+*.class binary
+*.exe   binary
+*.dll   binary
+*.so    binary
+*.dylib binary
+*.node  binary
+*.wasm  binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.otf   binary
+*.eot   binary
+*.mp3   binary
+*.mp4   binary
+*.webm  binary
+
+# ============================================
+# 文本文件：显式声明，避免被内容探测误判
+# ============================================
+*.vue        text eol=lf
+*.ts         text eol=lf
+*.tsx        text eol=lf
+*.js         text eol=lf
+*.mjs        text eol=lf
+*.cjs        text eol=lf
+*.css        text eol=lf
+*.scss       text eol=lf
+*.html       text eol=lf
+*.json       text eol=lf
+*.md         text eol=lf
+*.java       text eol=lf
+*.xml        text eol=lf
+*.yml        text eol=lf
+*.yaml       text eol=lf
+*.properties text eol=lf
+*.svg        text eol=lf
+*.txt        text eol=lf
+
+# 锁文件与 CI 脚本：始终 LF
+package-lock.json text eol=lf
+pnpm-lock.yaml    text eol=lf
+yarn.lock         text eol=lf
+*.sh              text eol=lf
+
+# ============================================
+# 语言标注（GitHub Linguist）
+# ============================================
+*.vue linguist-language=Vue

@@ -1,0 +1,73 @@
+/* 移植自 Primer React BaseStyles.module.css（commit 8c0b708fc43a）。
+ * 全局段（box-sizing / body margin / table / color-scheme / focus reset）verbatim 移植，
+ * 仅将 CSS Modules 的 :global(.focus-visible) 语法转为普通 .focus-visible。
+ * .BaseStyles 包装类在本应用中的等价物是 body（应用没有 BaseStyles 包装组件），
+ * 故字体/行高/颜色/低特异性链接默认样式挂在 body 上，语义与源一致。 */
+
+/* -------------------------------- 
+ *           Global Styles         
+ *--------------------------------- */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+[data-color-mode='light'] input {
+  color-scheme: light;
+}
+
+[data-color-mode='dark'] input {
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: light) {
+  [data-color-mode='auto'][data-light-theme*='light'] {
+    color-scheme: light;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-color-mode='auto'][data-dark-theme*='dark'] {
+    color-scheme: dark;
+  }
+}
+
+[role='button']:focus:not(:focus-visible):not(.focus-visible),
+[role='tabpanel'][tabindex='0']:focus:not(:focus-visible):not(.focus-visible),
+button:focus:not(:focus-visible):not(.focus-visible),
+summary:focus:not(:focus-visible):not(.focus-visible),
+a:focus:not(:focus-visible):not(.focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+[tabindex='0']:focus:not(:focus-visible):not(.focus-visible),
+details-dialog:focus:not(:focus-visible):not(.focus-visible) {
+  outline: none;
+}
+
+/* -------------------------------------------------------------------------- */
+
+/* 源 .BaseStyles 包装类 → body */
+body {
+  font-family: var(--BaseStyles-fontFamily, var(--fontStack-system));
+  line-height: var(--BaseStyles-lineHeight, 1.5);
+  color: var(--BaseStyles-fgColor, var(--fgColor-default));
+}
+
+/* Low-specificity default link styling（源为 .BaseStyles 内嵌套 :where(a…)） */
+body :where(a:not([class*='prc-']):not([class*='PRC-']):not([class*='Primer_Brand__'])) {
+  color: var(--fgColor-accent, var(--color-accent-fg));
+  text-decoration: none;
+}
+
+body :where(a:not([class*='prc-']):not([class*='PRC-']):not([class*='Primer_Brand__'])):hover {
+  text-decoration: underline;
+}

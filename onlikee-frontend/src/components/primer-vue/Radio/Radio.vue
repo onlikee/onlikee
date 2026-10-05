@@ -7,10 +7,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, onUpdated, ref, useAttrs } from 'vue'
+import { computed, inject, nextTick, onBeforeUnmount, onMounted, onUpdated, ref, ssrContextKey, useAttrs } from 'vue'
 import type { RadioOptions, RadioEmits } from './types'
 import { registerRadio, restoreRadioGroup } from './controlled'
 import { useRadioGroupContext } from '../RadioGroup/context'
+import { normalizeReactStyle } from '../internal/style'
 
 defineOptions({ name: 'Radio', __SLOT__: Symbol('Radio'), inheritAttrs: false })
 
@@ -28,14 +29,21 @@ const emit = defineEmits<RadioEmits>()
 const input = ref<HTMLInputElement | null>(null)
 const group = useRadioGroupContext()
 const attrs = useAttrs()
+const serverRendering = inject(ssrContextKey, null) !== null
 
 const inputName = computed(() => props.name || group?.name.value)
 
-// React initializes defaultChecked from checked; omit checked in uncontrolled mode.
+// react-dom initWrapperState:1793 initialChecked = checked != null ? checked : defaultChecked；
+// postMountWrapper:1923-1924 双翻把 checked 属性同步为 !!initialChecked（checked 优先）。
+// 旧 Vue 受控分支 `defaultChecked ?? checked` 让显式 defaultChecked 覆盖 checked（审计偏差 9b）。
+// 更新期属性重同步（React 属性停留挂载值）保留为 Vue glue（审计偏差 9a，登记）。
+const initialChecked = computed(() => (props.checked != null ? props.checked : props.defaultChecked) ?? false)
 const selectionAttrs = computed(() =>
-  props.checked === undefined
-    ? { defaultChecked: props.defaultChecked ?? false }
-    : { defaultChecked: props.defaultChecked ?? props.checked, checked: props.checked }
+  serverRendering
+    ? { checked: initialChecked.value }
+    : props.checked === undefined
+    ? { defaultChecked: initialChecked.value }
+    : { defaultChecked: initialChecked.value, checked: props.checked }
 )
 
 function getInputAttrs() {
@@ -49,6 +57,7 @@ function getInputAttrs() {
     'aria-checked': props.checked ? ('true' as const) : ('false' as const),
     ...selectionAttrs.value,
     ...attrs,
+    style: normalizeReactStyle(attrs.style),
     class: [attrs.class, props.className, 'radio-input', 'radio'],
     'data-component': 'Radio'
   }
@@ -75,6 +84,7 @@ onBeforeUnmount(() => unregister?.())
 function onChange(event: Event) {
   group?.onChange(event)
   emit('change', event)
+  emit('update:checked', (event.currentTarget as HTMLInputElement).checked)
   void nextTick(() => {
     if (input.value) restoreRadioGroup(input.value)
   })
@@ -82,6 +92,7 @@ function onChange(event: Event) {
 
 defineExpose({
   input,
+  element: input,
   focus: (options?: FocusOptions) => input.value?.focus(options),
   blur: () => input.value?.blur()
 })
@@ -112,6 +123,8 @@ defineExpose({
 }
 
 .radio {
+  /* 源 Radio.module.css 显式书写 100vh 兜底（postcss-custom-properties-fallback
+     只注入缺失的兜底，不覆盖已有值），按源保留。 */
   border-radius: var(--borderRadius-full, 100vh);
   transition:
     background-color,
