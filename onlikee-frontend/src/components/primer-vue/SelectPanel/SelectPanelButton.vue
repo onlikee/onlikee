@@ -9,13 +9,6 @@ import TooltipElement from '../TooltipV2/TooltipElement.vue'
 import { TOOLTIP_CONTEXT_KEY, type TooltipContextValue } from '../TooltipV2/TooltipContext'
 import type { TooltipDirection, TooltipType } from '../TooltipV2/types'
 
-// Private ButtonBase+IconButton rendering for the SelectPanel subtree.
-// Primer React 8c0b708 对照：
-// - Button/ButtonBase.tsx（内容层级、data-*、aria 组合、ConditionalWrapper、loading 公告）
-// - Button/IconButton.tsx（tooltip 门控、description/keybindingHint/tooltipDirection、hasActivePopup）
-// - TooltipV2/Tooltip.tsx（经 useTooltipController + TooltipElement 复用，审计 M12/M13/M14）
-// Vue 适配：IconButton 的 cloneElement 注入在本组件内以显式绑定完成（触发器即自身按钮元素），
-// 保证 aria-labelledby/describedby 组合顺序与 React ButtonBase 完全一致（审计 L11）。
 defineOptions({ name: 'SelectPanelButton', inheritAttrs: false })
 const props = withDefaults(defineProps<{
   as?: string; type?: 'button' | 'submit' | 'reset'; block?: boolean
@@ -40,22 +33,17 @@ const props = withDefaults(defineProps<{
 const attrs = useAttrs(), slots = useSlots()
 const element = shallowRef<HTMLElement | null>(null), tooltipEl = shallowRef<HTMLElement | null>(null)
 
-// React ButtonBase.tsx:65-66 —— uuid 以用户 id 为种子（审计 M13/L16）
 const uuid = props.id ?? useId()
 const labelId = `${uuid}-label`
 const loadingAnnouncementId = `${uuid}-loading-announcement`
-// React Tooltip.tsx:129 —— tooltipId = useId(id)（IconButton 不传 id）
 const tooltipId = useId()
 
-// React IconButton.tsx:29-41 —— tooltip 门控。
-// Tooltip v1 context 未移植（Vue 侧不存在 v1 Tooltip），仅检测 v2 context。
 const tooltipContext = inject(TOOLTIP_CONTEXT_KEY, undefined)
 const hasExternalTooltip = computed(() => Boolean(tooltipContext?.tooltipId))
 const ariaLabel = computed(() => attrs['aria-label'] as string | undefined)
 const withoutTooltip = computed(() =>
   props.unsafeDisableTooltip || props.disabled || ariaLabel.value === undefined || ariaLabel.value === '' || hasExternalTooltip.value)
 const tooltipEnabled = computed(() => !withoutTooltip.value)
-// React IconButton.tsx:38/58/63-65
 const hasActivePopup = computed(() =>
   (attrs['aria-expanded'] === true || attrs['aria-expanded'] === 'true') && attrs['aria-haspopup'] === 'true')
 const tooltipText = computed(() => props.description ?? ariaLabel.value ?? '')
@@ -78,7 +66,6 @@ const { calculatedDirection, openTooltip, closeTooltip, makeTriggerHandlers } = 
 function setTooltipEl(node: unknown) {
   tooltipEl.value = node instanceof HTMLElement ? node : null
 }
-// React Tooltip.tsx:309 —— Tooltip 渲染时向下提供 context（供嵌套 IconButton 检测外层 tooltip）
 const providedTooltipContext = reactive<TooltipContextValue>({})
 provide(TOOLTIP_CONTEXT_KEY, providedTooltipContext)
 watchEffect(() => {
@@ -88,8 +75,6 @@ watchEffect(() => {
 type FocusHandler = (event: FocusEvent) => void
 type TouchHandler = (event: TouchEvent) => void
 type MouseHandler = (event: MouseEvent) => void
-// React Tooltip.tsx:333-372 注入到触发器的组合事件（originals 动态读 attrs，与 React 每次渲染
-// 重读 child.props 等价）
 const triggerHandlers = makeTriggerHandlers({
   onBlur: event => (attrs.onBlur as FocusHandler | undefined)?.(event),
   onFocus: event => (attrs.onFocus as FocusHandler | undefined)?.(event),
@@ -105,40 +90,29 @@ const tooltipTriggerListeners = computed(() => withoutTooltip.value ? {} : {
   mouseoverCapture: triggerHandlers.onMouseoverCapture,
 })
 
-// React Button.tsx:8 / IconButton.tsx:49,71 / LinkButton.tsx:10 —— 默认 type 语义（审计 L14）
 const effectiveType = computed(() => props.type ?? (props.icon ? 'button' : props.as === 'a' ? undefined : 'button'))
 
 function bindings() {
   if (import.meta.env.DEV && props.notificationIndicator === 'leadingVisual' && !props.leadingVisual) {
-    // React ButtonBase.tsx:71-75（__DEV__）
     console.warn('Button: `notificationIndicator="leadingVisual"` requires a `leadingVisual` prop.')
   }
   const tooltipActive = !withoutTooltip.value
-  // tooltip 激活时 React 由 cloneElement 注入组合值/事件，attrs 中的同名事件键不再直接透传
   const { onBlur: _onBlur, onFocus: _onFocus, onTouchend: _onTouchend, onMouseleave: _onMouseleave, ...restAttrs } =
     attrs as Record<string, unknown>
   const passthrough = tooltipActive ? restAttrs : attrs
-  // aria-labelledby —— React ButtonBase.tsx:122-124：loading ? [uuid-label, ariaLabelledBy] : ariaLabelledBy；
-  // tooltip type='label' 时 cloneElement 以 tooltipId 覆盖 ariaLabelledBy（用户值被丢弃，React Tooltip.tsx:332），
-  // 再叠加 ButtonBase 的 loading 组合 → `${uuid}-label ${tooltipId}`；description 类型不触碰 labelledby
   const ariaLabelledBy = tooltipActive && tooltipType.value === 'label'
     ? (props.loading ? `${labelId} ${tooltipId}` : tooltipId)
     : (props.loading ? [labelId, attrs['aria-labelledby']].filter(Boolean).join(' ') : attrs['aria-labelledby'])
-  // aria-describedby —— React ButtonBase.tsx:69,118 + Tooltip.tsx:316-330（description 类型追加 tooltipId）
   const existingDescribedBy = attrs['aria-describedby'] as string | undefined
   const describedByBase = tooltipActive && tooltipType.value === 'description'
     ? (existingDescribedBy ? `${existingDescribedBy} ${tooltipId}` : tooltipId)
     : existingDescribedBy
   const ariaDescribedBy = [props.loading ? loadingAnnouncementId : undefined, describedByBase].filter(Boolean).join(' ') || undefined
   return {
-    // React ButtonBase.tsx:102-104 —— aria-disabled 默认值位于 {...rest} 之前（JSX 后者获胜，
-    // 用户 attrs 中的 aria-disabled 可覆盖）；Vue 以对象键序镜像该 spread 顺序
     'aria-disabled': props.loading ? true : undefined,
     'data-component': props.icon ? 'IconButton' : 'Button',
-    // React IconButton.tsx:73 —— aria-keyshortcuts 仅 tooltip 分支显式传入（props 中的用户值仍可覆盖）
     ...(tooltipActive ? { 'aria-keyshortcuts': props.keyshortcuts ?? undefined } : {}),
     ...passthrough,
-    // React IconButton.tsx:75 —— description 存在时保留 aria-label，否则由 tooltip 提供标签
     ...(tooltipActive && !props.description ? { 'aria-label': undefined } : {}),
     ...(ariaLabelledBy !== undefined ? { 'aria-labelledby': ariaLabelledBy } : {}),
     'aria-describedby': ariaDescribedBy,
@@ -146,19 +120,15 @@ function bindings() {
   }
 }
 
-// React ConditionalWrapper（ButtonBase.tsx:92-100）：typeof loading !== 'undefined' 时包 div
 const Wrapper = (_props: Record<string, never>, { slots: content }: { slots: Slots }) =>
   props.loading === undefined
     ? content.default?.()
     : h('div', { class: props.block ? 'select-panel-button__conditional-wrapper' : props.variant === 'link' ? 'select-panel-button__conditional-wrapper-link' : undefined, 'data-loading-wrapper': true }, content.default?.())
 
-// React ButtonBase.tsx:155 `{children && ...}` —— 任意 truthy children 都渲染 text span（审计 L15：
-// 不再过滤空白文本节点，仅忽略注释节点；Vue 编译器本身会压缩纯空白子节点，属框架差异）
 function hasContent(nodes: VNode[]): boolean {
   return nodes.some(node => node.type !== Comment)
 }
 
-// React ButtonBase.tsx:77-89（__DEV__）—— 语义元素校验（Vue 适配为挂载期一次性检查）
 onMounted(() => {
   if (!import.meta.env.DEV) return
   const el = element.value
@@ -230,7 +200,6 @@ defineExpose({ element, focus: () => element.value?.focus() })
             class="select-panel-button__label"
             data-component="text"
           ><slot /></span>
-          <!-- React ButtonBase.tsx:160-179 —— count → CounterLabel 占 trailingVisual 位 -->
           <span
             v-if="count !== undefined && !trailingVisual"
             :class="[loading && !leadingVisual ? 'select-panel-button__loading-spinner' : 'select-panel-button__visual-wrap']"
@@ -270,14 +239,12 @@ defineExpose({ element, focus: () => element.value?.focus() })
         /></span>
       </template>
     </component>
-    <!-- React ButtonBase.tsx:195-199 —— loading 公告（VisuallyHidden > AriaStatus） -->
     <VisuallyHidden v-if="loading">
       <AriaStatus :id="loadingAnnouncementId">
         {{ loadingAnnouncement }}
       </AriaStatus>
     </VisuallyHidden>
   </Wrapper>
-  <!-- React IconButton.tsx:59-79 —— tooltip 分支：span 与按钮（或其 loading wrapper）为兄弟节点 -->
   <TooltipElement
     v-if="tooltipEnabled"
     :tooltip-id="tooltipId"

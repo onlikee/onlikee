@@ -58,7 +58,7 @@ export default [
   },
 
   {
-    files: ["**/*.config.{js,cjs,mjs,ts}", "**/scripts/**/*.{js,ts}", "**/*.cjs"],
+    files: ["**/*.config.{js,cjs,mjs,ts}", "**/*.cjs"],
     rules: {
       "@typescript-eslint/no-var-requires": "off",
       "no-console": "off",

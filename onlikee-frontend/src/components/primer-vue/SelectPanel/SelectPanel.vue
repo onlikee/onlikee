@@ -58,7 +58,6 @@ const ownAnchor = shallowRef<HTMLElement | null>(null)
 const anchor = computed(() => props.anchorRef ?? ownAnchor)
 const anchorSettings = computed(() => ({ anchorRef: anchor.value }))
 const focusTrapSettings = { initialFocusRef: input }
-// React SelectPanel.tsx:148-151 —— 覆盖层焦点区禁用，由 FilteredActionList 自管 focus zone
 const focusZoneSettings = { disabled: true }
 const overlay = shallowRef<ComponentPublicInstance<{ element: HTMLElement | null }> | null>(null)
 const filteredList = shallowRef<ComponentPublicInstance<{ input: HTMLInputElement | null; list: HTMLElement | null }> | null>(null)
@@ -75,7 +74,6 @@ const fullscreen = computed(() => fullscreenEnabled.value && narrow.value)
 const loading = computed(() => Boolean(props.loading || (internalLoading.value && !props.message)))
 const loadingType = computed(() => dataLoaded.value ? FilteredActionListLoadingTypes.input : props.initialLoadingType === 'skeleton' ? FilteredActionListLoadingTypes.bodySkeleton : FilteredActionListLoadingTypes.bodySpinner)
 const selectedItems = computed(() => Array.isArray(props.selected) ? props.selected : props.selected ? [props.selected] : [])
-// React references correspond to the underlying objects, rather than Vue proxies.
 const sameReference = (first: ItemInput | undefined, second: ItemInput | undefined) => toRaw(first) === toRaw(second)
 const equal = (first: ItemInput | undefined, second: ItemInput | undefined) => first?.id !== undefined ? first.id === second?.id : sameReference(first, second)
 const includes = (items: ItemInput[], item: ItemInput) => items.some(selected => equal(selected, item))
@@ -314,8 +312,6 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
       :data-variant="variant"
       data-component="SelectPanel"
     >
-      <!-- React SelectPanel.tsx:833-836,916 —— useResponsiveValue 收到 undefined（未启用全屏）时原样返回，
-           data-variant 整体省略；否则 narrow 视口为 fullscreen，其余（含回退）为 anchored -->
       <div
         class="select-panel__header"
         :data-variant="fullscreenEnabled ? (fullscreen ? 'fullscreen' : 'anchored') : undefined"
@@ -498,7 +494,6 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
       </div>
     </div>
   </AnchoredOverlay>
-  <!-- React SelectPanel.tsx:1061 —— Backdrop 是 fragment 内 AnchoredOverlay 之后的原位兄弟节点（未 portal 到 body） -->
   <div
     v-if="open && variant === 'modal'"
     class="select-panel__backdrop"
@@ -507,10 +502,6 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
 </template>
 <style src="./SelectPanel.css" />
 <style scoped>
-/* 源为 Heading.module.css 的 :where(.Heading){margin:0;font-weight:600}（(0,0,0)）。
- * 本应用全局 style.css 有 h1{margin:0.67em 0;font-weight:bold}（(0,0,1)），:where 会被命中，
- * 故提升为类选择器（(0,1,0)）；用 margin-block 而非 margin 简写，
- * 以免覆盖 SelectPanel.css 的 margin-left 与 [data-variant] 规则的 margin-top（(0,2,0) 仍获胜，与源一致）。 */
 .select-panel__title { margin-block: 0; font-weight: var(--base-text-weight-semibold, 600); }
 .select-panel :deep(svg[data-octicon]) { display: inline-block; vertical-align: text-bottom; }
 </style>

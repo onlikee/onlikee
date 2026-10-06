@@ -42,8 +42,8 @@ const progressStyle = computed(() => {
 
 <style scoped>
 .progress-bar__item {
-  width: var(--progress-width);
-  background-color: var(--progress-bg);
+  width: var(--progress-width, 0%);
+  background-color: var(--progress-bg, var(--bgColor-success-emphasis, #1f883d));
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -19,9 +19,6 @@ const { value, commit, setUncontrolledValue } = useInputValue(props, element, (n
 provide(selectValueKey, computed(() => props.value !== undefined || props.defaultValue !== undefined || props.placeholder ? value.value : undefined))
 function nativeAttrs() {
   const { class: _class, style: _style, ...native } = attrs
-  // 源行为：width/minWidth/maxWidth（deprecated 包装器属性）不被 Select 解构，落入 ...rest
-  // 并原样展开到 <select> 上成为原生属性（src/Select/Select.tsx:37-47、59-60）；
-  // TextInputWrapper 不接收它们（Select.tsx:52-58 仅传 block/disabled/size/validationStatus/className）。
   return { ...native, width: props.width, minWidth: props.minWidth, maxWidth: props.maxWidth }
 }
 onMounted(() => {
@@ -74,7 +71,6 @@ defineExpose({ element, input: element, focus: (options?: FocusOptions) => eleme
       </option>
       <SelectNativeOptions><slot /></SelectNativeOptions>
     </select>
-    <!-- 源 Select.tsx:16-29 ArrowIndicatorSVG：aria-hidden/width/height/fill/xmlns，无 viewBox（源即无，怪癖保留）。 -->
     <svg
       aria-hidden="true"
       width="16"
@@ -87,13 +83,6 @@ defineExpose({ element, input: element, focus: (options?: FocusOptions) => eleme
 </template>
 
 <style scoped>
-/* Primer React 8c0b708: src/Select/Select.module.css 逐条移植
-   （.Select → .select-native，.TextInputWrapper → .select-wrapper，.Disabled → .select-disabled，
-   .ArrowIndicator → .select-arrow；兜底值按项目约定对齐 vendored primitives 11.5.1 light，
-   --base-size-4 = 4px）。嵌套规则按项目移植惯例展开为平铺选择器（同 internal TextInputWrapper 移植）。
-   本地钉住偏差（FORM_CONTROL_MIGRATION.md「修正的缺陷与适配」Select 条）：.select-native 保留
-   padding-block: 5px 与 padding-right: 32px !important（箭头净空，审计确认 32px）；
-   源 .Select 无任何 padding 规则，横向 padding 由共享容器按源移植的 padding 链提供（12px）。 */
 .select-native {
   width: 100%;
   /* stylelint-disable-next-line primer/spacing */
@@ -117,14 +106,12 @@ defineExpose({ element, input: element, focus: (options?: FocusOptions) => eleme
   outline: none;
   appearance: none;
 
-  padding-block: 5px; /* 本地钉住偏差（见文件头注释），源无此规则 */
-  padding-right: 32px !important; /* 本地钉住偏差：箭头净空（见文件头注释），源无此规则 */
+  padding-block: 5px;
+  padding-right: 32px !important;
 }
 
-/* 源 .Select 内嵌套 &:disabled（注释 2.）：禁用时用透明背景，避免半透明背景叠色。 */
 .select-native:disabled { background-color: transparent; }
 
-/* 源 .Select 内嵌套注释 3.：Windows 高对比度下 Firefox 维持深色背景。 */
 @media screen and (forced-colors: active) {
   .select-native:disabled { background-color: -moz-combobox; }
 }
@@ -134,8 +121,6 @@ defineExpose({ element, input: element, focus: (options?: FocusOptions) => eleme
   overflow: hidden;
 }
 
-/* 源 .TextInputWrapper forced-colors 块：fill: 'FieldText' 的引号为源文件自带缺陷
-   （非法值，浏览器解析期丢弃），按源怪癖原样保留。 */
 @media screen and (forced-colors: active) {
   .select-wrapper svg {
     /* stylelint-disable-next-line declaration-property-value-no-unknown */
@@ -143,8 +128,6 @@ defineExpose({ element, input: element, focus: (options?: FocusOptions) => eleme
   }
 }
 
-/* 源 .Disabled forced-colors 块（disabled 时与 .select-native 同元素叠加，见模板 class 绑定）。
-   svg 不可能是 select 的后代 → 与源同为永不匹配的死规则，按源原样保留。 */
 @media screen and (forced-colors: active) {
   .select-disabled svg {
     /* stylelint-disable-next-line declaration-property-value-no-unknown */
@@ -152,8 +135,6 @@ defineExpose({ element, input: element, focus: (options?: FocusOptions) => eleme
   }
 }
 
-/* 源 .ArrowIndicator：箭头颜色不设 color，svg fill="currentColor" 继承包装器颜色链
-   （fgColor-default，禁用时 fgColor-disabled），与源一致。 */
 .select-arrow {
   position: absolute;
   top: 50%;

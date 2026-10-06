@@ -12,8 +12,6 @@ import { useChoiceGroupContext } from '../internal/components/CheckboxOrRadioGro
 import InputValidation from '../internal/components/InputValidation.vue'
 import type { RadioGroupValidationProps } from './types'
 defineOptions({ name: 'RadioGroupValidation', __SLOT__: Symbol('RadioGroupValidation') })
-// 源 CheckboxOrRadioGroupValidation.tsx 仅解构 {children, variant}——className 被静默丢弃，
-// 非其 prop 面（审计偏差 13：删除 Vue 超集的 className 支持）。
 defineProps<RadioGroupValidationProps>()
 const context = useChoiceGroupContext()
 </script>

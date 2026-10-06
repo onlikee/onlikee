@@ -295,7 +295,7 @@ const columns: TableColumn[] = [
 const menuRows = [
   { name: '默认插槽', type: 'VNode', default: '—', description: '组合 Button 或 Anchor，以及 Overlay；自身不渲染包装 DOM。' },
   { name: 'open / v-model:open', type: 'boolean', default: '内部状态 false', description: '不传时内部管理；传入后由父组件决定实际状态。' },
-  { name: '@open-change', type: '(open: boolean) => void', default: '—', description: '对应 React onOpenChange；也可配合 :open 更新父组件状态。' },
+  { name: '@open-change', type: '(open: boolean) => void', default: '—', description: '菜单开关变化时触发，可配合 :open 更新父组件状态。' },
   { name: 'anchorRef', type: 'HTMLElement | Ref<HTMLElement | null>', default: '内部触发器', description: '支持外部触发器；通过包含 Ref 的配置对象传递可以跟踪触发器替换。外部元素负责自身开关事件和 ARIA 属性。' }
 ]
 const buttonRows = [
@@ -321,7 +321,7 @@ const overlayRows = [
   <ComponentDocsPage>
     <ComponentDocsHeader
       title="ActionMenu 操作菜单"
-      description="迁移 Primer React ActionMenu，使用 ActionList 组合操作、链接、选择项和嵌套菜单。"
+      description="使用 ActionList 组合操作、链接、选择项和嵌套菜单。"
     />
     <ComponentDocsSection title="基础用法">
       <template #description>

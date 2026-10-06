@@ -8,8 +8,6 @@ import { parseToHsla, parseToRgba } from './color2k'
 import { isTokenInteractive } from './utils'
 import { defaultTokenSize, type TokenSizeKeys } from './types'
 
-/* Primer React 8c0b708 Token/IssueLabelToken.tsx 直译（即便当前应用未消费也保持对齐——
-   用户指令；color2k 依赖已内联移植为 ./color2k）。 */
 export default defineComponent({
   name: 'IssueLabelToken',
   inheritAttrs: false,
@@ -35,7 +33,6 @@ export default defineComponent({
       focus: (options?: FocusOptions) => base.value?.element?.focus(options),
       blur: () => base.value?.element?.blur()
     })
-    // 源 useMemo(customProperties, [fillColor])
     const customProperties = computed(() => {
       const [r, g, b] = parseToRgba(props.fillColor)
       const [hue, s, l] = parseToHsla(props.fillColor)
@@ -56,8 +53,6 @@ export default defineComponent({
       })
       const multipleTargets = interactive && removable && !props.hideRemoveButton
       const interactiveTokenProps = { as: props.as, href: props.href, onClick: attrs.onClick }
-      // style 留在 restAttrs：源 style={customProperties} 位于 {...rest} 之前——
-      // 消费者传 style 时整体覆盖自定义属性（不合并，源怪癖）。
       const { onClick: _onClick, class: _cls, ...restAttrs } = attrs
       return h(TokenBase, {
         ref: base,
@@ -75,7 +70,6 @@ export default defineComponent({
         ...restAttrs
       }, {
         default: () => [
-          // 源：无 VisuallyHidden 移除快捷键说明（与 Token 不同）
           h(TokenTextContainer, { ...(multipleTargets ? interactiveTokenProps : {}) }, {
             default: () => [renderNode(props.text)]
           }),
@@ -96,11 +90,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* Primer React 8c0b708 Token/IssueLabelToken.module.css 直译：@define-mixin
-   lightThemeIssueLabel / darkThemeIssueLabel 按 postcss-mixins 语义在各使用点手工展开
-   （与 React 构建产物一致）。兜底值=primitives 11.5.1 light 实值（§6.3-20）：
-   --borderWidth-thin 0.0625rem≡1px、--base-size-2 0.125rem≡2px、
-   --shadow-resting-medium 官方双层配方。 */
 .issue-label {
   /* Color variables - dynamically set via inline CSS custom properties */
   --label-r: 153;
@@ -109,8 +98,8 @@ export default defineComponent({
   --label-h: 0;
   --label-s: 0;
   --label-l: 60;
-  --perceived-lightness: calc(((var(--label-r) * 0.2126) + (var(--label-g) * 0.7152) + (var(--label-b) * 0.0722)) / 255);
-  --lightness-switch: max(0, min(calc(1 / (var(--lightness-threshold) - var(--perceived-lightness))), 1));
+  --perceived-lightness: calc(((var(--label-r, 153) * 0.2126) + (var(--label-g, 153) * 0.7152) + (var(--label-b, 153) * 0.0722)) / 255);
+  --lightness-switch: max(0, min(calc(1 / (var(--lightness-threshold, 0.6) - var(--perceived-lightness, 0.6))), 1));
   position: relative;
   border-width: var(--borderWidth-thin, 1px);
   border-style: solid;
@@ -119,29 +108,29 @@ export default defineComponent({
   [data-color-mode='auto'][data-light-theme*='light'] .issue-label {
     --lightness-threshold: 0.453;
     --border-threshold: 0.96;
-    --border-alpha: max(0, min(calc((var(--perceived-lightness) - var(--border-threshold)) * 100), 1));
-    background: rgb(var(--label-r), var(--label-g), var(--label-b));
-    color: hsl(0deg, 0%, calc(var(--lightness-switch) * 100%));
-    border-color: hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) - 25) * 1%), var(--border-alpha));
+    --border-alpha: max(0, min(calc((var(--perceived-lightness, 0.6) - var(--border-threshold, 0.96)) * 100), 1));
+    background: rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153));
+    color: hsl(0deg, 0%, calc(var(--lightness-switch, 1) * 100%));
+    border-color: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) - 25) * 1%), var(--border-alpha, 0));
   }
-  [data-color-mode='auto'][data-light-theme*='light'] .issue-label:where([data-selected='true']) { background: hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) - 5) * 1%)); }
-  [data-color-mode='auto'][data-light-theme*='light'] .issue-label:where([data-selected='true'])::after { box-shadow: 0 0 0 2px rgb(var(--label-r), var(--label-g), var(--label-b)); }
+  [data-color-mode='auto'][data-light-theme*='light'] .issue-label:where([data-selected='true']) { background: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) - 5) * 1%)); }
+  [data-color-mode='auto'][data-light-theme*='light'] .issue-label:where([data-selected='true'])::after { box-shadow: 0 0 0 2px rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153)); }
   [data-color-mode='auto'][data-light-theme*='light'] .issue-label:where([data-cursor-is-interactive='true']:hover) {
-    background-image: linear-gradient(rgb(0, 0, 0, 0.15), rgb(0, 0, 0, 0.15)), linear-gradient(rgb(var(--label-r), var(--label-g), var(--label-b)), rgb(var(--label-r), var(--label-g), var(--label-b)));
+    background-image: linear-gradient(rgb(0, 0, 0, 0.15), rgb(0, 0, 0, 0.15)), linear-gradient(rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153)), rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153)));
     box-shadow: var(--shadow-resting-medium, 0 1px 1px 0 #25292e1a, 0 3px 6px 0 #25292e1f);
   }
   [data-color-mode='auto'][data-light-theme*='dark'] .issue-label {
     --lightness-threshold: 0.6;
     --background-alpha: 0.18;
     --border-alpha: 0.3;
-    --lighten-by: calc(((var(--lightness-threshold) - var(--perceived-lightness)) * 100) * var(--lightness-switch));
-    background: rgb(var(--label-r), var(--label-g), var(--label-b), var(--background-alpha));
-    color: hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) + var(--lighten-by)) * 1%));
-    border-color: hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) + var(--lighten-by)) * 1%), var(--border-alpha));
+    --lighten-by: calc(((var(--lightness-threshold, 0.6) - var(--perceived-lightness, 0.6)) * 100) * var(--lightness-switch, 1));
+    background: rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153), var(--background-alpha, 0.18));
+    color: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) + var(--lighten-by, 0)) * 1%));
+    border-color: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) + var(--lighten-by, 0)) * 1%), var(--border-alpha, 0));
   }
-  [data-color-mode='auto'][data-light-theme*='dark'] .issue-label:where([data-selected='true'])::after { box-shadow: 0 0 0 2px hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) + var(--lighten-by)) * 1%)); }
+  [data-color-mode='auto'][data-light-theme*='dark'] .issue-label:where([data-selected='true'])::after { box-shadow: 0 0 0 2px hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) + var(--lighten-by, 0)) * 1%)); }
   [data-color-mode='auto'][data-light-theme*='dark'] .issue-label:where([data-cursor-is-interactive='true']:hover) {
-    background: hsl(var(--label-h), calc(var(--label-s) * 1%), calc(calc(var(--label-l) + 10) * 1%), 0.3);
+    background: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc(calc(var(--label-l, 60) + 10) * 1%), 0.3);
     box-shadow: var(--shadow-resting-medium, 0 1px 1px 0 #25292e1a, 0 3px 6px 0 #25292e1f);
   }
 }
@@ -149,29 +138,29 @@ export default defineComponent({
   [data-color-mode='auto'][data-dark-theme*='light'] .issue-label {
     --lightness-threshold: 0.453;
     --border-threshold: 0.96;
-    --border-alpha: max(0, min(calc((var(--perceived-lightness) - var(--border-threshold)) * 100), 1));
-    background: rgb(var(--label-r), var(--label-g), var(--label-b));
-    color: hsl(0deg, 0%, calc(var(--lightness-switch) * 100%));
-    border-color: hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) - 25) * 1%), var(--border-alpha));
+    --border-alpha: max(0, min(calc((var(--perceived-lightness, 0.6) - var(--border-threshold, 0.96)) * 100), 1));
+    background: rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153));
+    color: hsl(0deg, 0%, calc(var(--lightness-switch, 1) * 100%));
+    border-color: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) - 25) * 1%), var(--border-alpha, 0));
   }
-  [data-color-mode='auto'][data-dark-theme*='light'] .issue-label:where([data-selected='true']) { background: hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) - 5) * 1%)); }
-  [data-color-mode='auto'][data-dark-theme*='light'] .issue-label:where([data-selected='true'])::after { box-shadow: 0 0 0 2px rgb(var(--label-r), var(--label-g), var(--label-b)); }
+  [data-color-mode='auto'][data-dark-theme*='light'] .issue-label:where([data-selected='true']) { background: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) - 5) * 1%)); }
+  [data-color-mode='auto'][data-dark-theme*='light'] .issue-label:where([data-selected='true'])::after { box-shadow: 0 0 0 2px rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153)); }
   [data-color-mode='auto'][data-dark-theme*='light'] .issue-label:where([data-cursor-is-interactive='true']:hover) {
-    background-image: linear-gradient(rgb(0, 0, 0, 0.15), rgb(0, 0, 0, 0.15)), linear-gradient(rgb(var(--label-r), var(--label-g), var(--label-b)), rgb(var(--label-r), var(--label-g), var(--label-b)));
+    background-image: linear-gradient(rgb(0, 0, 0, 0.15), rgb(0, 0, 0, 0.15)), linear-gradient(rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153)), rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153)));
     box-shadow: var(--shadow-resting-medium, 0 1px 1px 0 #25292e1a, 0 3px 6px 0 #25292e1f);
   }
   [data-color-mode='auto'][data-dark-theme*='dark'] .issue-label {
     --lightness-threshold: 0.6;
     --background-alpha: 0.18;
     --border-alpha: 0.3;
-    --lighten-by: calc(((var(--lightness-threshold) - var(--perceived-lightness)) * 100) * var(--lightness-switch));
-    background: rgb(var(--label-r), var(--label-g), var(--label-b), var(--background-alpha));
-    color: hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) + var(--lighten-by)) * 1%));
-    border-color: hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) + var(--lighten-by)) * 1%), var(--border-alpha));
+    --lighten-by: calc(((var(--lightness-threshold, 0.6) - var(--perceived-lightness, 0.6)) * 100) * var(--lightness-switch, 1));
+    background: rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153), var(--background-alpha, 0.18));
+    color: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) + var(--lighten-by, 0)) * 1%));
+    border-color: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) + var(--lighten-by, 0)) * 1%), var(--border-alpha, 0));
   }
-  [data-color-mode='auto'][data-dark-theme*='dark'] .issue-label:where([data-selected='true'])::after { box-shadow: 0 0 0 2px hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) + var(--lighten-by)) * 1%)); }
+  [data-color-mode='auto'][data-dark-theme*='dark'] .issue-label:where([data-selected='true'])::after { box-shadow: 0 0 0 2px hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) + var(--lighten-by, 0)) * 1%)); }
   [data-color-mode='auto'][data-dark-theme*='dark'] .issue-label:where([data-cursor-is-interactive='true']:hover) {
-    background: hsl(var(--label-h), calc(var(--label-s) * 1%), calc(calc(var(--label-l) + 10) * 1%), 0.3);
+    background: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc(calc(var(--label-l, 60) + 10) * 1%), 0.3);
     box-shadow: var(--shadow-resting-medium, 0 1px 1px 0 #25292e1a, 0 3px 6px 0 #25292e1f);
   }
 }
@@ -179,15 +168,15 @@ export default defineComponent({
 [data-color-mode='light'] .issue-label {
   --lightness-threshold: 0.453;
   --border-threshold: 0.96;
-  --border-alpha: max(0, min(calc((var(--perceived-lightness) - var(--border-threshold)) * 100), 1));
-  background: rgb(var(--label-r), var(--label-g), var(--label-b));
-  color: hsl(0deg, 0%, calc(var(--lightness-switch) * 100%));
-  border-color: hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) - 25) * 1%), var(--border-alpha));
+  --border-alpha: max(0, min(calc((var(--perceived-lightness, 0.6) - var(--border-threshold, 0.96)) * 100), 1));
+  background: rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153));
+  color: hsl(0deg, 0%, calc(var(--lightness-switch, 1) * 100%));
+  border-color: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) - 25) * 1%), var(--border-alpha, 0));
 }
-[data-color-mode='light'] .issue-label:where([data-selected='true']) { background: hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) - 5) * 1%)); }
-[data-color-mode='light'] .issue-label:where([data-selected='true'])::after { box-shadow: 0 0 0 2px rgb(var(--label-r), var(--label-g), var(--label-b)); }
+[data-color-mode='light'] .issue-label:where([data-selected='true']) { background: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) - 5) * 1%)); }
+[data-color-mode='light'] .issue-label:where([data-selected='true'])::after { box-shadow: 0 0 0 2px rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153)); }
 [data-color-mode='light'] .issue-label:where([data-cursor-is-interactive='true']:hover) {
-  background-image: linear-gradient(rgb(0, 0, 0, 0.15), rgb(0, 0, 0, 0.15)), linear-gradient(rgb(var(--label-r), var(--label-g), var(--label-b)), rgb(var(--label-r), var(--label-g), var(--label-b)));
+  background-image: linear-gradient(rgb(0, 0, 0, 0.15), rgb(0, 0, 0, 0.15)), linear-gradient(rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153)), rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153)));
   box-shadow: var(--shadow-resting-medium, 0 1px 1px 0 #25292e1a, 0 3px 6px 0 #25292e1f);
 }
 /* Dark mode styles */
@@ -195,14 +184,14 @@ export default defineComponent({
   --lightness-threshold: 0.6;
   --background-alpha: 0.18;
   --border-alpha: 0.3;
-  --lighten-by: calc(((var(--lightness-threshold) - var(--perceived-lightness)) * 100) * var(--lightness-switch));
-  background: rgb(var(--label-r), var(--label-g), var(--label-b), var(--background-alpha));
-  color: hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) + var(--lighten-by)) * 1%));
-  border-color: hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) + var(--lighten-by)) * 1%), var(--border-alpha));
+  --lighten-by: calc(((var(--lightness-threshold, 0.6) - var(--perceived-lightness, 0.6)) * 100) * var(--lightness-switch, 1));
+  background: rgb(var(--label-r, 153), var(--label-g, 153), var(--label-b, 153), var(--background-alpha, 0.18));
+  color: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) + var(--lighten-by, 0)) * 1%));
+  border-color: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) + var(--lighten-by, 0)) * 1%), var(--border-alpha, 0));
 }
-[data-color-mode='dark'] .issue-label:where([data-selected='true'])::after { box-shadow: 0 0 0 2px hsl(var(--label-h), calc(var(--label-s) * 1%), calc((var(--label-l) + var(--lighten-by)) * 1%)); }
+[data-color-mode='dark'] .issue-label:where([data-selected='true'])::after { box-shadow: 0 0 0 2px hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc((var(--label-l, 60) + var(--lighten-by, 0)) * 1%)); }
 [data-color-mode='dark'] .issue-label:where([data-cursor-is-interactive='true']:hover) {
-  background: hsl(var(--label-h), calc(var(--label-s) * 1%), calc(calc(var(--label-l) + 10) * 1%), 0.3);
+  background: hsl(var(--label-h, 0), calc(var(--label-s, 0) * 1%), calc(calc(var(--label-l, 60) + 10) * 1%), 0.3);
   box-shadow: var(--shadow-resting-medium, 0 1px 1px 0 #25292e1a, 0 3px 6px 0 #25292e1f);
 }
 /* Selected state */

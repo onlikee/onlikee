@@ -1,4 +1,3 @@
-/* Primer React ActionBar.module.css: single clipped row, wrapped overflow, atomic groups. */
 .action-bar {
   display: flex;
   min-width: 0;
@@ -16,9 +15,9 @@
   max-width: 100%;
   margin-bottom: -1px;
   align-items: flex-start;
-  gap: var(--actionbar-gap);
+  gap: var(--actionbar-gap, var(--stack-gap-condensed, 8px));
   overflow: hidden;
-  height: var(--actionbar-height);
+  height: var(--actionbar-height, var(--control-medium-size, 32px));
   contain: layout;
   animation: action-bar-detect-overflow linear;
   animation-timeline: scroll(self block);
@@ -37,7 +36,7 @@
   overflow: hidden;
   contain: layout;
 }
-.action-bar-overflow-spacer { height: var(--actionbar-height); }
+.action-bar-overflow-spacer { height: var(--actionbar-height, var(--control-medium-size, 32px)); }
 .action-bar-group { display: flex; gap: inherit; }
 .action-bar-divider::before {
   display: block;
@@ -45,7 +44,7 @@
   height: var(--base-size-20, 20px);
   content: '';
   background: var(--borderColor-muted, #d1d9e0b3);
-  margin-top: calc((var(--actionbar-height) - var(--base-size-20, 20px)) / 2);
+  margin-top: calc((var(--actionbar-height, var(--control-medium-size, 32px)) - var(--base-size-20, 20px)) / 2);
 }
 .action-bar-list .action-bar-more { display: var(--morebutton-display, none); flex-shrink: 0; }
 .action-bar-list [aria-disabled='true'] { color: var(--control-fgColor-disabled, #818b98); cursor: not-allowed; }

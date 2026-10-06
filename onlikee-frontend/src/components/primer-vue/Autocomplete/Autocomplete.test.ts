@@ -97,7 +97,6 @@ describe('Autocomplete source contract', () => {
     expect(input.attributes('aria-activedescendant')).toBe('zero')
     await input.trigger('keydown', { key: 'ArrowDown' }); await tick()
     expect(input.attributes('aria-activedescendant')).toBe('one')
-    // M-2 pin：可编辑输入中 Home/End 被 zone 忽略（focus-zone.mjs:87-89），高亮不动
     await input.trigger('keydown', { key: 'End' }); await tick()
     expect(input.attributes('aria-activedescendant')).toBe('one')
     await input.trigger('keydown', { key: 'Home' }); await tick()
@@ -108,7 +107,7 @@ describe('Autocomplete source contract', () => {
     await input.trigger('keydown', { key: 'ArrowUp', ctrlKey: true }); await tick()
     expect(input.attributes('aria-activedescendant')).toBe('zero')
     await input.trigger('keydown', { key: 'ArrowUp' }); await tick()
-    expect(input.attributes('aria-activedescendant')).toBe('twenty') // focusOutBehavior:'wrap'（AutocompleteMenu.tsx:290）
+    expect(input.attributes('aria-activedescendant')).toBe('twenty')
   })
 
   it('still highlights disabled items while blocking their selection', async () => {
@@ -117,11 +116,10 @@ describe('Autocomplete source contract', () => {
     element.focus()
     await input.trigger('keydown', { key: 'ArrowDown' }); await tick()
     await input.trigger('keydown', { key: 'ArrowDown' }); await tick()
-    // M-5 pin：AutocompleteMenu.tsx:292-294 focusableElementFilter 仅排除 input —— 禁用项同样可高亮
     expect(input.attributes('aria-activedescendant')).toBe('b')
     expect(document.querySelector<HTMLElement>('[role="option"][id="b"]')!.getAttribute('data-is-disabled')).toBe('true')
     await input.trigger('keypress', { key: 'Enter' }); await tick()
-    expect(selected).not.toHaveBeenCalled() // Item.tsx:186-192 guard 拦截禁用项
+    expect(selected).not.toHaveBeenCalled()
     expect(input.attributes('aria-expanded')).toBe('true')
   })
 
@@ -189,7 +187,6 @@ describe('Autocomplete source contract', () => {
     await input.trigger('keydown', { key: 'Escape' }); await tick()
     expect(element.value).toBe('')
     expect(input.attributes('aria-expanded')).toBe('false')
-    // M-3 pin：清空以输入框 DOM value 非空为门（AutocompleteInput.tsx:104-110）；空值时 Escape 不再触发清空逻辑
     await input.trigger('keydown', { key: 'Escape' }); await tick()
     expect(element.value).toBe('')
   })
@@ -244,9 +241,9 @@ describe('Autocomplete source contract', () => {
     expect(input.attributes('aria-expanded')).toBe('true')
     expect(wrapper.get('[role="option"][id="one"]').attributes('aria-selected')).toBe('true')
     const ul = document.querySelector('[data-component="Autocomplete.Menu"]')!
-    expect(ul.getAttribute('data-dividers')).toBe('false') // List.tsx:119 —— showDividers=false → 字面量 "false"
-    expect(ul.getAttribute('data-variant')).toBe('inset') // List.tsx:120 —— 默认 variant
-    expect(ul.hasAttribute('aria-multiselectable')).toBe(false) // M-9 pin：源 ActionList 从不渲染 aria-multiselectable
+    expect(ul.getAttribute('data-dividers')).toBe('false')
+    expect(ul.getAttribute('data-variant')).toBe('inset')
+    expect(ul.hasAttribute('aria-multiselectable')).toBe(false)
     await wrapper.get('[role="option"][id="one"]').trigger('click'); await tick()
     expect(ids.value).toEqual([])
     expect(selected).toHaveBeenLastCalledWith([])
@@ -258,7 +255,6 @@ describe('Autocomplete source contract', () => {
     element.focus()
     await input.trigger('keydown', { key: 'ArrowDown' }); await tick()
     document.querySelector<HTMLElement>('[role="option"][id="two"]')!.click(); await tick()
-    // AutocompleteMenu.tsx:184-187 —— pair 语义不区分 variant：other=['one'] → newIds=['one','two']（源怪癖，非替换）
     expect(ids).toHaveBeenCalledWith(['one', 'two'])
   })
 
@@ -295,7 +291,6 @@ describe('Autocomplete source contract', () => {
     const { input, wrapper } = setup({}, { items: [{ id: 'node', text: 'Node', children: Label, description: Description }] }, false)
     await input.trigger('keydown', { key: 'ArrowDown' }); await tick()
     expect(wrapper.get('#node strong').text()).toBe('Node label')
-    // M-11 pin：description 非源 slot（Item.tsx:86-104 不解构），组件值被 React DOM 跳过 → 不渲染
     expect(wrapper.find('#node small').exists()).toBe(false)
     const empty = mount(Autocomplete, { slots: { default: () => [
       h(Autocomplete.Input), h(Autocomplete.Menu, { items: [], selectedItemIds: [], 'aria-labelledby': 'label', emptyStateText: Description }, { emptyState: () => 'Slot text' })
@@ -316,11 +311,9 @@ describe('Autocomplete source contract', () => {
     const { input, wrapper } = setup({}, { items: sourceItems, onSelectedChange: selected }, false)
     await input.trigger('keydown', { key: 'ArrowDown' }); await tick()
     const inactive = wrapper.get('#inactive')
-    // Item.tsx:239-245 —— aria-describedby 只含 warning id（M-11：description 非 slot）；
-    // 字符串 description 作为原始属性落到 li（Item.tsx:86-104 不解构 → :282 spread；React DOM 渲染原始值属性）
     expect(inactive.attributes('aria-describedby')).toBe('inactive--warning-message')
     expect(inactive.attributes('description')).toBe('Details')
-    expect(inactive.attributes('data-has-description')).toBe('false') // Item.tsx:332 —— 字面量 "false"（M-10）
+    expect(inactive.attributes('data-has-description')).toBe('false')
     expect(inactive.text()).toContain('Requires permission')
     expect(inactive.get('[data-component="ActionList.Item.Label"]').text()).not.toContain('Loading')
     expect(inactive.attributes('data-loading')).toBeUndefined()
@@ -336,7 +329,6 @@ describe('Autocomplete source contract', () => {
     expect(selected).not.toHaveBeenCalled()
     const danger = wrapper.get('#danger')
     expect(danger.attributes('data-variant')).toBe('danger')
-    // Item.tsx:341-343 —— data-size 在内层 ActionListContent div（M-10）；Item.tsx:254 —— tabIndex 渲染为 0
     expect(danger.attributes('data-size')).toBeUndefined()
     expect(danger.get('.autocomplete-menu__content').attributes('data-size')).toBe('large')
     expect(danger.attributes('tabindex')).toBe('0')

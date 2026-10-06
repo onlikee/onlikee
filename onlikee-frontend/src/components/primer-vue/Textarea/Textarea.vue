@@ -16,8 +16,6 @@ const { value, input, compositionStart, compositionEnd } = useInputValue(props, 
   emit('update:value', next)
   emit('change', event)
 })
-// 源 Textarea.tsx:105-107：isControlled = value !== undefined；受控长度取原始 prop
-// String(value).length（null → 'null' → 4 怪癖），非受控取跟踪长度（审计偏差 8）。
 const counter = useCharacterCounter(() => props.value === undefined ? value.value.length : String(props.value).length, () => props.characterLimit)
 const validation = computed(() => counter.value?.isOverLimit ? 'error' : props.validationStatus)
 const counterId = useId()
@@ -29,10 +27,7 @@ function nativeAttrs() {
 }
 const textareaStyle = computed(() => normalizeStyle(normalizeReactStyle([{ minHeight: props.minHeight, maxHeight: props.maxHeight }, props.style, attrs.style])) as CSSProperties)
 const autoSizeEnabled = computed(() => 'data-auto-size' in attrs ? attrs['data-auto-size'] === true || attrs['data-auto-size'] === 'true' : props.autoSize)
-/* 文档化适配：源 autoSize 为纯 CSS（field-sizing: content），零 JS 干预。
-   JS 自动高度仅在浏览器不支持 field-sizing 时执行（与迁移文档登记一致）；
-   autoSize 关闭时不触碰 height——保留 UA 拖拽 resize 写入的内联高度（源行为），
-   仅当 JS 曾写过内联高度且 autoSize 被关闭时，一次性恢复调用方显式高度。 */
+/* 浏览器不支持 field-sizing 时才使用自动高度计算；关闭自动高度后恢复调用方显式高度，并保留原生拖拽调整。 */
 const supportsFieldSizing = typeof CSS !== 'undefined' && typeof CSS.supports === 'function' && CSS.supports('field-sizing', 'content')
 let jsAutoSized = false
 function resizeToContent() {
@@ -98,14 +93,11 @@ defineExpose({ element, input: element, focus: (options?: FocusOptions) => eleme
     :counter-id="counterId"
     :static-message-id="staticMessageId"
   />
-  <!-- 源怪癖镜像：React `{characterLimit && ...}` 在 characterLimit=0 时渲染游离 "0" 文本节点。 -->
   <template v-else-if="typeof characterLimit === 'number' && !characterLimit">{{ characterLimit }}</template>
 </template>
 
 <style scoped>
-/* Primer React 8c0b708: Textarea.module.css 移植。padding 12px 按源由
-   TextInputWrapper 的 `> textarea` 规则提供；line-height 不继承（源仅 inherit family/size）。
-   autoSize 的 JS 兜底为文档化适配（field-sizing 不支持时），样式层保持源定义。 */
+/* 浏览器不支持 field-sizing 时才使用自动高度计算；关闭自动高度后恢复调用方显式高度，并保留原生拖拽调整。 */
 .textarea-native { width: 100%; font-family: inherit; font-size: inherit; color: inherit; resize: both; background-color: transparent; border: 0; appearance: none; }
 .textarea-native:focus { outline: 0; }
 .textarea-native[data-resize='none'] { resize: none; }

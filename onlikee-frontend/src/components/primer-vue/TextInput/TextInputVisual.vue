@@ -16,7 +16,6 @@ defineProps<{ id?: string; position: 'leading' | 'trailing'; hasVisual: boolean;
       :id="id"
       class="visual-box"
     >
-      <!-- 源恒挂显式可见性类（SpinnerHidden/SpinnerVisible 双向切换），非仅单向 hidden。 -->
       <div
         v-if="hasVisual"
         :class="showLoading ? 'visual-hidden' : 'visual-visible'"

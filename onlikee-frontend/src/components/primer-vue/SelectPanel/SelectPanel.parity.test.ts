@@ -8,8 +8,6 @@ import { SelectPanel } from './index'
 import { FeatureFlags } from '../FeatureFlags'
 import type { ItemInput } from './index'
 
-// Behavioral oracle: local Primer React 8c0b708, SelectPanel.tsx.
-// React SelectPanel.test.tsx:100 同款 jsdom 环境补齐（behaviors scrollIntoView 需要 Element.scrollTo）
 globalThis.Element.prototype.scrollTo = vi.fn()
 const options: ItemInput[] = [{ id: 0, text: 'Zero' }, { id: 'two', text: 'Two' }]
 const wrappers: VueWrapper[] = []
@@ -31,7 +29,7 @@ afterEach(() => {
   document.body.style.overflow = ''
   vi.restoreAllMocks(); vi.useRealTimers()
 })
-describe('SelectPanel strict source parity', () => {
+describe('SelectPanel behavior', () => {
   it.each(['same', 'copy', 'proxy'] as const)('anchored toggle uses reference identity with %s selection', async kind => {
     const selected = kind === 'copy' ? { ...options[0] } : kind === 'proxy' ? reactive(options[0]! as object) as ItemInput : options[0]
     const wrapper = render(SelectPanel, { selected })

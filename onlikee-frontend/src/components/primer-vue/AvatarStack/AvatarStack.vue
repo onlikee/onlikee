@@ -99,21 +99,21 @@ const RenderStack = () => {
 <style scoped>
 .avatar-stack {
   --avatar-border-width: 1px;
-  --mask-size: calc(100% + var(--avatar-border-width) * 2);
+  --mask-size: calc(100% + var(--avatar-border-width, 1px) * 2);
   --mask-start: -1;
   --opacity-step: 15%;
-  --overlap-size: calc(var(--avatar-stack-size) * 0.55);
-  --overlap-size-avatar-three-plus: calc(var(--avatar-stack-size) * 0.85);
+  --overlap-size: calc(var(--avatar-stack-size, 20px) * 0.55);
+  --overlap-size-avatar-three-plus: calc(var(--avatar-stack-size, 20px) * 0.85);
 
   position: relative;
   display: flex;
-  min-width: var(--avatar-stack-size);
-  height: var(--avatar-stack-size);
+  min-width: var(--avatar-stack-size, 20px);
+  height: var(--avatar-stack-size, 20px);
   isolation: isolate;
 }
 
 .avatar-stack[data-variant='stack'] {
-  --overlap-size-avatar-three-plus: calc(var(--avatar-stack-size) * 0.55);
+  --overlap-size-avatar-three-plus: calc(var(--avatar-stack-size, 20px) * 0.55);
 }
 
 .avatar-stack[data-align-right] {
@@ -123,23 +123,23 @@ const RenderStack = () => {
 }
 
 .avatar-stack[data-avatar-count='2'] {
-  min-width: calc(var(--avatar-stack-size) + var(--avatar-stack-size) - var(--overlap-size));
+  min-width: calc(var(--avatar-stack-size, 20px) + var(--avatar-stack-size, 20px) - var(--overlap-size, calc(var(--avatar-stack-size, 20px) * 0.55)));
 }
 
 .avatar-stack[data-avatar-count='3'][data-variant='cascade'] {
-  min-width: calc(var(--avatar-stack-size) * 3 - var(--overlap-size) - var(--overlap-size-avatar-three-plus));
+  min-width: calc(var(--avatar-stack-size, 20px) * 3 - var(--overlap-size, calc(var(--avatar-stack-size, 20px) * 0.55)) - var(--overlap-size-avatar-three-plus, calc(var(--avatar-stack-size, 20px) * 0.85)));
 }
 
 .avatar-stack[data-avatar-count='3'][data-variant='stack'] {
-  min-width: calc(var(--avatar-stack-size) + (var(--avatar-stack-size) - var(--overlap-size-avatar-three-plus)) * 2);
+  min-width: calc(var(--avatar-stack-size, 20px) + (var(--avatar-stack-size, 20px) - var(--overlap-size-avatar-three-plus, calc(var(--avatar-stack-size, 20px) * 0.85))) * 2);
 }
 
 .avatar-stack[data-avatar-count='3+'][data-variant='cascade'] {
-  min-width: calc(var(--avatar-stack-size) * 4 - var(--overlap-size) - var(--overlap-size-avatar-three-plus) * 2);
+  min-width: calc(var(--avatar-stack-size, 20px) * 4 - var(--overlap-size, calc(var(--avatar-stack-size, 20px) * 0.55)) - var(--overlap-size-avatar-three-plus, calc(var(--avatar-stack-size, 20px) * 0.85)) * 2);
 }
 
 .avatar-stack[data-avatar-count='3+'][data-variant='stack'] {
-  min-width: calc(var(--avatar-stack-size) + (var(--avatar-stack-size) - var(--overlap-size-avatar-three-plus)) * 3);
+  min-width: calc(var(--avatar-stack-size, 20px) + (var(--avatar-stack-size, 20px) - var(--overlap-size-avatar-three-plus, calc(var(--avatar-stack-size, 20px) * 0.85))) * 3);
 }
 
 .avatar-stack :deep(.avatar-stack-body) {
@@ -152,12 +152,12 @@ const RenderStack = () => {
 }
 
 .avatar-stack :deep(.avatar-stack-item) {
-  --avatarSize-regular: var(--avatar-stack-size);
+  --avatarSize-regular: var(--avatar-stack-size, 20px);
 
   position: relative;
   display: flex;
-  width: var(--avatar-stack-size);
-  height: var(--avatar-stack-size);
+  width: var(--avatar-stack-size, 20px);
+  height: var(--avatar-stack-size, 20px);
   overflow: hidden;
   flex-shrink: 0;
   transition: margin 0.2s ease-in-out, opacity 0.2s ease-in-out, mask-position 0.2s ease-in-out, mask-size 0.2s ease-in-out;
@@ -168,7 +168,7 @@ const RenderStack = () => {
 }
 
 .avatar-stack[data-shape='circle'] :deep(img.avatar-stack-item) {
-  box-shadow: 0 0 0 var(--avatar-border-width) transparent;
+  box-shadow: 0 0 0 var(--avatar-border-width, 1px) transparent;
 }
 
 .avatar-stack[data-shape='square'] :deep(img.avatar-stack-item) {
@@ -180,7 +180,7 @@ const RenderStack = () => {
 }
 
 .avatar-stack[data-avatar-count='1'][data-shape='circle'] :deep(.avatar-stack-item[data-component='Avatar']) {
-  box-shadow: 0 0 0 var(--avatar-border-width) var(--avatar-borderColor, #1f232826);
+  box-shadow: 0 0 0 var(--avatar-border-width, 1px) var(--avatar-borderColor, #1f232826);
 }
 
 .avatar-stack[data-avatar-count='1'][data-shape='square'] :deep(.avatar-stack-item) {
@@ -196,11 +196,11 @@ const RenderStack = () => {
 }
 
 .avatar-stack :deep(.avatar-stack-item:nth-child(n + 2)) {
-  margin-inline-start: calc(var(--overlap-size) * -1);
+  margin-inline-start: calc(var(--overlap-size, calc(var(--avatar-stack-size, 20px) * 0.55)) * -1);
   mask-repeat: no-repeat, no-repeat;
-  mask-size: var(--mask-size) var(--mask-size), auto;
+  mask-size: var(--mask-size, calc(100% + var(--avatar-border-width, 1px) * 2)) var(--mask-size, calc(100% + var(--avatar-border-width, 1px) * 2)), auto;
   mask-composite: exclude;
-  mask-position: calc((var(--avatar-stack-size) - var(--overlap-size)) * var(--mask-start) - var(--avatar-border-width)) center, 0 0;
+  mask-position: calc((var(--avatar-stack-size, 20px) - var(--overlap-size, calc(var(--avatar-stack-size, 20px) * 0.55))) * var(--mask-start, -1) - var(--avatar-border-width, 1px)) center, 0 0;
   padding: 0.1px;
 }
 
@@ -213,17 +213,17 @@ const RenderStack = () => {
 }
 
 .avatar-stack[data-variant='cascade'] :deep(.avatar-stack-item:nth-child(n + 3)) {
-  --overlap-size: var(--overlap-size-avatar-three-plus);
+  --overlap-size: var(--overlap-size-avatar-three-plus, calc(var(--avatar-stack-size, 20px) * 0.85));
 
-  opacity: calc(100% - 2 * var(--opacity-step));
+  opacity: calc(100% - 2 * var(--opacity-step, 15%));
 }
 
 .avatar-stack[data-variant='cascade'] :deep(.avatar-stack-item:nth-child(n + 4)) {
-  opacity: calc(100% - 3 * var(--opacity-step));
+  opacity: calc(100% - 3 * var(--opacity-step, 15%));
 }
 
 .avatar-stack[data-variant='cascade'] :deep(.avatar-stack-item:nth-child(n + 5)) {
-  opacity: calc(100% - 4 * var(--opacity-step));
+  opacity: calc(100% - 4 * var(--opacity-step, 15%));
 }
 
 .avatar-stack :deep(.avatar-stack-item:nth-child(1)) { z-index: 5; }
@@ -249,7 +249,7 @@ const RenderStack = () => {
   margin-inline-start: var(--base-size-4, 4px);
   visibility: visible;
   opacity: 1;
-  mask-position: calc(var(--avatar-stack-size) * var(--mask-start)) center, 0 0;
+  mask-position: calc(var(--avatar-stack-size, 20px) * var(--mask-start, -1)) center, 0 0;
 }
 
 .avatar-stack :deep(.avatar-stack-body:not([data-disable-expand]):is(:hover, :focus-within) .avatar-stack-item:first-child) {
@@ -258,27 +258,27 @@ const RenderStack = () => {
 
 /* Keep placeholder text and linked avatars at the effective stack size. */
 .avatar-stack :deep(.avatar-placeholder) {
-  font-size: calc(var(--avatar-stack-size) * 0.35);
+  font-size: calc(var(--avatar-stack-size, 20px) * 0.35);
 }
 
 .avatar-stack :deep(.avatar-stack-item [data-component='Avatar']) {
-  width: var(--avatar-stack-size);
-  height: var(--avatar-stack-size);
+  width: var(--avatar-stack-size, 20px);
+  height: var(--avatar-stack-size, 20px);
 }
 
 .avatar-stack[data-shape='square'] :deep(.avatar-stack-item) {
-  border-radius: clamp(4px, calc(var(--avatar-stack-size) - 24px), var(--borderRadius-medium, 6px));
+  border-radius: clamp(4px, calc(var(--avatar-stack-size, 20px) - 24px), var(--borderRadius-medium, 6px));
 }
 
 @media (width < 768px) {
-  .avatar-stack[data-responsive] { --avatar-stack-size: var(--stackSize-narrow); }
+  .avatar-stack[data-responsive] { --avatar-stack-size: var(--stackSize-narrow, 20px); }
 }
 
 @media (min-width: 768px) {
-  .avatar-stack[data-responsive] { --avatar-stack-size: var(--stackSize-regular); }
+  .avatar-stack[data-responsive] { --avatar-stack-size: var(--stackSize-regular, 20px); }
 }
 
 @media (min-width: 1400px) {
-  .avatar-stack[data-responsive] { --avatar-stack-size: var(--stackSize-wide); }
+  .avatar-stack[data-responsive] { --avatar-stack-size: var(--stackSize-wide, 20px); }
 }
 </style>

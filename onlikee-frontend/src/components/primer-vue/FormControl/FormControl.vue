@@ -19,7 +19,6 @@ import LeadingVisual from './FormControlLeadingVisual.vue'
 import { normalizeReactStyle } from '../internal/style'
 
 const expectedInputs = [Autocomplete, Checkbox, Radio, Select, TextInput, TextInputWithTokens, Textarea, SelectPanel]
-// 源 FormControl.tsx:158 horizontal 分支只以 [Checkbox, Radio] 作剩余子节点过滤。
 const choiceInputs = [Checkbox, Radio]
 const matches = (child: VNode, component: Component) => child.type === component || isSlot(child, component)
 const truthyBoolean = (value: unknown) => value === '' || Boolean(value)
@@ -89,9 +88,6 @@ const FormControl = defineComponent({
         'aria-describedby': [state.validationMessageId, state.captionId].filter(Boolean).join(' '),
         ...input.props
       }) : null
-      // 审计偏差 5：源 horizontal 分支只剔除 Checkbox/Radio（FormControl.tsx:155-159），
-      // vertical 分支剔除全部 expectedInputs（:222-228）。旧 Vue 两分支共用 expectedInputs
-      // 过滤，会在 horizontal 布局丢弃第二个非 choice 的预期输入（如 TextInput+Textarea）。
       const remainingHorizontal = children.filter(child => !choiceInputs.some(component => matches(child, component)))
       const remaining = children.filter(child => !expectedInputs.some(component => matches(child, component)))
       const hiddenLabel = truthyBoolean(label?.props?.visuallyHidden ?? label?.props?.['visually-hidden'])
@@ -115,10 +111,6 @@ export default Object.assign(FormControl, { __SLOT__: Symbol('FormControl') })
 </script>
 
 <style scoped>
-/* 源 FormControl.module.css 三处属性选择器均包在 :where() 中（零特异度）；且
-   `> *:where([data-has-caption])` 的 data-has-caption 实际落在父 .LeadingVisual 上
-   （FormControl.tsx:161-165），故该规则在源中恒不命中——子元素始终 16px。忠实复现
-   此死规则，而非改写为命中的 `[data-has-caption] > *`（审计偏差 15：镜像源怪癖）。 */
 .form-control--horizontal { display: flex; }
 .form-control--horizontal:where([data-has-leading-visual]) { align-items: center; }
 .form-control--vertical { display: flex; flex-direction: column; align-items: flex-start; }

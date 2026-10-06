@@ -3,7 +3,6 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mount, type VueWrapper } from '@vue/test-utils'
 import CounterLabel from './CounterLabel.vue'
 
-// 回归测试：CounterLabel（Primer React 8c0b708 CounterLabel/CounterLabel.tsx 直译）。
 const wrappers: VueWrapper[] = []
 afterEach(() => {
   wrappers.forEach(wrapper => wrapper.unmount()); wrappers.length = 0

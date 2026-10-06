@@ -3,8 +3,6 @@ import { afterEach, describe, expect, test } from 'vitest'
 import { mount, type VueWrapper } from '@vue/test-utils'
 import Token from './Token.vue'
 
-// 回归测试：Token disabled 路径与移除按钮结构严格对齐 Primer React 8c0b708
-// （Token.tsx / TokenBase.tsx / _RemoveTokenButton.tsx / _TokenTextContainer.tsx）。
 const wrappers: VueWrapper[] = []
 afterEach(() => {
   wrappers.forEach(wrapper => wrapper.unmount())
@@ -16,25 +14,24 @@ function track<T extends VueWrapper>(wrapper: T): T {
   return wrapper
 }
 
-describe('Token disabled 路径（源怪癖）', () => {
+describe('Token disabled 路径', () => {
   test('span 根渲染 disabled=""，不渲染 aria-disabled，光标标记为非交互', () => {
     const wrapper = track(mount(Token, { props: { text: 'Alpha', disabled: true } }))
     const root = wrapper.get('.token')
     expect(root.element.tagName).toBe('SPAN')
-    // React 对 BOOLEAN 属性在任意标签输出 disabled=""；源从不输出 aria-disabled。
     expect(root.attributes('disabled')).toBe('')
     expect(root.attributes('aria-disabled')).toBeUndefined()
     expect(root.attributes('data-cursor-is-interactive')).toBe('false')
   })
 
-  test('disabled 时 Backspace/Delete 仍触发 remove（源 TokenBase 无 disabled 守卫）', async () => {
+  test('disabled 时 Backspace/Delete 仍触发 remove', async () => {
     const wrapper = track(mount(Token, { props: { text: 'Alpha', disabled: true }, attrs: { onRemove: () => {} } }))
     await wrapper.get('.token').trigger('keydown', { key: 'Backspace' })
     await wrapper.get('.token').trigger('keydown', { key: 'Delete' })
     expect(wrapper.emitted('remove')).toHaveLength(2)
   })
 
-  test('disabled 时移除按钮仍为可用 button 且点击触发 remove（源 _RemoveTokenButton 不接收 disabled）', async () => {
+  test('disabled 时移除按钮仍为可用 button 且点击触发 remove', async () => {
     const wrapper = track(mount(Token, { props: { text: 'Alpha', disabled: true }, attrs: { onRemove: () => {} } }))
     const remove = wrapper.get('.token__remove')
     expect(remove.element.tagName).toBe('BUTTON')
@@ -58,11 +55,10 @@ describe('Token 交互形态与文本容器', () => {
     expect(remove.attributes('tabindex')).toBe('-1')
     expect(remove.attributes('aria-hidden')).toBe('true')
     expect(remove.attributes('aria-label')).toBeUndefined()
-    // 移除说明文本（源 _VisuallyHidden/InternalVisuallyHidden 内容，含前导空格）。
     expect(wrapper.get('.internal-visually-hidden').text()).toBe('(press backspace or delete to remove)')
   })
 
-  test('多目标形态下文本容器为 as 标签且不设置 type（源 _TokenTextContainer 隐式 submit 语义）', () => {
+  test('多目标形态下文本容器为 as 标签且不设置 type', () => {
     const wrapper = track(mount(Token, { props: { text: 'Alpha', as: 'button' }, attrs: { onRemove: () => {} } }))
     const text = wrapper.get('.token__text')
     expect(text.element.tagName).toBe('BUTTON')
@@ -77,7 +73,7 @@ describe('Token 交互形态与文本容器', () => {
     expect(wrapper.find('.token__remove[tabindex]').exists()).toBe(false)
   })
 
-  test('内联 octicons-react X 图标按 size 输出原生 12/16px 变体', () => {
+  test('内联 X 图标按 size 输出原生 12/16px 变体', () => {
     const small = track(mount(Token, { props: { text: 'Alpha', size: 'small' }, attrs: { onRemove: () => {} } }))
     const svg = small.get('.token__remove svg')
     expect(svg.attributes('viewbox')).toBeUndefined()
@@ -92,12 +88,11 @@ describe('Token 交互形态与文本容器', () => {
     const svg16 = large.get('.token__remove svg')
     expect(svg16.attributes('viewBox')).toBe('0 0 16 16')
     expect(svg16.attributes('width')).toBe('16')
-    // 源移除按钮内联 transform（borderOffset=1）。
     expect(large.get('.token__remove').attributes('style')).toContain('transform: translate(1px, -1px)')
   })
 })
 
-describe('Token 属性泄漏与覆盖（源怪癖，审计 G1）', () => {
+describe('Token 属性泄漏与覆盖', () => {
   test('isSelected 未传时 data-is-selected 属性省略；显式 false/true 渲染字符串', () => {
     const omitted = track(mount(Token, { props: { text: 'Alpha' } }))
     expect(omitted.get('.token').attributes('data-is-selected')).toBeUndefined()
@@ -107,7 +102,7 @@ describe('Token 属性泄漏与覆盖（源怪癖，审计 G1）', () => {
     expect(truthy.get('.token').attributes('data-is-selected')).toBe('true')
   })
 
-  test('text 经 TokenBase rest 泄漏为 DOM 属性（React 未知属性序列化：字符串原样、对象 [object Object]）', () => {
+  test('text 经 TokenBase rest 泄漏为 DOM 属性', () => {
     const str = track(mount(Token, { props: { text: 'Alpha' } }))
     expect(str.get('.token').attributes('text')).toBe('Alpha')
     const num = track(mount(Token, { props: { text: 42 } }))
@@ -116,7 +111,7 @@ describe('Token 属性泄漏与覆盖（源怪癖，审计 G1）', () => {
     expect(obj.get('.token').attributes('text')).toBe('[object Object]')
   })
 
-  test('消费者同名属性覆盖 data-* 计算值（源 {...rest} 后置获胜）', () => {
+  test('消费者同名属性覆盖 data-* 计算值', () => {
     const wrapper = track(mount(Token, {
       props: { text: 'Alpha', size: 'small' },
       attrs: { 'data-size': 'large', 'data-is-remove-btn': 'overridden' }

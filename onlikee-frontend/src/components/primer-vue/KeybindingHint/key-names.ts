@@ -1,6 +1,5 @@
 import type { Platform } from './platform'
 
-// Primer React 8c0b708: KeybindingHint/key-names.ts 直译
 
 /** Converts the first character of the string to upper case and the remaining to lower case. */
 const capitalize = ([first, ...rest]: string) => (first?.toUpperCase() ?? '') + rest.join('').toLowerCase()

@@ -1,12 +1,11 @@
-/* Primer React ActionMenu.module.css; floating surface styling is shared with Overlay. */
 /* The shared Portal has inline z-index:1; menu surfaces must clear the app's fixed chrome. */
 [data-component='Portal']:has(> [data-component='ActionMenu.Overlay']) { z-index: var(--zIndex-overlay, 10001) !important; }
 .action-menu-container { max-height: 100vh; }
 /* Native CSS anchoring follows the reference's side/overflow corrections. */
 [data-component='ActionMenu.Overlay'][data-css-anchor] { position: fixed !important; }
 [data-component='ActionMenu.Overlay'][data-css-anchor]:is([data-side='outside-bottom'], [data-side='inside-bottom']) { top: calc(anchor(bottom) + var(--base-size-4, 4px)); left: anchor(left); }
-[data-component='ActionMenu.Overlay'][data-css-anchor][data-css-align='left']:is([data-side='outside-bottom'], [data-side='inside-bottom']) { left: auto; right: calc(anchor(right) - var(--anchored-overlay-anchor-offset-left)); }
-[data-component='ActionMenu.Overlay'][data-css-anchor][data-css-align='right']:is([data-side='outside-bottom'], [data-side='inside-bottom'], [data-side='outside-top'], [data-side='inside-top']) { left: calc(anchor(left) - var(--anchored-overlay-anchor-offset-right)); }
+[data-component='ActionMenu.Overlay'][data-css-anchor][data-css-align='left']:is([data-side='outside-bottom'], [data-side='inside-bottom']) { left: auto; right: calc(anchor(right) - var(--anchored-overlay-anchor-offset-left, 0px)); }
+[data-component='ActionMenu.Overlay'][data-css-anchor][data-css-align='right']:is([data-side='outside-bottom'], [data-side='inside-bottom'], [data-side='outside-top'], [data-side='inside-top']) { left: calc(anchor(left) - var(--anchored-overlay-anchor-offset-right, 0px)); }
 [data-component='ActionMenu.Overlay'][data-css-anchor]:is([data-side='outside-left'], [data-side='inside-left'], [data-side='outside-right'], [data-side='inside-right']) { top: var(--anchored-overlay-top-override, anchor(top)); }
 .action-menu-container:where([data-variant='fullscreen']) { padding-top: var(--base-size-36, 36px); }
 .action-menu-container:where([data-overflow-auto]) { overflow: auto; }

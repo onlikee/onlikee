@@ -104,53 +104,53 @@ function hide() {
 
 /* 顶部位置 */
 .tooltip--top {
-  bottom: calc(100% + var(--tooltip-gap));
+  bottom: calc(100% + var(--tooltip-gap, 4px));
   left: 50%;
   transform: translateX(-50%);
 }
 
 /* 底部位置 */
 .tooltip--bottom {
-  top: calc(100% + var(--tooltip-gap));
+  top: calc(100% + var(--tooltip-gap, 4px));
   left: 50%;
   transform: translateX(-50%);
 }
 
 /* 左侧位置 */
 .tooltip--left {
-  right: calc(100% + var(--tooltip-gap));
+  right: calc(100% + var(--tooltip-gap, 4px));
   top: 50%;
   transform: translateY(-50%);
 }
 
 /* 右侧位置 */
 .tooltip--right {
-  left: calc(100% + var(--tooltip-gap));
+  left: calc(100% + var(--tooltip-gap, 4px));
   top: 50%;
   transform: translateY(-50%);
 }
 
 /* 宸︿笂 */
 .tooltip--left-top {
-  bottom: calc(100% + var(--tooltip-gap));
+  bottom: calc(100% + var(--tooltip-gap, 4px));
   right: 0;
 }
 
 /* 宸︿笅 */
 .tooltip--left-bottom {
-  top: calc(100% + var(--tooltip-gap));
+  top: calc(100% + var(--tooltip-gap, 4px));
   right: 0;
 }
 
 /* 鍙充笂 */
 .tooltip--right-top {
-  bottom: calc(100% + var(--tooltip-gap));
+  bottom: calc(100% + var(--tooltip-gap, 4px));
   left: 0;
 }
 
 /* 鍙充笅 */
 .tooltip--right-bottom {
-  top: calc(100% + var(--tooltip-gap));
+  top: calc(100% + var(--tooltip-gap, 4px));
   left: 0;
 }
 
@@ -173,7 +173,7 @@ function hide() {
   top: 100%;
   left: 0;
   right: 0;
-  height: var(--tooltip-gap);
+  height: var(--tooltip-gap, 4px);
 }
 
 .tooltip--bottom::after,
@@ -182,21 +182,21 @@ function hide() {
   bottom: 100%;
   left: 0;
   right: 0;
-  height: var(--tooltip-gap);
+  height: var(--tooltip-gap, 4px);
 }
 
 .tooltip--left::after {
   left: 100%;
   top: 0;
   bottom: 0;
-  width: var(--tooltip-gap);
+  width: var(--tooltip-gap, 4px);
 }
 
 .tooltip--right::after {
   right: 100%;
   top: 0;
   bottom: 0;
-  width: var(--tooltip-gap);
+  width: var(--tooltip-gap, 4px);
 }
 
 

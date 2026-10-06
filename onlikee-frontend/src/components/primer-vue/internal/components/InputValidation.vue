@@ -6,19 +6,12 @@
     :style="normalizeReactStyle(attrs.style)"
     :data-validation-status="validationStatus"
   >
-    <!-- 源 InputValidation.tsx：iconBoxMinHeight = 12 * (16 / 12) = 16 以数字内联到自定义属性。
-         React DOM 对自定义属性不追加 px（dangerousStyleValue isCustomProperty 分支），
-         `min-height: 16` 无效 → 计算为 auto。严格对齐保留该源行为，不加兜底值。 -->
-    <!-- 源：validationIconMap[validationStatus] 查表——域外真值（运行时越界输入）不渲染图标
-         （data-validation-status 仍渲染原值），非 error 即 success 的 v-else 会误渲染成功图标。 -->
     <span
       v-if="validationStatus === 'error' || validationStatus === 'success'"
       aria-hidden="true"
       class="input-validation__icon"
       style="--inputValidation-iconSize: 16"
     >
-      <!-- 源使用 @primer/octicons-react size=12：取图标原生 12px 变体（viewBox 0 0 12 12），
-           并输出 display/overflow 表现属性与 vertical-align: text-bottom 内联样式。 -->
       <svg
         v-if="validationStatus === 'error'"
         data-component="Octicon"
@@ -68,13 +61,10 @@ defineProps<{ id: string; validationStatus?: 'error' | 'success'; className?: st
 const attrs = useAttrs()
 </script>
 <style scoped>
-/* Primer React 8c0b708: internal/components/InputValidation.module.css 移植。
-   color 与两个 var() 均按源不带兜底：--inputValidation-fgColor 未定义时 color
-   按 IACVT 继承，--inputValidation-iconSize 的无单位内联值使 min-height 计算为 auto（源行为）。 */
-.input-validation { display: flex; font-size: var(--text-body-size-small, 12px); font-weight: var(--base-text-weight-semibold, 600); color: var(--inputValidation-fgColor); }
+.input-validation { display: flex; font-size: var(--text-body-size-small, 12px); font-weight: var(--base-text-weight-semibold, 600); color: var(--inputValidation-fgColor, currentColor); }
 .input-validation :deep(a) { color: currentColor; text-decoration: underline; }
 .input-validation[data-validation-status='success'] { --inputValidation-fgColor: var(--fgColor-success, #1a7f37); }
 .input-validation[data-validation-status='error'] { --inputValidation-fgColor: var(--fgColor-danger, #d1242f); }
-.input-validation__icon { display: flex; margin-top: var(--base-size-2, 2px); margin-inline-end: var(--base-size-4, 4px); min-height: var(--inputValidation-iconSize); }
-.input-validation__text { line-height: var(--inputValidation-lineHeight); }
+.input-validation__icon { display: flex; margin-top: var(--base-size-2, 2px); margin-inline-end: var(--base-size-4, 4px); min-height: var(--inputValidation-iconSize, 16px); }
+.input-validation__text { line-height: var(--inputValidation-lineHeight, 1.3333333333333333); }
 </style>

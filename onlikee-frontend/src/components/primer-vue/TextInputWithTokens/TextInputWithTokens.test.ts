@@ -128,7 +128,7 @@ describe('TextInputWithTokens source contract', () => {
     expect(idle.find('[data-component="TextInputWithTokens.TrailingVisual"]').exists()).toBe(true)
   })
 
-  it('preserves React numeric style dimensions and unitless values on the wrapper', () => {
+  it('preserves numeric style dimensions and unitless values on the wrapper', () => {
     const wrapper = setup({ maxHeight: 100, style: [{ width: 280, maxHeight: 80, fontSize: 16, opacity: 0.7, lineHeight: 1.4 }, { '--custom-value': 4 }] })
     const root = wrapper.element as HTMLElement
     expect(root.style.width).toBe('280px')
@@ -236,14 +236,11 @@ describe('TextInputWithTokens source contract', () => {
   it('leaves native input disabled while preserving source token removal quirks', async () => {
     const wrapper = setup({ disabled: true })
     expect(wrapper.get('input').attributes('disabled')).toBeDefined()
-    // 源：hideRemoveButton = disabled || hideTokenRemoveButtons → 无移除按钮。
     expect(wrapper.findAll('button')).toHaveLength(0)
     const token = wrapper.get('[data-component="TextInputWithTokens.Token"]')
-    // 源无条件传 tabIndex={0}；React 在任意标签上渲染 disabled=""，不渲染 aria-disabled。
     expect(token.attributes('tabindex')).toBe('0')
     expect(token.attributes('disabled')).toBe('')
     expect(token.attributes('aria-disabled')).toBeUndefined()
-    // 源怪癖：disabled 的 token 仍可聚焦，Backspace/Delete 仍触发 onTokenRemove。
     await token.trigger('keydown', { key: 'Delete' })
     expect(wrapper.emitted('token-remove')).toEqual([['one']])
   })

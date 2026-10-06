@@ -64,11 +64,6 @@ describe('ordinary FormControl inputs', () => {
   })
   test('horizontal non-choice input duplicates (source clone + Checkbox/Radio-only filter), caption-only/no-validation branch', () => {
     const wrapper = control(TextInput, { id: 'ignored', disabled: false }, { layout: 'horizontal', disabled: true })
-    // 源 FormControl.tsx:138-159 horizontal 分支 = cloneElement(InputComponent) +
-    // childrenWithoutSlots.filter(仅剔除 Checkbox/Radio)：非 choice 输入（TextInput）因此出现
-    // 两次——克隆体（#field，接管 id/disabled/aria-describedby）+ 原样保留体（#ignored）。
-    // 这是源的边界怪癖（horizontal 本为 choice 输入设计，彼时 filter 剔除输入只剩克隆体）。
-    // 审计偏差 5：旧 Vue 的 remaining 过滤剔除全部 expectedInputs，只剩一个。
     expect(wrapper.findAll('input')).toHaveLength(2)
     expect(wrapper.get<HTMLInputElement>('#field').element.disabled).toBe(true)
     expect(wrapper.get('#field').attributes('aria-describedby')).toBe('field-caption')
@@ -143,7 +138,7 @@ test('both choice groups propagate disabled and keep option labels clickable', a
     expect(wrapper.get<HTMLInputElement>('input').element.checked).toBe(true)
   }
 })
-test('Autocomplete and token inputs inherit source-supported form associations', async () => {
+test('Autocomplete and token inputs inherit form associations', async () => {
   for (const [name, input] of [['Autocomplete', Autocomplete], ['TextInputWithTokens', TextInputWithTokens]] as const) {
     const id = `composite-${name}`
     const wrapper = mount(FormControl, { attachTo: host, props: { id, disabled: true, required: true }, slots: { default: () => [
@@ -156,8 +151,6 @@ test('Autocomplete and token inputs inherit source-supported form associations',
     expect(native.element.disabled).toBe(true)
     expect(native.attributes('aria-describedby')).toBe(`${id}-validationMessage ${id}-caption`)
     expect(wrapper.get('label').attributes('for')).toBe(id)
-    // React's Autocomplete root accepts id/children only, so validationStatus
-    // is not forwarded to its Input. Its context still forwards descriptions.
     expect(native.attributes('aria-invalid')).toBe(input === Autocomplete ? undefined : 'true')
     await wrapper.setProps({ disabled: false })
     expect(native.element.disabled).toBe(false)

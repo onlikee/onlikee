@@ -4,7 +4,7 @@ import { loader } from '@guolao/vue-monaco-editor'
 
 //引入全局样式
 import './css/style.css'
-// @primer/primitives@11.5.1 vendored tokens（scripts/vendor-primitives-base.mjs 生成）
+// 全局主题变量。
 import './css/themes/base-size.css'
 import './css/themes/base-motion.css'
 import './css/themes/typography.css'
@@ -15,7 +15,7 @@ import './css/themes/size-fine.css'
 import './css/themes/size-coarse.css'
 import './css/themes/light.css'
 import './css/themes/dark.css'
-// Primer BaseStyles 等价全局样式（body 排版/焦点重置/链接默认），须在主题 token 之后
+// 全局排版、焦点和链接样式，须在主题变量之后加载。
 import './css/base-styles.css'
 
 import App from './App.vue'

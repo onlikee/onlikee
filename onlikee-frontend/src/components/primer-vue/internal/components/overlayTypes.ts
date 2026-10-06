@@ -8,25 +8,6 @@ export interface CSSAnchorPositioningSettings {
   disable?: boolean
   fallbackStrategy?: 'default' | 'none' | 'opposite-side'
 }
-/**
- * 对应 React hooks/useFocusTrap.ts:6-45 的 FocusTrapHookSettings 完整字段面。
- * AnchoredOverlay.tsx:87,290-293 以 `Partial<FocusTrapHookSettings>` 透传，故所有字段可选。
- * 审计偏差 #3：即便当前端口无消费者传 restoreFocusOnCleanUp/returnFocusRef/allowOutsideClick
- * （SelectPanel 仅传 initialFocusRef，Dialog 自带独立焦点管理），仍按“保持对齐”补全接口面，
- * 供后续补充消费者使用。
- *
- * 行为怪癖（登记，未在本端口合并式 Overlay 中复刻——React 用 useFocusTrap.disableTrap 做恢复，
- * Vue Overlay 合并了 useOpenAndCloseFocus 的恢复路径，见 Overlay.vue:83-104 注释）：
- * - previousFocusedElement 在渲染期捕获（`if (!prev && !disabled) prev = document.activeElement`）；
- * - disableTrap 恢复优先级：allowOutsideClick && outsideClicked → 跳过；否则 returnFocusRef →
- *   focus；否则 restoreFocusOnCleanUp && prev → focus 且置空 prev；
- * - outsideClicked 一旦置真永不复位（useFocusTrap.ts:70,100）；
- * - allowOutsideClick 时外点会 mutate settings（returnFocusRef=undefined、restoreFocusOnCleanUp=false）
- *   并 abort trap（:104-108）；
- * - useOnOutsideClick 的注册不以 open/disabled 为门（恒注册）。
- * 若未来移植依赖上述语义的消费者（如 Dialog 走 useFocusTrap 路径），须在 Overlay.vue trap watch
- * 中复刻 disableTrap 优先级与 outsideClicked/mutation 怪癖。
- */
 export interface FocusTrapSettings {
   containerRef?: Ref<HTMLElement | null>
   initialFocusRef?: Ref<HTMLElement | null>
@@ -73,7 +54,6 @@ export interface OverlayProps extends /* @vue-ignore */ HTMLAttributes {
   className?: string
   style?: StyleValue
   anchorSide?: AnchorSide
-  /** React Overlay BaseOverlayProps.responsiveVariant —— 仅 'fullscreen'，样式由 narrow 媒体查询驱动。 */
   responsiveVariant?: 'fullscreen'
   role?: string
   cssAnchorPositioningSettings?: CSSAnchorPositioningSettings
@@ -89,7 +69,6 @@ export interface AnchoredOverlayProps {
   renderAnchor?: ((props: AnchorRenderProps) => VNodeChild) | null
   overlayProps?: OverlayProps
   align?: AnchorAlignment
-  /** React AnchoredOverlay.tsx:144,170-173 —— side 默认取 overlayProps.anchorSide || 'outside-bottom' */
   side?: AnchorSide
   anchorOffset?: number
   alignmentOffset?: number
@@ -105,6 +84,5 @@ export interface AnchoredOverlayProps {
   cssAnchorPositioningSettings?: CSSAnchorPositioningSettings
   focusTrapSettings?: FocusTrapSettings
   focusZoneSettings?: FocusZoneHookSettings
-  /** React AnchoredOverlay.tsx:114,248-252 —— 仅在 position 真值时以 {position} 包装回调 */
   onPositionChange?: (event: { position: AnchorPosition }) => void
 }

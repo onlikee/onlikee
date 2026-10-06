@@ -1,20 +1,19 @@
-/* Primer React 8c0b708: CounterLabel.module.css 直译（.CounterLabel → .counter-label） */
 .counter-label {
   display: inline-block;
   padding: var(--base-size-2, 0.125rem) var(--base-size-6, 0.375rem);
   font-size: var(--text-body-size-small, 0.75rem);
   font-weight: var(--base-text-weight-semibold, 600);
   line-height: 1;
-  border: var(--borderWidth-thin, 0.0625rem) solid var(--counter-borderColor);
+  border: var(--borderWidth-thin, 0.0625rem) solid var(--counter-borderColor, #ffffff00);
   border-radius: 20px;
 }
 .counter-label:where([data-variant='primary']) {
-  color: var(--fgColor-onEmphasis);
-  background-color: var(--bgColor-neutral-emphasis);
+  color: var(--fgColor-onEmphasis, #ffffff);
+  background-color: var(--bgColor-neutral-emphasis, #59636e);
 }
 .counter-label:where([data-variant='secondary']) {
-  color: var(--fgColor-default);
-  background-color: var(--bgColor-neutral-muted);
+  color: var(--fgColor-default, #1f2328);
+  background-color: var(--bgColor-neutral-muted, #818b981f);
 }
 .counter-label:where(:empty) {
   display: none;

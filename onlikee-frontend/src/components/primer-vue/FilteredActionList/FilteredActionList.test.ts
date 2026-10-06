@@ -25,7 +25,7 @@ afterEach(() => {
   if (scrollToDescriptor) Object.defineProperty(HTMLElement.prototype, 'scrollTo', scrollToDescriptor)
   else Reflect.deleteProperty(HTMLElement.prototype, 'scrollTo')
 })
-describe('FilteredActionList React migration', () => {
+describe('FilteredActionList behavior', () => {
   it.each([false, true])('uses the source callback-ref description branch with merged refs=%s', async merged => {
     const wrapper = mount(FeatureFlags, { props: { flags: { primer_react_merged_forwarded_refs: merged } }, slots: { default: () => h(FilteredActionList, { items: [{ text: 'Plain' }, { text: 'Described', description: 'Details' }] }) }, attachTo: document.body })
     wrappers.push(wrapper); await settle()
@@ -46,8 +46,6 @@ describe('FilteredActionList React migration', () => {
     expect(wrapper.get('[role="group"]').attributes('aria-label')).toBe('Group')
     expect(wrapper.get('[data-component="GroupHeadingWrap"]').attributes('aria-hidden')).toBe('true')
     expect(wrapper.get('[role="listbox"]').attributes('data-variant')).toBe('full')
-    // 源 List.tsx:23 showDividers 默认 false + :119 data-dividers={showDividers}；React 对 data-* 属性
-    // 字符串化 boolean（false→"false"，非省略），Vue 以 ? 'true' : 'false' 镜像字面渲染。
     expect(wrapper.get('[role="listbox"]').attributes('data-dividers')).toBe('false')
   })
   it('source focus zone includes disabled options but their actions remain blocked', async () => {
@@ -223,8 +221,6 @@ describe('FilteredActionList React migration', () => {
     expect(options[1]!.find('[data-component="Spinner"]').exists()).toBe(true)
   })
   it('consumer item attrs override computed props and item class token is duplicated like source clsx chain', async () => {
-    // React Item.tsx:282/287-288：{...menuItemProps, ...props} —— 消费者属性后置获胜；
-    // li className = clsx(classes.ActionListItem, FAL 已 clsx 过的 className) → 重复 token。
     const wrapper = render({ items: [{ text: 'Alpha', tabindex: -1, 'aria-selected': false }] })
     await settle()
     const option = wrapper.get('[role="option"]')
@@ -238,7 +234,6 @@ describe('FilteredActionList React migration', () => {
     expect(wrapper.find('.filtered-action-list__header .filtered-action-list__fullscreen-input').exists()).toBe(true)
   })
   it('body loader dispatches on enum identity, not the name string', async () => {
-    // 源 FilteredActionListLoaders.tsx:21-24 为 switch(case ===)；自造同名对象不得命中。
     const wrapper = render({ items: [{ text: 'Alpha' }], loading: true, loadingType: { name: 'body-spinner', appearsInBody: true } as never })
     await settle()
     expect(wrapper.find('[data-testid="filtered-action-list-spinner"]').exists()).toBe(false)

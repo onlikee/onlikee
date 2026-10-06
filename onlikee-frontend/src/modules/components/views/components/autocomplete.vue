@@ -106,11 +106,11 @@ const multipleCode = `<Autocomplete>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
     <ComponentDocsSection
-      title="接口与迁移说明"
+      title="接口说明"
       variant="api"
     >
       <p>Autocomplete 提供 Context、Input、Menu、Overlay。Input 支持 TextInput 属性及 as；Menu 接收 items、selectedItemIds、selectionVariant、filterFn、sortOnCloseFn、loading、emptyStateText、addNewItem；Overlay 接收 menuAnchorRef 和弹层属性。</p>
-      <p>selected-change 的参数为选中项数组，update:selectedItemIds 支持命名双向绑定。单选切换时替换已有选择，修正 React 源码可能产生两个选中 ID 的边界问题。节点型视觉属性可传组件、VNode 或同名具名插槽。</p>
+      <p>selected-change 的参数为选中项数组，update:selectedItemIds 支持命名双向绑定。单选切换时使用新的选中项替换旧项。节点型视觉属性可传组件、VNode 或同名具名插槽。</p>
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

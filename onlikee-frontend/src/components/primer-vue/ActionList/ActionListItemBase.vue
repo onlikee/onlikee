@@ -76,8 +76,7 @@ export default defineComponent({
     function keypress(event: KeyboardEvent) {
       if (props.disabled || inactive.value || props.loading) return
       if (event.key === ' ' || event.key === 'Enter') {
-        // Native Vue events cannot reset the readonly defaultPrevented field like React's
-        // synthetic event. Notify consumers first, then prevent the Space default action.
+        // 原生事件的 defaultPrevented 只读；先通知调用方，再阻止空格键的默认行为。
         select(event)
         if (event.key === ' ') event.preventDefault()
       }

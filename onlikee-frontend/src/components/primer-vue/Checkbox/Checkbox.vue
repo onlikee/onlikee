@@ -30,16 +30,11 @@ function getInputAttrs() {
   return {
     type: 'checkbox', disabled: props.disabled, required: props.required,
     ...(props.indeterminate || props.checked !== undefined ? { checked: props.indeterminate ? false : props.checked } : {}),
-    // react-dom initWrapperState:1793 initialChecked = (indeterminate?false:checked) != null ? … : defaultChecked；
-    // postMountWrapper:1924 checked 属性 = !!initialChecked（checked 优先）。SSR 直接渲染 checked
-    // 属性；客户端以 defaultChecked 镜像之（审计偏差 9：旧 `defaultChecked ?? checked` 优先级相反）。
     ...(serverRendering
       ? { checked: props.indeterminate ? false : props.checked ?? props.defaultChecked ?? false }
       : { defaultChecked: props.indeterminate ? false : (props.checked !== undefined ? props.checked : props.defaultChecked ?? false) }),
     'aria-required': props.required ? 'true' as const : 'false' as const,
     'aria-invalid': props.validationStatus === 'error' ? 'true' as const : 'false' as const,
-    // 源 Checkbox.tsx:118-127 aria-checked 仅由 useEffect/onChange 客户端 setAttribute，
-    // SSR HTML 中不存在（审计偏差 10：serverRendering 省略，避免与 checked 属性冲突）。
     ...(serverRendering ? {} : { 'aria-checked': props.indeterminate ? 'mixed' as const : props.checked ? 'true' as const : 'false' as const }),
     value: props.value, name: props.value, ...attrs,
     style: normalizeReactStyle(attrs.style),
@@ -152,8 +147,6 @@ defineExpose({ input, element: input, focus: (options?: FocusOptions) => input.v
   }
 
   &:focus-visible:not(:disabled) {
-    /* 源 Checkbox.module.css:82-84 @mixin focusOutline 2px 展开（focusOutline.css:1-5 +
-       preset 注入 #0969da 内层回退）：双跳 var + box-shadow:none（审计偏差 4）。 */
     outline: 2px solid var(--focus-outline-color, var(--focus-outlineColor, #0969da));
     outline-offset: 2px;
     box-shadow: none;

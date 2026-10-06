@@ -302,9 +302,9 @@ defineExpose<BannerExposed>({
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: start;
   padding: 8px;
-  border: 1px solid var(--banner-border);
+  border: 1px solid var(--banner-border, var(--borderColor-accent-muted, #54aeff66));
   border-radius: 6px;
-  background: var(--banner-bg);
+  background: var(--banner-bg, var(--bgColor-accent-muted, #ddf4ff));
   color: var(--fgColor-default, #1f2328);
 }
 
@@ -348,7 +348,7 @@ defineExpose<BannerExposed>({
   display: grid;
   place-items: center;
   padding: 10px 8px;
-  color: var(--banner-icon);
+  color: var(--banner-icon, var(--fgColor-link, #0969da));
 }
 
 .banner__container {
@@ -433,7 +433,7 @@ defineExpose<BannerExposed>({
   border: 0;
   border-radius: 6px;
   background: var(--bgColor-transparent, #ffffff00);
-  color: var(--banner-icon);
+  color: var(--banner-icon, var(--fgColor-link, #0969da));
   cursor: pointer;
 }
 

@@ -1,9 +1,3 @@
-/* color2k 2.0.3（React 仓库 node_modules/color2k/dist/index.module.es.js）的忠实内联移植，
-   仅取 IssueLabelToken.tsx 消费的 parseToRgba / parseToHsla 及其依赖。
-   算法、正则、命名色压缩表与错误行为逐行保留——包括源的怪癖：
-   parseToRgba 中 namedColorRegex 对未 trim 的 color 做测试、非命名色分支把
-   未 trim 的原串赋回 normalizedColor（覆盖前一行 trim 结果）。
-   Vue 项目未依赖 color2k 包，故按"源里有一律对齐"原则原样移植。 */
 
 /**
  * A simple guard function:

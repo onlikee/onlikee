@@ -4,8 +4,6 @@ import VisuallyHidden from '../internal/components/VisuallyHidden.vue'
 import Chord from './Chord.vue'
 import type { KeybindingHintFormat, KeybindingHintVariant } from './props'
 
-// Primer React 8c0b708: KeybindingHint/components/Sequence.tsx 直译
-// —— 序列（如 "a b" = a then b）：和弦之间以 VisuallyHidden "then" + 空格分隔。
 defineOptions({ name: 'KeybindingHintSequence' })
 const props = withDefaults(
   defineProps<{

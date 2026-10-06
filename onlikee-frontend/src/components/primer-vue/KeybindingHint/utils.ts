@@ -1,7 +1,6 @@
 import { accessibleSequenceString } from './chordUtils'
 import type { Platform } from './platform'
 
-// Primer React 8c0b708: KeybindingHint/utils.ts 直译
 
 /**
  * AVOID: `KeybindingHint` is nearly always sufficient for providing both visible and accessible keyboard hints.

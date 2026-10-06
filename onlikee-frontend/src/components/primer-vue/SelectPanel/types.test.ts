@@ -21,7 +21,7 @@ describe('SelectPanel source contracts', () => {
     expect(single.open).toBe(false)
     expect(modal.variant).toBe('modal')
     expect(detached.anchorRef.value).toBeNull()
-    // @ts-expect-error React modal variant requires a cancellation handler.
+    // @ts-expect-error Modal variants require a cancellation handler.
     const invalidModal: SelectPanelProps = { open: true, items: [], selected: undefined, variant: 'modal' }
     // @ts-expect-error Detached anchors require a DOM ref.
     const invalidDetached: SelectPanelProps = { open: true, items: [], selected: undefined, renderAnchor: null }

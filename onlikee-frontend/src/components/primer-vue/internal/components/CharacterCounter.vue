@@ -7,10 +7,6 @@ defineProps<{ limit: number; counter: ReturnType<typeof getCharacterCountState>;
 </script>
 
 <template>
-  <!-- 源（TextInput.tsx:266-292 / Textarea.tsx:163-188 内联 JSX）：
-       AriaStatus 容器与静态消息均为 _VisuallyHidden 的 clip:rect(0,0,0,0) 配方（§6.3-19 内部版），
-       可见计数节点为 Text size="small"——data-size/line-height/font-size 由 Text.vue 提供，
-       data-component 默认 'Text'（Textarea 侧），TextInput 侧传 component 覆盖（rest 后置语义一致）。 -->
   <AriaStatus
     :announce-on-show="false"
     :delay-ms="SCREEN_READER_DELAY"
@@ -26,7 +22,7 @@ defineProps<{ limit: number; counter: ReturnType<typeof getCharacterCountState>;
     :class="{ 'character-counter-error': counter.isOverLimit }"
     v-bind="component !== undefined ? { 'data-component': component } : {}"
     aria-hidden="true"
-  ><!-- 源超限态渲染 <AlertFillIcon size={16}/>（octicons-react 原生输出全属性）。 --><svg
+  ><svg
     v-if="counter.isOverLimit"
     data-component="Octicon"
     aria-hidden="true"
@@ -43,9 +39,6 @@ defineProps<{ limit: number; counter: ReturnType<typeof getCharacterCountState>;
 </template>
 
 <style scoped>
-/* Primer React 8c0b708: TextInput/Textarea 计数节点自有声明（flex/gap/颜色）。
-   font-size/line-height 由 Text 的 [data-size='small'] 规则提供，不在此重复。
-   兜底值对齐 primitives 11.5.1 light 实值（§6.3-20）。 */
 .character-counter { display: flex; align-items: center; gap: var(--control-xsmall-gap, 4px); color: var(--fgColor-muted, #59636e); }
 .character-counter-error { color: var(--fgColor-danger, #d1242f); }
 </style>

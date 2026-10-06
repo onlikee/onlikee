@@ -13,7 +13,6 @@ export type FormControlValidationProps = {
   className?: string
   style?: CSSProperties
 }
-// 源 FormControlCaption.tsx:7-11 FormControlCaptionProps = PropsWithChildren<{id?, className?, style?}>。
 export type FormControlCaptionProps = {
   id?: string
   className?: string

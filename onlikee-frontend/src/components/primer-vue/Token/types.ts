@@ -3,8 +3,6 @@ import type { NodeProp } from '../internal/renderNode'
 
 export type TokenSizeKeys = 'small' | 'medium' | 'large' | 'xlarge'
 
-/* 源 Token/TokenBase.tsx TokenBaseProps（Vue 类型面镜像；React 侧
-   Omit<HTMLProps<...>, 'size' | 'id'> 的其余 HTML 属性在 Vue 中经 attrs 透传）。 */
 export interface TokenBaseProps extends Omit<HTMLAttributes, 'id'> {
   as?: 'button' | 'a' | 'span'
   text: NodeProp
@@ -18,12 +16,10 @@ export interface TokenBaseProps extends Omit<HTMLAttributes, 'id'> {
   onRemove?: () => void
 }
 
-/* 源 Token/Token.tsx TokenProps = TokenBaseProps + leadingVisual */
 export interface TokenProps extends TokenBaseProps {
   leadingVisual?: NodeProp
 }
 
-/* 源 Token/IssueLabelToken.tsx IssueLabelTokenProps = TokenBaseProps + fillColor */
 export interface IssueLabelTokenProps extends TokenBaseProps {
   fillColor?: string
 }

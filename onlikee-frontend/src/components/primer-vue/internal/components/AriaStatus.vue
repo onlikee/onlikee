@@ -12,10 +12,6 @@ import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 type AnnounceFromElement = typeof import('@primer/live-region-element').announceFromElement
 
 defineOptions({ name: 'AriaStatus' })
-/* 源 AriaStatus.tsx:31：`<Announce {...props} announceOnShow={...} politeness="polite" />` ——
-   politeness 在 spread 之后被强制为 'polite'，消费者传 assertive 无效。prop 声明保留
-   （镜像 Announce 的 prop 面、吸收属性不落 DOM），但公告恒用 polite。
-   clearExisting 为 Vue 自创（React 的清空在 useAnnouncements 独立实现）——已删除。 */
 const props = withDefaults(defineProps<{
   as?: string
   announceOnShow?: boolean
@@ -58,8 +54,6 @@ onMounted(() => {
   observer.observe(element.value, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['aria-label'] })
 })
 watch(() => props.hidden, hidden => {
-  // hidden 时主动 cancel 为 L25 登记微差；解除 hidden 永不触发公告
-  // （源 Announce 的 useEffectOnce 只在挂载运行，无补公告逻辑）。
   if (hidden) { generation++; pending?.cancel() }
 }, { flush: 'post' })
 onBeforeUnmount(() => { disposed = true; generation++; observer?.disconnect(); pending?.cancel() })

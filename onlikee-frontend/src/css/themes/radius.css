@@ -1,6 +1,3 @@
-/* Vendored verbatim from @primer/primitives@11.5.1 — functional/size/radius.css
- * 源文件: C:/Users/25336/Desktop/project/react/node_modules/@primer/primitives/dist/css/functional/size/radius.css
- * 不要手工编辑；如需更新请重跑 scripts/vendor-primitives-base.mjs 并核对 diff。 */
 :root {
   --borderRadius-full: 624.9375rem; /** Use this border radius for pill shaped elements */
   --borderRadius-large: 0.75rem; /** Large border radius (12px). Use for larger containers, dialogs, or when more visual softness is desired. */

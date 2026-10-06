@@ -1,10 +1,9 @@
-/* Primer React 8c0b708: source rules with local class names; mixins/custom media expanded. */
 .filtered-action-list__skeleton-box.filtered-action-list__skeleton-bar {
   border-radius: 4px;
 }
 .filtered-action-list__skeleton-bar {
   border-radius: 4px;
-  width: var(--loading-skeleton-width);
+  width: var(--loading-skeleton-width, 100%);
 }
 .filtered-action-list__skeleton-row {
   --loading-skeleton-width: 80%;
@@ -44,7 +43,7 @@
 }
 .filtered-action-list__skeleton-box {
   animation: shimmer;
-  background-color: var(--skeletonLoader-bgColor);
+  background-color: var(--skeletonLoader-bgColor, #818b981a);
   border-radius: var(--borderRadius-small, 0.1875rem);
   display: block;
   height: 1rem;

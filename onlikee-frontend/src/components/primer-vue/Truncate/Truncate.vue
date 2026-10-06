@@ -38,7 +38,7 @@ const truncateStyle = computed(() => ({
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: var(--truncate-max-width);
+  max-width: var(--truncate-max-width, 125px);
 }
 
 .truncate:where([data-expandable]):hover {

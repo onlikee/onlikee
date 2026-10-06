@@ -11,9 +11,7 @@
     "lint:fix": "eslint . --fix",
     "test": "vitest --watch",
     "test:run": "vitest run",
-    "typecheck:test": "vue-tsc --noEmit -p tsconfig.test.json",
-    "test:ui:select-panel": "node scripts/select-panel-ui-parity.mjs",
-    "test:ui:form-control": "node scripts/form-control-ui-parity.mjs"
+    "typecheck:test": "vue-tsc --noEmit -p tsconfig.test.json"
   },
   "dependencies": {
     "@guolao/vue-monaco-editor": "^1.6.0",

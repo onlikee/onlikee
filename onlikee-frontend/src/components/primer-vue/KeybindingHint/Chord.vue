@@ -5,8 +5,6 @@ import Key from './Key.vue'
 import { splitChord } from './chordUtils'
 import type { KeybindingHintFormat, KeybindingHintVariant } from './props'
 
-// Primer React 8c0b708: KeybindingHint/components/Chord.tsx 直译
-// —— 一个和弦（如 Mod+K）：键之间以空格分隔（full 格式显示 " + "）。
 defineOptions({ name: 'KeybindingHintChord' })
 const props = withDefaults(
   defineProps<{

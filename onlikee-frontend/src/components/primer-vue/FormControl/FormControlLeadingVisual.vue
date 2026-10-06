@@ -14,8 +14,6 @@
 import { useFormControlContext } from './context'
 import type { StyleValue } from 'vue'
 import { normalizeReactStyle } from '../internal/style'
-// 源 FormControlLeadingVisual.tsx 仅解构 {children, style}、无 ...rest 展开：className 非其
-// prop 面（审计偏差 13），未知 attrs 一律丢弃（偏差 6）→ inheritAttrs:false + 显式绑定。
 defineOptions({ name: 'FormControlLeadingVisual', __SLOT__: Symbol('FormControlLeadingVisual'), inheritAttrs: false })
 defineProps<{ style?: StyleValue }>()
 const context = useFormControlContext()

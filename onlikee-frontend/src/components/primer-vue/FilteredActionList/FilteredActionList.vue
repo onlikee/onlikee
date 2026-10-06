@@ -50,8 +50,6 @@ const selectionVariant = computed(() => {
 })
 const listVariant = computed(() => props.actionListProps && 'variant' in props.actionListProps ? props.actionListProps.variant ?? 'inset' : props.variant)
 const mergedRefs = useFeatureFlag('primer_react_merged_forwarded_refs')
-// Without merged refs, React ActionList cannot inspect a callback ref's current
-// node. Keep that source branch for description weights in active-descendant mode.
 const mixedDescriptions = computed(() => (usingRoving.value || mergedRefs.value) && props.items.some(item => item.description) && props.items.some(item => !item.description))
 const selectableItems = computed(() => props.groupMetadata?.length
   ? props.groupMetadata.flatMap(group => props.items.filter(item => item.groupId === group.groupId)) : props.items)
@@ -150,15 +148,9 @@ useFocusZone(() => ({
   bindKeys: FocusKeys.ArrowVertical | FocusKeys.PageUpDown | (usingRoving.value ? FocusKeys.HomeAndEnd : 0),
   focusOutBehavior: usingRoving.value ? 'wrap' : virtualized.value ? 'stop' : props.focusOutBehavior,
   focusableElementFilter: element => !(element instanceof HTMLInputElement),
-  // React roving 模式的 focus zone 在 ActionList List.tsx:62-68（无 focusInStrategy/focusPrependedElements
-  // 定制 → 恒 'previous'/false）；active-descendant 模式才尊重 setInitialFocus/focusPrependedElements
-  //（FilteredActionList.tsx:372-374，审计 L22）
   onActiveDescendantChanged: onActive, focusInStrategy: usingRoving.value ? 'previous' : props.setInitialFocus ? 'initial' : 'previous',
   ignoreHoverEvents: props.disableSelectOnHover, focusPrependedElements: usingRoving.value ? false : props.focusPrependedElements
 }))
-// React FilteredActionList.tsx:380-387 —— items（或 scrollBehavior）变化后把激活项滚回视口：
-// 异步过滤返回时激活项可能已被顶出视口（审计 M16）。React deps 中 readInputRef/readScrollContainerRef
-// 为稳定 ref 对象，等效依赖即 [items, scrollBehavior]。
 watch(() => [props.items, props.scrollBehavior] as const, () => {
   if (active.value && scrollContainer.value) {
     scrollIntoView(active.value, scrollContainer.value, { startMargin: 0, endMargin: 8, behavior: props.scrollBehavior })
@@ -204,9 +196,6 @@ function renderItem(item: ItemInput, index: number, start?: number): VNodeChild 
   const style = normalizeReactStyle('style' in item ? item.style : start === undefined ? undefined :
     { position: 'absolute', left: 0, right: 0, top: 0, transform: `translateY(${start}px)` })
   const { key: _key, ...itemProps } = item
-  // React FAL.tsx:466-473 MappedActionListItem：className=clsx(ActionListItem, item.className)；
-  // data-input-focused/data-first-child/[data-index+style(virtualized)] 在 {...item} 之前
-  // （消费者 item 属性可覆盖）；renderItem 恒在最后（组/项渲染器即使 undefined 也替换）。
   const mapped = {
     className: ['filtered-action-list__item', 'className' in item ? item.className : undefined].filter(Boolean).join(' ') || undefined,
     'data-input-focused': focused.value ? '' : undefined,
@@ -214,14 +203,8 @@ function renderItem(item: ItemInput, index: number, start?: number): VNodeChild 
     ...(start !== undefined ? { 'data-index': index, style } : {}),
     ...itemProps, renderItem: props.renderItem
   }
-  // React Item.tsx:247-290：containerProps = {...menuItemProps, ...props} —— 消费者 item
-  // 属性后置获胜（审计 G7）；li 显式属性（Item.tsx:326-335）恒最后。id 被 Item.tsx 解构
-  // 消费不进 props；style 已由上方合并变量按源优先级处理（virtualized 显式 style 在
-  // {...item} 之前 → item.style 获胜）。className 经 FAL+Item 双重 clsx → 重复 token
-  // （"fal__item fal__item consumer"，源怪癖忠实复刻）。
   const { id: _consumedId, style: _consumedStyle, ...consumerProps } = itemProps
   const common = {
-    // menuItemProps 层（React Item.tsx:247-260）：
     onClick: (event: MouseEvent) => activate(mapped, event),
     onKeypress: (event: KeyboardEvent) => {
       if (event.key === 'Enter' || event.key === ' ') { activate(mapped, event); if (event.key === ' ') event.preventDefault() }
@@ -259,7 +242,6 @@ function renderItem(item: ItemInput, index: number, start?: number): VNodeChild 
     leadingVisual: _leadingVisual, trailingVisual: _trailingVisual, trailingIcon: _trailingIcon,
     trailingText: _trailingText, children: _children, renderItem: _renderItem, onAction: _onAction,
     groupId: _groupId, selected: _selected, disabled: _disabled, inactiveText: _inactiveText, loading: _loading, size: _size, item: _item, className: _className,
-    // React Item.tsx:88 消费 variant prop（不透传到 li），仅 danger 输出 data-variant（审计 M18）
     variant: itemVariant,
     ...domProps } = common
   const children: VNodeChild[] = [h('span', { class: 'filtered-action-list__spacer' })]
@@ -268,21 +250,15 @@ function renderItem(item: ItemInput, index: number, start?: number): VNodeChild 
       : selectionVariant.value === 'multiple' ? h('div', { class: 'filtered-action-list__checkbox' })
       : h(CheckIcon, { class: 'filtered-action-list__checkmark', 'data-component': 'Octicon' })
   ]))
-  // React Selection.tsx:22-28 —— selected 但未定义 selectionVariant 时的开发期警告（审计 L54）
   else if (item.selected && import.meta.env.DEV) console.warn('FilteredActionList: For Item to be selected, ActionList or ActionList.Group should have a selectionVariant defined.')
   if (item.leadingVisual) children.push(h('span', { class: 'filtered-action-list__visual filtered-action-list__leading', 'data-component': 'ActionList.LeadingVisual' }, [
-    // React Visuals.tsx:62-86（listbox 上下文 showInactiveIndicator=false → inactiveText 不参与，
-    // spinner 仅由 loading 驱动，审计 M20）：loading 时 spinner 替换 leading visual
     item.loading ? h(Spinner, { size: 'small' }) : renderVisual(item.leadingVisual)
   ]))
   const content: VNodeChild[] = []
-  // React Item.tsx:370 —— 'Loading' 隐藏文本判定为严格 loading === true（审计 L50）
   const label = h('span', { id: labelId, class: 'filtered-action-list__label', 'data-component': 'ActionList.Item.Label' }, [item.children, item.text, item.loading === true && !item.inactiveText ? h('span', { class: 'filtered-action-list__loading-label' }, 'Loading') : null])
   content.push(item.description ? h('div', { class: 'filtered-action-list__description-wrap', 'data-description-variant': item.descriptionVariant ?? 'inline' }, [
     label, h('span', { id: descriptionId, class: 'filtered-action-list__description', 'data-component': 'ActionList.Description' }, item.description)
   ]) : label)
-  // React Visuals.tsx:62-86：无 leading visual 时 spinner 在 trailing 位（替换 trailing visual），
-  // 仅由 loading 驱动（审计 M20）
   if (item.loading && !item.leadingVisual || trailing) content.push(h('span', { id: trailingId, class: 'filtered-action-list__trailing filtered-action-list__visual', 'data-component': 'ActionList.TrailingVisual' }, [
     item.loading && !item.leadingVisual ? h(Spinner, { size: 'small' }) : renderVisual(trailing)
   ]))
@@ -295,10 +271,6 @@ function renderItem(item: ItemInput, index: number, start?: number): VNodeChild 
 const RenderItems = () => {
   if (props.groupMetadata?.length) return props.groupMetadata.map((group, index) => {
     const children = props.items.filter(item => item.groupId === group.groupId).map(item => renderItem(item, selectableItems.value.indexOf(item)))
-    // React FilteredActionList.tsx:454-477 + Group.tsx:99-126：
-    // - Group li 不带消费者 className（FAL 未向 ActionList.Group 传 className，审计 L49a）；key 用 index（L49d）
-    // - ul aria-label = title ?? `Group ${groupId}`；title 为非字符串节点时 React 将节点字符串化为
-    //   '[object Object]'（源怪癖，审计 L49c）
     const title = group.header?.title
     const ariaLabel = title ? (typeof title === 'string' ? title : '[object Object]') : `Group ${group.groupId}`
     return h('li', { role: 'none', 'data-component': 'ActionList.Group', key: index, class: 'filtered-action-list__group' }, [
@@ -309,8 +281,6 @@ const RenderItems = () => {
   return entries.value.map(({ item, index, start }) => renderItem(item, index, start))
 }
 const RenderMessage = () => props.message
-// React List.tsx:19-29 —— ActionList 自行消费这些键（as/variant/selectionVariant/showDividers/role/
-// disableFocusZone/disableItemGap/className），不透传到 ul（审计 M19）
 const listRestProps = computed(() => {
   const { as: _as, variant: _variant, selectionVariant: _selectionVariant, showDividers: _showDividers,
     role: _role, disableFocusZone: _disableFocusZone, disableItemGap: _disableItemGap, className: _className,
@@ -369,9 +339,6 @@ defineExpose({ element: root, input, list, scrollContainer, focus: () => input.v
       class="filtered-action-list__scroll"
       data-component="FilteredActionList.ScrollContainer"
     >
-      <!-- React FilteredActionList.tsx:442 —— BodyLoader 需要 scrollContainer ref 已挂载，首帧退回
-           message/list（审计 L26；Vue 的 shallowRef 会在挂载后立即触发重渲染，修复了 React roving 模式
-           下 loader 可能永不出现的源缺陷，属有意偏离，见审计文档） -->
       <BodyLoader
         v-if="loading && scrollContainer && loadingType.appearsInBody"
         :loading-type="loadingType"

@@ -56,10 +56,10 @@ withDefaults(
   color: var(--fgColor-default, #1f2328);
   display: flex;
   flex-direction: column;
-  gap: var(--blankslate-gap);
+  gap: var(--blankslate-gap, 0.75rem);
   margin-inline: auto;
-  max-width: var(--blankslate-max-width);
-  padding: var(--blankslate-padding-block) var(--blankslate-padding-inline);
+  max-width: var(--blankslate-max-width, 520px);
+  padding: var(--blankslate-padding-block, 2rem) var(--blankslate-padding-inline, 2rem);
   text-align: center;
   width: 100%;
 }

@@ -46,7 +46,6 @@ test('announces changed content and content populated after an empty mount', asy
 })
 
 test('announces initial content when requested and prefers aria-label', async () => {
-  // 源 AriaStatus.tsx:31 在 {...props} 后强制 politeness="polite"——传 assertive 也落 polite 区。
   status({ announceOnShow: true, 'aria-label': 'Three results', politeness: 'assertive' })
   await flushPromises()
   expect(region.getMessage('polite')).toBe('Three results')
@@ -69,7 +68,6 @@ test('does not announce hidden content and never re-announces on unhide', async 
   const { wrapper, text } = status({ hidden: true, announceOnShow: true })
   await flushPromises()
   expect(region.getMessage()).toBe('')
-  // 源：解除 hidden 永不触发公告（Announce 的 useEffectOnce 只在挂载运行一次）。
   await wrapper.setProps({ hidden: false })
   await flushPromises()
   expect(region.getMessage()).toBe('')

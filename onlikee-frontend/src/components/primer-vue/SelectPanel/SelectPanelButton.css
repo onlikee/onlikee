@@ -1,12 +1,11 @@
-/* Primer React 8c0b708: source rules with local class names; mixins/custom media expanded. */
 .select-panel-button {
   align-items: center;
   appearance: none;
   background-color: transparent;
   border: var(--borderWidth-thin, 0.0625rem) solid;
-  border-color: var(--button-default-borderColor-rest);
+  border-color: var(--button-default-borderColor-rest, #d1d9e0);
   border-radius: var(--borderRadius-medium, 0.375rem);
-  color: var(--button-default-fgColor-rest);
+  color: var(--button-default-fgColor-rest, #25292e);
   cursor: pointer;
   display: flex;
   font-family: inherit;
@@ -55,9 +54,9 @@
   ):before,
 .select-panel-button:where([data-notification-indicator="leadingVisual"])
   .select-panel-button__leading-visual:before {
-  background-color: var(--fgColor-accent);
+  background-color: var(--fgColor-accent, #0969da);
   border-radius: var(--borderRadius-full, 624.9375rem);
-  box-shadow: 0 0 0 calc(var(--base-size-4, 0.25rem) / 2) var(--bgColor-inset);
+  box-shadow: 0 0 0 calc(var(--base-size-4, 0.25rem) / 2) var(--bgColor-inset, #f6f8fa);
   content: "";
   display: block;
   height: var(--base-size-8, 0.5rem);
@@ -98,7 +97,7 @@
   }
 }
 .select-panel-button :where(.select-panel-button__visual) {
-  color: var(--fgColor-muted);
+  color: var(--fgColor-muted, #59636e);
   display: flex;
   pointer-events: none;
 }
@@ -265,298 +264,298 @@
   justify-content: center;
 }
 .select-panel-button:where([data-variant="default"]) {
-  background-color: var(--button-default-bgColor-rest);
-  box-shadow: var(--button-default-shadow-resting);
-  color: var(--button-default-fgColor-rest);
+  background-color: var(--button-default-bgColor-rest, #f6f8fa);
+  box-shadow: var(--button-default-shadow-resting, 0 1px 0 0 #1f23280a);
+  color: var(--button-default-fgColor-rest, #25292e);
 }
 .select-panel-button[aria-expanded="true"]:where([data-variant="default"]) {
-  background-color: var(--button-default-bgColor-active);
-  border-color: var(--button-default-borderColor-active);
+  background-color: var(--button-default-bgColor-active, #e6eaef);
+  border-color: var(--button-default-borderColor-active, #d1d9e0);
 }
 .select-panel-button:where([data-variant="default"]):hover {
-  background-color: var(--button-default-bgColor-hover);
-  border-color: var(--button-default-borderColor-hover);
+  background-color: var(--button-default-bgColor-hover, #eff2f5);
+  border-color: var(--button-default-borderColor-hover, #d1d9e0);
 }
 .select-panel-button:where([data-variant="default"]):active {
-  background-color: var(--button-default-bgColor-active);
-  border-color: var(--button-default-borderColor-active);
+  background-color: var(--button-default-bgColor-active, #e6eaef);
+  border-color: var(--button-default-borderColor-active, #d1d9e0);
 }
 .select-panel-button:where([data-variant="default"]):disabled,
 .select-panel-button[aria-disabled="true"]:where([data-variant="default"]):not(
     [data-loading="true"]
   ) {
-  background-color: var(--button-default-bgColor-disabled);
-  border-color: var(--button-default-borderColor-disabled);
+  background-color: var(--button-default-bgColor-disabled, #eff2f5);
+  border-color: var(--button-default-borderColor-disabled, #818b981a);
   box-shadow: none;
-  color: var(--control-fgColor-disabled);
+  color: var(--control-fgColor-disabled, #818b98);
 }
 .select-panel-button:where([data-variant="default"]):disabled [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-default-bgColor-disabled);
-  border-color: var(--buttonKeybindingHint-default-borderColor-disabled);
-  color: var(--buttonKeybindingHint-default-fgColor-disabled);
+  background: var(--buttonKeybindingHint-default-bgColor-disabled, #eff2f5);
+  border-color: var(--buttonKeybindingHint-default-borderColor-disabled, #818b981a);
+  color: var(--buttonKeybindingHint-default-fgColor-disabled, #818b98);
 }
 .select-panel-button[aria-disabled="true"]:where([data-variant="default"]):not(
     [data-loading="true"]
   )
   [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-default-bgColor-disabled);
-  border-color: var(--buttonKeybindingHint-default-borderColor-disabled);
-  color: var(--buttonKeybindingHint-default-fgColor-disabled);
+  background: var(--buttonKeybindingHint-default-bgColor-disabled, #eff2f5);
+  border-color: var(--buttonKeybindingHint-default-borderColor-disabled, #818b981a);
+  color: var(--buttonKeybindingHint-default-fgColor-disabled, #818b98);
 }
 .select-panel-button:where([data-variant="default"])
   .select-panel-button__counter-label {
-  background-color: var(--buttonCounter-default-bgColor-rest) !important;
+  background-color: var(--buttonCounter-default-bgColor-rest, #818b981f) !important;
 }
 .select-panel-button:where([data-variant="default"]) [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-default-bgColor-rest);
-  border-color: var(--buttonKeybindingHint-default-borderColor-rest);
-  color: var(--buttonKeybindingHint-default-fgColor-rest);
+  background: var(--buttonKeybindingHint-default-bgColor-rest, #eff2f5);
+  border-color: var(--buttonKeybindingHint-default-borderColor-rest, #d1d9e0b3);
+  color: var(--buttonKeybindingHint-default-fgColor-rest, #59636e);
 }
 .select-panel-button:where([data-variant="default"]):where(
     .select-panel-button__icon-button
   ) {
-  color: var(--fgColor-muted);
+  color: var(--fgColor-muted, #59636e);
 }
 .select-panel-button:where([data-variant="primary"]) {
-  background-color: var(--button-primary-bgColor-rest);
-  border-color: var(--button-primary-borderColor-rest);
-  box-shadow: var(--shadow-resting-small);
-  color: var(--button-primary-fgColor-rest);
+  background-color: var(--button-primary-bgColor-rest, #1f883d);
+  border-color: var(--button-primary-borderColor-rest, #1f232826);
+  box-shadow: var(--shadow-resting-small, 0 1px 1px 0 #1f23280a, 0 1px 2px 0 #1f232808);
+  color: var(--button-primary-fgColor-rest, #ffffff);
 }
 .select-panel-button[aria-expanded="true"]:where([data-variant="primary"]) {
-  background-color: var(--button-primary-bgColor-active);
-  box-shadow: var(--button-primary-shadow-selected);
+  background-color: var(--button-primary-bgColor-active, #197935);
+  box-shadow: var(--button-primary-shadow-selected, inset 0 1px 0 0 #002d114d);
 }
 .select-panel-button:where([data-variant="primary"]):hover {
-  background-color: var(--button-primary-bgColor-hover);
-  border-color: var(--button-primary-borderColor-hover);
+  background-color: var(--button-primary-bgColor-hover, #1c8139);
+  border-color: var(--button-primary-borderColor-hover, #1f232826);
 }
 .select-panel-button:where([data-variant="primary"]):focus-visible {
-  box-shadow: inset 0 0 0 3px var(--fgColor-onEmphasis);
+  box-shadow: inset 0 0 0 3px var(--fgColor-onEmphasis, #ffffff);
   outline: 2px solid var(--focus-outline-color, var(--focus-outlineColor, #0969da));
   outline-offset: -2px;
 }
 .select-panel-button:where([data-variant="primary"]):active {
-  background-color: var(--button-primary-bgColor-active);
-  box-shadow: var(--button-primary-shadow-selected);
+  background-color: var(--button-primary-bgColor-active, #197935);
+  box-shadow: var(--button-primary-shadow-selected, inset 0 1px 0 0 #002d114d);
 }
 .select-panel-button:where([data-variant="primary"]):disabled,
 .select-panel-button[aria-disabled="true"]:where([data-variant="primary"]):not(
     [data-loading="true"]
   ) {
-  background-color: var(--button-primary-bgColor-disabled);
-  border-color: var(--button-primary-borderColor-disabled);
+  background-color: var(--button-primary-bgColor-disabled, #95d8a6);
+  border-color: var(--button-primary-borderColor-disabled, #95d8a6);
   box-shadow: none;
-  color: var(--button-primary-fgColor-disabled);
+  color: var(--button-primary-fgColor-disabled, #ffffffcc);
 }
 .select-panel-button:where([data-variant="primary"]):disabled [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-primary-bgColor-disabled);
-  border-color: var(--buttonKeybindingHint-primary-borderColor-disabled);
-  color: var(--buttonKeybindingHint-primary-fgColor-disabled);
+  background: var(--buttonKeybindingHint-primary-bgColor-disabled, #002d111a);
+  border-color: var(--buttonKeybindingHint-primary-borderColor-disabled, #818b981a);
+  color: var(--buttonKeybindingHint-primary-fgColor-disabled, #ffffffcc);
 }
 .select-panel-button[aria-disabled="true"]:where([data-variant="primary"]):not(
     [data-loading="true"]
   )
   [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-primary-bgColor-disabled);
-  border-color: var(--buttonKeybindingHint-primary-borderColor-disabled);
-  color: var(--buttonKeybindingHint-primary-fgColor-disabled);
+  background: var(--buttonKeybindingHint-primary-bgColor-disabled, #002d111a);
+  border-color: var(--buttonKeybindingHint-primary-borderColor-disabled, #818b981a);
+  color: var(--buttonKeybindingHint-primary-fgColor-disabled, #ffffffcc);
 }
 .select-panel-button:where([data-variant="primary"])
   .select-panel-button__counter-label {
-  background-color: var(--buttonCounter-primary-bgColor-rest) !important;
-  color: var(--button-primary-fgColor-rest) !important;
+  background-color: var(--buttonCounter-primary-bgColor-rest, #002d1133) !important;
+  color: var(--button-primary-fgColor-rest, #ffffff) !important;
 }
 .select-panel-button:where([data-variant="primary"]) [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-primary-bgColor-rest);
-  border-color: var(--buttonKeybindingHint-primary-borderColor-rest);
-  color: var(--buttonKeybindingHint-primary-fgColor-rest);
+  background: var(--buttonKeybindingHint-primary-bgColor-rest, #002d1133);
+  border-color: var(--buttonKeybindingHint-primary-borderColor-rest, #1f232826);
+  color: var(--buttonKeybindingHint-primary-fgColor-rest, #ffffff);
 }
 .select-panel-button:where([data-variant="primary"])
   .select-panel-button__visual {
-  color: var(--button-primary-fgColor-rest);
+  color: var(--button-primary-fgColor-rest, #ffffff);
 }
 .select-panel-button:where([data-variant="danger"]) {
-  background-color: var(--button-danger-bgColor-rest);
-  box-shadow: var(--button-default-shadow-resting);
-  color: var(--button-danger-fgColor-rest);
+  background-color: var(--button-danger-bgColor-rest, #f6f8fa);
+  box-shadow: var(--button-default-shadow-resting, 0 1px 0 0 #1f23280a);
+  color: var(--button-danger-fgColor-rest, #d1242f);
 }
 .select-panel-button[aria-expanded="true"]:where([data-variant="danger"]) {
-  background-color: var(--button-danger-bgColor-active);
-  border-color: var(--button-danger-borderColor-active);
-  box-shadow: var(--button-danger-shadow-selected);
-  color: var(--button-danger-fgColor-active);
+  background-color: var(--button-danger-bgColor-active, #a40e26);
+  border-color: var(--button-danger-borderColor-active, #1f232826);
+  box-shadow: var(--button-danger-shadow-selected, inset 0 1px 0 0 #4c001433);
+  color: var(--button-danger-fgColor-active, #ffffff);
 }
 .select-panel-button[aria-expanded="true"]:where([data-variant="danger"])
   .select-panel-button__visual {
-  color: var(--button-danger-iconColor-hover);
+  color: var(--button-danger-iconColor-hover, #ffffff);
 }
 .select-panel-button:where([data-variant="danger"]):hover {
-  background-color: var(--button-danger-bgColor-hover);
-  border-color: var(--button-danger-borderColor-hover);
-  box-shadow: var(--shadow-resting-small);
-  color: var(--button-danger-fgColor-hover);
+  background-color: var(--button-danger-bgColor-hover, #cf222e);
+  border-color: var(--button-danger-borderColor-hover, #1f232826);
+  box-shadow: var(--shadow-resting-small, 0 1px 1px 0 #1f23280a, 0 1px 2px 0 #1f232808);
+  color: var(--button-danger-fgColor-hover, #ffffff);
 }
 .select-panel-button:where([data-variant="danger"]):hover
   .select-panel-button__counter-label {
-  background-color: var(--buttonCounter-danger-bgColor-hover) !important;
-  color: var(--buttonCounter-danger-fgColor-hover) !important;
+  background-color: var(--buttonCounter-danger-bgColor-hover, #ffffff33) !important;
+  color: var(--buttonCounter-danger-fgColor-hover, #ffffff) !important;
 }
 .select-panel-button:where([data-variant="danger"]):hover [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-danger-bgColor-hover);
-  border-color: var(--buttonKeybindingHint-danger-borderColor-hover);
-  color: var(--buttonKeybindingHint-danger-fgColor-hover);
+  background: var(--buttonKeybindingHint-danger-bgColor-hover, #1f232833);
+  border-color: var(--buttonKeybindingHint-danger-borderColor-hover, #1f232826);
+  color: var(--buttonKeybindingHint-danger-fgColor-hover, #ffffff);
   transition: 80ms ease-out;
 }
 .select-panel-button:where([data-variant="danger"]):hover
   .select-panel-button__visual {
-  color: var(--button-danger-iconColor-hover);
+  color: var(--button-danger-iconColor-hover, #ffffff);
 }
 .select-panel-button:where([data-variant="danger"]):active {
-  background-color: var(--button-danger-bgColor-active);
-  border-color: var(--button-danger-borderColor-active);
-  box-shadow: var(--button-danger-shadow-selected);
-  color: var(--button-danger-fgColor-active);
+  background-color: var(--button-danger-bgColor-active, #a40e26);
+  border-color: var(--button-danger-borderColor-active, #1f232826);
+  box-shadow: var(--button-danger-shadow-selected, inset 0 1px 0 0 #4c001433);
+  color: var(--button-danger-fgColor-active, #ffffff);
 }
 .select-panel-button:where([data-variant="danger"]):active
   .select-panel-button__counter-label {
-  background-color: var(--buttonCounter-danger-bgColor-hover) !important;
-  color: var(--buttonCounter-danger-fgColor-hover) !important;
+  background-color: var(--buttonCounter-danger-bgColor-hover, #ffffff33) !important;
+  color: var(--buttonCounter-danger-fgColor-hover, #ffffff) !important;
 }
 .select-panel-button:where([data-variant="danger"]):active [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-danger-bgColor-active);
-  border-color: var(--buttonKeybindingHint-danger-borderColor-active);
-  color: var(--buttonKeybindingHint-danger-fgColor-active);
+  background: var(--buttonKeybindingHint-danger-bgColor-active, #1f232866);
+  border-color: var(--buttonKeybindingHint-danger-borderColor-active, #1f232826);
+  color: var(--buttonKeybindingHint-danger-fgColor-active, #ffffff);
   transition: 80ms ease-out;
 }
 .select-panel-button:where([data-variant="danger"]):active
   .select-panel-button__visual {
-  color: var(--button-danger-iconColor-hover);
+  color: var(--button-danger-iconColor-hover, #ffffff);
 }
 .select-panel-button:where([data-variant="danger"]):disabled,
 .select-panel-button[aria-disabled="true"]:where([data-variant="danger"]):not(
     [data-loading="true"]
   ) {
-  background-color: var(--button-danger-bgColor-disabled);
-  border-color: var(--button-default-borderColor-disabled);
+  background-color: var(--button-danger-bgColor-disabled, #eff2f5);
+  border-color: var(--button-default-borderColor-disabled, #818b981a);
   box-shadow: none;
-  color: var(--button-danger-fgColor-disabled);
+  color: var(--button-danger-fgColor-disabled, #d1242f80);
 }
 .select-panel-button:where([data-variant="danger"]):disabled
   .select-panel-button__counter-label {
-  background-color: var(--buttonCounter-danger-bgColor-disabled) !important;
-  color: var(--buttonCounter-danger-fgColor-disabled) !important;
+  background-color: var(--buttonCounter-danger-bgColor-disabled, #cf222e0d) !important;
+  color: var(--buttonCounter-danger-fgColor-disabled, #d1242f80) !important;
 }
 .select-panel-button[aria-disabled="true"]:where([data-variant="danger"]):not(
     [data-loading="true"]
   )
   .select-panel-button__counter-label {
-  background-color: var(--buttonCounter-danger-bgColor-disabled) !important;
-  color: var(--buttonCounter-danger-fgColor-disabled) !important;
+  background-color: var(--buttonCounter-danger-bgColor-disabled, #cf222e0d) !important;
+  color: var(--buttonCounter-danger-fgColor-disabled, #d1242f80) !important;
 }
 .select-panel-button:where([data-variant="danger"]):disabled [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-danger-bgColor-disabled);
-  border-color: var(--buttonKeybindingHint-danger-borderColor-disabled);
-  color: var(--buttonKeybindingHint-danger-fgColor-disabled);
+  background: var(--buttonKeybindingHint-danger-bgColor-disabled, #eff2f5);
+  border-color: var(--buttonKeybindingHint-danger-borderColor-disabled, #818b981a);
+  color: var(--buttonKeybindingHint-danger-fgColor-disabled, #818b98);
 }
 .select-panel-button[aria-disabled="true"]:where([data-variant="danger"]):not(
     [data-loading="true"]
   )
   [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-danger-bgColor-disabled);
-  border-color: var(--buttonKeybindingHint-danger-borderColor-disabled);
-  color: var(--buttonKeybindingHint-danger-fgColor-disabled);
+  background: var(--buttonKeybindingHint-danger-bgColor-disabled, #eff2f5);
+  border-color: var(--buttonKeybindingHint-danger-borderColor-disabled, #818b981a);
+  color: var(--buttonKeybindingHint-danger-fgColor-disabled, #818b98);
 }
 .select-panel-button:where([data-variant="danger"])
   .select-panel-button__counter-label {
-  background-color: var(--buttonCounter-danger-bgColor-rest) !important;
-  color: var(--buttonCounter-danger-fgColor-rest) !important;
+  background-color: var(--buttonCounter-danger-bgColor-rest, #cf222e1a) !important;
+  color: var(--buttonCounter-danger-fgColor-rest, #c21c2c) !important;
 }
 .select-panel-button:where([data-variant="danger"]) [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-danger-bgColor-rest);
-  border-color: var(--buttonKeybindingHint-danger-borderColor-rest);
-  color: var(--buttonKeybindingHint-danger-fgColor-rest);
+  background: var(--buttonKeybindingHint-danger-bgColor-rest, #eff2f5);
+  border-color: var(--buttonKeybindingHint-danger-borderColor-rest, #d1d9e0b3);
+  color: var(--buttonKeybindingHint-danger-fgColor-rest, #59636e);
 }
 .select-panel-button:where([data-variant="danger"])
   .select-panel-button__visual {
-  color: var(--button-danger-iconColor-rest);
+  color: var(--button-danger-iconColor-rest, #d1242f);
 }
 .select-panel-button:where([data-variant="invisible"]) {
-  border-color: var(--button-invisible-borderColor-rest);
+  border-color: var(--button-invisible-borderColor-rest, #ffffff00);
   box-shadow: none;
-  color: var(--button-default-fgColor-rest);
+  color: var(--button-default-fgColor-rest, #25292e);
 }
 .select-panel-button[aria-expanded="true"]:where([data-variant="invisible"]) {
-  background-color: var(--button-invisible-bgColor-active);
+  background-color: var(--button-invisible-bgColor-active, #818b9826);
 }
 .select-panel-button:where([data-variant="invisible"]):hover {
-  background-color: var(--button-invisible-bgColor-hover);
-  border-color: var(--button-invisible-borderColor-hover);
+  background-color: var(--button-invisible-bgColor-hover, #818b981a);
+  border-color: var(--button-invisible-borderColor-hover, #ffffff00);
 }
 .select-panel-button:where([data-variant="invisible"]):hover
   .select-panel-button__visual {
-  color: var(--button-invisible-iconColor-hover);
+  color: var(--button-invisible-iconColor-hover, #59636e);
 }
 .select-panel-button:where([data-variant="invisible"]):hover [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-invisible-bgColor-hover);
+  background: var(--buttonKeybindingHint-invisible-bgColor-hover, #818b981a);
   transition: 80ms ease-out;
 }
 .select-panel-button:where([data-variant="invisible"]):active {
-  background-color: var(--button-invisible-bgColor-active);
+  background-color: var(--button-invisible-bgColor-active, #818b9826);
 }
 .select-panel-button:where([data-variant="invisible"]):active
   .select-panel-button__visual {
-  color: var(--button-invisible-iconColor-hover);
+  color: var(--button-invisible-iconColor-hover, #59636e);
 }
 .select-panel-button:where([data-variant="invisible"]):active [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-invisible-bgColor-active);
+  background: var(--buttonKeybindingHint-invisible-bgColor-active, #818b9826);
   transition: 80ms ease-out;
 }
 .select-panel-button:where([data-variant="invisible"]):disabled,
 .select-panel-button[aria-disabled="true"]:where(
     [data-variant="invisible"]
   ):not([data-loading="true"]) {
-  background-color: var(--button-invisible-bgColor-disabled);
-  border-color: var(--button-invisible-borderColor-disabled);
+  background-color: var(--button-invisible-bgColor-disabled, #ffffff00);
+  border-color: var(--button-invisible-borderColor-disabled, #ffffff00);
   box-shadow: none;
-  color: var(--button-invisible-fgColor-disabled);
+  color: var(--button-invisible-fgColor-disabled, #818b98);
 }
 .select-panel-button:where([data-variant="invisible"]):disabled
   [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-invisible-bgColor-disabled);
-  border-color: var(--buttonKeybindingHint-invisible-borderColor-disabled);
-  color: var(--buttonKeybindingHint-invisible-fgColor-disabled);
+  background: var(--buttonKeybindingHint-invisible-bgColor-disabled, #ffffff00);
+  border-color: var(--buttonKeybindingHint-invisible-borderColor-disabled, #818b981a);
+  color: var(--buttonKeybindingHint-invisible-fgColor-disabled, #818b98);
 }
 .select-panel-button[aria-disabled="true"]:where(
     [data-variant="invisible"]
   ):not([data-loading="true"])
   [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-invisible-bgColor-disabled);
-  border-color: var(--buttonKeybindingHint-invisible-borderColor-disabled);
-  color: var(--buttonKeybindingHint-invisible-fgColor-disabled);
+  background: var(--buttonKeybindingHint-invisible-bgColor-disabled, #ffffff00);
+  border-color: var(--buttonKeybindingHint-invisible-borderColor-disabled, #818b981a);
+  color: var(--buttonKeybindingHint-invisible-fgColor-disabled, #818b98);
 }
 .select-panel-button:where([data-variant="invisible"])
   .select-panel-button__visual {
-  color: var(--button-invisible-iconColor-rest);
+  color: var(--button-invisible-iconColor-rest, #59636e);
 }
 .select-panel-button:where([data-variant="invisible"])
   .select-panel-button__counter-label {
-  background-color: var(--buttonCounter-invisible-bgColor-rest) !important;
+  background-color: var(--buttonCounter-invisible-bgColor-rest, #818b981f) !important;
 }
 .select-panel-button:where([data-variant="invisible"]) [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-invisible-bgColor-rest);
-  border-color: var(--buttonKeybindingHint-invisible-borderColor-rest);
-  color: var(--buttonKeybindingHint-invisible-fgColor-rest);
+  background: var(--buttonKeybindingHint-invisible-bgColor-rest, #eff2f5);
+  border-color: var(--buttonKeybindingHint-invisible-borderColor-rest, #ffffff00);
+  color: var(--buttonKeybindingHint-invisible-fgColor-rest, #59636e);
 }
 .select-panel-button:where([data-variant="invisible"]):where(
     .select-panel-button__icon-button
   ) {
-  color: var(--button-invisible-iconColor-rest);
+  color: var(--button-invisible-iconColor-rest, #59636e);
 }
 .select-panel-button:where([data-variant="link"]) {
   border: unset;
   border-radius: 0;
-  color: var(--fgColor-link);
+  color: var(--fgColor-link, #0969da);
   display: inline-flex;
   font-size: inherit;
   height: unset;
@@ -596,7 +595,7 @@
   ) {
   background-color: transparent;
   border-color: transparent;
-  color: var(--control-fgColor-disabled);
+  color: var(--control-fgColor-disabled, #818b98);
 }
 .select-panel-button:where([data-variant="link"]) .select-panel-button__label {
   white-space: unset;
@@ -607,10 +606,10 @@
 }
 .select-panel-button:where([data-variant="link"]):where([data-inactive]) {
   background: transparent !important;
-  color: var(--button-inactive-fgColor);
+  color: var(--button-inactive-fgColor, #59636e);
 }
 .select-panel-button:where([data-variant="link"]) .select-panel-button__visual {
-  color: var(--fgColor-link);
+  color: var(--fgColor-link, #0969da);
 }
 [data-a11y-link-underlines="true"]
   .select-panel-button[data-no-visuals]:where([data-variant="link"]) {
@@ -672,10 +671,10 @@
 .select-panel-button:where([data-inactive]),
 .select-panel-button:where([data-inactive]):active,
 .select-panel-button:where([data-inactive]):hover {
-  background-color: var(--button-inactive-bgColor);
-  border-color: var(--button-inactive-bgColor);
+  background-color: var(--button-inactive-bgColor, #e6eaef);
+  border-color: var(--button-inactive-bgColor, #e6eaef);
   box-shadow: none;
-  color: var(--button-inactive-fgColor);
+  color: var(--button-inactive-fgColor, #59636e);
   cursor: auto;
 }
 .select-panel-button:where([data-inactive]) .select-panel-button__visual {
@@ -701,19 +700,19 @@
   color: inherit !important;
 }
 .select-panel-button:where([data-inactive]) [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-inactive-bgColor);
-  border-color: var(--buttonKeybindingHint-inactive-borderColor);
-  color: var(--buttonKeybindingHint-inactive-fgColor);
+  background: var(--buttonKeybindingHint-inactive-bgColor, #eff2f5);
+  border-color: var(--buttonKeybindingHint-inactive-borderColor, #d1d9e0b3);
+  color: var(--buttonKeybindingHint-inactive-fgColor, #59636e);
 }
 .select-panel-button:where([data-inactive]):hover [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-inactive-bgColor);
-  border-color: var(--buttonKeybindingHint-inactive-borderColor);
-  color: var(--buttonKeybindingHint-inactive-fgColor);
+  background: var(--buttonKeybindingHint-inactive-bgColor, #eff2f5);
+  border-color: var(--buttonKeybindingHint-inactive-borderColor, #d1d9e0b3);
+  color: var(--buttonKeybindingHint-inactive-fgColor, #59636e);
 }
 .select-panel-button:where([data-inactive]):active [data-kbd-chord] {
-  background: var(--buttonKeybindingHint-inactive-bgColor);
-  border-color: var(--buttonKeybindingHint-inactive-borderColor);
-  color: var(--buttonKeybindingHint-inactive-fgColor);
+  background: var(--buttonKeybindingHint-inactive-bgColor, #eff2f5);
+  border-color: var(--buttonKeybindingHint-inactive-borderColor, #d1d9e0b3);
+  color: var(--buttonKeybindingHint-inactive-fgColor, #59636e);
 }
 .select-panel-button:where([data-icon-only-counter]) {
   padding-inline: var(--control-medium-paddingInline-condensed, 0.5rem);

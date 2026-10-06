@@ -1,6 +1,5 @@
 // @vitest-environment jsdom
 /* eslint-disable vue/one-component-per-file -- Test fixtures exercise wrapper and provider contracts. */
-// Contracts from local Primer React 09e4c4c, packages/react/src/ActionList.
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount, type VueWrapper } from '@vue/test-utils'
 import { defineComponent, Fragment, h, nextTick, reactive, shallowReactive } from 'vue'

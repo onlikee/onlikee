@@ -85,8 +85,6 @@ export const FilteredActionListLoadingTypes = {
   bodySkeleton: new FilteredActionListLoadingType('body-skeleton', true),
   input: new FilteredActionListLoadingType('input', false)
 }
-/* 源 FilteredActionListInput.tsx:7-18 FilteredActionListInputProps
-   （TextInputProps → Vue 侧 TextInputOptions 命名适配；React.Ref → Ref | 回调）。 */
 export interface FilteredActionListInputProps extends Partial<Omit<TextInputOptions, 'onChange' | 'onKeydown'>> {
   inputRef: Ref<HTMLInputElement | null> | ((element: HTMLInputElement | null) => void)
   onInputChange?: (event: Event) => void

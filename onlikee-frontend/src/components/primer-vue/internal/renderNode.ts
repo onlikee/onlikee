@@ -1,6 +1,6 @@
 import { cloneVNode, h, isVNode, toRaw, type Component, type VNodeChild } from 'vue'
 
-/** A Vue counterpart of a React node or component-valued visual prop. */
+/* 渲染节点或组件形式的视觉属性。 */
 export type NodeProp = VNodeChild | Component
 
 export function renderNode(node: NodeProp | undefined, props?: Record<string, unknown>): VNodeChild {

@@ -204,10 +204,10 @@ function formatFileSize(size: number): string {
   width: 100%;
 	gap: 8px;
 	padding: 1.5rem;
-	border: 2px dashed var(--borderColor-default);
+	border: 2px dashed var(--borderColor-default, #d1d9e0);
 	border-radius: 6px;
-	background: var(--bgColor-muted);
-	color: var(--fgColor-default);
+	background: var(--bgColor-muted, #f6f8fa);
+	color: var(--fgColor-default, #1f2328);
 	font: inherit;
 	cursor: pointer;
 	transition: border-color 0.2s, background 0.2s;
@@ -215,8 +215,8 @@ function formatFileSize(size: number): string {
 
 .upload-drop:hover,
 .upload-drop[data-dragging='true'] {
-	border-color: var(--borderColor-accent-emphasis);
-	background: color-mix(in srgb, var(--bgColor-accent-emphasis) 6%, var(--bgColor-muted));
+	border-color: var(--borderColor-accent-emphasis, #0969da);
+	background: color-mix(in srgb, var(--bgColor-accent-emphasis, #0969da) 6%, var(--bgColor-muted, #f6f8fa));
 }
 
 .upload-drop:focus-visible {
@@ -227,19 +227,19 @@ function formatFileSize(size: number): string {
 .upload-icon {
 	width: 24px;
 	height: 24px;
-	color: var(--fgColor-muted);
+	color: var(--fgColor-muted, #59636e);
 }
 
 .upload-text {
 	margin: 0;
 	font-size: 14px;
-	color: var(--fgColor-default);
+	color: var(--fgColor-default, #1f2328);
 }
 
 .upload-hint {
 	margin: 0;
 	font-size: 0.85rem;
-	color: var(--fgColor-muted);
+	color: var(--fgColor-muted, #59636e);
 }
 
 .upload-file {
@@ -248,9 +248,9 @@ function formatFileSize(size: number): string {
 	gap: 12px;
 	margin-top: 12px;
 	padding: 6px 6px 6px 14px;
-	border: 1px solid var(--borderColor-default);
+	border: 1px solid var(--borderColor-default, #d1d9e0);
 	border-radius: 6px;
-	background: var(--bgColor-muted);
+	background: var(--bgColor-muted, #f6f8fa);
 }
 
 .upload-file-meta {
@@ -262,12 +262,12 @@ function formatFileSize(size: number): string {
 
 .upload-file-name {
 	font-size: 0.8rem;
-	color: var(--fgColor-default);
+	color: var(--fgColor-default, #1f2328);
 }
 
 .upload-file-size {
 	font-size: 0.8rem;
-	color: var(--fgColor-muted);
+	color: var(--fgColor-muted, #59636e);
 }
 
 .upload-file-remove {
@@ -281,12 +281,12 @@ function formatFileSize(size: number): string {
 	border-radius: 6px;
 	background: none;
 	cursor: pointer;
-	color: var(--fgColor-muted);
+	color: var(--fgColor-muted, #59636e);
 }
 
 .upload-file-remove:hover {
 	background: var(--control-transparent-bgColor-hover, #818b981a);
-	color: var(--fgColor-danger);
+	color: var(--fgColor-danger, #d1242f);
 }
 
 .upload-file-remove:active {

@@ -4,17 +4,8 @@ import { apply, isSupported } from '@oddbird/popover-polyfill/fn'
 import { registerEscapeHandler } from '../internal/documentRegistries'
 import type { TooltipDelay, TooltipDirection, TooltipType } from './types'
 
-// Primer React 8c0b708: TooltipV2/Tooltip.tsx 行为层直译（状态机、定位、popover 生命周期、
-// Escape 拦截），供公开 Tooltip.vue（cloneVNode 触发器）与 SelectPanelButton.vue
-// （触发器即自身按钮元素）复用。
-//
-// Vue 适配：
-// - useOnEscapePress → internal/documentRegistries.registerEscapeHandler（同一注册表语义：
-//   单 document keydown 监听、逆序派发、defaultPrevented 即中断 —— tooltip 打开时
-//   stopImmediatePropagation + preventDefault 拦截，外层 Overlay 不再收到 Escape，审计 M12）
-// - useSafeTimeout → 本地 timeout 集合，卸载时统一清理
+// 提示打开时独占 Escape，阻止事件继续关闭外层浮层。
 
-// map tooltip direction to anchoredPosition props（React :61-70）
 export const directionToPosition: Record<TooltipDirection, { side: AnchorSide; align: AnchorAlignment }> = {
   nw: { side: 'outside-top', align: 'end' },
   n: { side: 'outside-top', align: 'center' },
@@ -26,7 +17,6 @@ export const directionToPosition: Record<TooltipDirection, { side: AnchorSide; a
   w: { side: 'outside-left', align: 'center' },
 }
 
-// map anchoredPosition props to tooltip direction（React :73-82）
 export const positionToDirection: Record<string, TooltipDirection> = {
   'outside-top-end': 'nw',
   'outside-top-center': 'n',
@@ -38,10 +28,8 @@ export const positionToDirection: Record<string, TooltipDirection> = {
   'outside-left-center': 'w',
 }
 
-// The list is from GitHub's custom-axe-rules（React :85-92）
 const interactiveElements = ['a[href]', 'button:not([disabled])', 'summary', 'select', 'input:not([type=hidden])', 'textarea']
 
-// Map delay prop to actual time in ms（React :96-100）
 export const delayTimeMap: Record<TooltipDelay, number> = { short: 50, medium: 400, long: 1200 }
 
 const isInteractive = (element: HTMLElement) =>
@@ -52,7 +40,6 @@ export interface TooltipControllerSettings {
   direction: () => TooltipDirection
   delay: () => TooltipDelay
   type: () => TooltipType
-  /** IconButton withoutTooltip 分支为 false（React 此时根本不渲染 Tooltip 子树） */
   enabled: () => boolean
   privateDisableTooltip: () => boolean
   triggerRef: Ref<HTMLElement | null>
@@ -67,7 +54,6 @@ export interface TooltipTriggerOriginalHandlers {
   onMouseleave?: (event: MouseEvent) => void
 }
 
-/** 旧浏览器不支持 :popover-open 选择器时的静默失败（React :184-198/:217-231 同款 catch）。 */
 function isPopoverSelectorError(error: unknown) {
   return (
     error &&
@@ -79,7 +65,6 @@ function isPopoverSelectorError(error: unknown) {
 }
 
 export function useTooltipController(settings: TooltipControllerSettings) {
-  // React useState(direction)：初始值只读取一次，direction prop 后续变化不重置
   const calculatedDirection = shallowRef<TooltipDirection>(settings.direction())
   const isPopoverOpen = shallowRef(false)
   let openTimeout: ReturnType<typeof setTimeout> | null = null
@@ -150,10 +135,6 @@ export function useTooltipController(settings: TooltipControllerSettings) {
     }
   }
 
-  /**
-   * 组合触发器事件处理器（React Tooltip.tsx:333-372 cloneElement 注入的同款顺序：
-   * originals 为触发元素上已有的处理器，按 React 的先后次序调用）。
-   */
   function makeTriggerHandlers(originals: TooltipTriggerOriginalHandlers = {}) {
     return {
       onBlur: (event: FocusEvent) => {
@@ -196,7 +177,6 @@ export function useTooltipController(settings: TooltipControllerSettings) {
     }
   }
 
-  /** React Tooltip.tsx:237-287 的挂载期 effect（deps: direction/type）。 */
   function runTriggerEffect() {
     if (!settings.tooltipRef.value || !settings.triggerRef.value) return
     const trigger = settings.triggerRef.value
@@ -204,7 +184,7 @@ export function useTooltipController(settings: TooltipControllerSettings) {
     if (isInvalidTrigger) {
       if (import.meta.env.DEV) {
         console.warn(
-          'The `Tooltip` component expects its trigger ref to resolve to an HTML element. Ensure the trigger forwards its ref to a single interactive element instead of a React Fragment.',
+          'The `Tooltip` component expects its trigger ref to resolve to an HTML element. Ensure the trigger forwards its ref to a single interactive element instead of a Fragment.',
         )
       }
       return
@@ -224,7 +204,7 @@ export function useTooltipController(settings: TooltipControllerSettings) {
     })
     if (!(isTriggerInteractive || hasInteractiveDescendant)) {
       throw new Error(
-        'The `Tooltip` component expects a single React element that contains interactive content. Consider using a `<button>` or equivalent interactive element instead.',
+        'The `Tooltip` component expects a single element that contains interactive content. Consider using a `<button>` or equivalent interactive element instead.',
       )
     }
     // If the tooltip is used for labelling the interactive element, the trigger element or any
@@ -254,13 +234,11 @@ export function useTooltipController(settings: TooltipControllerSettings) {
   onMounted(() => {
     if (settings.enabled()) runTriggerEffect()
   })
-  // React deps [direction, type]；Vue 另含 enabled —— React 中 withoutTooltip 翻转会
-  // 挂载/卸载整个 Tooltip 子树（effect 随挂载重跑），Vue 以 enabled 变化等价触发
   watch(() => [settings.direction(), settings.type(), settings.enabled()] as const, () => {
     if (settings.enabled()) runTriggerEffect()
   }, { flush: 'post' })
 
-  // React useOnEscapePress(:289-298)：tooltip 打开时独占 Escape（审计 M12）
+  // 提示打开时独占 Escape，阻止事件继续关闭外层浮层。
   let unregisterEscape: (() => void) | undefined
   onMounted(() => {
     unregisterEscape = registerEscapeHandler(event => {

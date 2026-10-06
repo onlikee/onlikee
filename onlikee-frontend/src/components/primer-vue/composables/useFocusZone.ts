@@ -9,7 +9,7 @@ export interface FocusZoneHookSettings extends Omit<FocusZoneSettings, 'activeDe
   disabled?: boolean
 }
 
-/** Reactive Vue port of React useFocusZone. Scope disposal aborts all behavior listeners. */
+/* 响应式焦点区域；作用域销毁时取消全部行为监听器。 */
 export function useFocusZone(settings: MaybeRefOrGetter<FocusZoneHookSettings> = {}) {
   const first = toValue(settings)
   const containerRef = first.containerRef ?? shallowRef<HTMLElement | null>(null)
@@ -22,17 +22,12 @@ export function useFocusZone(settings: MaybeRefOrGetter<FocusZoneHookSettings> =
       ? current.activeDescendantFocus.value : activeDescendantControlRef.value
     return { current, container, active }
   }, ({ current, container, active }, _previous, onCleanup) => {
-    // React :52-56 门控：container 必须 instanceof HTMLElement；启用 AD
-    // （activeDescendantFocus truthy）时 control 也必须 instanceof HTMLElement
-    // （truthy 判断不足以镜像，composables 审计偏差 10）。
     const useActiveDescendant = !!current.activeDescendantFocus
     if (!(container instanceof HTMLElement)) return
     if (useActiveDescendant && !(active instanceof HTMLElement)) return
     if (current.disabled) return
     const controller = focusZone(container, {
       ...current,
-      // React :60：activeDescendantControl 恒取 controlRef.current ?? undefined
-      // （不以 useActiveDescendant 为门，越权用法差异随之消失）。
       activeDescendantControl: active ?? undefined
     })
     onCleanup(() => controller.abort())

@@ -116,7 +116,7 @@ test('keeps the first duplicate and warns before and after all slots are filled 
   expect(warnings.every(warning => warning === 'Found duplicate "label" slot. Only the first will be rendered.')).toBeTruthy()
 })
 
-test('preserves React production behavior: ignores early duplicates and skips matching once every slot is filled', () => {
+test('preserves production behavior: ignores early duplicates and skips matching once every slot is filled', () => {
   vi.stubEnv('DEV', false)
   const first = h(Label)
   const last = h(Label)

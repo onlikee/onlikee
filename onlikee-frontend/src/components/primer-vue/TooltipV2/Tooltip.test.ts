@@ -6,8 +6,6 @@ import { defineComponent, h, nextTick } from 'vue'
 import Tooltip from './Tooltip.vue'
 import SelectPanelButton from '../SelectPanel/SelectPanelButton.vue'
 
-// 回归测试：公开 Tooltip 组件（cloneVNode 触发器注入路径）。
-// 对照 Primer React 8c0b708 TooltipV2/Tooltip.tsx。
 const wrappers: VueWrapper[] = []
 async function settle() { await nextTick(); await flushPromises(); await nextTick() }
 afterEach(() => {
@@ -53,7 +51,7 @@ describe('Tooltip (TooltipV2 public component)', () => {
     expect(tooltip.attributes('role')).toBeUndefined()
   })
 
-  it('opens on hover capture after the configured delay and composes original handlers (React order)', async () => {
+  it('opens on hover capture after the configured delay and composes original handlers', async () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
     const calls: string[] = []
     const wrapper = track(mount(Tooltip, {
@@ -141,10 +139,10 @@ describe('Tooltip (TooltipV2 public component)', () => {
     track(mount(Parent, { attachTo: document.body }))
     await settle()
     expect(captured).toHaveLength(1)
-    expect((captured[0] as Error).message).toContain('expects a single React element that contains interactive content')
+    expect((captured[0] as Error).message).toContain('expects a single element that contains interactive content')
   })
 
-  it('suppresses nested SelectPanelButton tooltips through the tooltip context (M14)', async () => {
+  it('suppresses nested SelectPanelButton tooltips through the tooltip context', async () => {
     const wrapper = track(mount(Tooltip, {
       props: { text: 'Outer tooltip' },
       slots: {

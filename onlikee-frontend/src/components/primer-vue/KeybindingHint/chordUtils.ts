@@ -1,7 +1,6 @@
 import { accessibleKeyName } from './key-names'
 import type { Platform } from './platform'
 
-// Primer React 8c0b708: KeybindingHint/components/utils.ts 直译
 
 /**
  * Consistent sort order for modifier keys. There should never be more than one non-modifier

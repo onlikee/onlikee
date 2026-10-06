@@ -688,8 +688,8 @@ defineExpose({ close: () => { isOpen.value = false } })
   --dropdown-enter-y: 0;
   --dropdown-available-width: calc(100vw - 16px);
   box-sizing: border-box;
-  min-width: min(192px, var(--dropdown-available-width));
-  max-width: var(--dropdown-available-width);
+  min-width: min(192px, var(--dropdown-available-width, calc(100vw - 16px)));
+  max-width: var(--dropdown-available-width, calc(100vw - 16px));
   width: auto;
   overflow: auto;
   border-radius: 12px;
@@ -698,23 +698,23 @@ defineExpose({ close: () => { isOpen.value = false } })
 }
 
 .dropdown-content[data-width='small'] {
-  width: min(256px, var(--dropdown-available-width));
+  width: min(256px, var(--dropdown-available-width, calc(100vw - 16px)));
 }
 
 .dropdown-content[data-width='medium'] {
-  width: min(320px, var(--dropdown-available-width));
+  width: min(320px, var(--dropdown-available-width, calc(100vw - 16px)));
 }
 
 .dropdown-content[data-width='large'] {
-  width: min(480px, var(--dropdown-available-width));
+  width: min(480px, var(--dropdown-available-width, calc(100vw - 16px)));
 }
 
 .dropdown-content[data-width='xlarge'] {
-  width: min(640px, var(--dropdown-available-width));
+  width: min(640px, var(--dropdown-available-width, calc(100vw - 16px)));
 }
 
 .dropdown-content[data-width='xxlarge'] {
-  width: min(960px, var(--dropdown-available-width));
+  width: min(960px, var(--dropdown-available-width, calc(100vw - 16px)));
 }
 
 .dropdown-content[data-side='outside-bottom'],
@@ -743,7 +743,7 @@ defineExpose({ close: () => { isOpen.value = false } })
 
 .dropdown-fade-enter-from {
   opacity: 0;
-  transform: translate(var(--dropdown-enter-x), var(--dropdown-enter-y));
+  transform: translate(var(--dropdown-enter-x, 0px), var(--dropdown-enter-y, 0px));
 }
 
 /* 弹出时自动给 trigger 内的 Button 添加激活样式 */

@@ -10,7 +10,6 @@ import { FeatureFlags } from '../FeatureFlags'
 import { FormControl } from '../FormControl'
 import type { ItemInput } from '../FilteredActionList/types'
 
-// React SelectPanel.test.tsx:100 同款 jsdom 环境补齐（behaviors scrollIntoView 需要 Element.scrollTo）
 globalThis.Element.prototype.scrollTo = vi.fn()
 
 const items: ItemInput[] = [{ id: 'one', text: 'One' }, { id: 'two', text: 'Two' }, { id: 'three', text: 'Three', disabled: true }]
@@ -33,7 +32,7 @@ afterEach(() => {
   vi.restoreAllMocks()
   vi.useRealTimers()
 })
-describe('SelectPanel React migration', () => {
+describe('SelectPanel behavior', () => {
   it('honors ignored outside refs and source overlay close-handler overrides', async () => {
     const ignored = document.createElement('button'); document.body.append(ignored)
     const escape = vi.fn(), outside = vi.fn()
@@ -94,8 +93,6 @@ describe('SelectPanel React migration', () => {
     expect(document.querySelector('[data-component="SelectPanel.Header"]')?.textContent).not.toContain('×')
     await wrapper.setProps({ variant: 'modal', onCancel: () => undefined })
     await settle()
-    // React Radio.tsx:50 —— 'aria-hidden'（Selection.tsx:35 传入）被解构消费，仅用于豁免
-    // name 缺失警告（Radio.tsx:63），不会渲染到 input 上；tabIndex 经 {...rest}（Radio.tsx:82）落盘
     expect(option().querySelector('input[type="radio"]')?.hasAttribute('aria-hidden')).toBe(false)
     expect(option().querySelector('input[type="radio"]')?.getAttribute('tabindex')).toBe('-1')
     expect(document.querySelector('[data-component="SelectPanel.CloseButton"] [data-octicon="x"]')).not.toBeNull()
@@ -112,14 +109,10 @@ describe('SelectPanel React migration', () => {
     expect(overlay.dataset.height).toBe('small')
     expect(overlay.dataset.maxHeight).toBe('xsmall')
     expect(overlay.dataset.maxWidth).toBe('medium')
-    // React 语义：data-side = 解析后的 position.anchorSide（jsdom 全零 rect 下 outside-top 翻转为
-    // outside-bottom）；top/left 经 BaseOverlay 转为 --top/--left CSS 变量（数字补 px）
     expect(overlay.dataset.side).toBe('outside-bottom')
     expect(overlay.style.getPropertyValue('--top')).toBe('100px')
     expect(overlay.style.getPropertyValue('--left')).toBe('50px')
     expect(overlay.style.position).toBe('fixed')
-    // React 源怪癖（Overlay.tsx:106-113）：overflow 渲染为非法 HTML 属性 + data-overflow-* 标记，
-    // 由 CSS :where 规则设值（非内联 style，审计 G5-13）
     expect(overlay.getAttribute('overflow')).toBe('hidden')
     expect(overlay.hasAttribute('data-overflow-hidden')).toBe(true)
     expect(overlay.style.overflow).toBe('')
@@ -317,7 +310,6 @@ describe('SelectPanel React migration', () => {
   it('orders selected items only when the feature is enabled', async () => {
     const wrapper = render(defineComponent({ setup: () => () => h(FeatureFlags, { flags: { primer_react_select_panel_order_selected_at_top: true } }, { default: () => h(SelectPanel, { open: true, selected: [items[1]!], items }) }) }))
     await settle()
-    // React initializes prevOpen with open and does not reset sort on mount.
     expect(option().textContent).toContain('One')
     expect(wrapper.exists()).toBe(true)
   })
@@ -326,7 +318,6 @@ describe('SelectPanel React migration', () => {
     const disabled = shallowRef(false)
     render(defineComponent({ setup: () => () => h(FeatureFlags, { flags: { primer_react_select_panel_fullscreen_on_narrow: true } }, { default: () => h(SelectPanel, { open: true, selected: [], items, disableFullscreenOnNarrow: disabled.value }) }) }))
     await settle()
-    // React 语义（审计 M4）：data-responsive 标记仅由 flag/props 决定，是否真全屏由 CSS 媒体查询决定
     expect(document.querySelector('[data-responsive="fullscreen"]')).not.toBeNull()
     expect(document.body.style.overflow).toBe('hidden')
     expect(document.querySelector('[data-component="SelectPanel.SaveAndCloseButton"]')).not.toBeNull()
@@ -391,13 +382,13 @@ describe('SelectPanel React migration', () => {
     expect(document.querySelector('[data-component="SelectPanel.MessageBody"] em')?.textContent).toBe('Component body')
     expect(document.querySelector('[data-component="SelectPanel.MessageAction"] button')?.textContent).toBe('Component action')
   })
-  it('omits the header data-variant when fullscreen is not enabled (React SelectPanel.tsx:833-836,916)', async () => {
+  it('omits the header data-variant when fullscreen is not enabled', async () => {
     // useResponsiveValue 收到非响应式值 undefined 时原样返回（useResponsiveValue.ts:72-76）→ 属性整体省略
     render(SelectPanel, { props: { open: true, selected: undefined, items } })
     await settle()
     expect(document.querySelector('[data-component="SelectPanel.Header"]')?.hasAttribute('data-variant')).toBe(false)
   })
-  it('resolves the header data-variant responsively when fullscreen is enabled (React SelectPanel.tsx:833-836,916)', async () => {
+  it('resolves the header data-variant responsively when fullscreen is enabled', async () => {
     const FlagOn = defineComponent({ setup: () => () => h(FeatureFlags, { flags: { primer_react_select_panel_fullscreen_on_narrow: true } }, { default: () => h(SelectPanel, { open: true, selected: undefined, items }) }) })
     // 常规视口（beforeEach 的 matchMedia 桩 matches:false）→ regular 值 'anchored'
     render(FlagOn)
@@ -409,18 +400,16 @@ describe('SelectPanel React migration', () => {
     await settle()
     expect(document.querySelectorAll('[data-component="SelectPanel.Header"]')[1]?.getAttribute('data-variant')).toBe('fullscreen')
   })
-  it('renders the modal Backdrop as an in-place sibling, not teleported to body (React SelectPanel.tsx:1061)', async () => {
+  it('renders the modal Backdrop as an in-place sibling, not teleported to body', async () => {
     const host = document.createElement('div')
     document.body.append(host)
     const wrapper = mount(SelectPanel, { attachTo: host, props: { open: true, variant: 'modal', onCancel: () => undefined, selected: undefined, items } })
     wrappers.push(wrapper)
     await settle()
-    // 若存在 <Teleport to="body">，Backdrop 会是 body 的直接子节点；源行为是 fragment 内原位兄弟节点
     expect(document.body.querySelector(':scope > [data-component="SelectPanel.Backdrop"]')).toBeNull()
     expect(host.querySelector('[data-component="SelectPanel.Backdrop"]')).not.toBeNull()
   })
-  it('SecondaryActionLink defaults as to "a" and lets a consumer as win (React SelectPanel.tsx:1074-1080 → LinkButton.tsx:8)', async () => {
-    // as='span' 会触发 ButtonBase.tsx:77-89 的开发期语义元素警告，静音以保持输出干净
+  it('SecondaryActionLink defaults as to "a" and lets a consumer as win', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     const host = document.createElement('div')
     document.body.append(host)
@@ -433,7 +422,6 @@ describe('SelectPanel React migration', () => {
     const custom = mount(SelectPanel.SecondaryActionLink, { attachTo: customHost, attrs: { as: 'span' }, slots: { default: 'Manage' } })
     wrappers.push(custom)
     await settle()
-    // LinkButton.tsx:8 —— `as: Component = 'a'` 为解构默认值，消费方传入的 as 优先
     expect(customHost.querySelector('span[data-component="SelectPanel.SecondaryActionLink"]')).not.toBeNull()
     expect(customHost.querySelector('a')).toBeNull()
     warn.mockRestore()

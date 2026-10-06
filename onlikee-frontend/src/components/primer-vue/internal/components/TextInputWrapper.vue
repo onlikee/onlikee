@@ -24,13 +24,6 @@ defineProps<{
 }>()
 const element = ref<HTMLSpanElement>()
 const length = (value?: string | number) => typeof value === 'number' ? `${value}px` : value
-/* 源属性布局说明：
-   - 源 TextInputBaseWrapper 不输出 leading/trailing visual 四个属性，仅外层 TextInputWrapper 追加
-     → baseOnly 门控（Textarea 走 base-only，根 span 不再多出 data-no-*-visual）。
-   - 源对 width/minWidth/maxWidth 用真值判断（`width ? {width} : {}`），0/'' 时省略 → 同步真值判断。
-   - 源 data-component="TextInput" 被后置 {...restProps} 覆盖（消费者传 '' 时渲染空属性）→ in $attrs 判断。
-   - 覆盖优先级：源 restProps 后置（原始 attr 可覆盖计算 data-*），Vue v-bind="$attrs" 前置（显式绑定获胜）。
-     仅当消费者传与 props 冲突的原始属性时可观测（现有调用点无此场景），为登记的理论边界。 */
 defineExpose({ element })
 </script>
 
@@ -60,19 +53,10 @@ defineExpose({ element })
 </template>
 
 <style scoped>
-/* Primer React 8c0b708: internal/components/TextInputWrapper.module.css 移植。
-   M24：状态选择器按源采用 :where() 零特异度包裹（scoped 后所有状态规则特异度一致），
-   error 分支位于 focus 分支之后，错误态聚焦时按源顺序由 error 获胜；并补齐源 69-78 行
-   的 error+focus 分支（border-color/outline 用 --control-borderColor-danger）。
-   L32：颜色兜底值对齐 vendored primitives 11.5.1 light 主题
-   （#d1d9e0/#59636e/#818b98/#818b981a/#1f883d）。
-   严格对齐轮：input/select 的 padding 链、size/variant 分支、background-repeat/position、
-   > textarea padding 及 --viewportRange-regular 媒体规则全部按源展开；input 自身的
-   flex/line-height/padding 由 UnstyledTextInput 移植样式与 UA 默认值决定（见 TextInput.vue）。 */
 .TextInput-base-wrapper {
   --inner-action-size: var(--base-size-24, 24px);
   display: inline-flex;
-  box-sizing: border-box; /* 项目适配：源依赖全局 border-box 重置 */
+  box-sizing: border-box;
   min-height: var(--base-size-32, 32px);
   overflow: hidden;
   font-size: var(--text-body-size-medium, 14px);
@@ -115,7 +99,6 @@ defineExpose({ element })
 }
 .TextInput-base-wrapper:where([data-validation='success']) { border-color: var(--bgColor-success-emphasis, #1f883d); }
 .TextInput-base-wrapper:where([data-block]) { display: flex; width: 100%; align-self: stretch; }
-/* 源 @media screen and (--viewportRange-regular) 展开（48rem，与 FilteredActionListBodyLoader.css 一致）。 */
 @media screen and (min-width: 48rem) { .TextInput-base-wrapper { font-size: var(--text-body-size-medium, 14px); } }
 .TextInput-base-wrapper:where([data-size='small']) {
   --inner-action-size: var(--base-size-20, 20px);
@@ -135,8 +118,6 @@ defineExpose({ element })
   padding-bottom: 10px;
   padding-left: var(--base-size-8, 8px);
 }
-/* Deprecated variant 分支。源 variant=small 的 `font-size: (--text-body-size-small)` 缺 var()，
-   解析期即被丢弃 → 该分支不改变字号（保留 14px）。按源忠实保留该缺陷。 */
 .TextInput-base-wrapper:where([data-variant='small']) {
   min-height: 28px;
   padding-top: 3px;
@@ -154,7 +135,6 @@ defineExpose({ element })
 }
 .TextInput-wrapper { padding-right: 0; padding-left: 0; }
 .TextInput-wrapper :deep(> input), .TextInput-wrapper :deep(> select) { padding-right: 0; padding-left: 0; }
-/* Repeat and position set for form states (success, error, etc)；源为字面 8px。 */
 .TextInput-wrapper { background-repeat: no-repeat; background-position: right 8px center; }
 .TextInput-wrapper :deep(> :not(:last-child)) { margin-right: var(--base-size-8, 8px); }
 .TextInput-wrapper :deep(.TextInput-icon), .TextInput-wrapper :deep(.TextInput-action) { align-self: center; color: var(--fgColor-muted, #59636e); flex-shrink: 0; }

@@ -24,8 +24,6 @@ const { value, input: updateInput, compositionStart, compositionEnd } = useInput
   emit('update:value', next)
   emit('change', event)
 })
-// 源 TextInput.tsx:129-133：isControlled = value !== undefined；受控长度取原始 prop
-// String(value).length（null → 'null' → 4 怪癖），非受控取跟踪长度（审计偏差 8）。
 const counter = useCharacterCounter(() => props.value === undefined ? value.value.length : String(props.value).length, () => props.characterLimit)
 const valid = computed(() => counter.value?.isOverLimit ? 'error' : props.validationStatus)
 const leadingId = useId()
@@ -144,16 +142,11 @@ defineExpose({ input, element: input, focus: (options?: FocusOptions) => input.v
     :static-message-id="staticMessageId"
     component="TextInput.CharacterCounter"
   />
-  <!-- 源怪癖镜像：React `{characterLimit && ...}` 在 characterLimit=0 时渲染游离 "0" 文本节点。 -->
   <template v-else-if="typeof characterLimit === 'number' && !characterLimit">{{ characterLimit }}</template>
 </template>
 
 <style scoped>
-/* Primer React 8c0b708: internal/components/UnstyledTextInput.module.css 移植。
-   源不设置 flex/min-width/line-height/padding，outline 仅在 :focus 时归零；
-   input 的 padding 与排布全部由 TextInputWrapper 的状态规则与 UA 默认值决定。 */
 .text-input-native { width: 100%; font-family: inherit; font-size: inherit; color: inherit; background-color: transparent; border: 0; appearance: none; }
 .text-input-native:focus { outline: 0; }
-/* 源 _VisuallyHidden.module.css InternalVisuallyHidden（loading 说明节点）。 */
 .text-input-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
 </style>

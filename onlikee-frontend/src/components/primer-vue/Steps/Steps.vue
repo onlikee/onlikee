@@ -62,7 +62,7 @@ const getState = (i: number) =>
 	--step-gap: 8px;
 	display: flex;
 	align-items: flex-start;
-	gap: var(--step-gap);
+	gap: var(--step-gap, 8px);
 	width: 100%;
 }
 
@@ -79,8 +79,8 @@ const getState = (i: number) =>
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: var(--step-indicator-size);
-	height: var(--step-indicator-size);
+	width: var(--step-indicator-size, 32px);
+	height: var(--step-indicator-size, 32px);
 	border-radius: 50%;
 	font-size: 14px;
 	font-weight: 600;
@@ -101,10 +101,10 @@ const getState = (i: number) =>
 
 .steps__separator {
 	position: absolute;
-	left: calc(50% + var(--step-indicator-size) / 2 + var(--step-separator-offset));
-	right: calc(-50% - var(--step-gap) + var(--step-indicator-size) / 2 + var(--step-separator-offset));
-	top: calc(var(--step-indicator-size) / 2 - var(--step-separator-size) / 2);
-	height: var(--step-separator-size);
+	left: calc(50% + var(--step-indicator-size, 32px) / 2 + var(--step-separator-offset, 8px));
+	right: calc(-50% - var(--step-gap, 8px) + var(--step-indicator-size, 32px) / 2 + var(--step-separator-offset, 8px));
+	top: calc(var(--step-indicator-size, 32px) / 2 - var(--step-separator-size, 2px) / 2);
+	height: var(--step-separator-size, 2px);
 	border-radius: 2px;
 	background-color: var(--borderColor-muted, #d1d9e0b3);
 	transition: background-color 0.2s;
@@ -147,11 +147,11 @@ const getState = (i: number) =>
 
 .steps--vertical .steps__separator {
 	position: absolute;
-	left: calc(var(--step-indicator-size) / 2 - var(--step-separator-size) / 2);
-	top: calc(var(--step-indicator-size) + 4px);
+	left: calc(var(--step-indicator-size, 32px) / 2 - var(--step-separator-size, 2px) / 2);
+	top: calc(var(--step-indicator-size, 32px) + 4px);
 	bottom: -8px;
 	right: auto;
-	width: var(--step-separator-size);
+	width: var(--step-separator-size, 2px);
 	height: auto;
 }
 

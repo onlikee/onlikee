@@ -21,8 +21,6 @@ export interface AutocompleteMenuItem {
   children?: NodeProp
   leadingVisual?: NodeProp
   trailingVisual?: NodeProp
-  // M-11：源 AutocompleteItemProps（AutocompleteMenu.tsx:55-64）未声明 description（ActionList shared.ts 亦无），
-  // 传入的 description 仅作为未知属性落到 li（原始值）或被 React DOM 跳过（对象值）
   disabled?: boolean
   inactiveText?: string
   loading?: boolean

@@ -32,7 +32,7 @@ export function useActionBarItem(entry: RegisteredItem['entry']) {
   onMounted(() => { unregister = bar?.register({ element, overflowing, entry }) })
   onBeforeUnmount(() => unregister?.())
   watch(element, (node, _previous, onCleanup) => {
-    // React useActionBarItem: grouped children inherit clipping from the whole group.
+    // 分组中的操作项共享整个分组的裁剪状态。
     if (!node || !bar || group !== undefined) return
     onCleanup(bar.observe(node, value => { clipped.value = value }))
   }, { flush: 'post' })

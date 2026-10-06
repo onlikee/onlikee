@@ -22,8 +22,7 @@ export default defineComponent({
       const listRole = context?.listRole.value
       group.groupHeadingId = props.title ? id : matched.groupHeading ? matched.groupHeading.props?.id ?? id : undefined
       group.selectionVariant = props.selectionVariant
-      // React passes children directly to aria-label. Preserve its string coercion,
-      // including commas for arrays and [object Object] for element children.
+      // 分组的无障碍标签按子内容的字符串转换结果生成。
       const headingChildren = matched.groupHeading ? slotChildren(matched.groupHeading) : undefined
       const headingLabel = headingChildren === undefined ? undefined : String(
         Array.isArray(headingChildren) ? headingChildren.map(child =>

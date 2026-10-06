@@ -21,7 +21,7 @@ withDefaults(
 
 <style scoped>
 .container {
-  max-width: var(--container-max-width);
+  max-width: var(--container-max-width, 1150px);
   margin: 0 auto;
   padding: 2rem;
   background-color: var(--bgColor-default, #ffffff);

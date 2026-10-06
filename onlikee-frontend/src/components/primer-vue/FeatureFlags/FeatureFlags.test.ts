@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { computed, createSSRApp, defineComponent, h, ref } from 'vue'
 import { renderToString } from '@vue/server-renderer'
 import { FeatureFlags, FeatureFlagScope, DefaultFeatureFlags, useFeatureFlag } from './index'
-describe('FeatureFlags React migration', () => {
+describe('FeatureFlags behavior', () => {
   it('retains source defaults and scope overrides, including explicit undefined', () => {
     expect(DefaultFeatureFlags.enabled('primer_react_select_panel_fullscreen_on_narrow')).toBe(false)
     expect(DefaultFeatureFlags.enabled('missing')).toBe(false)

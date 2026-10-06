@@ -81,7 +81,7 @@ provide(actionMenuContextKey, {
   setFocusItem: handler => { focusItem = handler }
 })
 defineExpose({ open, anchor, focus: () => anchor.value?.focus() })
-// React renders the extracted anchor at the Overlay's position in the child list.
+// 提取的锚点在 Overlay 所在的插槽位置渲染。
 const RenderContents = () => {
   const children = slots.default?.() ?? []
   const isAnchor = (child: VNode) => {

@@ -58,7 +58,7 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
-describe('ActionBar source behavior', () => {
+describe('ActionBar behavior', () => {
   it('observes the native element when a tooltip button mounts with a fragment root', async () => {
     const wrapper = render(() => [h(ActionBar.IconButton, { icon: Icon, 'aria-label': 'Tooltip button' })])
     await settle()

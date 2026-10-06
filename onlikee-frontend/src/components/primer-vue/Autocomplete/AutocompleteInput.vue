@@ -5,7 +5,7 @@ import { useFormControlForwardedProps } from '../FormControl/context'
 import { useAutocompleteContext } from './context'
 import { normalizeReactStyle } from '../internal/style'
 
-const ARROW_KEYS_NAV = new Set(['ArrowUp', 'ArrowDown']) // AutocompleteInput.tsx:21
+const ARROW_KEYS_NAV = new Set(['ArrowUp', 'ArrowDown'])
 
 export default defineComponent({
   name: 'AutocompleteInput', __SLOT__: Symbol('Autocomplete.Input'), inheritAttrs: false,
@@ -50,8 +50,6 @@ export default defineComponent({
       if (context.inputRef.value) context.inputRef.value.defaultValue = String(props.defaultValue ?? '')
     }, { flush: 'post' })
     expose({ input: context.inputRef, element: context.inputRef, focus: (options?: FocusOptions) => context.inputRef.value?.focus(options), blur: () => context.inputRef.value?.blur() })
-    // AutocompleteInput.tsx:176-178 —— value effect: setInputValue(typeof value !== 'undefined' ? value.toString() : '')
-    //（defaultValue 从不播种 inputValue，源如此；旧实现的播种行为已移除）
     watch(() => props.value, value => context.setInputValue(value !== undefined ? String(value) : ''), { immediate: true })
     watch([context.autocompleteSuggestion, context.inputValue, context.isMenuDirectlyActivated, context.composing], () => {
       const input = context.inputRef.value
@@ -94,14 +92,13 @@ export default defineComponent({
       style: normalizeReactStyle(forwarded.value.style), 'data-component': 'Autocomplete.Input',
       onInput: change,
       onFocus: (event: FocusEvent) => {
-        context.notifyControlFocus() // focus-zone.mjs:387-395 —— 原生 focusin 先于 React onFocus 触发
+        context.notifyControlFocus()
         emit('focus', event)
-        if (props.openOnFocus) context.setShowMenu(true) // AutocompleteInput.tsx:51-56
+        if (props.openOnFocus) context.setShowMenu(true)
       },
       onBlur: (event: FocusEvent) => {
-        context.notifyControlBlur() // focus-zone.mjs:396-398 —— 原生 focusout 先于 React onBlur 触发
+        context.notifyControlBlur()
         emit('blur', event)
-        // AutocompleteInput.tsx:58-86 —— HACK: 等一拍再读 relatedTarget，点击交互得以完成
         later(() => {
           const target = event.relatedTarget as Node | null
           const menu = document.getElementById(`${context.id.value}-listbox`)
@@ -119,12 +116,10 @@ export default defineComponent({
       onKeydownCapture: (event: KeyboardEvent) => { emit('keydown-capture', event); if (!context.showMenu.value && ARROW_KEYS_NAV.has(event.key) && !event.altKey) event.preventDefault() },
       onKeydown: (event: KeyboardEvent) => {
         if (context.composing.value || event.isComposing || event.keyCode === 229) { emit('keydown', event); return } // Vue IME 增补（registered）
-        // focus-zone.mjs:464-523 —— zone 原生监听在元素级，先于 React 委托处理触发；返回 true 表示源已 preventDefault
         if (context.navigate(event)) event.preventDefault()
-        emit('keydown', event) // AutocompleteInput.tsx:97 onKeyDown?.(event)
+        emit('keydown', event)
         if (event.key === 'Backspace') highlightRemainingText.value = false // :100-102
         if (event.key === 'Escape' && context.inputRef.value?.value) {
-          // :104-110 —— M-3：仅当输入非空时清空；不清建议、不关菜单（overlay 文档级 Escape 负责关闭）
           context.setInputValue('')
           context.inputRef.value.value = ''
           displayedValue.value = '' // Vue glue：受控 TextInput 同步（registered）
@@ -134,11 +129,9 @@ export default defineComponent({
       onKeyup: (event: KeyboardEvent) => { emit('keyup', event); if (event.key === 'Backspace') highlightRemainingText.value = true },
       onKeypress: (event: KeyboardEvent) => {
         emit('keypress', event)
-        // AutocompleteInput.tsx:134-146（Vue：composing 守卫为 IME 增补，registered）
         if (!context.composing.value && !event.isComposing && context.showMenu.value && event.key === 'Enter' && context.activeDescendantRef.value) {
           event.preventDefault()
           event.stopImmediatePropagation()
-          // 向高亮元素转发 keypress 副本 → Item keyPressHandler（Item.tsx:194-208）
           context.activeDescendantRef.value.dispatchEvent(new KeyboardEvent(event.type, event))
         }
       },

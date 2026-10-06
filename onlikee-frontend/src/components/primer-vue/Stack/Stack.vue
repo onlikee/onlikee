@@ -44,8 +44,8 @@ const responsiveAttributes = computed(() => ({
   align-content: flex-start;
   justify-content: flex-start;
   gap: var(--stack-gap-normal, 16px);
-  padding-block: var(--stack-padding-block, var(--stack-padding));
-  padding-inline: var(--stack-padding-inline, var(--stack-padding));
+  padding-block: var(--stack-padding-block, var(--stack-padding, 0));
+  padding-inline: var(--stack-padding-inline, var(--stack-padding, 0));
 }
 
 .stack[data-gap='none'],

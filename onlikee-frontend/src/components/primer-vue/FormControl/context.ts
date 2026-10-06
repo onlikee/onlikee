@@ -26,7 +26,6 @@ export function useFormControlContext() {
   return inject(formControlContextKey, null)
 }
 
-/** Vue port of useFormControlForwardedProps: explicit external attributes win. */
 export function useFormControlForwardedProps<P extends object = FormControlForwardedProps>(
   externalProps: MaybeRefOrGetter<P> = {} as P
 ): ComputedRef<P & FormControlForwardedProps> {

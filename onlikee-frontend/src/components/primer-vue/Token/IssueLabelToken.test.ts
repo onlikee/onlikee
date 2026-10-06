@@ -3,7 +3,6 @@ import { afterEach, describe, expect, test } from 'vitest'
 import { mount, type VueWrapper } from '@vue/test-utils'
 import IssueLabelToken from './IssueLabelToken.vue'
 
-// 回归测试：IssueLabelToken 严格对齐 Primer React 8c0b708 Token/IssueLabelToken.tsx。
 const wrappers: VueWrapper[] = []
 afterEach(() => {
   wrappers.forEach(wrapper => wrapper.unmount())
@@ -38,7 +37,7 @@ describe('IssueLabelToken 自定义属性与数据属性', () => {
     expect(style.getPropertyValue('--label-l')).toBe('50')
   })
 
-  test('消费者 style 整体覆盖 customProperties（源 style 在 {...rest} 之前，怪癖）', () => {
+  test('消费者 style 整体覆盖 customProperties', () => {
     const wrapper = track(mount(IssueLabelToken, {
       props: { text: 'bug' },
       attrs: { style: { color: 'rgb(1, 2, 3)' } }
@@ -102,7 +101,7 @@ describe('IssueLabelToken 移除按钮与文本容器', () => {
     expect(text.attributes('href')).toBe('/labels/bug')
   })
 
-  test('不渲染 VisuallyHidden 移除快捷键说明（与 Token 不同，源无该节点）', () => {
+  test('不渲染 VisuallyHidden 移除快捷键说明', () => {
     const wrapper = track(mount(IssueLabelToken, { props: { text: 'bug' }, attrs: { onRemove: () => {} } }))
     expect(wrapper.find('.internal-visually-hidden').exists()).toBe(false)
   })

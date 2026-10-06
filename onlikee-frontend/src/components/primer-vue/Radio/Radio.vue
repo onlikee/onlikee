@@ -33,10 +33,6 @@ const serverRendering = inject(ssrContextKey, null) !== null
 
 const inputName = computed(() => props.name || group?.name.value)
 
-// react-dom initWrapperState:1793 initialChecked = checked != null ? checked : defaultChecked；
-// postMountWrapper:1923-1924 双翻把 checked 属性同步为 !!initialChecked（checked 优先）。
-// 旧 Vue 受控分支 `defaultChecked ?? checked` 让显式 defaultChecked 覆盖 checked（审计偏差 9b）。
-// 更新期属性重同步（React 属性停留挂载值）保留为 Vue glue（审计偏差 9a，登记）。
 const initialChecked = computed(() => (props.checked != null ? props.checked : props.defaultChecked) ?? false)
 const selectionAttrs = computed(() =>
   serverRendering
@@ -123,8 +119,6 @@ defineExpose({
 }
 
 .radio {
-  /* 源 Radio.module.css 显式书写 100vh 兜底（postcss-custom-properties-fallback
-     只注入缺失的兜底，不覆盖已有值），按源保留。 */
   border-radius: var(--borderRadius-full, 100vh);
   transition:
     background-color,

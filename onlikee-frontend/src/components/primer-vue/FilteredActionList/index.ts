@@ -1,5 +1,3 @@
-/* 源 FilteredActionList/index.ts 导出面镜像：FilteredActionListLoadingType 类不经 index
-   导出（源只从 constants/Loaders 导出，index 仅导出 FilteredActionListLoadingTypes）。 */
 import List from './FilteredActionList.vue'
 import Input from './FilteredActionListInput.vue'
 import BodyLoader from './FilteredActionListBodyLoader.vue'

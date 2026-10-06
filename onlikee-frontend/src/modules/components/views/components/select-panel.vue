@@ -297,7 +297,7 @@ const selectPanelPropsRows = [
   { name: 'anchorRef', default: '-', type: 'Ref<HTMLElement | null>', description: '外部锚点元素 ref；触发器与面板分离时使用，open 需手动切换。' },
   { name: 'cssAnchorPositioningSettings', default: '-', type: '{ disable?: boolean; fallbackStrategy?: string }', description: 'CSS anchor positioning 实验配置（特性开关默认关闭）。' },
   { name: 'disabled / required / validationStatus', default: '-', type: "boolean / boolean / 'error' | 'success'", description: 'FormControl 表单集成：禁用、必填与校验状态。' },
-  { name: 'onCancel / onOpenChange / onSelectedChange', default: '-', type: 'function', description: 'React 兼容的回调 props；Vue 中推荐使用对应事件（cancel / open-change / selected-change）。' }
+  { name: 'onCancel / onOpenChange / onSelectedChange', default: '-', type: 'function', description: '回调 props；推荐使用对应事件（cancel / open-change / selected-change）。' }
 ]
 
 const inheritedPropsRows = [

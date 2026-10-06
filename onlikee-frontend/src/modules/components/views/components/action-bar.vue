@@ -140,7 +140,7 @@ const menuRows = [
   <ComponentDocsPage>
     <ComponentDocsHeader
       title="ActionBar 操作栏"
-      description="复刻 Primer React ActionBar：按容器宽度收纳操作，支持分组、文字按钮和嵌套菜单。"
+      description="按容器宽度收纳操作，支持分组、文字按钮和嵌套菜单。"
     />
     <ComponentDocsSection title="基础用法">
       <template #description>

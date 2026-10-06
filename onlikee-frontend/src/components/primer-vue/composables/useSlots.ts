@@ -34,7 +34,7 @@ export function isSlot(element: unknown, source: ComponentMatcher): boolean {
   return sourceMarker !== undefined && sourceMarker === elementMarker
 }
 
-/** Vue equivalent of React's asSlot: keep the wrapper reference and copy its marker. */
+/* 为包装组件复制插槽标记，并保留包装组件引用。 */
 export function asSlot<T extends Component>(component: T, source: ComponentMatcher): WithSlotMarker<T> {
   const sourceMarker = marker(source)
   if (import.meta.env.DEV && sourceMarker === undefined) {
@@ -91,12 +91,7 @@ function forEachChild(children: VNodeChild, visit: (child: VNodeChild) => void):
   }
 }
 
-/**
- * Vue port of react/src/hooks/useSlots.ts. Returns matched slots and remaining children.
- * Config entries accept a component or [component, propsPredicate]; wrappers match by __SLOT__.
- * Call inside the render function with slots.default?.(), so each render reads current children.
- * Vue Fragments are flattened; text/comments and unmatched children remain in rest.
- */
+/* 匹配具名插槽并返回剩余子节点；包装组件通过 __SLOT__ 标记匹配。每次渲染读取当前插槽内容，并展开 Fragment。 */
 export function useSlots<Config extends SlotConfig>(
   children: VNodeChild,
   config: Config
@@ -114,7 +109,7 @@ export function useSlots<Config extends SlotConfig>(
       return
     }
 
-    // Preserve React's production fast path; development still detects duplicates.
+    // 生产环境使用快速匹配路径，开发环境额外检查重复插槽。
     if (slotsFound === keys.length) {
       if (import.meta.env.DEV) {
         const duplicateIndex = entries.findIndex(entry => matches(child, entry))
@@ -147,7 +142,7 @@ export function useSlots<Config extends SlotConfig>(
   return [slots, rest]
 }
 
-/** Filter rest down to element/component VNodes, as React's isValidElement does for group bodies. */
+/* 只保留元素和组件节点，过滤文本及注释节点。 */
 export function elementChildren(children: VNodeChild): VNode[] {
   const elements: VNode[] = []
   forEachChild(children, child => {
@@ -156,7 +151,7 @@ export function elementChildren(children: VNodeChild): VNode[] {
   return elements
 }
 
-/** Read a component's default slot, the Vue equivalent of a React element's props.children. */
+/* 读取组件默认插槽中的子节点。 */
 export function slotChildren(node?: VNode): VNodeChild[] {
   const children = node?.children
   if (children && typeof children === 'object' && !Array.isArray(children) && 'default' in children) {

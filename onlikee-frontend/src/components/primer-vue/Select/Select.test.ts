@@ -37,11 +37,6 @@ describe('Select native contract', () => {
   it('normalizes numeric select, option, and group styles while passing deprecated width props to the select as attributes', () => {
     const wrapper = mount(Select, { props: { width: 300, minWidth: 100, maxWidth: 400 }, attrs: { style: [{ fontSize: 16, width: 180 }, 'line-height:1.5;'] }, slots: { default: () => [h(Select.Option, { value: 'first', style: { fontSize: 12 } }, () => 'First'), h(Select.OptGroup, { label: 'Other', style: { paddingLeft: 8 } }, () => h(Select.Option, { value: 'second', selected: true }, () => 'Second'))] } })
     wrappers.push(wrapper)
-    // 源行为：Select.tsx 只解构 block/children/className/defaultValue/disabled/placeholder/size/
-    // required/validationStatus（src/Select/Select.tsx:37-47），width/minWidth/maxWidth 落入 ...rest
-    // 并展开到 <select> 上成为原生属性（Select.tsx:59-60）；TextInputWrapper 不接收它们
-    // （Select.tsx:52-58 仅传 block/disabled/size/validationStatus/className）。
-    // 属性名经 DOM 小写化：minWidth → minwidth（与 React setAttribute 行为一致）。
     const select = wrapper.get('select')
     expect(select.attributes('width')).toBe('300')
     expect(select.attributes('minwidth')).toBe('100')
@@ -54,11 +49,7 @@ describe('Select native contract', () => {
     expect(wrapper.get('optgroup').element.style.paddingLeft).toBe('8px')
     expect(wrapper.get('select').element.value).toBe('second')
   })
-  it('serializes object option values to "[object Object]" like React DOM (source quirk, do not fix)', async () => {
-    // 源怪癖：Select.Option 即 <option {...props} data-component="Select.Option" />
-    // （src/Select/Select.tsx:83-85），React DOM 将对象属性字符串化为 "[object Object]"。
-    // 端口经由 Vue 属性/property 字符串化与 SelectNativeOptions.ts:18 的 String(props.value)
-    // 选中比较路径复刻同一怪癖。
+  it('serializes object option values to "[object Object]"', async () => {
     const wrapper = mount(Select, { props: { value: '[object Object]' }, slots: { default: () => [h(Select.Option, { value: { id: 1 } as unknown as string }, () => 'Object'), h('option', { value: { id: 2 } }, 'RawObject')] } })
     wrappers.push(wrapper)
     await nextTick()

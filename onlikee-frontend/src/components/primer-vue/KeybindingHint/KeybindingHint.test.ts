@@ -7,7 +7,6 @@ import { getAccessibleKeybindingHintString } from './utils'
 import { PLATFORM_OVERRIDE_KEY, type Platform } from './platform'
 import { accessibleChordString, accessibleSequenceString, splitChord } from './chordUtils'
 
-// 回归测试：KeybindingHint 家族（Primer React 8c0b708 KeybindingHint/* 直译）。
 const wrappers: VueWrapper[] = []
 afterEach(() => {
   wrappers.forEach(wrapper => wrapper.unmount()); wrappers.length = 0
@@ -28,12 +27,8 @@ describe('KeybindingHint', () => {
     expect(kbd.attributes('data-testid')).toBe('keybinding-hint')
     expect(kbd.classes()).toContain('keybinding-hint')
     const chord = kbd.get('[data-kbd-chord]')
-    // 源 Chord.tsx:11 的 `data-kbd-chord` 为 JSX 布尔简写（= true），React 对 data-* 属性
-    // 把布尔 true 渲染为字符串 "true" → 端口以 :data-kbd-chord="true" 对齐。
     expect(chord.attributes('data-kbd-chord')).toBe('true')
     expect(chord.classes()).toContain('keybinding-chord--normal')
-    // jsdom 平台检测为 other：mod → ⌃；可见文本 aria-hidden，读屏文本为完整键名。
-    // 注意：mod 不在 keySortPriorities 中（Infinity），忠实还原 React 排序 → shift 在前
     expect(chord.text()).toContain('⌃')
     expect(chord.text()).toContain('⇧')
     expect(chord.text()).toContain('P')
@@ -69,9 +64,6 @@ describe('KeybindingHint', () => {
   })
 
   it('updates rendered hints when the platform override ref changes', async () => {
-    // 源 platform.ts:44-62：override 走 React Context（PlatformOverrideProvider），provider 值
-    // 变化时消费者（Key.tsx:13 usePlatform）重渲染；检测值不响应（subscribe 为 no-op）。
-    // Vue 等价：以 ref 提供 override，Key.vue 经 usePlatformRef 的 computed 追踪变化。
     const override = ref<Platform | null>('apple')
     const wrapper = track(mount(KeybindingHint, {
       props: { keys: 'Meta+K' },
@@ -92,9 +84,6 @@ describe('KeybindingHint', () => {
   })
 
   it('does not forward unknown attrs to the root kbd (source drops rest in Chord)', () => {
-    // 源 KeybindingHint.tsx:26-30 根元素只接收 className（+固定 data-*）；其余 props 经
-    // Sequence.tsx:8-19 传入 Chord.tsx:9，只解构 keys/format/variant/size → 剩余属性被丢弃、
-    // 永不落 DOM → 端口 inheritAttrs: false 对齐。
     const wrapper = track(mount(KeybindingHint, { props: { keys: 'Mod+K' }, attrs: { id: 'hint', 'data-extra': 'x' } }))
     const kbd = wrapper.get('kbd')
     expect(kbd.attributes('id')).toBeUndefined()

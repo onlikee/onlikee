@@ -33,7 +33,6 @@ describe('shared Vue overlay behavior', () => {
   it('retains autocomplete input focus, ignores anchor clicks and returns focus on close', async () => {
     const anchor = document.createElement('input')
     document.body.append(anchor); anchor.focus()
-    // React Autocomplete 经 ignoreClickRefs=[inputRef] 豁免锚点（裸 Overlay 无锚点豁免，审计 G5-8）
     const wrapper = mount(Overlay, { props: { anchor, open: true, preventFocusOnOpen: true, returnFocusRef: anchor, ignoreClickRefs: [shallowRef(anchor)] }, attrs: { 'data-component': 'Autocomplete.Overlay' }, slots: { default: '<button>Option</button>' }, attachTo: document.body })
     wrappers.push(wrapper); await settle()
     expect(document.activeElement).toBe(anchor)
@@ -81,8 +80,6 @@ describe('shared Vue overlay behavior', () => {
       return () => h('div', [h('button', { ref: anchor }, 'Anchor'), h('div', { ref: floating }, 'Floating')])
     } }), { attachTo: document.body })
     wrappers.push(wrapper); await settle()
-    // React useResizeObserver ×2：documentElement + floating（挂载时 refs 未就绪的一次性 passive 更新
-    // 先建 documentElement 观察者，refs 就绪后重建为 documentElement + floating，旧观察者断开）
     expect(callbacks).toHaveLength(3)
     expect(observe).toHaveBeenCalledTimes(3)
     callbacks[0]!([], {} as ResizeObserver)
@@ -98,7 +95,6 @@ describe('shared Vue overlay behavior', () => {
     expect(html).not.toContain('data-component="Overlay"')
   })
   it('keeps CSS anchor names unique after an older overlay closes and restores anchor styles', async () => {
-    // React AnchoredOverlay.tsx:188-194：特征检测 = documentElement.style 上属性存在性（非 CSS.supports）
     for (const property of ['anchorName', 'positionTryFallbacks', 'positionVisibility']) {
       Object.defineProperty(document.documentElement.style, property, { value: '', configurable: true, writable: true })
     }

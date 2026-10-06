@@ -1,5 +1,3 @@
-/* Primer React 8c0b708: KeybindingHint/components/Chord.module.css 直译
-   （.Chord → .keybinding-chord，.ChordNormal/OnEmphasis/OnPrimary/Small → BEM 修饰类） */
 .keybinding-chord {
   display: inline-flex;
   border: var(--borderWidth-thin, 0.0625rem) solid;
@@ -16,22 +14,20 @@
 }
 
 .keybinding-chord--normal {
-  /* 源为无兜底的 var(--bgColor-transparent)（Chord.module.css:17）；兜底值按项目约定
-     对齐 primitives 11.5.1 light 实值 #ffffff00（非 transparent=#00000000）。 */
   background: var(--bgColor-transparent, #ffffff00);
-  color: var(--fgColor-muted);
-  border-color: var(--borderColor-default);
+  color: var(--fgColor-muted, #59636e);
+  border-color: var(--borderColor-default, #d1d9e0);
 }
 
 .keybinding-chord--on-emphasis {
-  background: var(--counter-bgColor-emphasis);
-  color: var(--fgColor-onEmphasis);
+  background: var(--counter-bgColor-emphasis, #59636e);
+  color: var(--fgColor-onEmphasis, #ffffff);
   border-color: transparent;
 }
 
 .keybinding-chord--on-primary {
-  background: var(--button-primary-bgColor-active);
-  color: var(--fgColor-onEmphasis);
+  background: var(--button-primary-bgColor-active, #197935);
+  color: var(--fgColor-onEmphasis, #ffffff);
   border-color: transparent;
 }
 

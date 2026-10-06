@@ -32,9 +32,6 @@ function onAnimationEnd() { if (!props.show) shouldRender.value = false }
   from { opacity: 0; transform: translateY(-100%); }
   to { opacity: 1; transform: translateY(0); }
 }
-/* 源 ValidationAnimationContainer.module.css:4 的 `@media (prefers-reduced-motion)` 不带值，
-   在 reduce 与 no-preference 下都匹配（恒真）→ 动画始终被禁用。这是上游 bug，
-   按移植承诺忠实保留（审计 L41），不"修复"为 `: reduce`。 */
 @media (prefers-reduced-motion) {
   .validation-animation:where([data-show]) { animation: none; }
 }

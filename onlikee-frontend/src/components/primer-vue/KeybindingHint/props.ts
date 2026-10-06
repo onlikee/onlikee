@@ -1,4 +1,3 @@
-// Primer React 8c0b708: KeybindingHint/props.ts 直译
 export type KeybindingHintFormat = 'condensed' | 'full'
 
 export type KeybindingHintVariant = 'normal' | 'onEmphasis' | 'onPrimary'

@@ -130,7 +130,6 @@ describe('TextInput visual and action slots', () => {
     wrappers.push(wrapper)
     expect(wrapper.get('[data-component="TextInput"]').attributes('data-no-trailing-action')).toBeUndefined()
     const button = wrapper.get('button')
-    // M25：ConditionalTooltip → TooltipV2 description 型 popover（span 常驻 DOM，靠 popover 开合）
     const tooltip = document.body.querySelector('[role="tooltip"]')
     expect(tooltip?.textContent).toBe('Clear input')
     button.element.focus()
@@ -143,7 +142,7 @@ describe('TextInput visual and action slots', () => {
     await nextTick()
     expect(tooltip?.classList.contains(':popover-open')).toBe(false)
   })
-  it('renders the icon-only action as an IconButton with a label tooltip (M25)', async () => {
+  it('renders the icon-only action as an IconButton with a label tooltip', async () => {
     const icon = defineComponent({ name: 'ClearIcon', render: () => h('svg', { 'data-component': 'Octicon' }) })
     const wrapper = mount(TextInput.Action, { props: { icon, tooltipDirection: 'nw' }, attrs: { 'aria-label': 'Clear' }, attachTo: document.body })
     wrappers.push(wrapper)
@@ -199,7 +198,7 @@ describe('TextInput visual and action slots', () => {
     expect((wrapper.get('[data-component="TextInput"]').element as HTMLElement).style.minWidth).toBe('100px')
     expect(wrapper.get('input').element.style.fontWeight).toBe('600')
   })
-  it('normalizes React numeric native styles and preserves Vue style arrays', () => {
+  it('normalizes numeric native styles and preserves Vue style arrays', () => {
     const wrapper = mount(TextInput, { props: { width: 240, style: [{ width: 180, fontSize: 16, lineHeight: 1.5, fontWeight: 600 }, 'color: red;', { '--custom': 8 }] } })
     wrappers.push(wrapper)
     const field = wrapper.get('input').element
