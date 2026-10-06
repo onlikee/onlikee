@@ -56,9 +56,13 @@
                 </div>
               </div>
             </div>
-            <ActionList>
+            <ActionList
+              role="menu"
+              aria-label="账户操作"
+            >
               <ActionList.Divider />
               <ActionList.Item
+                role="menuitem"
                 @select="goToProfile"
               >
                 <ActionList.LeadingVisual>
@@ -67,6 +71,7 @@
                 个人资料
               </ActionList.Item>
               <ActionList.Item
+                role="menuitem"
                 @select="navigateToPage('/application')"
               >
                 <ActionList.LeadingVisual>
@@ -76,6 +81,7 @@
               </ActionList.Item>
               <ActionList.Divider />
               <ActionList.Item
+                role="menuitem"
                 @select="navigateToPage('/auth/logout')"
               >
                 <ActionList.LeadingVisual>

@@ -33,15 +33,19 @@
                   </div>
                 </div>
               </div>
-              <ActionList>
+              <ActionList
+                role="menu"
+                aria-label="用户菜单"
+              >
                 <ActionList.Divider />
-                <ActionList.Item>
+                <ActionList.Item role="menuitem">
                   <ActionList.LeadingVisual>
                     <PersonIcon />
                   </ActionList.LeadingVisual>
                   个人资料
                 </ActionList.Item>
                 <ActionList.LinkItem
+                  role="menuitem"
                   href="https://github.com/UnderHear"
                 >
                   <ActionList.LeadingVisual>
@@ -50,14 +54,14 @@
                   前往 GitHub
                 </ActionList.LinkItem>
                 <ActionList.Divider />
-                <ActionList.Item>
+                <ActionList.Item role="menuitem">
                   <ActionList.LeadingVisual>
                     <GearIcon />
                   </ActionList.LeadingVisual>
                   设置
                 </ActionList.Item>
                 <ActionList.Divider />
-                <ActionList.Item>
+                <ActionList.Item role="menuitem">
                   <ActionList.LeadingVisual>
                     <SignOutIcon />
                   </ActionList.LeadingVisual>
@@ -96,23 +100,23 @@ const demo1Code = `<template>
             <div class="user-email">hello@onlikee.audio</div>
           </div>
         </div>
-        <ActionList>
+        <ActionList role="menu" aria-label="用户菜单">
           <ActionList.Divider />
-          <ActionList.Item>
+          <ActionList.Item role="menuitem">
             <ActionList.LeadingVisual><PersonIcon /></ActionList.LeadingVisual>
             个人资料
           </ActionList.Item>
-          <ActionList.LinkItem href="https://github.com/UnderHear">
+          <ActionList.LinkItem role="menuitem" href="https://github.com/UnderHear">
             <ActionList.LeadingVisual><MarkGithubIcon /></ActionList.LeadingVisual>
             前往 GitHub
           </ActionList.LinkItem>
           <ActionList.Divider />
-          <ActionList.Item>
+          <ActionList.Item role="menuitem">
             <ActionList.LeadingVisual><GearIcon /></ActionList.LeadingVisual>
             设置
           </ActionList.Item>
           <ActionList.Divider />
-          <ActionList.Item>
+          <ActionList.Item role="menuitem">
             <ActionList.LeadingVisual><SignOutIcon /></ActionList.LeadingVisual>
             退出登录
           </ActionList.Item>

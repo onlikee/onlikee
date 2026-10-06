@@ -1,5 +1,5 @@
 import type { AnchorAlignment, AnchorPosition, AnchorSide } from '@primer/behaviors'
-import type { HTMLAttributes, Ref, StyleValue, VNodeChild } from 'vue'
+import type { Component, HTMLAttributes, Ref, StyleValue, VNodeChild } from 'vue'
 import type { FocusZoneHookSettings } from '../../composables/useFocusZone'
 export type OverlayWidth = 'auto' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge'
 export type OverlayHeight = 'auto' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'initial' | 'fit-content'
@@ -36,6 +36,9 @@ export interface FocusTrapSettings {
   allowOutsideClick?: boolean
 }
 export interface OverlayProps extends /* @vue-ignore */ HTMLAttributes {
+  as?: string | Component
+  portalContainerName?: string
+  _PrivateDisablePortal?: boolean
   open?: boolean
   anchor?: HTMLElement | null
   side?: AnchorSide

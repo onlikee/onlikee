@@ -24,11 +24,14 @@ function unlockDocumentScroll() {
 </script>
 
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, provide, ref, watch } from 'vue'
+import { dialogContextKey } from './context'
 
 export type DialogCloseGesture = 'close-button' | 'escape' | 'backdrop'
 export type DialogWidth = 'small' | 'medium' | 'large' | 'xlarge' | string | number
 export type DialogHeight = 'small' | 'large' | 'auto'
+
+provide(dialogContextKey, true)
 
 const props = withDefaults(
   defineProps<{

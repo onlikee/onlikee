@@ -29,7 +29,8 @@
           </ActionList.Item>
           <ActionList.LinkItem
             href="https://github.com"
-            new-tab
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <ActionList.LeadingVisual>
               <MarkGithubIcon />
@@ -167,6 +168,8 @@
       <ComponentDocsDemoBlock :code="demo4Code">
         <div class="demo-grid">
           <ActionList
+            role="listbox"
+            aria-label="选择选项"
             selection-variant="single"
             class="demo-list"
           >
@@ -187,6 +190,8 @@
           </ActionList>
 
           <ActionList
+            role="listbox"
+            aria-label="选择选项"
             selection-variant="multiple"
             class="demo-list"
           >
@@ -211,6 +216,8 @@
       <ComponentDocsDemoBlock :code="demo5Code">
         <ActionList
           class="demo-list"
+          role="listbox"
+          aria-label="选择选项"
           selection-variant="single"
         >
           <ActionList.Item
@@ -248,62 +255,70 @@
       </template>
 
       <ComponentDocsDemoBlock :code="demo6Code">
-        <ActionList class="demo-list-wide">
-          <ActionList.Group>
-            <ActionList.GroupHeading>代码</ActionList.GroupHeading>
-            <ActionList.Item>
-              <ActionList.LeadingVisual>
-                <CodeIcon />
-              </ActionList.LeadingVisual>
-              打开 Codespace
-            </ActionList.Item>
-            <ActionList.Item>
-              <ActionList.LeadingVisual>
-                <GitBranchIcon />
-              </ActionList.LeadingVisual>
-              切换分支
-              <ActionList.TrailingVisual>
-                main
-              </ActionList.TrailingVisual>
-            </ActionList.Item>
-          </ActionList.Group>
+        <FeatureFlags :flags="{ primer_react_action_list_group_heading_trailing_action: true }">
+          <ActionList class="demo-list-wide">
+            <ActionList.Group>
+              <ActionList.GroupHeading as="h3">
+                代码
+              </ActionList.GroupHeading>
+              <ActionList.Item>
+                <ActionList.LeadingVisual>
+                  <CodeIcon />
+                </ActionList.LeadingVisual>
+                打开 Codespace
+              </ActionList.Item>
+              <ActionList.Item>
+                <ActionList.LeadingVisual>
+                  <GitBranchIcon />
+                </ActionList.LeadingVisual>
+                切换分支
+                <ActionList.TrailingVisual>
+                  main
+                </ActionList.TrailingVisual>
+              </ActionList.Item>
+            </ActionList.Group>
 
-          <ActionList.Group>
-            <ActionList.GroupHeading variant="filled">
-              访问范围
-              <ActionList.GroupHeadingTrailingAction>
-                <span class="demo-heading-action">管理</span>
-              </ActionList.GroupHeadingTrailingAction>
-            </ActionList.GroupHeading>
-            <ActionList.Item>
-              <ActionList.LeadingVisual>
-                <PeopleIcon />
-              </ActionList.LeadingVisual>
-              团队成员
-              <ActionList.Description variant="block">
-                对组织中的成员开放
-              </ActionList.Description>
-            </ActionList.Item>
-            <ActionList.Item>
-              <ActionList.LeadingVisual>
-                <ShieldLockIcon />
-              </ActionList.LeadingVisual>
-              受保护
-              <ActionList.Description variant="block">
-                需要额外权限才能访问
-              </ActionList.Description>
-            </ActionList.Item>
-          </ActionList.Group>
+            <ActionList.Group>
+              <ActionList.GroupHeading
+                as="h3"
+                variant="filled"
+              >
+                访问范围
+                <ActionList.GroupHeading.TrailingAction
+                  :icon="PencilIcon"
+                  label="管理"
+                />
+              </ActionList.GroupHeading>
+              <ActionList.Item>
+                <ActionList.LeadingVisual>
+                  <PeopleIcon />
+                </ActionList.LeadingVisual>
+                团队成员
+                <ActionList.Description variant="block">
+                  对组织中的成员开放
+                </ActionList.Description>
+              </ActionList.Item>
+              <ActionList.Item>
+                <ActionList.LeadingVisual>
+                  <ShieldLockIcon />
+                </ActionList.LeadingVisual>
+                受保护
+                <ActionList.Description variant="block">
+                  需要额外权限才能访问
+                </ActionList.Description>
+              </ActionList.Item>
+            </ActionList.Group>
 
-          <ActionList.Divider />
+            <ActionList.Divider />
 
-          <ActionList.Item variant="danger">
-            <ActionList.LeadingVisual>
-              <SignOutIcon />
-            </ActionList.LeadingVisual>
-            退出组织
-          </ActionList.Item>
-        </ActionList>
+            <ActionList.Item variant="danger">
+              <ActionList.LeadingVisual>
+                <SignOutIcon />
+              </ActionList.LeadingVisual>
+              退出组织
+            </ActionList.Item>
+          </ActionList>
+        </FeatureFlags>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
@@ -316,7 +331,8 @@
         <ActionList class="demo-list">
           <ActionList.LinkItem
             href="https://github.com/UnderHear"
-            new-tab
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <ActionList.LeadingVisual>
               <MarkGithubIcon />
@@ -328,7 +344,8 @@
           </ActionList.LinkItem>
           <ActionList.LinkItem
             href="https://vuejs.org"
-            new-tab
+            target="_blank"
+            rel="noopener noreferrer"
             active
           >
             <ActionList.LeadingVisual>
@@ -338,7 +355,7 @@
           </ActionList.LinkItem>
           <ActionList.LinkItem
             href="https://vitejs.dev"
-            disabled
+            inactive-text="暂不可访问"
           >
             <ActionList.LeadingVisual>
               <ZapIcon />
@@ -362,21 +379,27 @@
             </Button>
           </Dropdown.trigger>
           <Dropdown.content>
-            <ActionList>
-              <ActionList.Item>
+            <ActionList
+              role="menu"
+              aria-label="更多操作"
+            >
+              <ActionList.Item role="menuitem">
                 <ActionList.LeadingVisual>
                   <PencilIcon />
                 </ActionList.LeadingVisual>
                 编辑
               </ActionList.Item>
-              <ActionList.Item>
+              <ActionList.Item role="menuitem">
                 <ActionList.LeadingVisual>
                   <CopyIcon />
                 </ActionList.LeadingVisual>
                 复制
               </ActionList.Item>
               <ActionList.Divider />
-              <ActionList.Item variant="danger">
+              <ActionList.Item
+                role="menuitem"
+                variant="danger"
+              >
                 <ActionList.LeadingVisual>
                   <TrashIcon />
                 </ActionList.LeadingVisual>
@@ -385,6 +408,46 @@
             </ActionList>
           </Dropdown.content>
         </Dropdown>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
+    <ComponentDocsSection title="列表标题与尾部操作">
+      <template #description>
+        Heading 放在列表前并自动关联 aria-labelledby；TrailingAction 是独立按钮或链接。
+        默认列表保留原生 Tab 顺序。menu、menubar、listbox 默认启用焦点区；disableFocusZone 可关闭它。
+      </template>
+      <ComponentDocsDemoBlock :code="advancedCode">
+        <div class="demo-list-wide">
+          <ActionList>
+            <ActionList.Heading
+              as="h3"
+              size="small"
+            >
+              仓库
+            </ActionList.Heading>
+            <ActionList.Item>
+              onlikee
+              <ActionList.Description truncate>
+                最近更新的公开仓库
+              </ActionList.Description>
+              <ActionList.TrailingAction
+                :icon="PencilIcon"
+                label="编辑仓库"
+              />
+            </ActionList.Item>
+            <ActionList.Item inactive-text="需要管理员权限">
+              归档仓库
+            </ActionList.Item>
+            <ActionList.Item>
+              文档
+              <ActionList.TrailingAction
+                as="a"
+                href="https://vuejs.org"
+                label="查看"
+              />
+            </ActionList.Item>
+          </ActionList>
+        </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
@@ -446,6 +509,26 @@
         :hoverable="false"
       />
 
+      <h4>ActionList.Heading Props</h4>
+      <Table
+        :columns="apiTableColumns"
+        :data="headingPropsRows"
+        row-key="name"
+        compact
+        :hoverable="false"
+      />
+      <h4>ActionList.TrailingAction / GroupHeading.TrailingAction Props</h4>
+      <Table
+        :columns="apiTableColumns"
+        :data="trailingActionPropsRows"
+        row-key="name"
+        compact
+        :hoverable="false"
+      />
+      <h4>上下文与元素引用</h4>
+      <p>ActionList.ContainerContext 与 ActionList.GroupContext 是 Vue injection key，可通过 provide 注入 reactive 对象。容器字段包括 container、listRole、selectionVariant、selectionAttribute、listLabelledBy、afterSelect、enableFocusZone、defaultTrailingVisual；分组字段为 selectionVariant 与 groupHeadingId。</p>
+      <p>Item 的 select 事件调用 preventDefault() 可阻止容器 afterSelect。根列表、Item、LinkItem、Heading 和两个 TrailingAction 通过模板 ref 暴露 element、focus()、blur()。Item 的 element 根据语义指向 button 或 li，LinkItem 的 element 始终指向链接元素，inactive 时为 null。</p>
+      <p>分组标题尾部操作由 primer_react_action_list_group_heading_trailing_action 控制；上方示例显式启用了该标志。primer_react_action_list_item_gap 仅在 NavList 容器且未设置 disableItemGap 时生效。</p>
       <h4>Events</h4>
       <Table
         :columns="eventsTableColumns"
@@ -469,6 +552,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { FeatureFlags } from '@/components/primer-vue/FeatureFlags'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { Button } from '@/components/primer-vue/Button'
 import { Dropdown } from '@/components/primer-vue/Dropdown'
@@ -535,7 +619,7 @@ const demo1Code = `<template>
       新建仓库
       <ActionList.TrailingVisual><ChevronRightIcon /></ActionList.TrailingVisual>
     </ActionList.Item>
-    <ActionList.LinkItem href="https://github.com" new-tab>
+    <ActionList.LinkItem href="https://github.com" target="_blank" rel="noopener noreferrer">
       <ActionList.LeadingVisual><MarkGithubIcon /></ActionList.LeadingVisual>
       打开 GitHub
       <ActionList.TrailingVisual><LinkExternalIcon /></ActionList.TrailingVisual>
@@ -600,7 +684,7 @@ import { ArchiveIcon, FileCodeIcon, LinkExternalIcon, RepoIcon } from '@/compone
 <\/script>`
 
 const demo4Code = `<template>
-  <ActionList selection-variant="single">
+  <ActionList role="listbox" aria-label="选择选项" selection-variant="single">
     <ActionList.Item
       v-for="item in visibilityOptions"
       :key="item.label"
@@ -613,7 +697,7 @@ const demo4Code = `<template>
     </ActionList.Item>
   </ActionList>
 
-  <ActionList selection-variant="multiple">
+  <ActionList role="listbox" aria-label="选择选项" selection-variant="multiple">
     <ActionList.Item
       v-for="item in filterOptions"
       :key="item"
@@ -646,7 +730,7 @@ function toggleFilter(value: string) {
 <\/script>`
 
 const demo5Code = `<template>
-  <ActionList selection-variant="single">
+  <ActionList role="listbox" aria-label="选择选项" selection-variant="single">
     <ActionList.Item selected active>
       <ActionList.LeadingVisual><ProjectIcon /></ActionList.LeadingVisual>
       当前项目
@@ -670,9 +754,10 @@ import { LockIcon, ProjectIcon, TrashIcon } from '@/components/octicons-vue3'
 <\/script>`
 
 const demo6Code = `<template>
+  <FeatureFlags :flags="{ primer_react_action_list_group_heading_trailing_action: true }">
   <ActionList>
     <ActionList.Group>
-      <ActionList.GroupHeading>代码</ActionList.GroupHeading>
+      <ActionList.GroupHeading as="h3">代码</ActionList.GroupHeading>
       <ActionList.Item>
         <ActionList.LeadingVisual><CodeIcon /></ActionList.LeadingVisual>
         打开 Codespace
@@ -685,9 +770,9 @@ const demo6Code = `<template>
     </ActionList.Group>
 
     <ActionList.Group>
-      <ActionList.GroupHeading variant="filled">
+      <ActionList.GroupHeading as="h3" variant="filled">
         访问范围
-        <ActionList.GroupHeadingTrailingAction>管理</ActionList.GroupHeadingTrailingAction>
+        <ActionList.GroupHeading.TrailingAction :icon="PencilIcon" label="管理" />
       </ActionList.GroupHeading>
       <ActionList.Item>
         <ActionList.LeadingVisual><PeopleIcon /></ActionList.LeadingVisual>
@@ -707,25 +792,27 @@ const demo6Code = `<template>
       退出组织
     </ActionList.Item>
   </ActionList>
+  </FeatureFlags>
 </template>
 
 <script setup lang="ts">
 import { ActionList } from '@/components/primer-vue/ActionList'
-import { CodeIcon, GitBranchIcon, PeopleIcon, ShieldLockIcon, SignOutIcon } from '@/components/octicons-vue3'
+import { FeatureFlags } from '@/components/primer-vue/FeatureFlags'
+import { CodeIcon, GitBranchIcon, PencilIcon, PeopleIcon, ShieldLockIcon, SignOutIcon } from '@/components/octicons-vue3'
 <\/script>`
 
 const demo7Code = `<template>
   <ActionList>
-    <ActionList.LinkItem href="https://github.com/UnderHear" new-tab>
+    <ActionList.LinkItem href="https://github.com/UnderHear" target="_blank" rel="noopener noreferrer">
       <ActionList.LeadingVisual><MarkGithubIcon /></ActionList.LeadingVisual>
       UnderHear
       <ActionList.TrailingVisual><LinkExternalIcon /></ActionList.TrailingVisual>
     </ActionList.LinkItem>
-    <ActionList.LinkItem href="https://vuejs.org" new-tab active>
+    <ActionList.LinkItem href="https://vuejs.org" target="_blank" rel="noopener noreferrer" active>
       <ActionList.LeadingVisual><BookIcon /></ActionList.LeadingVisual>
       Vue 文档
     </ActionList.LinkItem>
-    <ActionList.LinkItem href="https://vitejs.dev" disabled>
+    <ActionList.LinkItem href="https://vitejs.dev" inactive-text="暂不可访问">
       <ActionList.LeadingVisual><ZapIcon /></ActionList.LeadingVisual>
       暂不可访问
     </ActionList.LinkItem>
@@ -745,17 +832,17 @@ const demo8Code = `<template>
       </Button>
     </Dropdown.trigger>
     <Dropdown.content>
-      <ActionList>
-        <ActionList.Item>
+      <ActionList role="menu" aria-label="更多操作">
+        <ActionList.Item role="menuitem">
           <ActionList.LeadingVisual><PencilIcon /></ActionList.LeadingVisual>
           编辑
         </ActionList.Item>
-        <ActionList.Item>
+        <ActionList.Item role="menuitem">
           <ActionList.LeadingVisual><CopyIcon /></ActionList.LeadingVisual>
           复制
         </ActionList.Item>
         <ActionList.Divider />
-        <ActionList.Item variant="danger">
+        <ActionList.Item role="menuitem" variant="danger">
           <ActionList.LeadingVisual><TrashIcon /></ActionList.LeadingVisual>
           删除
         </ActionList.Item>
@@ -779,39 +866,88 @@ const apiTableColumns: TableColumn[] = [
 ]
 
 const actionListPropsRows = [
-  { name: 'variant', type: "'inset' | 'horizontal-inset' | 'full'", default: "'inset'", description: '控制列表与容器边缘的间距关系' },
-  { name: 'selectionVariant', type: "'single' | 'multiple'", default: '—', description: '显示单选勾选或多选 checkbox 的选择列' },
-  { name: 'showDividers', type: 'boolean', default: 'false', description: '在连续列表项之间显示细分隔线' }
+  { name: 'as', type: 'string | Component', default: "'ul'", description: '根列表元素或组件' },
+  { name: 'variant', type: "'inset' | 'horizontal-inset' | 'full'", default: "'inset'", description: '列表边缘间距' },
+  { name: 'selectionVariant', type: "'single' | 'radio' | 'multiple'", default: 'undefined', description: '选择标记；角色与选择状态仍需正确设置' },
+  { name: 'role', type: '原生 ARIA role', default: '容器 listRole', description: 'listbox 推导 option，tablist 推导 tab；menu 的条目需显式角色或 ActionMenu 容器上下文' },
+  { name: 'showDividers', type: 'boolean', default: 'false', description: '连续列表项之间显示分隔线' },
+  { name: 'disableFocusZone', type: 'boolean', default: 'false', description: '关闭 menu、menubar、listbox 的焦点管理；容器 enableFocusZone 优先' },
+  { name: 'disableItemGap', type: 'boolean', default: 'false', description: '关闭 NavList 容器的 FeatureFlag 项间距' },
+  { name: 'className / 原生属性', type: 'HTMLAttributes', default: '—', description: '同时支持 Vue class、style、ARIA 和 DOM 事件' }
 ]
-
 const actionListItemPropsRows = [
-  { name: 'selected', type: 'boolean', default: 'false', description: '是否处于选中状态，需要配合 selectionVariant 使用' },
-  { name: 'active', type: 'boolean', default: 'false', description: '当前项状态，会显示选中背景和左侧强调线' },
+  { name: 'selected', type: 'boolean', default: 'undefined', description: '选择状态；option 对应 aria-selected，menuitemradio/menuitemcheckbox 对应 aria-checked' },
+  { name: 'active', type: 'boolean', default: 'false', description: '显示当前项背景与左侧强调线' },
   { name: 'variant', type: "'default' | 'danger'", default: "'default'", description: '默认或危险操作样式' },
-  { name: 'disabled', type: 'boolean', default: 'false', description: '禁用操作项' },
-  { name: 'loading', type: 'boolean', default: 'false', description: '显示加载状态并禁用操作' },
-  { name: 'size', type: "'medium' | 'large'", default: "'medium'", description: '控制列表项垂直间距' },
-  { name: 'type', type: "'button' | 'submit' | 'reset'", default: "'button'", description: '按钮列表项的原生 type' }
+  { name: 'disabled', type: 'boolean', default: 'false', description: '设置 aria-disabled 并阻止 select；仍可在焦点区中聚焦' },
+  { name: 'inactiveText', type: 'string', default: 'undefined', description: '非活动原因，阻止操作；普通列表显示提示图标，menu/listbox 显示警告文本' },
+  { name: 'loading', type: 'boolean', default: 'undefined', description: '显示 Spinner 与 Loading 公告，阻止 select 并隐藏尾部操作' },
+  { name: 'size', type: "'medium' | 'large'", default: "'medium'", description: '条目高度' },
+  { name: 'id / role / 原生属性', type: 'HTMLAttributes', default: '—', description: '属性按语义落到 button 或 li；class 落在外层 li' },
+  { name: 'as', type: 'string | Component', default: 'undefined', description: '已弃用，对 Item 不生效；使用 LinkItem 的 as 实现自定义链接' },
+  { name: 'privateItemWrapper / privateTooltipText', type: '函数 / string', default: 'undefined', description: '对应源 _PrivateItemWrapper / _PrivateTooltipText 的内部适配接口' },
+  { name: 'groupId / renderItem / handleAddItem', type: 'string / 函数', default: 'undefined', description: '保留源兼容接口，不传到 DOM' }
 ]
-
 const actionListLinkItemPropsRows = [
-  { name: 'href', type: 'string', default: '—', description: '链接地址' },
-  { name: 'newTab', type: 'boolean', default: 'false', description: '是否在新标签页打开链接' },
-  { name: 'target', type: 'string', default: '—', description: '链接 target，会覆盖 newTab 推导值' },
-  { name: 'rel', type: 'string', default: '—', description: '链接 rel，会覆盖 newTab 推导值' },
-  { name: '其他 Item Props', type: 'ActionList.Item props', default: '—', description: 'LinkItem 支持 Item 的视觉状态 props' }
+  { name: 'as', type: 'string | Component', default: "'a'", description: '原生链接或路由链接组件' },
+  { name: 'href / target / rel', type: '原生链接属性', default: 'undefined', description: '直接传递到链接，使用 target="_blank" 指定新标签页' },
+  { name: 'active / variant / size', type: '与 Item 对应属性相同', default: 'false / default / medium', description: '条目视觉状态' },
+  { name: 'inactiveText', type: 'string', default: 'undefined', description: '非活动链接渲染 span 并移除链接交互' },
+  { name: 'privateTooltipText', type: 'string', default: 'undefined', description: '链接提示内容' },
+  { name: 'className / 原生属性', type: 'HTMLAttributes', default: '—', description: 'class 落到 li；其余原生链接属性和 click 事件落到链接' }
 ]
-
 const actionListDescriptionPropsRows = [
-  { name: 'variant', type: "'inline' | 'block'", default: "'inline'", description: '说明文字显示在同一行或下一行' },
-  { name: 'truncate', type: 'boolean', default: 'false', description: '单行截断说明文字' }
+  { name: 'variant', type: "'inline' | 'block'", default: "'inline'", description: '说明显示在同一行或下一行' },
+  { name: 'truncate', type: 'boolean', default: 'undefined', description: '仅 inline 截断；按钮条目自动显示全文 Tooltip，其他语义使用 title' },
+  { name: 'className / style', type: 'string / CSSProperties', default: '—', description: '支持 Vue class 与 style，其余属性不透传' }
 ]
-
-const actionListGroupPropsRows: never[] = []
-
+const actionListGroupPropsRows = [
+  { name: 'selectionVariant', type: "'single' | 'radio' | 'multiple' | false", default: 'undefined', description: '覆盖选择标记；false 隐藏组内选择标记' },
+  { name: 'role / aria-label', type: 'string', default: '由列表推导', description: '角色列表内的 ul 为 group，通过 aria-label 标记；复杂标题应显式设置 aria-label，普通列表使用标题 ID' },
+  { name: 'title / variant / auxiliaryText', type: 'string / subtle或filled / string', default: 'undefined / subtle / undefined', description: '旧标题接口，推荐使用 GroupHeading；同时提供 title 和 GroupHeading 时不渲染标题' },
+  { name: 'className / 原生属性', type: 'HTMLAttributes', default: '—', description: '其余原生属性落在外层 li' }
+]
 const actionListGroupHeadingPropsRows = [
-  { name: 'variant', type: "'subtle' | 'filled'", default: "'subtle'", description: '分组标题的视觉样式' }
+  { name: 'as', type: "'h1' 至 'h6'", default: 'undefined', description: '普通列表必须设置标题级别；menu/listbox 等角色列表禁止设置 as' },
+  { name: 'variant', type: "'subtle' | 'filled'", default: "'subtle'", description: '标题视觉样式' },
+  { name: 'auxiliaryText', type: 'string', default: 'undefined', description: '标题辅助文字' },
+  { name: 'headingWrapElement', type: "'div' | 'li'", default: "'div'", description: '标题包装元素' },
+  { name: 'id / className / 原生属性', type: 'HTMLAttributes', default: '生成 id', description: '普通列表属性落在标题，角色列表落在 presentation 包装元素' }
 ]
+const headingPropsRows = [
+  { name: 'as', type: "'h1' 至 'h6'", default: '必填', description: '列表标题级别；禁止在 ActionMenu 容器使用' },
+  { name: 'size', type: "'large' | 'medium' | 'small'", default: 'undefined', description: '标题字号' },
+  { name: 'visuallyHidden', type: 'boolean', default: 'false', description: '保留标题语义并在视觉上隐藏' },
+  { name: 'id / className / 原生属性', type: 'HTMLAttributes', default: '生成 id', description: '标题和列表 aria-labelledby 自动关联' }
+]
+const trailingActionPropsRows = [
+  { name: 'label', type: 'string', default: '必填', description: '文本按钮内容或图标按钮的可访问名称' },
+  { name: 'icon', type: 'Component', default: 'undefined', description: '使用 IconButton；GroupHeading.TrailingAction 必填' },
+  { name: 'as / href', type: "'button' | 'a' / string", default: "'button' / undefined", description: 'as=a 必须提供 href' },
+  { name: 'loading', type: 'boolean', default: 'undefined', description: '仅 button 支持；加载时关闭点击并公告状态' },
+  { name: 'tooltipDirection', type: 'TooltipDirection', default: "'w'", description: '图标提示方向' },
+  { name: 'className / style / 原生属性', type: 'HTMLAttributes', default: '—', description: 'Item 尾部操作 class/style 落在包装 span；分组尾部操作落在按钮' }
+]
+const advancedCode = `<template>
+  <ActionList>
+    <ActionList.Heading as="h3" size="small">仓库</ActionList.Heading>
+    <ActionList.Item>
+      onlikee
+      <ActionList.Description truncate>最近更新的公开仓库</ActionList.Description>
+      <ActionList.TrailingAction :icon="PencilIcon" label="编辑仓库" />
+    </ActionList.Item>
+    <ActionList.Item inactive-text="需要管理员权限">归档仓库</ActionList.Item>
+    <ActionList.Item>
+      文档
+      <ActionList.TrailingAction as="a" href="https://vuejs.org" label="查看" />
+    </ActionList.Item>
+  </ActionList>
+</template>
+
+<script setup lang="ts">
+import { ActionList } from '@/components/primer-vue/ActionList'
+import { PencilIcon } from '@/components/octicons-vue3'
+<\/script>`
 
 const eventsTableColumns: TableColumn[] = [
   { key: 'name', label: '事件名', rowHeader: true, minWidth: '160px' },
@@ -820,7 +956,8 @@ const eventsTableColumns: TableColumn[] = [
 ]
 
 const eventsRows = [
-  { name: 'select', component: 'ActionList.Item / LinkItem', description: '启用状态下点击列表项时触发，disabled 和 loading 状态不会触发' }
+  { name: 'click', component: 'ActionList.LinkItem / TrailingAction', description: '原生链接或尾部按钮的点击事件' },
+  { name: 'select', component: 'ActionList.Item', description: '点击或非按钮语义条目 Enter/Space 激活时触发；disabled、inactive、loading 阻止触发' }
 ]
 
 const slotsTableColumns: TableColumn[] = [
@@ -836,8 +973,8 @@ const slotsRows = [
   { key: 'description-default', component: 'ActionList.Description', name: 'default', description: '列表项说明文字' },
   { key: 'trailing-default', component: 'ActionList.TrailingVisual', name: 'default', description: '列表项右侧图标或辅助信息区域' },
   { key: 'group-default', component: 'ActionList.Group', name: 'default', description: '分组内的列表项及 GroupHeading 子组件' },
-  { key: 'heading-default', component: 'ActionList.GroupHeading', name: 'default', description: '分组标题内容及 GroupHeadingTrailingAction 子组件' },
-  { key: 'heading-trailing-default', component: 'ActionList.GroupHeadingTrailingAction', name: 'default', description: '分组标题右侧辅助操作区域' }
+  { key: 'heading-default', component: 'ActionList.GroupHeading', name: 'default', description: '分组标题内容及 GroupHeading.TrailingAction 子组件' },
+  { key: 'list-heading', component: 'ActionList.Heading', name: 'default', description: '列表标题' }
 ]
 </script>
 
@@ -895,12 +1032,6 @@ h4:first-child {
   color: var(--fgColor-muted);
   font-size: 12px;
   text-align: right;
-}
-
-.demo-heading-action {
-  color: var(--fgColor-accent);
-  font-size: 12px;
-  font-weight: 600;
 }
 
 @media (max-width: 900px) {

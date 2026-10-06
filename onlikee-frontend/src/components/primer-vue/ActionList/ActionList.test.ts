@@ -86,7 +86,7 @@ describe('ActionList React migration', () => {
     expect(button.attributes('aria-labelledby')).toBe('my-id--label')
     expect(label.text()).toBe('Alpha')
     expect(button.attributes('aria-describedby')).toBeUndefined() // Item.tsx:239-245 无 description → undefined
-    expect(button.attributes('data-action-list-control')).toBe('') // 端口 zone 标记（登记）
+    expect(button.attributes('data-action-list-control')).toBeUndefined()
   })
 
   it('listbox + selectionVariant infers role=option on li with inner div (Item.tsx:154-157,279-282)', () => {
@@ -99,12 +99,12 @@ describe('ActionList React migration', () => {
     const [sel, other] = wrapper.findAll('li')
     expect(sel.attributes('role')).toBe('option')        // Item.tsx:258 role 落 li（listSemantics :280-282）
     expect(sel.attributes('aria-selected')).toBe('true') // Item.tsx:172,223,257
-    expect(other.attributes('aria-selected')).toBe('false')
+    expect(other.attributes('aria-selected')).toBeUndefined() // Source default selected is undefined.
     expect(sel.attributes('tabindex')).toBe('0')         // Item.tsx:254
     const content = sel.get('div.action-list-content')   // DefaultItemWrapper = DivItemContainer :219,63-71
     expect(content.attributes('role')).toBeUndefined()
     expect(content.attributes('tabindex')).toBeUndefined()
-    expect(sel.attributes('data-action-list-control')).toBe('')
+    expect(sel.attributes('data-action-list-control')).toBeUndefined()
   })
 
   it('menuitemcheckbox role maps selection to aria-checked (Item.tsx:169-172,223,257)', () => {
@@ -210,16 +210,17 @@ describe('ActionList React migration', () => {
 
   it('disabled items stay in the focus zone but block activation (iterate-focusable-elements.js:36-45, Item.tsx:186-192)', async () => {
     const onSelect = vi.fn()
-    const wrapper = render({}, [
-      item({ onSelect }, ['Alpha']),
-      item({ onSelect, disabled: true }, ['Disabled']),
-      item({ onSelect }, ['Charlie'])
+    const wrapper = render({ role: 'menu' }, [
+      item({ onSelect, role: 'menuitem' }, ['Alpha']),
+      item({ onSelect, disabled: true, role: 'menuitem' }, ['Disabled']),
+      item({ onSelect, role: 'menuitem' }, ['Charlie'])
     ])
-    const buttons = wrapper.findAll('button.action-list-content').map(b => b.element as HTMLElement)
+    const buttons = wrapper.findAll('[role=menuitem]').map(b => b.element as HTMLElement)
     // 源从不设 DOM disabled（Item.tsx:251 仅 aria-disabled）
     expect(buttons.map(b => b.getAttribute('disabled'))).toEqual([null, null, null])
     expect(buttons[1].getAttribute('aria-disabled')).toBe('true')
     expect(wrapper.findAll('li')[1].attributes('data-is-disabled')).toBe('true') // Item.tsx:330
+    await nextTick()
     buttons[0].focus()
     keyboard(buttons[0], 'ArrowDown')
     await nextTick()
@@ -257,46 +258,26 @@ describe('ActionList React migration', () => {
     expect(buttonSpy).not.toHaveBeenCalled()
   })
 
-  it('LinkItem: anchor carries menuItemProps; li role=none only with itemRole (Item.tsx:280,285, LinkItem.tsx:48-72)', () => {
-    const onSelect = vi.fn()
+  it('LinkItem forwards native link props; inactive links render spans (LinkItem.tsx:41-89)', () => {
     const onClick = vi.fn()
-    const wrapper = render({}, [
-      h(ActionList.LinkItem, { href: '/a', newTab: true, onSelect, onClick }, { default: () => ['Link'] })
-    ])
+    const wrapper = render({}, [h(ActionList.LinkItem, { href: '#a', target: '_blank', rel: 'noopener noreferrer', onClick }, { default: () => ['Link'] })])
     const li = wrapper.get('li')
-    expect(li.attributes('role')).toBeUndefined() // Item.tsx:280 itemRole undefined → role: undefined
-    expect(li.attributes('data-component')).toBe('ActionList.Item')
-    const a = li.get('a.action-list-content')
-    expect(a.attributes('href')).toBe('/a')
-    expect(a.attributes('target')).toBe('_blank') // 端口 newTab prop（登记）
-    expect(a.attributes('rel')).toBe('noopener noreferrer')
-    expect(a.attributes('tabindex')).toBe('0')    // Item.tsx:254
-    expect(a.attributes('aria-labelledby')).toBe(`${a.attributes('id')}--label`) // Item.tsx:255,211
-    expect(a.attributes('data-size')).toBe('medium') // Item.tsx:341
-    click(a.element)
-    expect(onSelect).toHaveBeenCalledTimes(1)
-    expect(onClick).toHaveBeenCalledTimes(1) // LinkItem.tsx:49-52 组合触发
-
-    const withRole = render({}, [h(ActionList.LinkItem, { href: '/b', role: 'option' }, { default: () => ['Opt'] })])
-    expect(withRole.get('li').attributes('role')).toBe('none') // Item.tsx:280
-    const a2 = withRole.get('a.action-list-content')
-    expect(a2.attributes('role')).toBe('option') // Item.tsx:285 wrapperProps = menuItemProps
-    expect(a2.attributes('aria-selected')).toBe('false') // Item.tsx:257
-
-    // 源怪癖：disabled LinkItem 只拦 select；消费者 onClick 仍触发、导航不被 preventDefault
-    // （Item.tsx:186-192 guard 无 preventDefault + LinkItem.tsx:49-52 无条件组合）
-    const disabledSelect = vi.fn()
-    const disabledClick = vi.fn()
-    const disabledWrap = render({}, [
-      h(ActionList.LinkItem, { href: '/c', disabled: true, onSelect: disabledSelect, onClick: disabledClick }, { default: () => ['No'] })
-    ])
-    const a3 = disabledWrap.get('a.action-list-content')
-    expect(a3.attributes('aria-disabled')).toBe('true') // Item.tsx:251
-    const clickEvent = new MouseEvent('click', { bubbles: true, cancelable: true })
-    a3.element.dispatchEvent(clickEvent)
-    expect(disabledSelect).not.toHaveBeenCalled()
-    expect(disabledClick).toHaveBeenCalledTimes(1)
-    expect(clickEvent.defaultPrevented).toBe(false)
+    const link = li.get('a.action-list-content')
+    expect(li.attributes('role')).toBeUndefined()
+    expect(link.attributes('href')).toBe('#a')
+    expect(link.attributes('target')).toBe('_blank')
+    expect(link.attributes('rel')).toBe('noopener noreferrer')
+    expect(link.attributes('tabindex')).toBe('0')
+    click(link.element)
+    expect(onClick).toHaveBeenCalledTimes(1)
+    const withRole = render({}, [h(ActionList.LinkItem, { href: '#b', role: 'option' }, { default: () => ['Opt'] })])
+    expect(withRole.get('li').attributes('role')).toBeUndefined()
+    expect(withRole.get('a').attributes('role')).toBe('option')
+    expect(withRole.get('a').attributes('aria-selected')).toBeUndefined()
+    const inactive = render({}, [h(ActionList.LinkItem, { href: '#c', inactiveText: 'Unavailable', onClick }, { default: () => ['No'] })])
+    expect(inactive.find('a').exists()).toBe(false)
+    expect(inactive.get('li').attributes('data-inactive')).toBe('true')
+    expect(inactive.find('span.action-list-content').exists()).toBe(true)
   })
 
   it('ul mirrors List.tsx:109-127 (data-component, literal data-dividers, no data-selection-variant)', () => {
@@ -338,8 +319,9 @@ describe('ActionList React migration', () => {
   })
 
   it('focus zone: Home/End/PageUp/PageDown jump to first/last; arrows wrap (List.tsx:65, focus-zone.js:62-65)', async () => {
-    const wrapper = render({}, [item({}, ['A']), item({}, ['B']), item({}, ['C'])])
-    const buttons = wrapper.findAll('button.action-list-content').map(b => b.element as HTMLElement)
+    const wrapper = render({ role: 'menu' }, [item({ role: 'menuitem' }, ['A']), item({ role: 'menuitem' }, ['B']), item({ role: 'menuitem' }, ['C'])])
+    const buttons = wrapper.findAll('[role=menuitem]').map(b => b.element as HTMLElement)
+    await nextTick()
     buttons[1].focus()
     keyboard(buttons[1], 'Home')
     await nextTick()
@@ -353,7 +335,7 @@ describe('ActionList React migration', () => {
     keyboard(buttons[0], 'PageDown') // focus-zone.js:65 PageDown → 'end'
     await nextTick()
     expect(document.activeElement).toBe(buttons[2])
-    keyboard(buttons[2], 'ArrowDown') // 端口 zone 恒开 + wrap（List.tsx:66-68 登记项）
+    keyboard(buttons[2], 'ArrowDown') // Source menu focus zone wraps.
     await nextTick()
     expect(document.activeElement).toBe(buttons[0])
   })

@@ -201,15 +201,15 @@ const navSections = ref([
   {
     title: 'Blocks 组合式组件',
     items: [
-      { path: '/component/action-bar', label: 'ActionBar 操作栏' },
-      { path: '/component/action-panel', label: 'ActionPanel 操作面板' },
       { path: '/component/user-menu', label: 'UserMenu 用户菜单' }
     ]
   },
   {
     title: 'Basic 基础组件',
     items: [
+      { path: '/component/action-bar', label: 'ActionBar 操作栏' },
       { path: '/component/action-list', label: 'ActionList 操作列表' },
+      { path: '/component/action-menu', label: 'ActionMenu 操作菜单' },
       { path: '/component/avatar', label: 'Avatar 头像' },
       { path: '/component/avatar-stack', label: 'AvatarStack 头像堆叠' },
       { path: '/component/button', label: 'Button 按钮' },

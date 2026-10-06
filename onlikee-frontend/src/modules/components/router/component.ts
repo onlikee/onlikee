@@ -33,21 +33,21 @@ export const componentRoutes: Array<RouteRecordRaw> = [
             },
             // Blocks
             {
-                path: 'action-bar',
-                name: 'ActionBar',
-                component: () => import('../views/components/action-bar.vue')
-            },
-            {
-                path: 'action-panel',
-                name: 'ActionPanel',
-                component: () => import('../views/components/action-panel.vue')
-            },
-            {
                 path: 'user-menu',
                 name: 'UserMenu',
                 component: () => import('../views/components/user-menu.vue')
             },
             // Basic
+            {
+                path: 'action-menu',
+                name: 'ActionMenu',
+                component: () => import('../views/components/action-menu.vue')
+            },
+            {
+                path: 'action-bar',
+                name: 'ActionBar',
+                component: () => import('../views/components/action-bar.vue')
+            },
             {
                 path: 'stack',
                 name: 'Stack',

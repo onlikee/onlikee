@@ -63,7 +63,11 @@
           <Dropdown.content
             width="medium"
           >
-            <ActionList selection-variant="single">
+            <ActionList
+              role="listbox"
+              aria-label="应用可见性"
+              selection-variant="single"
+            >
               <ActionList.Item
                 v-for="item in visibilityOptions"
                 :key="item.value"

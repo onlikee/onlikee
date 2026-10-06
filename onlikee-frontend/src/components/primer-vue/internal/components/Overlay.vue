@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, shallowRef, toValue, useAttrs, useId, watch, watchEffect } from 'vue'
+import { computed, h, onBeforeUnmount, onMounted, shallowRef, toValue, useAttrs, useId, watch, watchEffect, type SetupContext } from 'vue'
 import { focusTrap } from '@primer/behaviors'
 import { iterateFocusableElements } from '@primer/behaviors/utils'
 import { useAnchoredPosition } from '../../composables/useAnchoredPosition'
@@ -7,12 +7,13 @@ import { useFeatureFlag } from '../../FeatureFlags'
 import { registerEscapeHandler, registerOutsideClickHandler } from '../documentRegistries'
 import type { OverlayProps, OverlayCloseGesture } from './overlayTypes'
 import { normalizeReactStyle } from '../style'
+import { getPortalRoot, registerPortalRoot } from '../../Portal'
 
 // 移植自 React Overlay/Overlay.tsx（BaseOverlay 样式与动画）+ AnchoredOverlay/AnchoredOverlay.tsx
 // （定位/visibility/focus trap 门控）+ hooks/useOverlay.tsx（文档级注册表见 ../documentRegistries）。
 defineOptions({ name: 'Overlay', inheritAttrs: false })
 const props = withDefaults(defineProps<OverlayProps>(), {
-  open: true, anchor: null, side: 'outside-bottom', align: 'start', width: 'auto', height: 'auto',
+  as: 'div', open: true, anchor: null, side: 'outside-bottom', align: 'start', width: 'auto', height: 'auto',
   preventFocusOnOpen: false, trapFocus: false, initialFocusRef: null, returnFocusRef: null,
   allowOutOfBounds: false, displayInViewport: false, pinPosition: false, preventOverflow: true,
   role: 'none' // React Overlay.tsx:149 默认 role='none'（审计 L7）
@@ -21,21 +22,28 @@ const emit = defineEmits<{
   close: [event: KeyboardEvent | MouseEvent, gesture: OverlayCloseGesture]
 }>()
 const mounted = shallowRef(false)
-const portalRoot = shallowRef<HTMLElement>()
+const portalRoot = shallowRef<Element>()
 const cssAnchorName = `--primer-overlay-${useId().replace(/[^a-zA-Z0-9_-]/g, '-')}`
 const attrs = useAttrs()
 // React BaseOverlay 不渲染 data-component（'AnchoredOverlay' 等值由上层经 attrs/rest 传入；
 // 裸 Overlay 无该属性，审计 G5-10）。
 const dataComponent = computed(() => attrs['data-component'])
 const element = shallowRef<HTMLElement | null>(null)
+function setElement(value: unknown) {
+  const instance = value as { element?: HTMLElement; $el?: HTMLElement } | null
+  element.value = value instanceof HTMLElement ? value : instance?.element ?? instance?.$el ?? null
+}
 const anchor = computed(() => props.anchor)
 const cssAnchorEnabled = useFeatureFlag('primer_react_css_anchor_positioning')
+const disablePortal = computed(() => Boolean(props._PrivateDisablePortal && cssAnchorEnabled.value))
+const PortalHost = (_props: unknown, { slots }: SetupContext) => disablePortal.value
+  ? slots.default?.() : h('div', { 'data-component': 'Portal', style: { position: 'relative', zIndex: 1 } }, slots.default?.())
 // React AnchoredOverlay.tsx:186-194 的一次性特征检测（style 属性存在性，而非 CSS.supports）
 const supportsCssAnchorPositioning = typeof document !== 'undefined' &&
   'anchorName' in document.documentElement.style &&
   'positionTryFallbacks' in document.documentElement.style &&
   'positionVisibility' in document.documentElement.style
-const cssAnchor = computed(() => cssAnchorEnabled.value && supportsCssAnchorPositioning && !props.cssAnchorPositioningSettings?.disable)
+const cssAnchor = computed(() => cssAnchorEnabled.value && supportsCssAnchorPositioning && !props.portalContainerName && !props.cssAnchorPositioningSettings?.disable)
 const { position } = useAnchoredPosition(() => ({
   floatingElementRef: element, anchorElementRef: anchor,
   side: props.side, align: props.align, anchorOffset: props.anchorOffset, alignmentOffset: props.alignmentOffset,
@@ -92,6 +100,8 @@ watch([element, trapArmed], ([overlay, armed], _previous, onCleanup) => {
 watch([element, () => props.preventFocusOnOpen], ([overlay], _previous, onCleanup) => {
   if (!overlay || !props.open) return
   previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
+  // React useOpenAndCloseFocus captures the return target for this open cycle.
+  const menuReturnFocus = dataComponent.value === 'ActionMenu.Overlay' ? toValue(props.returnFocusRef) : undefined
   if (!props.preventFocusOnOpen) {
     const initialFocus = toValue(props.initialFocusRef)
     if (initialFocus) {
@@ -102,7 +112,7 @@ watch([element, () => props.preventFocusOnOpen], ([overlay], _previous, onCleanu
     }
   }
   onCleanup(() => {
-    const returnTo = toValue(props.returnFocusRef) ?? previousFocus
+    const returnTo = dataComponent.value === 'ActionMenu.Overlay' ? menuReturnFocus : toValue(props.returnFocusRef) ?? previousFocus
     if (returnTo?.isConnected) returnTo.focus()
   })
 }, { flush: 'post' })
@@ -168,8 +178,9 @@ watchEffect(onCleanup => {
   if (!cssAnchor.value || !props.anchor || !element.value) return
   const anchorElement = props.anchor
   const overlay = element.value
-  const name = cssAnchorName
   const old = anchorElement.style.getPropertyValue('anchor-name')
+  const isMenu = dataComponent.value === 'ActionMenu.Overlay'
+  const name = isMenu && old ? old : cssAnchorName
   anchorElement.style.setProperty('anchor-name', name)
   overlay.style.setProperty('position-anchor', name)
   const fallback = props.cssAnchorPositioningSettings?.fallbackStrategy ?? 'default'
@@ -181,14 +192,28 @@ watchEffect(onCleanup => {
   overlay.style.setProperty('--primer-overlay-anchor-offset', `${props.anchorOffset ?? 4}px`)
   const updateAlignment = () => {
     const rect = anchorElement.getBoundingClientRect()
-    const width = overlay.getBoundingClientRect().width
+    const overlayRect = overlay.getBoundingClientRect()
+    const width = overlayRect.width
     const leftRoom = rect.left
     const rightRoom = window.innerWidth - rect.right
     overlay.dataset.cssAlign = leftRoom > rightRoom ? 'left' : 'right'
     overlay.style.setProperty('--primer-overlay-inline-offset', `${Math.max(0, rect.left + width - window.innerWidth + 8)}px`)
+    if (isMenu) {
+      if ((overlayRect.right > window.innerWidth || overlayRect.left < 0) &&
+        (overlayRect.bottom > window.innerHeight || overlayRect.top < 0)) {
+        overlay.dataset.side = leftRoom >= width + 8 ? 'outside-left' : rightRoom >= width + 8 ? 'outside-right' : 'outside-bottom'
+      }
+      const constrained = leftRoom < width + 8 && rightRoom < width + 8
+      overlay.style.setProperty('--anchored-overlay-anchor-offset-left', `${constrained ? Math.max(0, width - rect.right + 8) : 0}px`)
+      overlay.style.setProperty('--anchored-overlay-anchor-offset-right', `${constrained ? Math.max(0, rect.left + width - window.innerWidth + 8) : 0}px`)
+      const settled = overlay.getBoundingClientRect()
+      const overflowBottom = settled.bottom - window.innerHeight
+      if (overflowBottom > 0) overlay.style.setProperty('--anchored-overlay-top-override', `${Math.max(0, settled.top - overflowBottom - 8)}px`)
+      else overlay.style.removeProperty('--anchored-overlay-top-override')
+    }
   }
   const frame = requestAnimationFrame(updateAlignment)
-  window.addEventListener('resize', updateAlignment)
+  if (!isMenu) window.addEventListener('resize', updateAlignment)
   onCleanup(() => {
     cancelAnimationFrame(frame)
     window.removeEventListener('resize', updateAlignment)
@@ -196,7 +221,18 @@ watchEffect(onCleanup => {
   })
 }, { flush: 'post' })
 
-onMounted(() => {
+function resolvePortalRoot() {
+  if (props.portalContainerName) {
+    const container = getPortalRoot(props.portalContainerName)
+    if (!container) throw new Error(`Portal container '${props.portalContainerName}' is not yet registered.`)
+    portalRoot.value = container
+    return
+  }
+  const registered = getPortalRoot('__default__')
+  if (registered && document.body.contains(registered)) {
+    portalRoot.value = registered
+    return
+  }
   let container = document.getElementById('__primerVuePortalRoot__')
   if (!container) {
     container = document.createElement('div')
@@ -205,22 +241,28 @@ onMounted(() => {
     ;(document.querySelector('[data-portal-root]') ?? document.body).appendChild(container)
   }
   portalRoot.value = container
+  registerPortalRoot(container)
+}
+onMounted(() => {
+  if (props.open || !props.portalContainerName) resolvePortalRoot()
   mounted.value = true
+})
+watch([() => props.open, () => props.portalContainerName], ([open]) => {
+  if (mounted.value && open) resolvePortalRoot()
 })
 onBeforeUnmount(() => { mounted.value = false })
 defineExpose({ element, position, visibility: overlayVisibility, cssAnchor, focus: () => element.value?.focus() })
 </script>
 <template>
   <Teleport
-    v-if="mounted && open"
+    v-if="mounted && open && portalRoot"
     :to="portalRoot!"
+    :disabled="disablePortal"
   >
-    <div
-      data-component="Portal"
-      style="position: relative; z-index: 1"
-    >
-      <div
-        ref="element"
+    <PortalHost>
+      <component
+        :is="as"
+        :ref="setElement"
         v-bind="$attrs"
         :class="['primer-overlay', className]"
         :style="overlayStyle"
@@ -240,8 +282,8 @@ defineExpose({ element, position, visibility: overlayVisibility, cssAnchor, focu
         :data-component="dataComponent"
       >
         <slot />
-      </div>
-    </div>
+      </component>
+    </PortalHost>
   </Teleport>
 </template>
 <style scoped>
