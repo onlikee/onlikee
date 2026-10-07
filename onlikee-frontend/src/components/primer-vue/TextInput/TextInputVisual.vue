@@ -14,25 +14,18 @@ defineProps<{ id?: string; position: 'leading' | 'trailing'; hasVisual: boolean;
     <div
       v-else
       :id="id"
-      class="visual-box"
+      :class="$style['visual-box']"
     >
       <div
         v-if="hasVisual"
-        :class="showLoading ? 'visual-hidden' : 'visual-visible'"
+        :class="showLoading ? $style['visual-hidden'] : $style['visual-visible']"
       ><slot /></div>
       <Spinner
-        class="visual-spinner"
-        :class="[showLoading ? 'visual-visible' : 'visual-hidden', { 'visual-spinner-overlay': hasVisual, 'visual-spinner-leading': hasVisual && position === 'leading' }]"
+        :class="[showLoading ? $style['visual-visible'] : $style['visual-hidden'], { [$style['visual-spinner-overlay']]: hasVisual, [$style['visual-spinner-leading']]: hasVisual && position === 'leading' }]"
         :sr-text="null"
         :size="hasVisual ? 'medium' : 'small'"
       />
     </div>
   </span>
 </template>
-<style scoped>
-.visual-box { position: relative; display: flex; }
-.visual-box :deep(.visual-hidden) { visibility: hidden; }
-.visual-box :deep(.visual-visible) { visibility: visible; }
-.visual-box :deep(.visual-spinner-overlay) { position: absolute; top: 0; right: 0; max-width: 100%; height: 100%; }
-.visual-box :deep(.visual-spinner-leading) { left: 0; }
-</style>
+<style module src="./TextInputVisual.module.css" />

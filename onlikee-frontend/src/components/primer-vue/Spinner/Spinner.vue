@@ -59,12 +59,12 @@ function computeSyncDelay(): number {
 <template>
   <span
     v-if="isVisible"
-    class="spinner"
+    :class="$style['spinner']"
     data-component="Spinner"
   >
     <svg
       v-bind="$attrs"
-      class="spinner__animation"
+      :class="$style['spinner__animation']"
       :style="noMotionPreference ? { animationDelay: `${syncDelay}ms` } : undefined"
       :height="sizeMap[size]"
       :width="sizeMap[size]"
@@ -93,32 +93,8 @@ function computeSyncDelay(): number {
     <span
       v-if="hasHiddenLabel()"
       :id="labelId"
-      class="spinner__sr-only"
+      :class="$style['spinner__sr-only']"
     >{{ srText }}</span>
   </span>
 </template>
-
-<style scoped>
-.spinner {
-  display: inline-flex;
-}
-
-.spinner__animation {
-  animation: spinner-rotate var(--base-duration-1000, 1s) var(--base-easing-linear, linear) infinite;
-}
-
-.spinner__sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  white-space: nowrap;
-  clip-path: inset(50%);
-}
-
-@keyframes spinner-rotate {
-  to {
-    transform: rotate(360deg);
-  }
-}
-</style>
+<style module src="./Spinner.module.css" />

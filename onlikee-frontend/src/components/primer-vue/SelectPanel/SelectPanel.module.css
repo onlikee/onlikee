@@ -1,11 +1,10 @@
-.primer-overlay.select-panel__overlay[data-component] {
+:global(.primer-overlay).select-panel__overlay[data-component] {
   z-index: auto;
 }
-.primer-overlay.select-panel__overlay[data-css-anchor] {
+:global(.primer-overlay).select-panel__overlay[data-css-anchor] {
   z-index: 100;
 }
-.select-panel svg[data-octicon],
-.select-panel-button svg[data-octicon] {
+.select-panel svg[data-octicon] {
   overflow: visible;
   display: inline-block;
   vertical-align: text-bottom;
@@ -84,42 +83,6 @@
 .select-panel__list {
   height: inherit;
   max-height: inherit;
-}
-.select-panel__message {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  gap: var(--base-size-4, 0.25rem);
-  height: 100%;
-  justify-content: center;
-  padding: var(--base-size-24, 1.5rem);
-  text-align: center;
-}
-.select-panel__message a {
-  color: inherit;
-  -webkit-text-decoration: underline;
-  text-decoration: underline;
-}
-.select-panel__message-title {
-  font-size: var(--text-body-size-medium, 0.875rem);
-  font-weight: var(--base-text-weight-semibold, 600);
-}
-.select-panel__message-body {
-  align-items: center;
-  color: var(--fgColor-muted, #59636e);
-  font-size: var(--text-body-size-small, 0.75rem);
-  gap: var(--stack-gap-condensed, 0.5rem);
-}
-.select-panel__message-icon {
-  color: var(--fgColor-attention, #9a6700);
-  margin-bottom: var(--base-size-8, 0.5rem);
-}
-.select-panel__message-icon:where([data-variant="error"]) {
-  color: var(--fgColor-danger, #d1242f);
-}
-.select-panel__message-action {
-  margin-top: var(--base-size-8, 0.5rem);
 }
 .select-panel__close {
   display: inline-grid;
@@ -453,3 +416,6 @@
   white-space: nowrap;
   width: 1px;
 }
+
+.select-panel__title { margin-block: 0; font-weight: var(--base-text-weight-semibold, 600); }
+.select-panel svg[data-octicon] { display: inline-block; vertical-align: text-bottom; }

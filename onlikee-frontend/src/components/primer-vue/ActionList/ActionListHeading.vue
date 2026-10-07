@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import classes from './ActionList.module.css'
 import { computed, ref, useAttrs } from 'vue'
 import { useContainerContext, useContext, exposeElement } from './context'
 import { normalizeReactStyle } from '../internal/style'
@@ -14,7 +15,7 @@ const bindings = computed(() => {
   return {
     id: attrs.id ?? context?.headingId,
     'data-variant': props.size, 'data-component': 'ActionList.Heading', 'data-list-variant': context?.variant.value,
-    ...attrs, class: ['action-list-heading', 'action-list-header', props.className, attrs.class, props.visuallyHidden && 'action-list-visually-hidden'], style: normalizeReactStyle(attrs.style)
+    ...attrs, class: [classes['action-list-heading'], classes['action-list-header'], props.className, attrs.class, props.visuallyHidden && classes['action-list-visually-hidden']], style: normalizeReactStyle(attrs.style)
   }
 })
 defineExpose(exposeElement(element))

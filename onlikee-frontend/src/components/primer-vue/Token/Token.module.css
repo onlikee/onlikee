@@ -1,0 +1,6 @@
+.token { max-width: 100%; color: var(--fgColor-muted, #59636e); background-color: var(--bgColor-neutral-muted, #818b981f); border-color: var(--borderColor-muted, #d1d9e0b3); border-style: solid; }
+.token:where([data-interactive='true']):hover { color: var(--fgColor-default, #1f2328); background-color: var(--bgColor-neutral-muted, #818b981f); box-shadow: var(--shadow-resting-medium, 0 1px 1px 0 #25292e1a, 0 3px 6px 0 #25292e1f); }
+.token:where([data-is-selected='true']) { color: var(--fgColor-default, #1f2328); border-style: solid; border-color: var(--borderColor-emphasis, #818b98); }
+.token[data-is-remove-btn='true'] { padding-right: 0; }
+.token__leading { margin-right: var(--base-size-4, 4px); line-height: 0; flex-shrink: 0; }
+.token__leading--large { margin-right: var(--base-size-6, 6px); }

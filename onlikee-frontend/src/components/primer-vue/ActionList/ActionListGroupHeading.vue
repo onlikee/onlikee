@@ -1,4 +1,5 @@
 <script lang="ts">
+import classes from './ActionList.module.css'
 import { defineComponent, h, type PropType } from 'vue'
 import { useContext, useGroupContext } from './context'
 import type { HeadingLevel } from './types'
@@ -30,14 +31,14 @@ export default defineComponent({
       const headingChildren = props.internalBackwardCompatibleTitle ?? (enabled.value ? rest : children)
       const headingAttrs = { ...attrs, style: normalizeReactStyle(attrs.style) }
       return h(props.headingWrapElement, {
-        class: 'action-list-group-heading-wrap', 'data-variant': props.variant,
+        class: [classes['action-list-group-heading-wrap']], 'data-variant': props.variant,
         'data-component': 'GroupHeadingWrap',
         ...(semanticList ? { 'data-has-trailing-action': action ? '' : undefined } : { role: 'presentation', 'aria-hidden': 'true', ...headingAttrs })
       }, [
         h(semanticList ? props.as || 'h3' : 'span', {
-          id: group.groupHeadingId, ...(semanticList ? headingAttrs : {}), class: ['action-list-group-heading', props.className, attrs.class] }, headingChildren),
-        props.auxiliaryText ? h('div', { class: 'action-list-description' }, props.auxiliaryText) : null,
-        action && semanticList ? h('span', { class: 'action-list-group-heading-action' }, [action]) : null
+          id: group.groupHeadingId, ...(semanticList ? headingAttrs : {}), class: [classes['action-list-group-heading'], props.className, attrs.class] }, headingChildren),
+        props.auxiliaryText ? h('div', { class: [classes['action-list-description']] }, props.auxiliaryText) : null,
+        action && semanticList ? h('span', { class: [classes['action-list-group-heading-action']] }, [action]) : null
       ])
     }
   }

@@ -67,7 +67,7 @@ defineExpose({ element, input: element, focus: (options?: FocusOptions) => eleme
     <textarea
       ref="element"
       v-bind="nativeAttrs()"
-      class="textarea-native"
+      :class="$style['textarea-native']"
       :value="value"
       :disabled="disabled"
       :rows="rows"
@@ -95,15 +95,4 @@ defineExpose({ element, input: element, focus: (options?: FocusOptions) => eleme
   />
   <template v-else-if="typeof characterLimit === 'number' && !characterLimit">{{ characterLimit }}</template>
 </template>
-
-<style scoped>
-/* 浏览器不支持 field-sizing 时才使用自动高度计算；关闭自动高度后恢复调用方显式高度，并保留原生拖拽调整。 */
-.textarea-native { width: 100%; font-family: inherit; font-size: inherit; color: inherit; resize: both; background-color: transparent; border: 0; appearance: none; }
-.textarea-native:focus { outline: 0; }
-.textarea-native[data-resize='none'] { resize: none; }
-.textarea-native[data-resize='both'] { resize: both; }
-.textarea-native[data-resize='horizontal'] { resize: horizontal; }
-.textarea-native[data-resize='vertical'] { resize: vertical; }
-.textarea-native[data-auto-size='true'] { field-sizing: content; }
-.textarea-native:disabled { resize: none; }
-</style>
+<style module src="./Textarea.module.css" />

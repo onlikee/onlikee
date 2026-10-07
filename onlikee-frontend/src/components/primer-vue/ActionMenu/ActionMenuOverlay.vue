@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import classes from './ActionMenu.module.css'
 import { computed, inject, nextTick, onBeforeUnmount, onMounted, provide, shallowRef, useAttrs, watch } from 'vue'
 import { iterateFocusableElements } from '@primer/behaviors/utils'
 import AnchoredOverlay from '../internal/components/AnchoredOverlay.vue'
@@ -6,7 +7,7 @@ import { ActionListContainerContext } from '../ActionList'
 import { dialogContextKey } from '../Dialog/context'
 import { useMenuContext } from './context'
 import type { ActionMenuOverlayProps, MenuCloseGesture } from './types'
-import './ActionMenu.css'
+
 
 defineOptions({ name: 'ActionMenuOverlay', __SLOT__: Symbol('ActionMenu.Overlay'), inheritAttrs: false })
 const props = withDefaults(defineProps<ActionMenuOverlayProps>(), {
@@ -124,7 +125,7 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null) })
   >
     <div
       ref="container"
-      class="action-menu-container"
+      :class="[classes['action-menu-container']]"
       :data-variant="variant"
       :[`data-overflow-${overflow}`]="overflow ? '' : undefined"
       :[`data-max-height-${maxHeight}`]="maxHeight ? '' : undefined"

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import classes from './ActionList.module.css'
 import { computed, onMounted, onUpdated, ref, useAttrs } from 'vue'
 import { useItemContext } from './context'
 import { normalizeReactStyle } from '../internal/style'
@@ -23,8 +24,7 @@ onUpdated(measure)
     :is="truncated ? 'div' : 'span'"
     :id="variant === 'block' ? context?.blockDescriptionId.value : context?.inlineDescriptionId.value"
     ref="element"
-    class="action-list-description"
-    :class="[className, attrs.class, truncated && 'action-list-truncate']"
+    :class="[classes['action-list-description'], className, attrs.class, truncated && [classes['action-list-truncate']]]"
     data-component="ActionList.Description"
     :data-inline="truncated || undefined"
     :title="truncated ? context?.setTruncatedText ? '' : title : undefined"

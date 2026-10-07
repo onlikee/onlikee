@@ -145,7 +145,7 @@ defineExpose({ anchor, element: computed(() => overlay.value?.element ?? null), 
   >
     <div
       v-if="showXIcon"
-      class="anchored-overlay__close-container"
+      :class="[$style['anchored-overlay__close-container']]"
     >
       <Button
         v-bind="closeButtonSpread"
@@ -162,8 +162,4 @@ defineExpose({ anchor, element: computed(() => overlay.value?.element ?? null), 
     <slot />
   </Overlay>
 </template>
-<style scoped>
-.anchored-overlay__close-container { position: relative; }
-.anchored-overlay__close-container :deep(.anchored-overlay__close) { position: absolute; top: var(--base-size-8, 8px); right: var(--base-size-8, 8px); display: none; }
-@media screen and (max-width: calc(768px - 0.02px)) { .anchored-overlay__close-container :deep(.anchored-overlay__close) { display: inline-grid; } }
-</style>
+<style module src="./AnchoredOverlay.module.css"></style>

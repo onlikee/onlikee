@@ -1,4 +1,5 @@
 <script lang="ts">
+import classes from './ActionList.module.css'
 import { defineComponent, h } from 'vue'
 import { AlertIcon } from '@/components/octicons-vue3'
 import Spinner from '../Spinner/Spinner.vue'
@@ -14,9 +15,9 @@ export default defineComponent({
       if ((!props.loading && !props.inactiveText) || (props.itemHasLeadingVisual && props.position === 'trailing') || (!props.itemHasLeadingVisual && props.position === 'leading')) return slots.default?.()
       const visual = props.position === 'leading' ? LeadingVisual : TrailingVisual
       return props.inactiveText
-        ? h('span', { class: 'action-list-inactive-button-wrap', 'data-position': props.position }, [
+        ? h('span', { class: [classes['action-list-inactive-button-wrap']], 'data-position': props.position }, [
           h(Tooltip, { text: props.inactiveText, type: 'description' }, { default: () => h('button', {
-            type: 'button', class: 'action-list-inactive-button-reset', 'aria-labelledby': props.labelId
+            type: 'button', class: [classes['action-list-inactive-button-reset']], 'aria-labelledby': props.labelId
           }, [h(visual, null, { default: () => h(AlertIcon, { 'data-component': 'Octicon', 'data-octicon': undefined, display: 'inline-block', overflow: 'visible', style: { overflow: 'visible', verticalAlign: 'text-bottom' } }) })]) })
         ])
         : h(visual, attrs, { default: () => h(Spinner, { size: 'small' }) })

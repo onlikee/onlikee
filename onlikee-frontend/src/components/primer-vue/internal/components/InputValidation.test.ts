@@ -34,11 +34,11 @@ describe('InputValidation behavior', () => {
 
   test('keeps the unitless source custom properties that drive icon and text metrics', () => {
     const wrapper = validation({ validationStatus: 'error' })
-    const icon = wrapper.get('.input-validation__icon')
+    const icon = wrapper.get('[class*="input-validation__icon_"]')
     expect(icon.attributes('style')).toContain('--inputValidation-iconSize: 16')
     expect(icon.attributes('style')).not.toContain('16px')
     expect(icon.attributes('aria-hidden')).toBe('true')
-    const text = wrapper.get('.input-validation__text')
+    const text = wrapper.get('[class*="input-validation__text_"]')
     expect(text.attributes('id')).toBe('message')
     expect(text.attributes('style')).toContain('--inputValidation-lineHeight: 1.3333333333333333')
   })
@@ -46,9 +46,9 @@ describe('InputValidation behavior', () => {
   test('omits the icon and status attribute without a validation status', () => {
     const wrapper = validation({})
     expect(wrapper.find('svg').exists()).toBe(false)
-    expect(wrapper.find('.input-validation__icon').exists()).toBe(false)
+    expect(wrapper.find('[class*="input-validation__icon_"]').exists()).toBe(false)
     expect(wrapper.attributes('data-validation-status')).toBeUndefined()
-    expect(wrapper.find('.input-validation__text').exists()).toBe(true)
+    expect(wrapper.find('[class*="input-validation__text_"]').exists()).toBe(true)
   })
 
   test('forwards id fallback and extra attributes from consumers', () => {
@@ -59,6 +59,6 @@ describe('InputValidation behavior', () => {
     wrappers.push(wrapper)
     expect(wrapper.attributes('data-component')).toBe('FormControl.Validation')
     expect(wrapper.classes()).toContain('extra')
-    expect(wrapper.get('.input-validation__text').attributes('id')).toBe('')
+    expect(wrapper.get('[class*="input-validation__text_"]').attributes('id')).toBe('')
   })
 })

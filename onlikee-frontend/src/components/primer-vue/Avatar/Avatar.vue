@@ -5,7 +5,7 @@
     :alt="alt"
     :width="typeof size === 'number' ? size : undefined"
     :height="typeof size === 'number' ? size : undefined"
-    class="avatar"
+    :class="[$style['avatar']]"
     data-component="Avatar"
     :data-square="square ? '' : undefined"
     :data-responsive="isResponsive ? '' : undefined"
@@ -14,7 +14,7 @@
   >
   <span
     v-else
-    class="avatar avatar-placeholder"
+    :class="[$style['avatar'], $style['avatar-placeholder'], 'avatar-placeholder']"
     data-component="Avatar"
     :data-square="square ? '' : undefined"
     :data-responsive="isResponsive ? '' : undefined"
@@ -52,57 +52,4 @@ const avatarStyle = computed(() => {
 })
 </script>
 
-<style scoped>
-:where(.avatar) {
-  display: inline-block;
-  width: var(--avatarSize-regular, 20px);
-  height: var(--avatarSize-regular, 20px);
-  overflow: hidden;
-  line-height: 1;
-  vertical-align: middle;
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px var(--avatar-borderColor, #1f232826);
-}
-
-:where(.avatar[data-square]) {
-  border-radius: clamp(4px, calc(var(--avatarSize-regular, 20px) - 24px), var(--borderRadius-medium, 6px));
-}
-
-:where(.avatar-placeholder) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(var(--avatarSize-regular, 20px) * 0.35);
-  font-weight: 600;
-  color: var(--fgColor-default, #1f2328);
-}
-
-@media (width < 768px) {
-  :where(.avatar[data-responsive]) {
-    width: var(--avatarSize-narrow, 20px);
-    height: var(--avatarSize-narrow, 20px);
-  }
-
-  :where(.avatar-placeholder[data-responsive]) {
-    font-size: calc(var(--avatarSize-narrow, 20px) * 0.35);
-  }
-}
-
-@media (min-width: 768px) {
-  :where(.avatar[data-responsive]) {
-    width: var(--avatarSize-regular, 20px);
-    height: var(--avatarSize-regular, 20px);
-  }
-}
-
-@media (min-width: 1400px) {
-  :where(.avatar[data-responsive]) {
-    width: var(--avatarSize-wide, 20px);
-    height: var(--avatarSize-wide, 20px);
-  }
-
-  :where(.avatar-placeholder[data-responsive]) {
-    font-size: calc(var(--avatarSize-wide, 20px) * 0.35);
-  }
-}
-</style>
+<style module src="./Avatar.module.css"></style>

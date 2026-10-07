@@ -2,7 +2,7 @@
   <span
     :style="progressStyle"
     v-bind="$attrs"
-    class="progress-bar__item"
+    :class="$style['progress-bar__item']"
     data-component="ProgressBar.Item"
     role="progressbar"
     :aria-valuenow="ariaValueNow"
@@ -39,35 +39,4 @@ const progressStyle = computed(() => {
   }
 })
 </script>
-
-<style scoped>
-.progress-bar__item {
-  width: var(--progress-width, 0%);
-  background-color: var(--progress-bg, var(--bgColor-success-emphasis, #1f883d));
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .progress-bar__item[data-animated='true'] {
-    mask-image: linear-gradient(75deg, #000 30%, rgb(0, 0, 0, 0.65) 80%);
-    mask-size: 200%;
-    animation: shimmer 1s infinite;
-  }
-}
-
-@keyframes shimmer {
-  from {
-    mask-position: 200%;
-  }
-
-  to {
-    mask-position: 0%;
-  }
-}
-
-@media (forced-colors: active) {
-  .progress-bar__item {
-    background-color: LinkText;
-    forced-color-adjust: none;
-  }
-}
-</style>
+<style module src="./ProgressBarItem.module.css" />

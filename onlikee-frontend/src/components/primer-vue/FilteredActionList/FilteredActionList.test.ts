@@ -226,12 +226,17 @@ describe('FilteredActionList behavior', () => {
     const option = wrapper.get('[role="option"]')
     expect(option.attributes('tabindex')).toBe('-1')
     expect(option.attributes('aria-selected')).toBe('false')
-    expect(option.attributes('class')).toBe('filtered-action-list__item filtered-action-list__item')
+    const itemClasses = option.attributes('class')!.split(/\s+/)
+    expect(itemClasses).toHaveLength(2)
+    expect(itemClasses[0]).toBe(itemClasses[1])
+    expect(itemClasses[0]).toContain('filtered-action-list__item_')
   })
-  it('fullScreenOnNarrow class lands on the TextInput root inside the header (:deep selector contract)', async () => {
+  it('fullScreenOnNarrow marks the header for its narrow-screen styles', async () => {
     const wrapper = render({ items: [], fullScreenOnNarrow: true })
     await settle()
-    expect(wrapper.find('.filtered-action-list__header .filtered-action-list__fullscreen-input').exists()).toBe(true)
+    const header = wrapper.get('[data-component="FilteredActionList.Header"]')
+    expect(header.attributes('data-full-screen-on-narrow')).toBe('true')
+    expect(header.attributes('class')).toMatch(/filtered-action-list__header_/)
   })
   it('body loader dispatches on enum identity, not the name string', async () => {
     const wrapper = render({ items: [{ text: 'Alpha' }], loading: true, loadingType: { name: 'body-spinner', appearsInBody: true } as never })

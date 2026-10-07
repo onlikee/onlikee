@@ -1,0 +1,21 @@
+.form-control__leading-visual {
+  --leadingVisual-size: 16px;
+
+  color: var(--fgColor-default, #1f2328);
+  display: flex;
+  align-items: center;
+
+  &:where([data-control-disabled]) {
+    color: var(--control-fgColor-disabled, #818b98);
+  }
+
+  &:where([data-has-caption]) {
+    --leadingVisual-size: 24px;
+  }
+}
+
+.form-control__leading-visual > * {
+  min-width: var(--leadingVisual-size, 16px);
+  min-height: var(--leadingVisual-size, 16px);
+  fill: currentColor;
+}

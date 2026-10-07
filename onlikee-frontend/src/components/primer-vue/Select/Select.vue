@@ -37,8 +37,7 @@ defineExpose({ element, input: element, focus: (options?: FocusOptions) => eleme
 
 <template>
   <TextInputWrapper
-    class="select-wrapper"
-    :class="[className, $attrs.class]"
+    :class="[$style['select-wrapper'], className, $attrs.class]"
     :block="block"
     :disabled="disabled"
     :size="size"
@@ -47,7 +46,7 @@ defineExpose({ element, input: element, focus: (options?: FocusOptions) => eleme
     <select
       ref="element"
       v-bind="nativeAttrs()"
-      :class="['select-native', disabled && 'select-disabled']"
+      :class="[$style['select-native'], disabled && $style['select-disabled']]"
       :style="normalizeReactStyle($attrs.style)"
       :value="value"
       :disabled="disabled"
@@ -77,69 +76,8 @@ defineExpose({ element, input: element, focus: (options?: FocusOptions) => eleme
       height="16"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
-      class="select-arrow"
+      :class="$style['select-arrow']"
     ><path d="m4.074 9.427 3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.043 9H4.251a.25.25 0 0 0-.177.427ZM4.074 7.47 7.47 4.073a.25.25 0 0 1 .354 0L11.22 7.47a.25.25 0 0 1-.177.426H4.251a.25.25 0 0 1-.177-.426Z" /></svg>
   </TextInputWrapper>
 </template>
-
-<style scoped>
-.select-native {
-  width: 100%;
-  /* stylelint-disable-next-line primer/spacing */
-  margin-top: 1px;
-  /* stylelint-disable-next-line primer/spacing */
-  margin-bottom: 1px;
-  /* stylelint-disable-next-line primer/spacing */
-  margin-left: 1px;
-  font-size: inherit;
-  color: currentColor;
-
-  /* Firefox hacks:
-   * 1. Makes Firefox's native dropdown menu's background match the theme.
-   *    background-color should be 'transparent', but Firefox uses the background-color on
-   *    <select> to determine the background color used for the dropdown menu.
-   * 2. Adds 1px margins to the <select> so the background color doesn't hide the focus outline created with an inset box-shadow.
-   */
-  background-color: inherit;
-  border: 0;
-  border-radius: inherit;
-  outline: none;
-  appearance: none;
-
-  padding-block: 5px;
-  padding-right: 32px !important;
-}
-
-.select-native:disabled { background-color: transparent; }
-
-@media screen and (forced-colors: active) {
-  .select-native:disabled { background-color: -moz-combobox; }
-}
-
-.select-wrapper {
-  position: relative;
-  overflow: hidden;
-}
-
-@media screen and (forced-colors: active) {
-  .select-wrapper svg {
-    /* stylelint-disable-next-line declaration-property-value-no-unknown */
-    fill: 'FieldText';
-  }
-}
-
-@media screen and (forced-colors: active) {
-  .select-disabled svg {
-    /* stylelint-disable-next-line declaration-property-value-no-unknown */
-    fill: 'GrayText';
-  }
-}
-
-.select-arrow {
-  position: absolute;
-  top: 50%;
-  right: var(--base-size-4, 4px);
-  pointer-events: none;
-  transform: translateY(-50%);
-}
-</style>
+<style module src="./Select.module.css" />

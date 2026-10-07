@@ -904,10 +904,6 @@
   flex-direction: column;
   overflow: hidden;
 }
-.filtered-action-list__header {
-  box-shadow: 0 1px 0 var(--borderColor-default, #d1d9e0);
-  z-index: 1;
-}
 .filtered-action-list__scroll {
   display: flex;
   flex-grow: 1;

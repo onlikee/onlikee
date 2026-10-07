@@ -17,7 +17,7 @@ function track<T extends VueWrapper>(wrapper: T): T {
 describe('Token disabled 路径', () => {
   test('span 根渲染 disabled=""，不渲染 aria-disabled，光标标记为非交互', () => {
     const wrapper = track(mount(Token, { props: { text: 'Alpha', disabled: true } }))
-    const root = wrapper.get('.token')
+    const root = wrapper.get('[class*="token_"]')
     expect(root.element.tagName).toBe('SPAN')
     expect(root.attributes('disabled')).toBe('')
     expect(root.attributes('aria-disabled')).toBeUndefined()
@@ -26,14 +26,14 @@ describe('Token disabled 路径', () => {
 
   test('disabled 时 Backspace/Delete 仍触发 remove', async () => {
     const wrapper = track(mount(Token, { props: { text: 'Alpha', disabled: true }, attrs: { onRemove: () => {} } }))
-    await wrapper.get('.token').trigger('keydown', { key: 'Backspace' })
-    await wrapper.get('.token').trigger('keydown', { key: 'Delete' })
+    await wrapper.get('[class*="token_"]').trigger('keydown', { key: 'Backspace' })
+    await wrapper.get('[class*="token_"]').trigger('keydown', { key: 'Delete' })
     expect(wrapper.emitted('remove')).toHaveLength(2)
   })
 
   test('disabled 时移除按钮仍为可用 button 且点击触发 remove', async () => {
     const wrapper = track(mount(Token, { props: { text: 'Alpha', disabled: true }, attrs: { onRemove: () => {} } }))
-    const remove = wrapper.get('.token__remove')
+    const remove = wrapper.get('[class*="token__remove_"]')
     expect(remove.element.tagName).toBe('BUTTON')
     expect(remove.attributes('disabled')).toBeUndefined()
     expect(remove.attributes('type')).toBe('button')
@@ -47,10 +47,10 @@ describe('Token disabled 路径', () => {
 describe('Token 交互形态与文本容器', () => {
   test('可交互且可移除时根为 span，移除按钮为 aria-hidden 的 span（tabindex -1）', () => {
     const wrapper = track(mount(Token, { props: { text: 'Alpha', as: 'button' }, attrs: { onRemove: () => {} } }))
-    const root = wrapper.get('.token')
+    const root = wrapper.get('[class*="token_"]')
     expect(root.element.tagName).toBe('SPAN')
     expect(root.attributes('data-is-remove-btn')).toBe('true')
-    const remove = wrapper.get('.token__remove')
+    const remove = wrapper.get('[class*="token__remove_"]')
     expect(remove.element.tagName).toBe('SPAN')
     expect(remove.attributes('tabindex')).toBe('-1')
     expect(remove.attributes('aria-hidden')).toBe('true')
@@ -60,22 +60,22 @@ describe('Token 交互形态与文本容器', () => {
 
   test('多目标形态下文本容器为 as 标签且不设置 type', () => {
     const wrapper = track(mount(Token, { props: { text: 'Alpha', as: 'button' }, attrs: { onRemove: () => {} } }))
-    const text = wrapper.get('.token__text')
+    const text = wrapper.get('[class*="token__text_"]')
     expect(text.element.tagName).toBe('BUTTON')
     expect(text.attributes('type')).toBeUndefined()
   })
 
   test('非多目标形态文本容器为 span，移除按钮渲染 aria-hidden="false"', () => {
     const wrapper = track(mount(Token, { props: { text: 'Alpha' }, attrs: { onRemove: () => {} } }))
-    expect(wrapper.get('.token').element.tagName).toBe('SPAN')
-    expect(wrapper.get('.token__text').element.tagName).toBe('SPAN')
-    expect(wrapper.get('.token__remove').attributes('aria-hidden')).toBe('false')
-    expect(wrapper.find('.token__remove[tabindex]').exists()).toBe(false)
+    expect(wrapper.get('[class*="token_"]').element.tagName).toBe('SPAN')
+    expect(wrapper.get('[class*="token__text_"]').element.tagName).toBe('SPAN')
+    expect(wrapper.get('[class*="token__remove_"]').attributes('aria-hidden')).toBe('false')
+    expect(wrapper.find('[class*="token__remove_"][tabindex]').exists()).toBe(false)
   })
 
   test('内联 X 图标按 size 输出原生 12/16px 变体', () => {
     const small = track(mount(Token, { props: { text: 'Alpha', size: 'small' }, attrs: { onRemove: () => {} } }))
-    const svg = small.get('.token__remove svg')
+    const svg = small.get('[class*="token__remove_"] svg')
     expect(svg.attributes('viewbox')).toBeUndefined()
     expect(svg.attributes('viewBox')).toBe('0 0 12 12')
     expect(svg.attributes('width')).toBe('12')
@@ -85,30 +85,30 @@ describe('Token 交互形态与文本容器', () => {
     expect(svg.attributes('overflow')).toBe('visible')
     expect(svg.attributes('style')).toContain('vertical-align: text-bottom')
     const large = track(mount(Token, { props: { text: 'Alpha', size: 'large' }, attrs: { onRemove: () => {} } }))
-    const svg16 = large.get('.token__remove svg')
+    const svg16 = large.get('[class*="token__remove_"] svg')
     expect(svg16.attributes('viewBox')).toBe('0 0 16 16')
     expect(svg16.attributes('width')).toBe('16')
-    expect(large.get('.token__remove').attributes('style')).toContain('transform: translate(1px, -1px)')
+    expect(large.get('[class*="token__remove_"]').attributes('style')).toContain('transform: translate(1px, -1px)')
   })
 })
 
 describe('Token 属性泄漏与覆盖', () => {
   test('isSelected 未传时 data-is-selected 属性省略；显式 false/true 渲染字符串', () => {
     const omitted = track(mount(Token, { props: { text: 'Alpha' } }))
-    expect(omitted.get('.token').attributes('data-is-selected')).toBeUndefined()
+    expect(omitted.get('[class*="token_"]').attributes('data-is-selected')).toBeUndefined()
     const falsy = track(mount(Token, { props: { text: 'Alpha', isSelected: false } }))
-    expect(falsy.get('.token').attributes('data-is-selected')).toBe('false')
+    expect(falsy.get('[class*="token_"]').attributes('data-is-selected')).toBe('false')
     const truthy = track(mount(Token, { props: { text: 'Alpha', isSelected: true } }))
-    expect(truthy.get('.token').attributes('data-is-selected')).toBe('true')
+    expect(truthy.get('[class*="token_"]').attributes('data-is-selected')).toBe('true')
   })
 
   test('text 经 TokenBase rest 泄漏为 DOM 属性', () => {
     const str = track(mount(Token, { props: { text: 'Alpha' } }))
-    expect(str.get('.token').attributes('text')).toBe('Alpha')
+    expect(str.get('[class*="token_"]').attributes('text')).toBe('Alpha')
     const num = track(mount(Token, { props: { text: 42 } }))
-    expect(num.get('.token').attributes('text')).toBe('42')
+    expect(num.get('[class*="token_"]').attributes('text')).toBe('42')
     const obj = track(mount(Token, { props: { text: { not: 'a node' } as never } }))
-    expect(obj.get('.token').attributes('text')).toBe('[object Object]')
+    expect(obj.get('[class*="token_"]').attributes('text')).toBe('[object Object]')
   })
 
   test('消费者同名属性覆盖 data-* 计算值', () => {
@@ -116,7 +116,7 @@ describe('Token 属性泄漏与覆盖', () => {
       props: { text: 'Alpha', size: 'small' },
       attrs: { 'data-size': 'large', 'data-is-remove-btn': 'overridden' }
     }))
-    const root = wrapper.get('.token')
+    const root = wrapper.get('[class*="token_"]')
     expect(root.attributes('data-size')).toBe('large')
     expect(root.attributes('data-is-remove-btn')).toBe('overridden')
   })
@@ -124,13 +124,13 @@ describe('Token 属性泄漏与覆盖', () => {
   test('leadingVisual falsy（null/undefined）不渲染容器；large/xlarge 挂自身修饰类', () => {
     const visual = { render: () => null }
     const none = track(mount(Token, { props: { text: 'Alpha', leadingVisual: null } }))
-    expect(none.find('.token__leading').exists()).toBe(false)
+    expect(none.find('[class*="token__leading_"]').exists()).toBe(false)
     const small = track(mount(Token, { props: { text: 'Alpha', size: 'small', leadingVisual: visual } }))
-    expect(small.find('.token__leading').exists()).toBe(false)
+    expect(small.find('[class*="token__leading_"]').exists()).toBe(false)
     const large = track(mount(Token, { props: { text: 'Alpha', size: 'large', leadingVisual: visual } }))
-    const leading = large.get('.token__leading')
-    expect(leading.classes()).toContain('token__leading--large')
+    const leading = large.get('[class*="token__leading_"]')
+    expect(leading.classes().some(name => name.includes('token__leading--large_'))).toBe(true)
     const medium = track(mount(Token, { props: { text: 'Alpha', leadingVisual: visual } }))
-    expect(medium.get('.token__leading').classes()).not.toContain('token__leading--large')
+    expect(medium.get('[class*="token__leading_"]').classes().some(name => name.includes('token__leading--large_'))).toBe(false)
   })
 })

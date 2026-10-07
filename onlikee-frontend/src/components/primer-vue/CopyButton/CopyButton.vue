@@ -1,6 +1,6 @@
 <template>
   <button
-    class="copy-button"
+    :class="$style['copy-button']"
     :data-size="size"
     @click="handleClick"
   >
@@ -48,47 +48,4 @@ function handleClick() {
 }
 </script>
 
-<style scoped>
-.copy-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: none;
-  color: var(--fgColor-muted, #59636e);
-  cursor: pointer;
-  border-radius: 4px;
-  background-color: transparent;
-}
-
-.copy-button[data-size='small'] {
-  width: 28px;
-  height: 28px;
-}
-
-.copy-button[data-size='medium'] {
-  width: 32px;
-  height: 32px;
-}
-
-.copy-button[data-size='large'] {
-  width: 40px;
-  height: 40px;
-}
-
-.copy-button svg[data-size='small'],
-.copy-button svg[data-size='medium'] {
-  width: 16px;
-  height: 16px;
-}
-
-.copy-button svg[data-size='large'] {
-  width: 20px;
-  height: 20px;
-}
-
-.copy-button:hover {
-  color: var(--fgColor-default, #1f2328);
-}
-</style>
+<style module src="./CopyButton.module.css"></style>

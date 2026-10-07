@@ -6,7 +6,7 @@
   >
 </template>
 <script setup lang="ts">
-import { inject, nextTick, onMounted, onUpdated, ref, ssrContextKey, useAttrs } from 'vue'
+import { inject, nextTick, onMounted, onUpdated, ref, ssrContextKey, useAttrs, useCssModule } from 'vue'
 import { useCheckboxGroupContext } from '../CheckboxGroup/context'
 import type { CheckboxEmits } from './types'
 import { normalizeReactStyle } from '../internal/style'
@@ -23,6 +23,7 @@ const props = withDefaults(defineProps<{
 }>(), { checked: undefined, defaultChecked: undefined, indeterminate: false, disabled: undefined, required: undefined, validationStatus: undefined, value: undefined, className: undefined })
 const emit = defineEmits<CheckboxEmits>()
 const attrs = useAttrs()
+const classes = useCssModule()
 const serverRendering = inject(ssrContextKey, null) !== null
 const input = ref<HTMLInputElement | null>(null)
 const group = useCheckboxGroupContext()
@@ -38,7 +39,7 @@ function getInputAttrs() {
     ...(serverRendering ? {} : { 'aria-checked': props.indeterminate ? 'mixed' as const : props.checked ? 'true' as const : 'false' as const }),
     value: props.value, name: props.value, ...attrs,
     style: normalizeReactStyle(attrs.style),
-    class: [attrs.class, props.className, 'checkbox-input'],
+    class: [attrs.class, props.className, classes['checkbox-input']],
     'data-component': attrs['data-component'] ?? 'Checkbox'
   }
 }
@@ -62,114 +63,4 @@ function onChange(event: Event) {
 }
 defineExpose({ input, element: input, focus: (options?: FocusOptions) => input.value?.focus(options), blur: () => input.value?.blur() })
 </script>
-<style scoped>
-.checkbox-input { position: relative; display: grid; width: var(--base-size-16, 16px); height: var(--base-size-16, 16px); margin: 0; margin-top: var(--base-size-2, 2px); cursor: pointer; background-color: var(--bgColor-default, #ffffff); border: var(--borderWidth-thin, 1px) solid var(--control-borderColor-emphasis, #818b98); appearance: none; place-content: center; }
-.checkbox-input:disabled { background-color: var(--control-bgColor-disabled, #eff2f5); border-color: var(--control-borderColor-disabled, #818b981a); }
-.checkbox-input {
-  border-radius: var(--borderRadius-small, 3px);
-
-  /* checked -> unchecked - add 120ms delay to fully see animation-out */
-  transition:
-    background-color,
-    border-color 80ms cubic-bezier(0.33, 1, 0.68, 1);
-
-  &::before {
-    width: var(--base-size-16, 16px);
-    height: var(--base-size-16, 16px);
-    visibility: hidden;
-    content: '';
-    /* stylelint-disable-next-line primer/colors */
-    background-color: var(--fgColor-onEmphasis, #ffffff);
-    transition: visibility 0s linear 230ms;
-    clip-path: inset(var(--base-size-16, 16px) 0 0 0);
-    mask-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOSIgdmlld0JveD0iMCAwIDEyIDkiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTEuNzgwMyAwLjIxOTYyNUMxMS45MjEgMC4zNjA0MjcgMTIgMC41NTEzMDUgMTIgMC43NTAzMTNDMTIgMC45NDkzMjEgMTEuOTIxIDEuMTQwMTkgMTEuNzgwMyAxLjI4MUw0LjUxODYgOC41NDA0MkM0LjM3Nzc1IDguNjgxIDQuMTg2ODIgOC43NiAzLjk4Nzc0IDguNzZDMy43ODg2NyA4Ljc2IDMuNTk3NzMgOC42ODEgMy40NTY4OSA4LjU0MDQyTDAuMjAxNjIyIDUuMjg2MkMwLjA2ODkyNzcgNS4xNDM4MyAtMC4wMDMzMDkwNSA0Ljk1NTU1IDAuMDAwMTE2NDkzIDQuNzYwOThDMC4wMDM1NTIwNSA0LjU2NjQzIDAuMDgyMzg5NCA0LjM4MDgxIDAuMjIwMDMyIDQuMjQzMjFDMC4zNTc2NjUgNC4xMDU2MiAwLjU0MzM1NSA0LjAyNjgxIDAuNzM3OTcgNC4wMjMzOEMwLjkzMjU4NCA0LjAxOTk0IDEuMTIwOTMgNC4wOTIxNyAxLjI2MzM0IDQuMjI0ODJMMy45ODc3NCA2Ljk0ODM1TDEwLjcxODYgMC4yMTk2MjVDMTAuODU5NSAwLjA3ODk5MjMgMTEuMDUwNCAwIDExLjI0OTUgMEMxMS40NDg1IDAgMTEuNjM5NSAwLjA3ODk5MjMgMTEuNzgwMyAwLjIxOTYyNVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=');
-    mask-size: 75%;
-    mask-repeat: no-repeat;
-    mask-position: center;
-    animation: checkmarkOut 80ms cubic-bezier(0.65, 0, 0.35, 1) forwards;
-  }
-
-  &:checked,
-  &:indeterminate {
-    background: var(--control-checked-bgColor-rest, #0969da);
-
-    /* using bgColor here to avoid a border change in dark high contrast */
-    /* stylelint-disable-next-line primer/colors */
-    border-color: var(--control-checked-bgColor-rest, #0969da);
-
-    /* Windows High Contrast mode */
-    @media (forced-colors: active) {
-      background-color: canvastext;
-      border-color: canvastext;
-    }
-  }
-
-  &:checked::before,
-  &:indeterminate::before {
-    animation: checkmarkIn 80ms cubic-bezier(0.65, 0, 0.35, 1) forwards 80ms;
-  }
-
-  &:checked:disabled,
-  &:indeterminate:disabled {
-    background-color: var(--control-checked-bgColor-disabled, #818b98);
-    border-color: var(--control-checked-borderColor-disabled, #818b98);
-    opacity: 1;
-  }
-
-  &:checked:disabled::before,
-  &:indeterminate:disabled::before {
-    /* stylelint-disable-next-line primer/colors */
-    background-color: var(--control-checked-fgColor-disabled, #ffffff);
-  }
-
-  &:disabled {
-    cursor: not-allowed;
-  }
-
-  &:checked {
-    transition:
-      background-color,
-      border-color 80ms cubic-bezier(0.32, 0, 0.67, 0) 0ms;
-
-    &::before {
-      visibility: visible;
-      transition: visibility 0s linear 0s;
-    }
-  }
-
-  &:indeterminate {
-    background: var(--control-checked-bgColor-rest, #0969da);
-
-    &::before {
-      mask-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAiIGhlaWdodD0iMiIgdmlld0JveD0iMCAwIDEwIDIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMCAxQzAgMC40NDc3MTUgMC40NDc3MTUgMCAxIDBIOUM5LjU1MjI5IDAgMTAgMC40NDc3MTUgMTAgMUMxMCAxLjU1MjI4IDkuNTUyMjkgMiA5IDJIMUMwLjQ0NzcxNSAyIDAgMS41NTIyOCAwIDFaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K');
-      visibility: visible;
-    }
-  }
-
-  &:focus-visible:not(:disabled) {
-    outline: 2px solid var(--focus-outline-color, var(--focus-outlineColor, #0969da));
-    outline-offset: 2px;
-    box-shadow: none;
-  }
-}
-
-@keyframes checkmarkIn {
-  from {
-    clip-path: inset(var(--base-size-16, 16px) 0 0 0);
-  }
-
-  to {
-    clip-path: inset(0 0 0 0);
-  }
-}
-
-@keyframes checkmarkOut {
-  from {
-    clip-path: inset(0 0 0 0);
-  }
-
-  to {
-    clip-path: inset(var(--base-size-16, 16px) 0 0 0);
-  }
-}
-</style>
+<style module src="./Checkbox.module.css"></style>

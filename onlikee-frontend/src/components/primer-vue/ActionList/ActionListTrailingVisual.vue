@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import classes from './ActionList.module.css'
 import { useAttrs } from 'vue'
 import { useItemContext } from './context'
 import { normalizeReactStyle } from '../internal/style'
@@ -9,8 +10,7 @@ const context = useItemContext(), attrs = useAttrs()
 <template>
   <span
     :id="context?.trailingVisualId.value"
-    class="action-list-visual-wrap action-list-trailing-visual"
-    :class="[className, attrs.class]"
+    :class="[classes['action-list-visual-wrap'], classes['action-list-trailing-visual'], className, attrs.class]"
     data-component="ActionList.TrailingVisual"
     v-bind="attrs"
     :style="normalizeReactStyle(attrs.style)"

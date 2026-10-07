@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import classes from './ActionBar.module.css'
 import { computed, onBeforeUnmount, onMounted, provide, shallowRef, useAttrs, watch } from 'vue'
 import { KebabHorizontalIcon } from '@/components/octicons-vue3'
 import Button from '../SelectPanel/SelectPanelButton.vue'
@@ -6,7 +7,7 @@ import { FocusKeys, useFocusZone } from '../composables/useFocusZone'
 import MenuOverlay from './ActionBarMenuOverlay.vue'
 import { actionBarKey, type RegisteredItem } from './context'
 import type { ActionBarProps } from './types'
-import './ActionBar.css'
+
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<ActionBarProps>(), { size: 'medium', flush: false, gap: 'condensed' })
@@ -73,7 +74,7 @@ onMounted(() => {
   }
   sortRegistry()
   orderObserver = new MutationObserver(sortRegistry)
-  orderObserver.observe(toolbar.value!.querySelector('.action-bar-overflow-container')!, { childList: true, subtree: true })
+  orderObserver.observe(toolbar.value!.querySelector(`.${classes['action-bar-overflow-container']}`)!, { childList: true, subtree: true })
 })
 onBeforeUnmount(() => { observer?.disconnect(); orderObserver?.disconnect(); subscribers.clear() })
 </script>
@@ -81,27 +82,27 @@ onBeforeUnmount(() => { observer?.disconnect(); orderObserver?.disconnect(); sub
 <template>
   <div
     v-bind="attrs"
-    :class="['action-bar', className]"
+    :class="[classes['action-bar'], className]"
     data-component="ActionBar"
     :data-flush="flush"
   >
     <div
       ref="toolbar"
       role="toolbar"
-      class="action-bar-list"
+      :class="[classes['action-bar-list']]"
       :aria-label="a11y.ariaLabel"
       :aria-labelledby="a11y.ariaLabelledby"
       :data-gap="gap"
       :data-size="size"
       :data-has-overflow="overflowItems.length > 0"
     >
-      <div class="action-bar-overflow-container">
-        <div class="action-bar-overflow-spacer" />
+      <div :class="[classes['action-bar-overflow-container']]">
+        <div :class="[classes['action-bar-overflow-spacer']]" />
         <slot />
       </div>
       <Button
         ref="moreButton"
-        class="action-bar-more"
+        :class="[classes['action-bar-more']]"
         variant="invisible"
         aria-label="More items"
         :icon="KebabHorizontalIcon"

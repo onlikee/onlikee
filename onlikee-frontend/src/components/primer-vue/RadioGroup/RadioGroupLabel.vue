@@ -2,8 +2,8 @@
   <span
     :class="[
       className,
-      'radio-group__label',
-      { 'radio-group__visually-hidden': visuallyHidden }
+      classes['radio-group__label'],
+      { [classes['radio-group__visually-hidden']]: visuallyHidden }
     ]"
     :title="context?.required.value ? 'required field' : undefined"
     :data-label-disabled="context?.disabled.value ? '' : undefined"
@@ -14,7 +14,7 @@
       direction="horizontal"
       gap="none"
     >
-      <div class="radio-group__label-children"><slot /></div>
+      <div :class="[classes['radio-group__label-children']]"><slot /></div>
       <span>*</span>
     </Stack>
     <slot v-else />
@@ -22,10 +22,11 @@
 </template>
 
 <script setup lang="ts">
+import classes from './RadioGroup.module.css'
 import { Stack } from '../Stack'
 import { useChoiceGroupContext } from '../internal/components/CheckboxOrRadioGroup/context'
 import type { RadioGroupLabelProps } from './types'
-import './RadioGroup.css'
+
 defineOptions({ name: 'RadioGroupLabel', __SLOT__: Symbol('RadioGroupLabel') })
 withDefaults(defineProps<RadioGroupLabelProps>(), { className: undefined, visuallyHidden: false })
 const context = useChoiceGroupContext()

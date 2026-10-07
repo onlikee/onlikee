@@ -448,7 +448,7 @@ onMounted(async () => {
   flex-shrink: 0;
 }
 
-.profile-icon-input :deep(.TextInput-wrapper) {
+.profile-icon-input :deep([data-component='TextInput']) {
   box-sizing: border-box;
   flex: 1;
 }

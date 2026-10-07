@@ -21,12 +21,12 @@ const chordKeys = computed(() => splitChord(props.keys))
   <Text
     :data-kbd-chord="true"
     :class="[
-      'keybinding-chord',
+      $style['keybinding-chord'],
       {
-        'keybinding-chord--normal': variant === 'normal',
-        'keybinding-chord--on-emphasis': variant === 'onEmphasis',
-        'keybinding-chord--on-primary': variant === 'onPrimary',
-        'keybinding-chord--small': size === 'small',
+        [$style['keybinding-chord--normal']]: variant === 'normal',
+        [$style['keybinding-chord--on-emphasis']]: variant === 'onEmphasis',
+        [$style['keybinding-chord--on-primary']]: variant === 'onPrimary',
+        [$style['keybinding-chord--small']]: size === 'small',
       },
     ]"
   >
@@ -50,4 +50,4 @@ const chordKeys = computed(() => splitChord(props.keys))
     </template>
   </Text>
 </template>
-<style src="./Chord.css" />
+<style module src="./Chord.module.css" />

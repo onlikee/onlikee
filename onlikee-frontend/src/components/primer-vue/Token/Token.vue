@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, getCurrentInstance, h, ref, type PropType } from 'vue'
+import { computed, defineComponent, getCurrentInstance, h, ref, type PropType, useCssModule } from 'vue'
 import { renderNode, type NodeProp } from '../internal/renderNode'
 import { normalizeReactStyle } from '../internal/style'
 import VisuallyHidden from '../internal/components/VisuallyHidden.vue'
@@ -29,6 +29,7 @@ export default defineComponent({
   },
   emits: { remove: () => true, keydown: (_event: KeyboardEvent) => true },
   setup(props, { attrs, slots, emit, expose }) {
+    const classes = useCssModule()
     const instance = getCurrentInstance()!
     const base = ref<{ element: HTMLElement | null } | null>(null)
     expose({
@@ -50,7 +51,7 @@ export default defineComponent({
         ref: base,
         ...(removable ? { onRemove: () => emit('remove') } : {}),
         id: props.id?.toString(),
-        className: ['token', props.className, _cls],
+        className: [classes['token'], props.className, _cls],
         text: props.text,
         size: props.size,
         disabled: props.disabled,
@@ -64,7 +65,7 @@ export default defineComponent({
         default: () => [
           (props.leadingVisual || slots.leadingVisual) && props.size !== 'small'
             ? h('div', {
-              class: ['token__leading', props.size && ['large', 'xlarge'].includes(props.size) ? 'token__leading--large' : '']
+              class: [classes['token__leading'], props.size && ['large', 'xlarge'].includes(props.size) ? [classes['token__leading--large']] : '']
             }, [props.leadingVisual ? renderNode(props.leadingVisual) : slots.leadingVisual?.()])
             : null,
           h(TokenTextContainer, { ...(multipleTargets ? interactiveTokenProps : {}) }, {
@@ -87,11 +88,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-.token { max-width: 100%; color: var(--fgColor-muted, #59636e); background-color: var(--bgColor-neutral-muted, #818b981f); border-color: var(--borderColor-muted, #d1d9e0b3); border-style: solid; }
-.token:where([data-interactive='true']):hover { color: var(--fgColor-default, #1f2328); background-color: var(--bgColor-neutral-muted, #818b981f); box-shadow: var(--shadow-resting-medium, 0 1px 1px 0 #25292e1a, 0 3px 6px 0 #25292e1f); }
-.token:where([data-is-selected='true']) { color: var(--fgColor-default, #1f2328); border-style: solid; border-color: var(--borderColor-emphasis, #818b98); }
-.token[data-is-remove-btn='true'] { padding-right: 0; }
-.token__leading { margin-right: var(--base-size-4, 4px); line-height: 0; flex-shrink: 0; }
-.token__leading--large { margin-right: var(--base-size-6, 6px); }
-</style>
+<style module src="./Token.module.css"></style>

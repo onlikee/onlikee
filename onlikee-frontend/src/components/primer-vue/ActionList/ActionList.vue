@@ -1,4 +1,5 @@
 <script lang="ts">
+import classes from './ActionList.module.css'
 import { computed, defineComponent, h, onMounted, onUpdated, ref, useId, type Component, type PropType } from 'vue'
 import { provideContext, useContainerContext, exposeElement } from './context'
 import type { ActionListSelectionVariant, ActionListVariant } from './types'
@@ -7,7 +8,7 @@ import { useSlots } from '../composables/useSlots'
 import { useFocusZone, FocusKeys } from '../composables/useFocusZone'
 import { useFeatureFlag } from '../FeatureFlags/context'
 import { normalizeReactStyle } from '../internal/style'
-import './ActionList.css'
+
 
 export default defineComponent({
   name: 'ActionList', inheritAttrs: false,
@@ -54,7 +55,7 @@ export default defineComponent({
         ref: setElement, 'data-component': 'ActionList', 'data-dividers': props.showDividers,
         'data-variant': props.variant,
         'data-item-gap': itemGapFlag.value && !props.disableItemGap && container.container === 'NavList' ? '' : undefined,
-        ...attrs, class: ['action-list', props.className, attrs.class], style: normalizeReactStyle(attrs.style)
+        ...attrs, class: [classes['action-list'], props.className, attrs.class], style: normalizeReactStyle(attrs.style)
       }, typeof props.as === 'string' ? rest : { default: () => rest })]
     }
   }

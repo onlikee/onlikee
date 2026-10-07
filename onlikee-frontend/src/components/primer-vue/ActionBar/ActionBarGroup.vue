@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import classes from './ActionBar.module.css'
 import { provide } from 'vue'
 import { actionBarGroupKey, useActionBarItem } from './context'
 
@@ -10,7 +11,7 @@ defineExpose({ element })
 <template>
   <div
     :ref="setElement"
-    class="action-bar-group"
+    :class="[classes['action-bar-group']]"
     data-component="ActionBar.Group"
     :data-overflowing="dataOverflowing"
   >

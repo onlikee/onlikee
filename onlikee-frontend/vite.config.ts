@@ -8,6 +8,11 @@ export default defineConfig({
     vue(), 
     tailwindcss(), 
   ],
+  css: {
+    modules: {
+      localsConvention: 'camelCase',
+    },
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

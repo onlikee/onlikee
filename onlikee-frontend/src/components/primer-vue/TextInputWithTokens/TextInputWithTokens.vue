@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, useId, watch, type Component, type PropType } from 'vue'
+import { computed, defineComponent, h, nextTick, onBeforeUnmount, onMounted, ref, useId, watch, type Component, type PropType , useCssModule} from 'vue'
 import { FocusKeys, focusZone } from '@primer/behaviors'
 import { isFocusable } from '@primer/behaviors/utils'
 import TextInputWrapper from '../internal/components/TextInputWrapper.vue'
@@ -35,6 +35,7 @@ export default defineComponent({
     compositionstart: (_event: CompositionEvent) => true, compositionend: (_event: CompositionEvent) => true
   },
   setup(props, { attrs, slots, emit, expose }) {
+    const styles = useCssModule()
     const input = ref<HTMLInputElement | null>(null)
     const container = ref<HTMLElement | null>(null)
     const value = ref(String(props.value ?? props.defaultValue ?? ''))
@@ -132,7 +133,7 @@ export default defineComponent({
         size: inputSize, variant: props.variant, validationStatus: props.validationStatus,
         width: props.width, minWidth: props.minWidth, maxWidth: props.maxWidth,
         hasLeadingVisual: !!(leading || leadingLoading), hasTrailingVisual: !!(trailing || trailingLoading),
-        class: ['tokens-input', props.className, attrs.class], style: normalizeReactStyle([{ maxHeight: props.maxHeight || undefined }, attrs.style]),
+        class: [styles['tokens-input'], props.className, attrs.class], style: normalizeReactStyle([{ maxHeight: props.maxHeight || undefined }, attrs.style]),
         'data-token-wrapping': props.preventTokenWrapping || !!props.maxHeight || undefined,
         'data-component': 'TextInputWithTokens', onClick: () => input.value?.focus()
       }, { default: () => [
@@ -141,11 +142,11 @@ export default defineComponent({
           position: 'leading', hasVisual: !!leading, hasLoading: typeof props.loading === 'boolean', showLoading: !!leadingLoading,
           'data-component': 'TextInputWithTokens.LeadingVisual'
         }, { default: () => leading }),
-        h('div', { ref: container, class: 'tokens-input__container', 'data-prevent-token-wrapping': props.preventTokenWrapping }, [
-          h('div', { class: 'tokens-input__input-wrapper' }, [
+        h('div', { ref: container, class: styles['tokens-input__container'], 'data-prevent-token-wrapping': props.preventTokenWrapping }, [
+          h('div', { class: styles['tokens-input__input-wrapper'] }, [
             h('input', {
               ...allAttrs, ref: input, type: attrs.type ?? 'text', value: value.value,
-              disabled: disabled.value, class: 'tokens-input__input',
+              disabled: disabled.value, class: styles['tokens-input__input'],
               'aria-invalid': Object.prototype.hasOwnProperty.call(allAttrs, 'aria-invalid') ? allAttrs['aria-invalid'] : (props.validationStatus === 'error' ? 'true' : 'false'),
               'aria-describedby': [forwarded.value['aria-describedby'], descriptionVisible ? descriptionId : undefined].filter(Boolean).join(' ') || undefined,
               'data-component': 'data-component' in allAttrs ? allAttrs['data-component'] : 'TextInputWithTokens.Input',
@@ -165,7 +166,7 @@ export default defineComponent({
                 }
               }, onKeyup: (event: KeyboardEvent) => emit('keyup', event)
             }),
-            descriptionVisible ? h('span', { id: descriptionId, class: 'sr-only' }, description.value) : null
+            descriptionVisible ? h('span', { id: descriptionId, class: styles['sr-only'] }, description.value) : null
           ]),
           ...visibleTokens.value.map(({ id, ...tokenRest }, index) => h(props.tokenComponent, {
             key: id, disabled: disabled.value, size: props.size,
@@ -178,7 +179,7 @@ export default defineComponent({
             onClick: (event: MouseEvent) => event.stopPropagation(), onRemove: () => remove(id),
             ...tokenRest
           })),
-          truncated.value && props.tokens.length > visibleTokens.value.length ? h('span', { class: ['tokens-input__overflow', `tokens-input__overflow--${props.size}`], 'data-component': 'TextInputWithTokens.OverflowCount' }, `+${props.tokens.length - visibleTokens.value.length}`) : null
+          truncated.value && props.tokens.length > visibleTokens.value.length ? h('span', { class: styles[`tokens-input__overflow--${props.size}`], 'data-component': 'TextInputWithTokens.OverflowCount' }, `+${props.tokens.length - visibleTokens.value.length}`) : null
         ]),
         h(TextInputVisual, {
           position: 'trailing', hasVisual: !!trailing, hasLoading: typeof props.loading === 'boolean', showLoading: !!trailingLoading,
@@ -189,19 +190,4 @@ export default defineComponent({
   }
 })
 </script>
-
-<style scoped>
-.tokens-input { padding-top: var(--base-size-6, 6px); padding-bottom: var(--base-size-6, 6px); padding-left: var(--base-size-12, 12px); }
-.tokens-input[data-token-wrapping='true'] { overflow: auto; }
-.tokens-input__container { display: flex; margin-bottom: calc(var(--base-size-4, 4px) * -1); margin-left: calc(var(--base-size-4, 4px) * -1); align-items: center; flex-wrap: wrap; flex-grow: 1; }
-.tokens-input__container[data-prevent-token-wrapping='true'] { flex-wrap: nowrap; }
-.tokens-input__container > :deep(*) { margin-bottom: var(--base-size-4, 4px); margin-left: var(--base-size-4, 4px); flex-shrink: 0; }
-.tokens-input__input-wrapper { order: 1; flex-grow: 1; }
-.tokens-input__input { width: 100%; height: 100%; font-family: inherit; font-size: inherit; color: inherit; background-color: transparent; border: 0; appearance: none; }
-.tokens-input__input:focus { outline: 0; }
-.tokens-input__overflow--small { color: var(--fgColor-muted, #59636e); font-size: var(--text-body-size-small, 12px); }
-.tokens-input__overflow--medium { color: var(--fgColor-muted, #59636e); font-size: var(--text-body-size-medium, 14px); }
-.tokens-input__overflow--large { color: var(--fgColor-muted, #59636e); font-size: var(--text-body-size-medium, 14px); }
-.tokens-input__overflow--xlarge { color: var(--fgColor-muted, #59636e); font-size: var(--text-body-size-large, 16px); }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
-</style>
+<style module src="./TextInputWithTokens.module.css" />

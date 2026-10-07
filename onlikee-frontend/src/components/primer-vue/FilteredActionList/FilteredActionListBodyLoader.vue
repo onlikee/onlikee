@@ -11,7 +11,7 @@ const isBodySkeleton = computed(() => toRaw(props.loadingType) === FilteredActio
 <template>
   <div
     v-if="isBodySpinner"
-    class="filtered-action-list__loader"
+    :class="$style['filtered-action-list__loader']"
     data-component="FilteredActionList.Spinner"
   >
     <Spinner
@@ -20,11 +20,11 @@ const isBodySkeleton = computed(() => toRaw(props.loadingType) === FilteredActio
   </div>
   <div
     v-else-if="isBodySkeleton"
-    class="filtered-action-list__skeleton"
+    :class="$style['filtered-action-list__skeleton']"
     data-component="FilteredActionList.Skeleton"
   >
     <div
-      class="filtered-action-list__stack"
+      :class="$style['filtered-action-list__stack']"
       data-component="Stack"
       data-direction="vertical"
       data-justify="center"
@@ -34,7 +34,7 @@ const isBodySkeleton = computed(() => toRaw(props.loadingType) === FilteredActio
       <div
         v-for="row in rows"
         :key="row"
-        class="filtered-action-list__stack filtered-action-list__skeleton-row"
+        :class="[$style['filtered-action-list__stack'],$style['filtered-action-list__skeleton-row']]"
         data-component="Stack"
         data-direction="horizontal"
         data-gap="condensed"
@@ -42,12 +42,12 @@ const isBodySkeleton = computed(() => toRaw(props.loadingType) === FilteredActio
         data-justify="start"
       >
         <div
-          class="filtered-action-list__skeleton-box"
+          :class="$style['filtered-action-list__skeleton-box']"
           data-component="SkeletonBox"
           style="width: 16px; height: 16px"
         />
         <div
-          class="filtered-action-list__skeleton-box filtered-action-list__skeleton-bar"
+          :class="[$style['filtered-action-list__skeleton-box'],$style['filtered-action-list__skeleton-bar']]"
           data-component="SkeletonBox"
           style="height: 10px"
         />
@@ -55,4 +55,4 @@ const isBodySkeleton = computed(() => toRaw(props.loadingType) === FilteredActio
     </div>
   </div>
 </template>
-<style src="./FilteredActionListBodyLoader.css" />
+<style module src="./FilteredActionListBodyLoader.module.css" />

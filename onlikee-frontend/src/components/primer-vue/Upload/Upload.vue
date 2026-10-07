@@ -1,7 +1,8 @@
 <template>
-  <div class="upload">
+  <div :class="[$style['upload']]">
     <button
-      class="upload-drop"
+      :class="[$style['upload-drop']]"
+      data-component="Upload.Drop"
       type="button"
       :style="{ width, height }"
       :data-dragging="dragging"
@@ -13,7 +14,7 @@
     >
       <slot>
         <svg
-          class="upload-icon"
+          :class="[$style['upload-icon']]"
           aria-hidden="true"
           viewBox="0 0 16 16"
           fill="currentColor"
@@ -23,14 +24,14 @@
         </svg>
         <span
           v-if="text"
-          class="upload-text"
+          :class="[$style['upload-text']]"
         >
           {{ text }}
         </span>
       </slot>
       <span
         v-if="hint"
-        class="upload-hint"
+        :class="[$style['upload-hint']]"
       >
         {{ hint }}
       </span>
@@ -46,14 +47,14 @@
 
     <div
       v-if="selectedFiles.length"
-      class="upload-file"
+      :class="[$style['upload-file']]"
     >
-      <div class="upload-file-meta">
-        <span class="upload-file-name">{{ selectedFileLabel }}</span>
-        <span class="upload-file-size">{{ selectedFileSizeLabel }}</span>
+      <div :class="[$style['upload-file-meta']]">
+        <span :class="[$style['upload-file-name']]">{{ selectedFileLabel }}</span>
+        <span :class="[$style['upload-file-size']]">{{ selectedFileSizeLabel }}</span>
       </div>
       <button
-        class="upload-file-remove"
+        :class="[$style['upload-file-remove']]"
         type="button"
         @click="clearFiles"
       >
@@ -191,117 +192,4 @@ function formatFileSize(size: number): string {
 }
 </script>
 
-<style scoped>
-.upload {
-	display: block;
-}
-
-.upload-drop {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-  width: 100%;
-	gap: 8px;
-	padding: 1.5rem;
-	border: 2px dashed var(--borderColor-default, #d1d9e0);
-	border-radius: 6px;
-	background: var(--bgColor-muted, #f6f8fa);
-	color: var(--fgColor-default, #1f2328);
-	font: inherit;
-	cursor: pointer;
-	transition: border-color 0.2s, background 0.2s;
-}
-
-.upload-drop:hover,
-.upload-drop[data-dragging='true'] {
-	border-color: var(--borderColor-accent-emphasis, #0969da);
-	background: color-mix(in srgb, var(--bgColor-accent-emphasis, #0969da) 6%, var(--bgColor-muted, #f6f8fa));
-}
-
-.upload-drop:focus-visible {
-	outline: 2px solid var(--focus-outlineColor, #0969da);
-	outline-offset: -3px;
-}
-
-.upload-icon {
-	width: 24px;
-	height: 24px;
-	color: var(--fgColor-muted, #59636e);
-}
-
-.upload-text {
-	margin: 0;
-	font-size: 14px;
-	color: var(--fgColor-default, #1f2328);
-}
-
-.upload-hint {
-	margin: 0;
-	font-size: 0.85rem;
-	color: var(--fgColor-muted, #59636e);
-}
-
-.upload-file {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	margin-top: 12px;
-	padding: 6px 6px 6px 14px;
-	border: 1px solid var(--borderColor-default, #d1d9e0);
-	border-radius: 6px;
-	background: var(--bgColor-muted, #f6f8fa);
-}
-
-.upload-file-meta {
-	display: grid;
-	flex: 1 1 0%;
-	gap: 2px;
-	min-width: 0;
-}
-
-.upload-file-name {
-	font-size: 0.8rem;
-	color: var(--fgColor-default, #1f2328);
-}
-
-.upload-file-size {
-	font-size: 0.8rem;
-	color: var(--fgColor-muted, #59636e);
-}
-
-.upload-file-remove {
-	margin-left: auto;
-	display: grid;
-	place-items: center;
-	width: 32px;
-	height: 32px;
-	appearance: none;
-	border: none;
-	border-radius: 6px;
-	background: none;
-	cursor: pointer;
-	color: var(--fgColor-muted, #59636e);
-}
-
-.upload-file-remove:hover {
-	background: var(--control-transparent-bgColor-hover, #818b981a);
-	color: var(--fgColor-danger, #d1242f);
-}
-
-.upload-file-remove:active {
-	background: var(--control-transparent-bgColor-active, #818b9826);
-}
-
-@media (max-width: 768px) {
-	.upload-drop {
-		padding: 2rem 1.25rem;
-	}
-
-	.upload-file-name {
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-}
-</style>
+<style module src="./Upload.module.css"></style>

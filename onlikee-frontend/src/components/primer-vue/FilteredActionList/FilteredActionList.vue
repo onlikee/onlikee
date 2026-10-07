@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, getCurrentInstance, h, isVNode, nextTick, onBeforeUnmount, shallowRef, useAttrs, useId, watch, type Component, type VNodeChild } from 'vue'
+import { computed, getCurrentInstance, h, isVNode, nextTick, onBeforeUnmount, shallowRef, useAttrs, useId, watch, type Component, type VNodeChild , useCssModule} from 'vue'
 import { scrollIntoView, FocusKeys } from '@primer/behaviors'
 import { useVirtualizer } from '@tanstack/vue-virtual'
 import { useFocusZone } from '../composables/useFocusZone'
@@ -14,6 +14,7 @@ import FilteredActionListInput from './FilteredActionListInput.vue'
 import BodyLoader from './FilteredActionListBodyLoader.vue'
 import { FilteredActionListLoadingTypes, type FilteredActionListProps, type ItemInput, type Visual } from './types'
 defineOptions({ name: 'FilteredActionList', inheritAttrs: false })
+const styles = useCssModule()
 const props = withDefaults(defineProps<FilteredActionListProps>(), {
   loading: false, loadingType: () => FilteredActionListLoadingTypes.bodySpinner, filterValue: undefined,
   variant: 'inset', focusOutBehavior: 'wrap', _PrivateFocusManagement: 'active-descendant',
@@ -197,7 +198,7 @@ function renderItem(item: ItemInput, index: number, start?: number): VNodeChild 
     { position: 'absolute', left: 0, right: 0, top: 0, transform: `translateY(${start}px)` })
   const { key: _key, ...itemProps } = item
   const mapped = {
-    className: ['filtered-action-list__item', 'className' in item ? item.className : undefined].filter(Boolean).join(' ') || undefined,
+    className: [styles['filtered-action-list__item'], 'className' in item ? item.className : undefined].filter(Boolean).join(' ') || undefined,
     'data-input-focused': focused.value ? '' : undefined,
     'data-first-child': index === 0 ? '' : undefined,
     ...(start !== undefined ? { 'data-index': index, style } : {}),
@@ -230,7 +231,7 @@ function renderItem(item: ItemInput, index: number, start?: number): VNodeChild 
     'data-component': 'ActionList.Item',
     'data-is-disabled': item.disabled || undefined,
     'data-has-description': Boolean(item.description),
-    class: ['filtered-action-list__item', mapped.className],
+    class: [styles['filtered-action-list__item'], mapped.className],
     onFocus: () => {
       if (usingRoving.value) focused.value = false
     },
@@ -244,38 +245,38 @@ function renderItem(item: ItemInput, index: number, start?: number): VNodeChild 
     groupId: _groupId, selected: _selected, disabled: _disabled, inactiveText: _inactiveText, loading: _loading, size: _size, item: _item, className: _className,
     variant: itemVariant,
     ...domProps } = common
-  const children: VNodeChild[] = [h('span', { class: 'filtered-action-list__spacer' })]
-  if (selectionVariant.value) children.push(h('span', { 'data-component': 'ActionList.Selection', class: 'filtered-action-list__selection filtered-action-list__visual' }, [
+  const children: VNodeChild[] = [h('span', { class: styles['filtered-action-list__spacer'] })]
+  if (selectionVariant.value) children.push(h('span', { 'data-component': 'ActionList.Selection', class: [styles['filtered-action-list__selection'],styles['filtered-action-list__visual']] }, [
     selectionVariant.value === 'radio' ? h(Radio, { checked: item.selected, value: 'unused', ariaHidden: true, 'aria-hidden': 'true', tabindex: -1 })
-      : selectionVariant.value === 'multiple' ? h('div', { class: 'filtered-action-list__checkbox' })
-      : h(CheckIcon, { class: 'filtered-action-list__checkmark', 'data-component': 'Octicon' })
+      : selectionVariant.value === 'multiple' ? h('div', { class: styles['filtered-action-list__checkbox'] })
+      : h(CheckIcon, { class: styles['filtered-action-list__checkmark'], 'data-component': 'Octicon' })
   ]))
   else if (item.selected && import.meta.env.DEV) console.warn('FilteredActionList: For Item to be selected, ActionList or ActionList.Group should have a selectionVariant defined.')
-  if (item.leadingVisual) children.push(h('span', { class: 'filtered-action-list__visual filtered-action-list__leading', 'data-component': 'ActionList.LeadingVisual' }, [
+  if (item.leadingVisual) children.push(h('span', { class: [styles['filtered-action-list__visual'], styles['filtered-action-list__leading']], 'data-component': 'ActionList.LeadingVisual' }, [
     item.loading ? h(Spinner, { size: 'small' }) : renderVisual(item.leadingVisual)
   ]))
   const content: VNodeChild[] = []
-  const label = h('span', { id: labelId, class: 'filtered-action-list__label', 'data-component': 'ActionList.Item.Label' }, [item.children, item.text, item.loading === true && !item.inactiveText ? h('span', { class: 'filtered-action-list__loading-label' }, 'Loading') : null])
-  content.push(item.description ? h('div', { class: 'filtered-action-list__description-wrap', 'data-description-variant': item.descriptionVariant ?? 'inline' }, [
-    label, h('span', { id: descriptionId, class: 'filtered-action-list__description', 'data-component': 'ActionList.Description' }, item.description)
+  const label = h('span', { id: labelId, class: styles['filtered-action-list__label'], 'data-component': 'ActionList.Item.Label' }, [item.children, item.text, item.loading === true && !item.inactiveText ? h('span', { class: styles['filtered-action-list__loading-label'] }, 'Loading') : null])
+  content.push(item.description ? h('div', { class: styles['filtered-action-list__description-wrap'], 'data-description-variant': item.descriptionVariant ?? 'inline' }, [
+    label, h('span', { id: descriptionId, class: styles['filtered-action-list__description'], 'data-component': 'ActionList.Description' }, item.description)
   ]) : label)
-  if (item.loading && !item.leadingVisual || trailing) content.push(h('span', { id: trailingId, class: 'filtered-action-list__trailing filtered-action-list__visual', 'data-component': 'ActionList.TrailingVisual' }, [
+  if (item.loading && !item.leadingVisual || trailing) content.push(h('span', { id: trailingId, class: [styles['filtered-action-list__trailing'], styles['filtered-action-list__visual']], 'data-component': 'ActionList.TrailingVisual' }, [
     item.loading && !item.leadingVisual ? h(Spinner, { size: 'small' }) : renderVisual(trailing)
   ]))
-  if (inactiveId) content.push(h('span', { id: inactiveId, class: 'filtered-action-list__inactive' }, item.inactiveText))
-  children.push(h('span', { class: 'filtered-action-list__content', 'data-component': 'ActionList.Item--DividerContainer' }, content))
+  if (inactiveId) content.push(h('span', { id: inactiveId, class: styles['filtered-action-list__inactive'] }, item.inactiveText))
+  children.push(h('span', { class: styles['filtered-action-list__content'], 'data-component': 'ActionList.Item--DividerContainer' }, content))
   return h('li', { ...domProps, key: item.key ?? item.id ?? index, 'data-variant': itemVariant === 'danger' ? itemVariant : undefined,
     ref: virtualized.value ? (element: unknown) => { if (element instanceof HTMLElement) virtualizer.value.measureElement(element) } : undefined
-  }, [h('div', { class: 'filtered-action-list__row', 'data-size': item.size ?? 'medium' }, children)])
+  }, [h('div', { class: styles['filtered-action-list__row'], 'data-size': item.size ?? 'medium' }, children)])
 }
 const RenderItems = () => {
   if (props.groupMetadata?.length) return props.groupMetadata.map((group, index) => {
     const children = props.items.filter(item => item.groupId === group.groupId).map(item => renderItem(item, selectableItems.value.indexOf(item)))
     const title = group.header?.title
     const ariaLabel = title ? (typeof title === 'string' ? title : '[object Object]') : `Group ${group.groupId}`
-    return h('li', { role: 'none', 'data-component': 'ActionList.Group', key: index, class: 'filtered-action-list__group' }, [
-      h('div', { role: 'presentation', 'aria-hidden': 'true', class: 'filtered-action-list__group-heading', 'data-component': 'GroupHeadingWrap', 'data-variant': group.header?.variant ?? 'subtle' }, [h('span', { class: 'filtered-action-list__group-heading-title', id: `${listId.value}-group-${group.groupId}` }, [title || `Group ${group.groupId}`])]),
-      h('ul', { role: 'group', class: 'filtered-action-list__group-list', 'aria-label': ariaLabel }, children)
+    return h('li', { role: 'none', 'data-component': 'ActionList.Group', key: index, class: styles['filtered-action-list__group'] }, [
+      h('div', { role: 'presentation', 'aria-hidden': 'true', class: styles['filtered-action-list__group-heading'], 'data-component': 'GroupHeadingWrap', 'data-variant': group.header?.variant ?? 'subtle' }, [h('span', { class: styles['filtered-action-list__group-heading-title'], id: `${listId.value}-group-${group.groupId}` }, [title || `Group ${group.groupId}`])]),
+      h('ul', { role: 'group', class: styles['filtered-action-list__group-list'], 'aria-label': ariaLabel }, children)
     ])
   })
   return entries.value.map(({ item, index, start }) => renderItem(item, index, start))
@@ -292,7 +293,7 @@ defineExpose({ element: root, input, list, scrollContainer, focus: () => input.v
 <template>
   <div
     ref="root"
-    :class="[className, 'filtered-action-list']"
+    :class="[className, $style['filtered-action-list']]"
     data-component="FilteredActionList"
     data-testid="filtered-action-list"
   >
@@ -313,30 +314,30 @@ defineExpose({ element: root, input, list, scrollContainer, focus: () => input.v
     />
     <span
       :id="descriptionId"
-      class="filtered-action-list__visually-hidden"
+      :class="$style['filtered-action-list__visually-hidden']"
     >Items will be filtered as you type</span>
     <div
       v-if="showSelectAllControl"
-      class="filtered-action-list__select-all"
+      :class="$style['filtered-action-list__select-all']"
       data-component="FilteredActionList.SelectAll"
     >
       <Checkbox
         id="select-all-checkbox"
-        class="filtered-action-list__select-all-checkbox"
+        :class="$style['filtered-action-list__select-all-checkbox']"
         data-component="FilteredActionList.SelectAllCheckbox"
         :checked="selectAllChecked"
         :indeterminate="selectAllMixed"
         :aria-checked="selectAllMixed ? 'mixed' : selectAllChecked"
         @change="emit('select-all-change', ($event.target as HTMLInputElement).checked)"
       /><label
-        class="filtered-action-list__select-all-label"
+        :class="$style['filtered-action-list__select-all-label']"
         for="select-all-checkbox"
         data-component="FilteredActionList.SelectAllLabel"
       >{{ selectAllChecked ? 'Deselect all' : 'Select all' }}</label>
     </div>
     <div
       ref="scrollContainer"
-      class="filtered-action-list__scroll"
+      :class="$style['filtered-action-list__scroll']"
       data-component="FilteredActionList.ScrollContainer"
     >
       <BodyLoader
@@ -350,7 +351,7 @@ defineExpose({ element: root, input, list, scrollContainer, focus: () => input.v
         v-bind="{ ...attrs, ...listRestProps }"
         :id="listId"
         ref="list"
-        :class="['filtered-action-list__list', actionListProps?.className]"
+        :class="[$style['filtered-action-list__list'], actionListProps?.className]"
         :data-variant="listVariant"
         :data-dividers="(actionListProps && 'showDividers' in actionListProps ? actionListProps.showDividers : showItemDividers) ? 'true' : 'false'"
         :data-mixed-descriptions="mixedDescriptions || undefined"
@@ -364,4 +365,4 @@ defineExpose({ element: root, input, list, scrollContainer, focus: () => input.v
     </div>
   </div>
 </template>
-<style src="./FilteredActionList.css" />
+<style module src="./FilteredActionList.module.css" />

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { cloneVNode, computed, defineComponent, h, ref, shallowReactive, toRef, useId, type Component, type PropType, type VNode } from 'vue'
+import { cloneVNode, computed, defineComponent, h, ref, shallowReactive, toRef, useId, type Component, type PropType, type VNode , useCssModule} from 'vue'
 import { provideFormControlContext } from './context'
 import { useChoiceGroupContext } from '../internal/components/CheckboxOrRadioGroup/context'
 import ValidationAnimationContainer from '../internal/components/ValidationAnimationContainer.vue'
@@ -34,6 +34,7 @@ const FormControl = defineComponent({
     layout: { type: String as PropType<'horizontal' | 'vertical'>, default: 'vertical' }
   },
   setup(props, { slots, attrs, expose }) {
+    const styles = useCssModule()
     const generatedId = useId()
     const group = useChoiceGroupContext()
     const id = computed(() => props.id || generatedId)
@@ -93,14 +94,14 @@ const FormControl = defineComponent({
       const hiddenLabel = truthyBoolean(label?.props?.visuallyHidden ?? label?.props?.['visually-hidden'])
       const rootProps = { ...attrs, ref: element,
         style: normalizeReactStyle(attrs.style),
-        class: [attrs.class, props.className, horizontal ? 'form-control--horizontal' : 'form-control--vertical'],
+        class: [attrs.class, props.className, horizontal ? styles['form-control--horizontal'] : styles['form-control--vertical']],
         'data-component': 'FormControl',
         ...(horizontal ? { 'data-has-leading-visual': leading ? '' : undefined } : { 'data-has-label': !hiddenLabel ? '' : undefined }) }
       return h('div', rootProps, horizontal ? [
-        h('div', { class: 'form-control__choice-inputs' }, [cloned, ...remainingHorizontal]),
-        leading ? h('div', { class: 'form-control__choice-leading',
+        h('div', { class: styles['form-control__choice-inputs'] }, [cloned, ...remainingHorizontal]),
+        leading ? h('div', { class: styles['form-control__choice-leading'],
           'data-disabled': disabled.value ? '' : undefined, 'data-has-caption': caption ? '' : undefined }, [leading]) : null,
-        h('div', { class: 'form-control__label-container' }, [label, caption])
+        h('div', { class: styles['form-control__label-container'] }, [label, caption])
       ] : [label, cloned, ...remaining,
         validation ? h(ValidationAnimationContainer, { show: true }, { default: () => validation }) : null,
         caption])
@@ -109,18 +110,4 @@ const FormControl = defineComponent({
 })
 export default Object.assign(FormControl, { __SLOT__: Symbol('FormControl') })
 </script>
-
-<style scoped>
-.form-control--horizontal { display: flex; }
-.form-control--horizontal:where([data-has-leading-visual]) { align-items: center; }
-.form-control--vertical { display: flex; flex-direction: column; align-items: flex-start; }
-.form-control--vertical :deep(> *:not(label) + *),
-.form-control--vertical[data-has-label] :deep(> * + *) { margin-top: var(--base-size-4, 4px); }
-.form-control__choice-inputs :deep(> input) { margin-right: 0; margin-left: 0; }
-.form-control__label-container :deep(> *) { padding-left: var(--stack-gap-condensed, 8px); }
-.form-control__label-container :deep(> label) { font-weight: var(--base-text-weight-normal, 400); }
-.form-control__choice-leading { margin-left: var(--base-size-8, 8px); color: var(--fgColor-muted, #59636e); }
-.form-control__choice-leading:where([data-disabled]) { color: var(--control-fgColor-disabled, #818b98); }
-.form-control__choice-leading :deep(> *) { min-width: var(--text-body-size-large, 16px); min-height: var(--text-body-size-large, 16px); fill: currentColor; }
-.form-control__choice-leading :deep(> *:where([data-has-caption])) { min-width: var(--base-size-24, 24px); min-height: var(--base-size-24, 24px); }
-</style>
+<style module src="./FormControl.module.css" />

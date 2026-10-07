@@ -253,7 +253,7 @@ onMounted(() => {
   gap: 18px;
 }
 
-.signup-fields :deep(.TextInput-wrapper) {
+.signup-fields :deep([data-component='TextInput']) {
   width: 100%;
 }
 

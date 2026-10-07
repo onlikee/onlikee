@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import classes from './ActionList.module.css'
 import { computed, ref, useAttrs } from 'vue'
 import Button from '../SelectPanel/SelectPanelButton.vue'
 import { exposeElement } from './context'
@@ -13,8 +14,7 @@ defineExpose(exposeElement(element))
 </script>
 <template>
   <span
-    class="action-list-trailing-action"
-    :class="[className, attrs.class]"
+    :class="[classes['action-list-trailing-action'], className, attrs.class]"
     data-component="ActionList.TrailingAction"
     :style="normalizeReactStyle(style ?? attrs.style)"
   >
@@ -29,7 +29,7 @@ defineExpose(exposeElement(element))
       :loading="loading"
       :data-loading="Boolean(loading)"
       :data-has-label="icon ? undefined : true"
-      class="action-list-trailing-action-button"
+      :class="[classes['action-list-trailing-action-button']]"
       v-bind="Object.fromEntries(Object.entries(attrs).filter(([key]) => key !== 'class' && key !== 'style'))"
     >{{ icon ? undefined : label }}</Button>
   </span>

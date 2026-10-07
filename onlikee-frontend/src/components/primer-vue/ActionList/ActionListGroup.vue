@@ -1,4 +1,5 @@
 <script lang="ts">
+import classes from './ActionList.module.css'
 import { Comment, Text, defineComponent, h, isVNode, provide, reactive, useId, type PropType } from 'vue'
 import { ActionListGroupContext, useContext } from './context'
 import type { ActionListGroupContextValue, ActionListSelectionVariant } from './types'
@@ -30,13 +31,13 @@ export default defineComponent({
         ) : headingChildren
       )
       const { 'aria-label': ariaLabel, class: classAttr, style, ...rootAttrs } = attrs
-      return h('li', { class: ['action-list-group', props.className, classAttr], 'data-component': 'ActionList.Group',
+      return h('li', { class: [classes['action-list-group'], props.className, classAttr], 'data-component': 'ActionList.Group',
         role: listRole ? 'none' : undefined, ...rootAttrs, style: normalizeReactStyle(style) }, [
         props.title && !matched.groupHeading ? h(GroupHeading, { variant: props.variant, auxiliaryText: props.auxiliaryText, internalBackwardCompatibleTitle: props.title }) : null,
         !props.title && matched.groupHeading ? matched.groupHeading : null,
         h('ul', { 'aria-labelledby': listRole ? undefined : group.groupHeadingId,
           'aria-label': ariaLabel ?? (listRole ? props.title ?? headingLabel : undefined),
-          role: props.role || (listRole ? 'group' : undefined), class: 'action-list-group-list'
+          role: props.role || (listRole ? 'group' : undefined), class: [classes['action-list-group-list']]
         }, matched.groupHeading ? rest : slots.default?.())
       ])
     }

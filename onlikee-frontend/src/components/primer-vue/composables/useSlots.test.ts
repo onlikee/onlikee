@@ -191,10 +191,10 @@ test('FormControl evaluates a dynamic default slot once per render, including it
   }
   const first = await renderToString(createSSRApp(root))
   expect(calls).toBe(1)
-  expect(first).toMatch(/class="form-control--vertical"/)
+  expect(first).toMatch(/class="[^"]*form-control--vertical_/)
   mode.value = 'radio'
   const second = await renderToString(createSSRApp(root))
   expect(calls).toBe(2)
-  expect(second).toMatch(/class="form-control--horizontal"/)
+  expect(second).toMatch(/class="[^"]*form-control--horizontal_/)
   expect(second).toMatch(/for="dynamic"/)
 })

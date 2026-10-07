@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, h, isRef, onBeforeUnmount, onMounted, ref, shallowRef, watch, type Component, type PropType, type Ref } from 'vue'
+import { computed, defineComponent, h, isRef, onBeforeUnmount, onMounted, ref, shallowRef, useCssModule, watch, type Component, type PropType, type Ref } from 'vue'
 import Overlay from '../internal/components/Overlay.vue'
 import { useAnchoredPosition } from '../composables/useAnchoredPosition'
 import { useAutocompleteContext } from './context'
@@ -12,6 +12,7 @@ export default defineComponent({
     overlayProps: { type: Object as PropType<Record<string, unknown>>, default: () => ({}) }, className: { type: String, default: undefined }
   },
   setup(props, { attrs, slots, expose }) {
+    const classes = useCssModule()
     const context = useAutocompleteContext()
     const overlay = ref<{ element?: HTMLElement | null } | null>(null)
     const computedAnchorRef = shallowRef<HTMLElement | null>(null)
@@ -53,19 +54,16 @@ export default defineComponent({
             ref: overlay, // :76 mergedScrollContainerRef
             top: position.value?.top, // :77
             left: position.value?.left, // :78
-            class: ['autocomplete-overlay', props.className, attrsClass], // :79 clsx(classes.Overlay, className) + attrs class 合并（Vue fallthrough）
+            class: [classes['autocomplete-overlay'], props.className, attrsClass], // :79 clsx(classes.Overlay, className) + attrs class 合并（Vue fallthrough）
             ...overlayProps,
             style: normalizeReactStyle(Object.prototype.hasOwnProperty.call(attrs, 'style') ? attrsStyle : props.overlayProps.style),
             'data-component': 'Autocomplete.Overlay' // :81 —— 始终最后
           }, slots)
         : // :85-89 HACK —— VisuallyHidden(span) 保持 AutocompleteMenu 挂载（内部 hooks 全部继续调用）
-          h('span', { class: 'autocomplete-overlay__hidden', 'aria-hidden': 'true' }, slots.default?.())
+          h('span', { class: classes['autocomplete-overlay__hidden'], 'aria-hidden': 'true' }, slots.default?.())
     }
   }
 })
 </script>
 
-<style scoped>
-.autocomplete-overlay { overflow: auto; }
-.autocomplete-overlay__hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
-</style>
+<style module src="./AutocompleteOverlay.module.css"></style>

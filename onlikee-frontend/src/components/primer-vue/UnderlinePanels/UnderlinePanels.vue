@@ -173,18 +173,18 @@ function handleKeydown(event: KeyboardEvent) {
 </script>
 
 <template>
-  <div class="underline-panels-group">
+  <div :class="[$style['underline-panels-group']]">
     <component
       :is="as"
       v-bind="wrapperAttrs"
       :id="props.id"
       ref="wrapperRef"
-      class="underline-panels"
+      :class="[$style['underline-panels']]"
       :data-icons-visible="iconsVisible"
     >
       <ul
         ref="listRef"
-        class="underline-panels__list"
+        :class="[$style['underline-panels__list']]"
         role="tablist"
         aria-orientation="horizontal"
         :aria-label="ariaLabel"
@@ -198,36 +198,4 @@ function handleKeydown(event: KeyboardEvent) {
   </div>
 </template>
 
-<style scoped>
-.underline-panels-group {
-  width: 100%;
-}
-
-.underline-panels {
-  display: flex;
-  align-items: flex-start;
-  width: 100%;
-  min-height: var(--control-xlarge-size, 48px);
-  padding-top: 8px;
-  padding-inline: var(--stack-padding-normal, 16px);
-  overflow-x: auto;
-  overflow-y: hidden;
-  box-shadow: inset 0 -1px var(--borderColor-muted, #d1d9e0b3);
-}
-
-.underline-panels__list {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: var(--stack-gap-condensed, 8px);
-  padding: 0;
-  margin: 0;
-  white-space: nowrap;
-  list-style: none;
-  contain: layout;
-}
-
-.underline-panels[data-icons-visible='false'] :deep([data-component='icon']) {
-  display: none;
-}
-</style>
+<style module src="./UnderlinePanels.module.css"></style>

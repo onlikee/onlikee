@@ -28,7 +28,7 @@ const accessibleHintString = computed(() =>
 </script>
 <template>
   <span
-    :class="['primer-tooltip', className]"
+    :class="[$style['primer-tooltip'], className]"
     :ref="setElement"
     :data-direction="calculatedDirection"
     data-component="Tooltip"
@@ -45,10 +45,10 @@ const accessibleHintString = computed(() =>
         <VisuallyHidden>({{ accessibleHintString }})</VisuallyHidden></span>
       <span
         :class="[
-          'primer-tooltip__keybinding-hint-container',
+          $style['primer-tooltip__keybinding-hint-container'],
           {
-            'primer-tooltip__has-text-before': text,
-            'primer-tooltip__has-multiple-hints': keybindingHints.length > 1,
+            [$style['primer-tooltip__has-text-before']]: text,
+            [$style['primer-tooltip__has-multiple-hints']]: keybindingHints.length > 1,
           },
         ]"
         aria-hidden="true"
@@ -68,4 +68,4 @@ const accessibleHintString = computed(() =>
     <template v-else>{{ text }}</template>
   </span>
 </template>
-<style src="./Tooltip.css" />
+<style module src="./Tooltip.module.css" />

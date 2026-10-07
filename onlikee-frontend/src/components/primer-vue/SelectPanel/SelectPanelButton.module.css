@@ -737,3 +737,9 @@
   transition: 80ms ease-in;
   transition-property: color, background-color, border-color;
 }
+
+.select-panel-button svg[data-octicon] {
+  overflow: visible;
+  display: inline-block;
+  vertical-align: text-bottom;
+}

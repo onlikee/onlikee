@@ -1,7 +1,7 @@
 <template>
   <span
     :id="id ?? context?.captionId.value"
-    :class="[className, 'form-control__caption']"
+    :class="[className, $style['form-control__caption']]"
     :style="normalizeReactStyle(style)"
     :data-control-disabled="context?.disabled.value ? '' : undefined"
     data-component="FormControl.Caption"
@@ -16,15 +16,4 @@ defineOptions({ name: 'FormControlCaption', __SLOT__: Symbol('FormControlCaption
 defineProps<{ id?: string; className?: string; style?: StyleValue }>()
 const context = useFormControlContext()
 </script>
-
-<style scoped>
-.form-control__caption {
-  display: block;
-  font-size: var(--text-body-size-small, 12px);
-  color: var(--fgColor-muted, #59636e);
-
-  &:where([data-control-disabled]) {
-    color: var(--control-fgColor-disabled, #818b98);
-  }
-}
-</style>
+<style module src="./FormControlCaption.module.css" />

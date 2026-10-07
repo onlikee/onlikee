@@ -44,7 +44,7 @@
 .primer-tooltip[popover]:popover-open {
   display: block;
 }
-.primer-tooltip[popover].\:popover-open {
+.primer-tooltip[popover]:global(.\:popover-open) {
   display: block;
 }
 @media (forced-colors: active) {
@@ -95,8 +95,8 @@
     animation-name: tooltip-appear;
     animation-timing-function: ease-in;
   }
-  .primer-tooltip.\:popover-open,
-  .primer-tooltip.\:popover-open:before {
+  .primer-tooltip:global(.\:popover-open),
+  .primer-tooltip:global(.\:popover-open):before {
     animation-delay: 0s;
     animation-duration: 0.1s;
     animation-fill-mode: forwards;

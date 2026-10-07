@@ -1,4 +1,5 @@
 <script lang="ts">
+import classes from './ActionList.module.css'
 /* eslint-disable vue/one-component-per-file -- Internal provider resets tooltips within each item. */
 import { computed, defineComponent, h, provide, ref, useId, type Component, type PropType, type VNode, type VNodeChild } from 'vue'
 import { CheckIcon } from '@/components/octicons-vue3'
@@ -105,25 +106,25 @@ export default defineComponent({
       const wrapperProps = props.privateItemWrapper ? menuItemProps : !listSemantics.value ? { ...menuItemProps, ...nativeAttrs } : {}
       const visualVariant = visualSelectionVariant.value
       if (import.meta.env.DEV && !visualVariant && props.selected) console.warn('Warning:', 'For Item to be selected, ActionList or ActionList.Group should have a selectionVariant defined.')
-      const selection = visualVariant ? h('span', { class: 'action-list-visual-wrap action-list-selection', 'data-component': 'ActionList.Selection' }, [
+      const selection = visualVariant ? h('span', { class: [classes['action-list-visual-wrap'], classes['action-list-selection']], 'data-component': 'ActionList.Selection' }, [
         visualVariant === 'radio' ? h(Radio, { value: 'unused', checked: props.selected, ariaHidden: true, tabindex: -1 }) :
-          visualVariant === 'single' || listRole.value === 'menu' ? h(CheckIcon, { 'data-component': 'Octicon', 'data-octicon': undefined, display: 'inline-block', overflow: 'visible', class: 'action-list-checkmark', style: { overflow: 'visible', verticalAlign: 'text-bottom' } }) : h('div', { class: 'action-list-checkbox' })
+          visualVariant === 'single' || listRole.value === 'menu' ? h(CheckIcon, { 'data-component': 'Octicon', 'data-octicon': undefined, display: 'inline-block', overflow: 'visible', class: classes['action-list-checkmark'], style: { overflow: 'visible', verticalAlign: 'text-bottom' } }) : h('div', { class: [classes['action-list-checkbox']] })
       ]) : null
       const trailingVisual = matched.trailingVisual ?? (container.defaultTrailingVisual ? h(TrailingVisual, null, { default: () => container.defaultTrailingVisual }) : null)
-      const label = h('span', { id: labelId.value, class: 'action-list-label', 'data-component': 'ActionList.Item.Label' }, [
+      const label = h('span', { id: labelId.value, class: [classes['action-list-label']], 'data-component': 'ActionList.Item.Label' }, [
         ...rest, props.loading === true && !inactive.value ? h(VisuallyHidden, null, { default: () => 'Loading' }) : null
       ])
       const contents: VNodeChild[] = [
-        h('span', { class: 'action-list-spacer' }), selection,
+        h('span', { class: [classes['action-list-spacer']] }), selection,
         h(VisualOrIndicator, { inactiveText: showInactiveIndicator ? props.inactiveText : undefined, itemHasLeadingVisual: Boolean(matched.leadingVisual), labelId: labelId.value, loading: props.loading, position: 'leading' }, { default: () => matched.leadingVisual }),
-        h('span', { class: 'action-list-sub-content', 'data-component': 'ActionList.Item--DividerContainer' }, [
-          matched.description ? h('div', { class: 'action-list-description-wrap', 'data-description-variant': descriptionVariant }, [label, matched.description]) : label,
+        h('span', { class: [classes['action-list-sub-content']], 'data-component': 'ActionList.Item--DividerContainer' }, [
+          matched.description ? h('div', { class: [classes['action-list-description-wrap']], 'data-description-variant': descriptionVariant }, [label, matched.description]) : label,
           h(VisualOrIndicator, { inactiveText: showInactiveIndicator ? props.inactiveText : undefined, itemHasLeadingVisual: Boolean(matched.leadingVisual), labelId: labelId.value, loading: props.loading, position: 'trailing' }, { default: () => trailingVisual }),
-          !showInactiveIndicator && props.inactiveText ? h('span', { class: 'action-list-inactive-warning', id: warningId }, props.inactiveText) : null
+          !showInactiveIndicator && props.inactiveText ? h('span', { class: [classes['action-list-inactive-warning']], id: warningId }, props.inactiveText) : null
         ])
       ]
       const child = h(ItemContents, null, { default: () => contents })
-      const wrapperBindings = { ...wrapperProps, class: 'action-list-content', 'data-size': props.size }
+      const wrapperBindings = { ...wrapperProps, class: [classes['action-list-content']], 'data-size': props.size }
       const setElement = (node: unknown) => {
         const instance = node as { element?: HTMLElement; $el?: HTMLElement } | null
         element.value = node instanceof HTMLElement ? node : instance?.element ?? instance?.$el ?? null
@@ -142,7 +143,7 @@ export default defineComponent({
         'data-is-disabled': props.disabled ? true : undefined, 'data-has-subitem': matched.subItem ? true : undefined,
         'data-has-description': Boolean(matched.description), 'data-has-trailing-action': trailingActionRendered ? true : undefined,
         'data-trailing-action-loading': trailingActionRendered && matched.trailingAction?.props?.loading ? true : undefined,
-        class: ['action-list-item', props.className, classAttr]
+        class: [classes['action-list-item'], props.className, classAttr]
       }, [wrapper, trailingActionRendered ? matched.trailingAction : null, matched.subItem])
     }
   }

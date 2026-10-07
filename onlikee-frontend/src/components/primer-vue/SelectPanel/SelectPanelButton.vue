@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Comment, computed, h, inject, onMounted, provide, reactive, shallowRef, useAttrs, useId, useSlots, watchEffect, type Component, type Slots, type VNode } from 'vue'
+import { Comment, computed, h, inject, onMounted, provide, reactive, shallowRef, useAttrs, useId, useSlots, watchEffect, type Component, type Slots, type VNode , useCssModule} from 'vue'
 import Spinner from '../Spinner/Spinner.vue'
 import AriaStatus from '../internal/components/AriaStatus.vue'
 import VisuallyHidden from '../VisuallyHidden/VisuallyHidden.vue'
@@ -10,6 +10,7 @@ import { TOOLTIP_CONTEXT_KEY, type TooltipContextValue } from '../TooltipV2/Tool
 import type { TooltipDirection, TooltipType } from '../TooltipV2/types'
 
 defineOptions({ name: 'SelectPanelButton', inheritAttrs: false })
+const styles = useCssModule()
 const props = withDefaults(defineProps<{
   as?: string; type?: 'button' | 'submit' | 'reset'; block?: boolean
   variant?: 'default' | 'primary' | 'invisible' | 'danger' | 'link'; size?: 'small' | 'medium' | 'large'
@@ -123,7 +124,7 @@ function bindings() {
 const Wrapper = (_props: Record<string, never>, { slots: content }: { slots: Slots }) =>
   props.loading === undefined
     ? content.default?.()
-    : h('div', { class: props.block ? 'select-panel-button__conditional-wrapper' : props.variant === 'link' ? 'select-panel-button__conditional-wrapper-link' : undefined, 'data-loading-wrapper': true }, content.default?.())
+    : h('div', { class: props.block ? styles['select-panel-button__conditional-wrapper'] : props.variant === 'link' ? styles['select-panel-button__conditional-wrapper-link'] : undefined, 'data-loading-wrapper': true }, content.default?.())
 
 function hasContent(nodes: VNode[]): boolean {
   return nodes.some(node => node.type !== Comment)
@@ -146,7 +147,7 @@ defineExpose({ element, focus: () => element.value?.focus() })
       v-bind="bindings()"
       :id="id"
       ref="element"
-      :class="['select-panel-button', className, { 'select-panel-button__icon-button': icon }]"
+      :class="[$style['select-panel-button'], className, { [$style['select-panel-button__icon-button']]: icon }]"
       :type="effectiveType"
       :disabled="disabled"
       :data-block="block ? 'block' : undefined"
@@ -173,18 +174,18 @@ defineExpose({ element, focus: () => element.value?.focus() })
       </template>
       <template v-else>
         <span
-          class="select-panel-button__button-content"
+          :class="$style['select-panel-button__button-content']"
           data-component="buttonContent"
           :data-align="alignContent"
         >
           <span
             v-if="loading && !leadingVisual && !trailingVisual && !trailingAction && count === undefined"
-            class="select-panel-button__visual select-panel-button__loading-spinner"
+            :class="[$style['select-panel-button__visual'],$style['select-panel-button__loading-spinner']]"
             data-component="loadingSpinner"
           ><Spinner size="small" /></span>
           <span
             v-if="leadingVisual"
-            :class="['select-panel-button__visual select-panel-button__leading-visual', loading ? 'select-panel-button__loading-spinner' : 'select-panel-button__visual-wrap']"
+            :class="[$style['select-panel-button__visual'], $style['select-panel-button__leading-visual'], loading ? $style['select-panel-button__loading-spinner'] : $style['select-panel-button__visual-wrap']]"
             data-component="leadingVisual"
           ><Spinner
             v-if="loading"
@@ -197,24 +198,24 @@ defineExpose({ element, focus: () => element.value?.focus() })
           <span
             v-if="hasContent(slots.default?.() ?? [])"
             :id="loading ? labelId : undefined"
-            class="select-panel-button__label"
+            :class="$style['select-panel-button__label']"
             data-component="text"
           ><slot /></span>
           <span
             v-if="count !== undefined && !trailingVisual"
-            :class="[loading && !leadingVisual ? 'select-panel-button__loading-spinner' : 'select-panel-button__visual-wrap']"
+            :class="[loading && !leadingVisual ? $style['select-panel-button__loading-spinner'] : $style['select-panel-button__visual-wrap']]"
             data-component="trailingVisual"
           ><Spinner
             v-if="loading && !leadingVisual"
             size="small"
           /><CounterLabel
             v-else
-            class="select-panel-button__counter-label"
+            :class="$style['select-panel-button__counter-label']"
             data-component="ButtonCounter"
           >{{ count }}</CounterLabel></span>
           <span
             v-else-if="trailingVisual"
-            :class="['select-panel-button__visual', loading && !leadingVisual ? 'select-panel-button__loading-spinner' : 'select-panel-button__visual-wrap']"
+            :class="[$style['select-panel-button__visual'], loading && !leadingVisual ? $style['select-panel-button__loading-spinner'] : $style['select-panel-button__visual-wrap']]"
             data-component="trailingVisual"
           ><Spinner
             v-if="loading && !leadingVisual"
@@ -227,7 +228,7 @@ defineExpose({ element, focus: () => element.value?.focus() })
         </span>
         <span
           v-if="trailingAction"
-          :class="['select-panel-button__visual', loading && !leadingVisual && !trailingVisual ? 'select-panel-button__loading-spinner' : 'select-panel-button__visual-wrap']"
+          :class="[$style['select-panel-button__visual'], loading && !leadingVisual && !trailingVisual ? $style['select-panel-button__loading-spinner'] : $style['select-panel-button__visual-wrap']]"
           data-component="trailingAction"
         ><Spinner
           v-if="loading && !leadingVisual && !trailingVisual"
@@ -258,7 +259,4 @@ defineExpose({ element, focus: () => element.value?.focus() })
     @mouseleave="closeTooltip"
   />
 </template>
-<style src="./SelectPanelButton.css" />
-<style scoped>
-.select-panel-button :deep(svg[data-octicon]) { display: inline-block; vertical-align: text-bottom; }
-</style>
+<style module src="./SelectPanelButton.module.css" />

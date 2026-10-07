@@ -22,7 +22,7 @@ const truncateStyle = computed(() => ({
 <template>
   <component
     :is="as"
-    class="truncate"
+    :class="[$style['truncate']]"
     :data-expandable="expandable ? '' : undefined"
     :data-inline="inline ? '' : undefined"
     :title="title"
@@ -32,21 +32,4 @@ const truncateStyle = computed(() => ({
   </component>
 </template>
 
-<style scoped>
-.truncate {
-  display: inherit;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: var(--truncate-max-width, 125px);
-}
-
-.truncate:where([data-expandable]):hover {
-  max-width: 10000px;
-}
-
-.truncate:where([data-inline]) {
-  display: inline-block;
-  vertical-align: top;
-}
-</style>
+<style module src="./Truncate.module.css"></style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h, type PropType } from 'vue'
+import { defineComponent, h, type PropType, useCssModule } from 'vue'
 import { defaultTokenSize, type TokenSizeKeys } from './types'
 
 const X_ICON_PATHS: Record<12 | 16, string> = {
@@ -25,11 +25,12 @@ export default defineComponent({
     className: { type: [String, Array, Object] as PropType<string | unknown[] | Record<string, unknown> | undefined>, default: undefined }
   },
   setup(props, { attrs }) {
+    const classes = useCssModule()
     return () => {
       const { class: cls, 'aria-label': ariaLabel, ...restAttrs } = attrs
       const icon = renderXIcon(props.size === 'small' || props.size === 'medium' ? 12 : 16)
       const style = { transform: `translate(${props.borderOffset}px, -${props.borderOffset}px)` }
-      const classList = ['token__remove', props.className, cls]
+      const classList = [classes['token__remove'], props.className, cls]
       if (props.isParentInteractive) {
         return h('span', {
           ...restAttrs,
@@ -53,12 +54,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-.token__remove { display: inline-flex; padding: 0; margin-left: var(--base-size-4, 4px); font-family: inherit; color: currentColor; text-decoration: none; cursor: pointer; user-select: none; background-color: transparent; border: 0; border-radius: var(--borderRadius-full, 624.9375rem); justify-content: center; align-items: center; appearance: none; align-self: baseline; }
-.token__remove[data-size='small'] { width: var(--base-size-16, 16px); height: var(--base-size-16, 16px); }
-.token__remove[data-size='medium'] { width: var(--base-size-20, 20px); height: var(--base-size-20, 20px); }
-.token__remove[data-size='large'] { width: var(--base-size-24, 24px); height: var(--base-size-24, 24px); margin-left: var(--base-size-6, 6px); }
-.token__remove[data-size='xlarge'] { width: var(--base-size-32, 32px); height: var(--base-size-32, 32px); margin-left: var(--base-size-6, 6px); }
-.token__remove:hover, .token__remove:focus { background-color: var(--control-transparent-bgColor-hover, #818b981a); }
-.token__remove:active { background-color: var(--control-transparent-bgColor-active, #818b9826); }
-</style>
+<style module src="./_RemoveTokenButton.module.css"></style>

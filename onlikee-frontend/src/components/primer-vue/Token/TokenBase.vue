@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h, ref, type PropType } from 'vue'
+import { defineComponent, h, ref, type PropType, useCssModule } from 'vue'
 import type { NodeProp } from '../internal/renderNode'
 import { isTokenInteractive, unknownAttrValue } from './utils'
 import { defaultTokenSize, type TokenSizeKeys } from './types'
@@ -18,6 +18,7 @@ export default defineComponent({
   },
   emits: { remove: () => true },
   setup(props, { attrs, slots, emit, expose }) {
+    const classes = useCssModule()
     const element = ref<HTMLElement | null>(null)
     expose({ element })
     return () => {
@@ -38,7 +39,7 @@ export default defineComponent({
         disabled: props.disabled ? '' : undefined,
         ...restAttrs,
         ref: element,
-        class: ['token-base', props.className, restAttrs.class],
+        class: [classes['token-base'], props.className, restAttrs.class],
         onKeydown: (event: KeyboardEvent) => {
           if (typeof consumerOnKeydown === 'function') consumerOnKeydown(event)
           if (event.key === 'Backspace' || event.key === 'Delete') {
@@ -51,12 +52,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-.token-base { position: relative; display: inline-flex; font-family: inherit; font-weight: var(--base-text-weight-semibold, 600); text-decoration: none; white-space: nowrap; border-radius: var(--borderRadius-full, 624.9375rem); align-items: center; line-height: 1; }
-.token-base:where([data-cursor-is-interactive='true']) { cursor: pointer; }
-.token-base:where([data-cursor-is-interactive='false']) { cursor: auto; }
-.token-base:where([data-size='small']) { width: auto; height: var(--base-size-16, 16px); padding-right: var(--base-size-4, 4px); padding-left: var(--base-size-4, 4px); font-size: var(--text-body-size-small, 12px); }
-.token-base:where([data-size='medium']) { width: auto; height: var(--base-size-20, 20px); padding-right: var(--base-size-6, 6px); padding-left: var(--base-size-6, 6px); font-size: var(--text-body-size-small, 12px); }
-.token-base[data-size='large'] { width: auto; height: var(--base-size-24, 24px); padding-right: var(--base-size-8, 8px); padding-left: var(--base-size-8, 8px); font-size: var(--text-body-size-medium, 14px); }
-.token-base[data-size='xlarge'] { width: auto; height: var(--base-size-32, 32px); padding-top: 0; padding-right: var(--base-size-12, 12px); padding-bottom: 0; padding-left: var(--base-size-12, 12px); font-size: var(--text-body-size-medium, 14px); }
-</style>
+<style module src="./TokenBase.module.css"></style>

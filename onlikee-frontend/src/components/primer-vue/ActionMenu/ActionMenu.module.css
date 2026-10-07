@@ -20,7 +20,7 @@
 .action-menu-container:where([data-max-height-fit-content]) { max-height: fit-content; }
 /* The shared surface's scoped width token must not constrain a fullscreen menu. */
 @media screen and (max-width: calc(768px - 0.02px)) {
-  .primer-overlay[data-component='ActionMenu.Overlay'][data-responsive='fullscreen'][data-width] { width: 100vw; }
+  :global(.primer-overlay)[data-component='ActionMenu.Overlay'][data-responsive='fullscreen'][data-width] { width: 100vw; }
 }
 @supports (height: 100dvh) {
   .action-menu-container:where([data-max-height-xsmall]) { max-height: min(192px, 100dvh); }

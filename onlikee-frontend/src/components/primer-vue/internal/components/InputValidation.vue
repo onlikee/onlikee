@@ -1,15 +1,14 @@
 <template>
   <span
     v-bind="attrs"
-    class="input-validation"
-    :class="className"
+    :class="[$style['input-validation'], className]"
     :style="normalizeReactStyle(attrs.style)"
     :data-validation-status="validationStatus"
   >
     <span
       v-if="validationStatus === 'error' || validationStatus === 'success'"
       aria-hidden="true"
-      class="input-validation__icon"
+      :class="[$style['input-validation__icon']]"
       style="--inputValidation-iconSize: 16"
     >
       <svg
@@ -48,7 +47,7 @@
     <!-- captionLineHeight = 16 / 12；数字自定义属性序列化为 "1.3333333333333333"。 -->
     <span
       :id="id"
-      class="input-validation__text"
+      :class="[$style['input-validation__text']]"
       style="--inputValidation-lineHeight: 1.3333333333333333"
     ><slot /></span>
   </span>
@@ -60,11 +59,4 @@ defineOptions({ inheritAttrs: false })
 defineProps<{ id: string; validationStatus?: 'error' | 'success'; className?: string }>()
 const attrs = useAttrs()
 </script>
-<style scoped>
-.input-validation { display: flex; font-size: var(--text-body-size-small, 12px); font-weight: var(--base-text-weight-semibold, 600); color: var(--inputValidation-fgColor, currentColor); }
-.input-validation :deep(a) { color: currentColor; text-decoration: underline; }
-.input-validation[data-validation-status='success'] { --inputValidation-fgColor: var(--fgColor-success, #1a7f37); }
-.input-validation[data-validation-status='error'] { --inputValidation-fgColor: var(--fgColor-danger, #d1242f); }
-.input-validation__icon { display: flex; margin-top: var(--base-size-2, 2px); margin-inline-end: var(--base-size-4, 4px); min-height: var(--inputValidation-iconSize, 16px); }
-.input-validation__text { line-height: var(--inputValidation-lineHeight, 1.3333333333333333); }
-</style>
+<style module src="./InputValidation.module.css"></style>

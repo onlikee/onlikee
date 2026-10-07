@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, getCurrentInstance, h, isRef, onBeforeUnmount, onMounted, ref, shallowRef, watch, type PropType, type Ref } from 'vue'
+import { computed, defineComponent, getCurrentInstance, h, isRef, onBeforeUnmount, onMounted, ref, shallowRef, useCssModule, watch, type PropType, type Ref } from 'vue'
 import { FocusKeys, scrollIntoView } from '@primer/behaviors'
 import { isEditableElement, isMacOS } from '@primer/behaviors/utils'
 import Spinner from '../Spinner/Spinner.vue'
@@ -154,6 +154,7 @@ export default defineComponent({
     'open-change': (_open: boolean) => true
   },
   setup(props, { attrs, emit, slots }) {
+    const classes = useCssModule()
     const context = useAutocompleteContext()
     const instance = getCurrentInstance()!
     const listContainerRef = ref<HTMLElement | null>(null)
@@ -450,16 +451,16 @@ export default defineComponent({
       function visualOrIndicator(position: 'leading' | 'trailing') {
         const slotVisual = position === 'leading'
           ? (leadingVisual
-              ? h('span', { class: 'autocomplete-menu__leading-visual autocomplete-menu__visual-wrap', 'data-component': 'ActionList.LeadingVisual' }, [renderNode(leadingVisual)])
+              ? h('span', { class: [classes['autocomplete-menu__leading-visual'], classes['autocomplete-menu__visual-wrap']], 'data-component': 'ActionList.LeadingVisual' }, [renderNode(leadingVisual)])
               : null)
           : (trailingVisual
-              ? h('span', { id: trailingVisualId, class: 'autocomplete-menu__trailing-visual autocomplete-menu__visual-wrap', 'data-component': 'ActionList.TrailingVisual' }, [renderNode(trailingVisual)])
+              ? h('span', { id: trailingVisualId, class: [classes['autocomplete-menu__trailing-visual'], classes['autocomplete-menu__visual-wrap']], 'data-component': 'ActionList.TrailingVisual' }, [renderNode(trailingVisual)])
               : null)
         if (!loading) return slotVisual
         if ((hasLeadingVisual && position === 'trailing') || (!hasLeadingVisual && position === 'leading')) return slotVisual
         return position === 'leading'
-          ? h('span', { class: 'autocomplete-menu__leading-visual autocomplete-menu__visual-wrap', 'data-component': 'ActionList.LeadingVisual' }, [h(Spinner, { size: 'small' })])
-          : h('span', { id: trailingVisualId, class: 'autocomplete-menu__trailing-visual autocomplete-menu__visual-wrap', 'data-component': 'ActionList.TrailingVisual' }, [h(Spinner, { size: 'small' })])
+          ? h('span', { class: [classes['autocomplete-menu__leading-visual'], classes['autocomplete-menu__visual-wrap']], 'data-component': 'ActionList.LeadingVisual' }, [h(Spinner, { size: 'small' })])
+          : h('span', { id: trailingVisualId, class: [classes['autocomplete-menu__trailing-visual'], classes['autocomplete-menu__visual-wrap']], 'data-component': 'ActionList.TrailingVisual' }, [h(Spinner, { size: 'small' })])
       }
       const menuItemProps = {
         onClick: (event: MouseEvent) => select(item, event),
@@ -490,29 +491,29 @@ export default defineComponent({
         'data-inactive': inactiveText ? true : undefined,
         'data-is-disabled': disabled ? true : undefined,
         'data-has-description': 'false',
-        class: ['autocomplete-menu__item', className],
+        class: [classes['autocomplete-menu__item'], className],
         style: normalizeReactStyle(restProps.style),
         key: (key ?? itemId) as string | number,
         onMousedown: (event: MouseEvent) => event.preventDefault() // Vue supplement: prevents click from stealing input focus (alternative to source zone container focusin refocus path, registered)
       }), slots.item?.({ item, active: Boolean(active), selected }) ?? [
-        h('div', { class: 'autocomplete-menu__content', 'data-size': size }, [
-          h('span', { class: 'autocomplete-menu__spacer' }),
+        h('div', { class: classes['autocomplete-menu__content'], 'data-size': size }, [
+          h('span', { class: classes['autocomplete-menu__spacer'] }),
           props.selectionVariant === 'multiple'
-            ? h('span', { class: 'autocomplete-menu__leading-action autocomplete-menu__visual-wrap', 'data-component': 'ActionList.Selection' }, [
-                h('div', { class: 'autocomplete-menu__multi-select-checkbox' })
+            ? h('span', { class: [classes['autocomplete-menu__leading-action'], classes['autocomplete-menu__visual-wrap']], 'data-component': 'ActionList.Selection' }, [
+                h('div', { class: classes['autocomplete-menu__multi-select-checkbox'] })
               ])
-            : h('span', { class: 'autocomplete-menu__leading-action autocomplete-menu__visual-wrap', 'data-component': 'ActionList.Selection' }, [
-                h(CheckIcon, { class: 'autocomplete-menu__single-select-checkmark' })
+            : h('span', { class: [classes['autocomplete-menu__leading-action'], classes['autocomplete-menu__visual-wrap']], 'data-component': 'ActionList.Selection' }, [
+                h(CheckIcon, { class: classes['autocomplete-menu__single-select-checkmark'] })
               ]),
           visualOrIndicator('leading'),
-          h('span', { class: 'autocomplete-menu__sub-content', 'data-component': 'ActionList.Item--DividerContainer' }, [
-            h('span', { id: labelId, class: 'autocomplete-menu__label', 'data-component': 'ActionList.Item.Label' }, [
+          h('span', { class: classes['autocomplete-menu__sub-content'], 'data-component': 'ActionList.Item--DividerContainer' }, [
+            h('span', { id: labelId, class: classes['autocomplete-menu__label'], 'data-component': 'ActionList.Item.Label' }, [
               renderNode(children ?? text),
-              loading === true && !inactive ? h('span', { class: 'autocomplete-menu__visually-hidden' }, 'Loading') : null
+              loading === true && !inactive ? h('span', { class: classes['autocomplete-menu__visually-hidden'] }, 'Loading') : null
             ]),
             visualOrIndicator('trailing'),
             !showInactiveIndicator && inactiveText
-              ? h('span', { class: 'autocomplete-menu__inactive-warning', id: inactiveWarningId }, inactiveText)
+              ? h('span', { class: classes['autocomplete-menu__inactive-warning'], id: inactiveWarningId }, inactiveText)
               : null
           ])
         ])
@@ -523,11 +524,11 @@ export default defineComponent({
       const shown = context.showMenu.value
       const { class: ulClass, style: ulStyle, ...restAttrs } = attrs
       return h('span', {
-        class: shown ? undefined : 'autocomplete-menu__visually-hidden',
+        class: shown ? undefined : classes['autocomplete-menu__visually-hidden'],
         hidden: shown ? undefined : true
       }, [
         props.loading
-          ? h('div', { class: 'autocomplete-menu__loading' }, [h(Spinner)]) // :359-362 SpinnerWrapper
+          ? h('div', { class: classes['autocomplete-menu__loading'] }, [h(Spinner)]) // :359-362 SpinnerWrapper
           : h('div', {
               ref: listContainerRef, // :364
               onFocusin: (event: FocusEvent) => {
@@ -560,11 +561,11 @@ export default defineComponent({
                     'data-component': 'Autocomplete.Menu',
                     'data-dividers': 'false',
                     'data-variant': 'inset',
-                    class: ['autocomplete-menu', ulClass],
+                    class: [classes['autocomplete-menu'], ulClass],
                     style: normalizeReactStyle(ulStyle)
                   }, allItems.value.map(renderItem))
                 : props.emptyStateText !== false && props.emptyStateText !== null
-                  ? h('div', { class: 'autocomplete-menu__empty' }, [ // :409-411 —— plain div (EmptyStateWrapper), no AriaStatus
+                  ? h('div', { class: classes['autocomplete-menu__empty'] }, [ // :409-411 —— plain div (EmptyStateWrapper), no AriaStatus
                       Object.prototype.hasOwnProperty.call(instance.vnode.props, 'emptyStateText') || Object.prototype.hasOwnProperty.call(instance.vnode.props, 'empty-state-text')
                         ? renderNode(props.emptyStateText as NodeProp)
                         : slots.emptyState?.() ?? renderNode(props.emptyStateText as NodeProp)
@@ -577,69 +578,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-.autocomplete-menu__visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
-.autocomplete-menu__loading { display: flex; justify-content: center; padding: var(--base-size-16, 1rem); }
-.autocomplete-menu__empty { padding: var(--base-size-16, 1rem); }
-.autocomplete-menu { padding: 0; margin: 0; list-style: none; padding-block: var(--base-size-8, 0.5rem); }
-.autocomplete-menu__item { position: relative; list-style: none; background-color: var(--control-transparent-bgColor-rest, #ffffff00); border-radius: var(--borderRadius-medium, 0.375rem); margin-inline: var(--base-size-8, 0.5rem); }
-.autocomplete-menu__content { position: relative; display: grid; width: 100%; color: var(--control-fgColor-rest, #25292e); text-align: left; user-select: none; background-color: transparent; border: none; border-radius: var(--borderRadius-medium, 0.375rem); transition: background 33.333ms linear; padding-block: var(--control-medium-paddingBlock, 0.375rem); padding-inline: var(--control-medium-paddingInline-condensed, 0.5rem); touch-action: manipulation; -webkit-tap-highlight-color: transparent; grid-template-rows: min-content; grid-template-areas: 'spacer leadingAction leadingVisual content'; grid-template-columns: min-content min-content min-content minmax(0, auto); align-items: start; }
-.autocomplete-menu__content > :not(:last-child):not(.autocomplete-menu__spacer) { margin-right: var(--control-medium-gap, 0.5rem); }
-.autocomplete-menu__content:hover { text-decoration: none; cursor: pointer; }
-.autocomplete-menu__content[data-size='large'] { padding-block: var(--control-large-paddingBlock, 0.625rem); }
-.autocomplete-menu__spacer { display: none; width: 0px; grid-area: spacer; }
-.autocomplete-menu__leading-action { grid-area: leadingAction; }
-.autocomplete-menu__leading-visual { grid-area: leadingVisual; }
-.autocomplete-menu__visual-wrap { display: flex; min-width: max-content; min-height: var(--base-size-20, 1.25rem); line-height: 20px; color: var(--fgColor-muted, #59636e); pointer-events: none; fill: var(--fgColor-muted, #59636e); align-items: center; }
-.autocomplete-menu__sub-content { grid-area: content; position: relative; display: grid; width: 100%; grid-template-rows: min-content; grid-template-areas: 'label trailingVisual trailingAction'; grid-template-columns: minmax(0, auto) min-content min-content; align-items: start; }
-.autocomplete-menu__sub-content > :not(:last-child) { margin-right: var(--control-medium-gap, 0.5rem); }
-.autocomplete-menu__trailing-visual { grid-area: trailingVisual; font-size: var(--text-body-size-medium, 0.875rem); }
-.autocomplete-menu__label { position: relative; font-size: var(--text-body-size-medium, 0.875rem); font-weight: var(--base-text-weight-normal, 400); line-height: 20px; color: var(--fgColor-default, #1f2328); grid-area: label; word-break: break-word; }
-.autocomplete-menu__inactive-warning { font-size: var(--text-body-size-small, 0.75rem); line-height: 16px; color: var(--fgColor-attention, #9a6700); grid-row: 2/2; }
-@media (hover: hover) {
-  .autocomplete-menu__item:not([data-is-disabled]):hover, .autocomplete-menu__item:not([data-is-disabled]):active { cursor: pointer; }
-  .autocomplete-menu__item:not([data-is-disabled]):hover { background-color: var(--control-transparent-bgColor-hover, #818b981a); }
-}
-.autocomplete-menu__item:not([data-is-disabled]):active { background-color: var(--control-transparent-bgColor-active, #818b9826); }
-.autocomplete-menu__item[data-variant='danger']:not([data-is-disabled]) .autocomplete-menu__leading-action,
-.autocomplete-menu__item[data-variant='danger']:not([data-is-disabled]) .autocomplete-menu__leading-visual,
-.autocomplete-menu__item[data-variant='danger']:not([data-is-disabled]) .autocomplete-menu__label { color: var(--control-danger-fgColor-rest, #d1242f); }
-@media (hover: hover) {
-  .autocomplete-menu__item[data-variant='danger']:not([data-is-disabled]):hover { background: var(--control-danger-bgColor-hover, #ffebe9); }
-}
-.autocomplete-menu__item[data-variant='danger']:not([data-is-disabled]):active { background: var(--control-danger-bgColor-active, #ffebe966); }
-.autocomplete-menu__item[data-active], .autocomplete-menu__item[data-is-active-descendant] { background: var(--control-transparent-bgColor-selected, #818b9826); outline: 2px solid transparent; }
-.autocomplete-menu__item[data-active] .autocomplete-menu__label { font-weight: var(--base-text-weight-semibold, 600); color: var(--control-fgColor-rest, #25292e); }
-@media (hover: hover) {
-  .autocomplete-menu__item[data-active]:hover { background-color: var(--control-transparent-bgColor-hover, #818b981a); }
-}
-.autocomplete-menu__item[data-active]::after, .autocomplete-menu__item[data-is-active-descendant]::after { position: absolute; top: var(--base-size-4, 0.25rem); left: calc(-1 * var(--base-size-8, 0.5rem)); width: var(--base-size-4, 0.25rem); height: calc(100% - var(--base-size-8, 0.5rem)); content: ''; background: var(--borderColor-accent-emphasis, #0969da); border-radius: var(--borderRadius-medium, 0.375rem); }
-.autocomplete-menu__item[data-inactive='true'] *:not(.autocomplete-menu__inactive-warning) { color: var(--fgColor-muted, #59636e); }
-@media (hover: hover) {
-  .autocomplete-menu__item[data-inactive='true']:hover { cursor: not-allowed; background-color: transparent; }
-}
-.autocomplete-menu__item[data-inactive='true']:active { background: transparent; }
-.autocomplete-menu__item[data-loading='true'] .autocomplete-menu__label,
-.autocomplete-menu__item[data-loading='true'] .autocomplete-menu__leading-visual,
-.autocomplete-menu__item[data-loading='true'] .autocomplete-menu__trailing-visual,
-.autocomplete-menu__item[data-loading='true'] .autocomplete-menu__leading-action,
-.autocomplete-menu__item[data-loading='true'] .autocomplete-menu__visual-wrap { color: var(--fgColor-muted, #59636e); }
-.autocomplete-menu__item[data-is-disabled] .autocomplete-menu__content * { color: var(--control-fgColor-disabled, #818b98); }
-@media (hover: hover) {
-  .autocomplete-menu__item[data-is-disabled] .autocomplete-menu__content:hover { cursor: not-allowed; background-color: transparent; }
-  .autocomplete-menu__item[data-is-disabled]:hover { background-color: transparent; }
-}
-.autocomplete-menu__item[data-is-disabled] .autocomplete-menu__multi-select-checkbox { background-color: var(--control-bgColor-disabled, #eff2f5); border-color: var(--control-borderColor-disabled, #818b981a); }
-.autocomplete-menu__item[data-is-disabled][aria-selected='true'] .autocomplete-menu__multi-select-checkbox { background-color: var(--control-checked-bgColor-disabled, #818b98); border-color: var(--control-checked-bgColor-disabled, #818b98); }
-.autocomplete-menu__item[data-is-disabled][aria-selected='true'] .autocomplete-menu__multi-select-checkbox::before { background-color: var(--control-checked-fgColor-disabled, #ffffff); }
-.autocomplete-menu__multi-select-checkbox { position: relative; display: grid; width: var(--base-size-16, 1rem); height: var(--base-size-16, 1rem); margin: 0; cursor: pointer; background-color: var(--bgColor-default, #ffffff); border: var(--borderWidth-thin, 0.0625rem) solid var(--control-borderColor-emphasis, #818b98); border-radius: var(--borderRadius-small, 0.1875rem); transition: background-color, border-color 80ms cubic-bezier(0.33, 1, 0.68, 1); place-content: center; }
-.autocomplete-menu__multi-select-checkbox::before { width: var(--base-size-16, 1rem); height: var(--base-size-16, 1rem); content: ''; background-color: var(--control-checked-fgColor-rest, #ffffff); transition: visibility 0s linear 230ms; clip-path: inset(var(--base-size-16, 1rem) 0 0 0); mask-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOSIgdmlld0JveD0iMCAwIDEyIDkiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTEuNzgwMyAwLjIxOTYyNUMxMS45MjEgMC4zNjA0MjcgMTIgMC41NTEzMDUgMTIgMC43NTAzMTNDMTIgMC45NDkzMjEgMTEuOTIxIDEuMTQwMTkgMTEuNzgwMyAxLjI4MUw0LjUxODYgOC41NDA0MkM0LjM3Nzc1IDguNjgxIDQuMTg2ODIgOC43NiAzLjk4Nzc0IDguNzZDMy43ODg2NyA4Ljc2IDMuNTk3NzMgOC42ODEgMy40NTY4OSA4LjU0MDQyTDAuMjAxNjIyIDUuMjg2MkMwLjA2ODkyNzcgNS4xNDM4MyAtMC4wMDMzMDkwNSA0Ljk1NTU1IDAuMDAwMTE2NDkzIDQuNzYwOThDMC4wMDM1NTIwNSA0LjU2NjQzIDAuMDgyMzg5NCA0LjM4MDgxIDAuMjIwMDMyIDQuMjQzMjFDMC4zNTc2NjUgNC4xMDU2MiAwLjU0MzM1NSA0LjAyNjgxIDAuNzM3OTcgNC4wMjMzOEMwLjkzMjU4NCA0LjAxOTk0IDEuMTIwOTMgNC4wOTIxNyAxLjI2MzM0IDQuMjI0ODJMMy45ODc3NCA2Ljk0ODM1TDEwLjcxODYgMC4yMTk2MjVDMTAuODU5NSAwLjA3ODk5MjMgMTEuMDUwNCAwIDExLjI0OTUgMEMxMS40NDg1IDAgMTEuNjM5NSAwLjA3ODk5MjMgMTEuNzgwMyAwLjIxOTYyNVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPg=='); mask-size: 75%; mask-repeat: no-repeat; mask-position: center; animation: autocomplete-checkmark-out 80ms cubic-bezier(0.65, 0, 0.35, 1); }
-.autocomplete-menu__item[aria-selected='true'] .autocomplete-menu__multi-select-checkbox { background-color: var(--control-checked-bgColor-rest, #0969da); border-color: var(--control-checked-borderColor-rest, #0969da); transition: background-color, border-color 80ms cubic-bezier(0.32, 0, 0.67, 0) 0ms; }
-.autocomplete-menu__item[aria-selected='true'] .autocomplete-menu__multi-select-checkbox::before { visibility: visible; transition: visibility 0s linear 0s; animation: autocomplete-checkmark-in 80ms cubic-bezier(0.65, 0, 0.35, 1) forwards 80ms; }
-.autocomplete-menu__item[aria-selected='false'] .autocomplete-menu__multi-select-checkbox::before { visibility: hidden; }
-.autocomplete-menu__single-select-checkmark { visibility: hidden; }
-.autocomplete-menu__item[aria-selected='true'] .autocomplete-menu__single-select-checkmark { visibility: visible; }
-.autocomplete-menu__item[aria-selected='false'] .autocomplete-menu__single-select-checkmark { visibility: hidden; }
-@keyframes autocomplete-checkmark-in { from { clip-path: inset(var(--base-size-16, 1rem) 0 0 0); } to { clip-path: inset(0 0 0 0); } }
-@keyframes autocomplete-checkmark-out { from { clip-path: inset(0 0 0 0); } to { clip-path: inset(var(--base-size-16, 1rem) 0 0 0); } }
-</style>
+<style module src="./AutocompleteMenu.module.css"></style>

@@ -1,0 +1,127 @@
+.table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  outline: 1px solid var(--borderColor-default, #d1d9e0);
+  border-radius: 6px;
+  background: var(--bgColor-default, #ffffff);
+  color: var(--fgColor-default, #1f2328);
+  overflow: hidden;
+}
+
+.table:not(.is-bordered) {
+  border: none;
+  border-radius: 0;
+}
+
+
+.table__container {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--bgColor-default, #ffffff);
+}
+
+.table__table {
+  width: 100%;
+  min-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.875rem;
+}
+
+.table__sr-caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.table__head {
+  background: var(--bgColor-muted, #f6f8fa);
+}
+
+.table__cell {
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--borderColor-default, #d1d9e0);
+  vertical-align: middle;
+  background-clip: padding-box;
+  white-space: nowrap;
+}
+
+.table__cell.is-wrap {
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.table__cell--head {
+  font-weight: 600;
+  color: var(--fgColor-default, #1f2328);
+  background: var(--bgColor-muted, #f6f8fa);
+  position: relative;
+}
+
+.table__row--body:last-child .table__cell {
+  border-bottom: none;
+}
+
+.table.is-hoverable .table__row--body:hover {
+  background: var(--bgColor-muted, #f6f8fa);
+}
+
+.table__row.is-clickable {
+  cursor: pointer;
+}
+
+.table__row.is-clickable:active {
+  background: var(--bgColor-muted, #f6f8fa);
+}
+
+.table__cell--empty {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--fgColor-muted, #59636e);
+  font-weight: 500;
+}
+
+
+.table.is-compact .table__cell {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.table__header-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: inherit;
+}
+
+.is-row-header {
+  font-weight: 600;
+  color: var(--fgColor-default, #1f2328);
+}
+
+.is-align-left {
+  text-align: left;
+}
+
+.is-align-center {
+  text-align: center;
+}
+
+.is-align-right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 768px) {
+  .table__cell {
+    padding: 0.65rem 0.85rem;
+  }
+}

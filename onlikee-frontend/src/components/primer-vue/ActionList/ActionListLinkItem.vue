@@ -1,4 +1,5 @@
 <script lang="ts">
+import classes from './ActionList.module.css'
 import { defineComponent, h, ref, type Component, type PropType } from 'vue'
 import Item from './ActionListItemBase.vue'
 import Tooltip from '../TooltipV2/Tooltip.vue'
@@ -28,7 +29,7 @@ export default defineComponent({
         const { onClick, ...rest } = bindings
         if (props.inactiveText) return h('span', rest, children)
         const { class: _class, ...linkAttrs } = attrs
-        const link = h(props.as, { 'data-component': 'Link', ...rest, ...linkAttrs, ref: setElement, class: [rest.class, 'action-list-link'], style: normalizeReactStyle(attrs.style),
+        const link = h(props.as, { 'data-component': 'Link', ...rest, ...linkAttrs, ref: setElement, class: [rest.class, classes['action-list-link']], style: normalizeReactStyle(attrs.style),
           onClick: (event: MouseEvent) => {
             (onClick as ((event: MouseEvent) => void) | undefined)?.(event)
             const handlers = attrs.onClick

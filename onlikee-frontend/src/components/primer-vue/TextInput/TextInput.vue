@@ -90,7 +90,7 @@ defineExpose({ input, element: input, focus: (options?: FocusOptions) => input.v
     <input
       ref="input"
       v-bind="nativeAttrs()"
-      class="text-input-native"
+      :class="$style['text-input-native']"
       :style="normalizeReactStyle([style, $attrs.style])"
       :type="type"
       :disabled="disabled"
@@ -108,7 +108,7 @@ defineExpose({ input, element: input, focus: (options?: FocusOptions) => input.v
     <span
       v-if="loading"
       :id="loadingId"
-      class="text-input-hidden"
+      :class="$style['text-input-hidden']"
     >{{ loaderText }}</span>
     <TextInputVisual
       :id="trailingId"
@@ -144,9 +144,4 @@ defineExpose({ input, element: input, focus: (options?: FocusOptions) => input.v
   />
   <template v-else-if="typeof characterLimit === 'number' && !characterLimit">{{ characterLimit }}</template>
 </template>
-
-<style scoped>
-.text-input-native { width: 100%; font-family: inherit; font-size: inherit; color: inherit; background-color: transparent; border: 0; appearance: none; }
-.text-input-native:focus { outline: 0; }
-.text-input-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
-</style>
+<style module src="./TextInput.module.css" />

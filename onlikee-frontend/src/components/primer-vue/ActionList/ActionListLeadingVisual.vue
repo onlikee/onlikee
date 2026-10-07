@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import classes from './ActionList.module.css'
 import { useAttrs } from 'vue'
 import { normalizeReactStyle } from '../internal/style'
 import type { ActionListLeadingVisualProps } from './types'
@@ -8,8 +9,7 @@ const attrs = useAttrs()
 </script>
 <template>
   <span
-    class="action-list-visual-wrap action-list-leading-visual"
-    :class="[className, attrs.class]"
+    :class="[classes['action-list-visual-wrap'], classes['action-list-leading-visual'], className, attrs.class]"
     data-component="ActionList.LeadingVisual"
     v-bind="attrs"
     :style="normalizeReactStyle(attrs.style)"

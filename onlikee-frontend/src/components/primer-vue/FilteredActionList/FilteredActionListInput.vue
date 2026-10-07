@@ -18,7 +18,7 @@ function textInputBindings() {
     'aria-controls': props.listId, 'aria-label': props.placeholderText,
     'aria-describedby': props.inputDescriptionTextId,
     loaderPosition: 'leading' as const, loading: props.loading,
-    className: [className, props.fullScreenOnNarrow ? 'filtered-action-list__fullscreen-input' : undefined].filter(Boolean).join(' ') || undefined,
+    className: typeof className === 'string' ? className : undefined,
     onChange: (event: Event) => emit('input-change', event),
     onKeydown: (event: KeyboardEvent) => emit('input-key-down', event),
     onKeypress: (event: KeyboardEvent) => emit('input-key-press', event),
@@ -38,7 +38,8 @@ defineExpose({ input, element: input, focus: () => input.value?.focus() })
 </script>
 <template>
   <div
-    class="filtered-action-list__header"
+    :class="$style['filtered-action-list__header']"
+    :data-full-screen-on-narrow="fullScreenOnNarrow ? 'true' : undefined"
     data-component="FilteredActionList.Header"
   >
     <TextInput
@@ -48,7 +49,4 @@ defineExpose({ input, element: input, focus: () => input.value?.focus() })
     />
   </div>
 </template>
-<style scoped>
-.filtered-action-list__header { box-shadow: 0 1px 0 var(--borderColor-default, #d1d9e0); z-index: 1; }
-@media screen and (max-width: calc(768px - 0.02px)) { @supports (-webkit-touch-callout: none) { .filtered-action-list__header :deep(.filtered-action-list__fullscreen-input) { font-size: var(--text-title-size-small, 16px); } } }
-</style>
+<style module src="./FilteredActionListInput.module.css" />

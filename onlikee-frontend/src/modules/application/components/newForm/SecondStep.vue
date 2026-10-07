@@ -80,7 +80,7 @@ function updateHtmlSource(value: string) {
 }
 
 .step-panel--invalid :deep(.html-editor-wrapper),
-.step-panel--invalid :deep(.upload-drop) {
+.step-panel--invalid :deep([data-component='Upload.Drop']) {
   border-color: var(--borderColor-danger-emphasis, #cf222e);
 }
 

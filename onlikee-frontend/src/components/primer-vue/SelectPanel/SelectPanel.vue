@@ -278,7 +278,7 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
 <template>
   <AnchoredOverlay
     ref="overlay"
-    class-name="select-panel__overlay"
+    :class-name="$style['select-panel__overlay']"
     :open="open"
     :render-anchor="renderAnchor === null ? null : ($slots.anchor && renderAnchor === undefined ? undefined : RenderAnchor)"
     :anchor-id="id"
@@ -308,19 +308,19 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
       />
     </template>
     <div
-      class="select-panel"
+      :class="$style['select-panel']"
       :data-variant="variant"
       data-component="SelectPanel"
     >
       <div
-        class="select-panel__header"
+        :class="$style['select-panel__header']"
         :data-variant="fullscreenEnabled ? (fullscreen ? 'fullscreen' : 'anchored') : undefined"
         data-component="SelectPanel.Header"
       >
         <div>
           <h1
             :id="titleId"
-            class="select-panel__title"
+            :class="$style['select-panel__title']"
             data-component="SelectPanel.Title"
           >
             <RenderTitle v-if="props.title !== undefined" />
@@ -334,7 +334,7 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
           <div
             v-if="subtitle !== undefined ? !!subtitle : !!$slots.subtitle"
             :id="subtitleId"
-            class="select-panel__subtitle"
+            :class="$style['select-panel__subtitle']"
             data-component="SelectPanel.Subtitle"
           >
             <RenderSubtitle v-if="subtitle !== undefined" />
@@ -348,7 +348,7 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
         </div>
         <Button
           v-if="variant === 'modal' && !narrow"
-          class="select-panel__close"
+          :class="$style['select-panel__close']"
           variant="invisible"
           :icon="XIcon"
           type="button"
@@ -363,7 +363,7 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
         data-component="SelectPanel.Notice"
       >
         <section
-          class="select-panel__notice"
+          :class="$style['select-panel__notice']"
           :data-variant="notice.variant === 'error' ? 'critical' : notice.variant"
           :aria-labelledby="noticeTitleId"
           data-component="Banner"
@@ -374,7 +374,7 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
           tabindex="-1"
         >
           <div
-            class="select-panel__notice-icon"
+            :class="$style['select-panel__notice-icon']"
             data-component="Banner.Icon"
           >
             <component
@@ -383,14 +383,14 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
               data-component="Octicon"
             />
           </div>
-          <div class="select-panel__notice-container">
+          <div :class="$style['select-panel__notice-container']">
             <div
-              class="select-panel__notice-content"
+              :class="$style['select-panel__notice-content']"
               data-component="Banner.Content"
             >
-              <span class="select-panel__visually-hidden"><h2
+              <span :class="$style['select-panel__visually-hidden']"><h2
                 :id="noticeTitleId"
-                class="select-panel__banner-title"
+                :class="$style['select-panel__banner-title']"
                 data-component="Banner.Title"
                 data-banner-title=""
               >Notice</h2></span>
@@ -422,14 +422,14 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
         :aria-label="props['aria-label']"
         :aria-multiselectable="multi ? 'true' : 'false'"
         :selection-variant="singleModal ? 'radio' : multi ? 'multiple' : 'single'"
-        :text-input-props="{ className: 'select-panel__filter', contrast: true, leadingVisual: SearchVisual, 'aria-label': inputLabel ?? placeholderText, ...textInputProps }"
+        :text-input-props="{ className: $style['select-panel__filter'], contrast: true, leadingVisual: SearchVisual, 'aria-label': inputLabel ?? placeholderText, ...textInputProps }"
         :loading="loading"
         :loading-type="loadingType"
         :message="message ? h(RenderMessage) : undefined"
         :message-text="{ title: message?.title || 'No items available', description: typeof message?.body === 'string' ? message.body : '' }"
         :show-select-all="showSelectAll"
         :full-screen-on-narrow="fullscreenEnabled"
-        :class-name="['select-panel__list', className].filter(Boolean).join(' ')"
+        :class-name="[$style['select-panel__list'], className].filter(Boolean).join(' ')"
         @filter-change="filterChange"
         @select-all-change="selectAll"
         @input-ref-changed="inputChanged"
@@ -438,7 +438,7 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
       />
       <div
         v-if="footer !== undefined ? !!footer : !!$slots.footer"
-        class="select-panel__footer"
+        :class="$style['select-panel__footer']"
         data-component="SelectPanel.Footer"
       >
         <RenderFooter v-if="footer !== undefined" />
@@ -451,14 +451,14 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
       </div>
       <div
         v-else-if="showFooter || $slots.secondaryAction"
-        class="select-panel__footer select-panel__responsive-footer"
+        :class="[$style['select-panel__footer'],$style['select-panel__responsive-footer']]"
         :data-display-footer="hasSecondary || variant === 'modal' ? 'always' : 'only-small'"
         :data-stretch-secondary-action="stretchSecondary"
         :data-stretch-save-button="stretchSave"
         data-component="SelectPanel.Footer"
       >
         <div
-          class="select-panel__secondary"
+          :class="$style['select-panel__secondary']"
           :data-stretch-secondary-action="stretchSecondary"
           data-component="SelectPanel.SecondaryAction"
         >
@@ -472,7 +472,7 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
         </div>
         <div
           v-if="variant === 'modal' || showResponsiveButtons"
-          :class="[variant === 'modal' || onCancel ? 'select-panel__buttons' : undefined, { 'select-panel__responsive-save-button': variant !== 'modal' }]"
+          :class="[variant === 'modal' || onCancel ? $style['select-panel__buttons'] : undefined, { [$style['select-panel__responsive-save-button']]: variant !== 'modal' }]"
           :data-stretch-save-button="stretchSave"
         >
           <Button
@@ -496,12 +496,8 @@ defineExpose({ element: computed(() => overlay.value?.element ?? null), anchor: 
   </AnchoredOverlay>
   <div
     v-if="open && variant === 'modal'"
-    class="select-panel__backdrop"
+    :class="$style['select-panel__backdrop']"
     data-component="SelectPanel.Backdrop"
   />
 </template>
-<style src="./SelectPanel.css" />
-<style scoped>
-.select-panel__title { margin-block: 0; font-weight: var(--base-text-weight-semibold, 600); }
-.select-panel :deep(svg[data-octicon]) { display: inline-block; vertical-align: text-bottom; }
-</style>
+<style module src="./SelectPanel.module.css" />

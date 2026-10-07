@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, useAttrs, useSlots, type Component } from 'vue'
+import { computed, onMounted, ref, useAttrs, useSlots, type Component , useCssModule} from 'vue'
 import Button from '../Button/Button.vue'
 import SelectPanelButton from '../SelectPanel/SelectPanelButton.vue'
 import Tooltip from '../TooltipV2/Tooltip.vue'
 import type { TextInputActionOptions } from './types'
 
 defineOptions({ inheritAttrs: false })
+const styles = useCssModule()
 const props = withDefaults(defineProps<TextInputActionOptions>(), {
   variant: 'invisible',
   tooltipDirection: undefined,
@@ -32,7 +33,7 @@ const accessibleLabel = computed<Record<string, unknown>>(() => {
 })
 const buttonBindings = computed(() => ({ ...restAttrs.value, ...accessibleLabel.value }))
 const buttonClassName = computed(() =>
-  [props.variant === 'invisible' ? 'text-input-action-invisible' : undefined, props.className].filter(Boolean).join(' ') || undefined)
+  [props.variant === 'invisible' ? styles['text-input-action-invisible'] : undefined, props.className].filter(Boolean).join(' ') || undefined)
 
 onMounted(() => {
   if (import.meta.env.DEV && ((props.icon && !ariaLabel.value) || (!hasChildren.value && !ariaLabel.value))) {
@@ -53,7 +54,7 @@ defineExpose({
 
 <template>
   <span
-    class="TextInput-action text-input-action"
+    :class="['TextInput-action', $style['text-input-action']]"
     data-component="TextInput.Action"
   >
     <SelectPanelButton
@@ -72,7 +73,7 @@ defineExpose({
         v-if="ariaLabel"
         :text="ariaLabel"
         :direction="tooltipDirection"
-        class-name="text-input-action-conditional-tooltip"
+        :class-name="$style['text-input-action-conditional-tooltip']"
       >
         <Button
           ref="buttonRef"
@@ -97,46 +98,4 @@ defineExpose({
     </template>
   </span>
 </template>
-
-<style scoped>
-.text-input-action {
-  margin-right: var(--base-size-4, 4px);
-  margin-left: var(--base-size-4, 4px);
-  /* stylelint-disable-next-line primer/typography */
-  line-height: 0;
-}
-</style>
-
-<style>
-.text-input-action-invisible {
-  position: relative;
-  padding-top: var(--base-size-2, 2px);
-  padding-right: var(--base-size-4, 4px);
-  padding-bottom: var(--base-size-2, 2px);
-  padding-left: var(--base-size-4, 4px);
-  color: var(--fgColor-muted, #59636e);
-  background-color: transparent;
-}
-.text-input-action-invisible:hover,
-.text-input-action-invisible:focus {
-  color: var(--fgColor-default, #1f2328);
-}
-.text-input-action-invisible[data-component='IconButton'] {
-  width: var(--inner-action-size, 24px);
-  height: var(--inner-action-size, 24px);
-}
-@media (pointer: coarse) {
-  .text-input-action-invisible ::after {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    left: 0;
-    min-height: 44px;
-    content: '';
-    transform: translateY(-50%);
-  }
-}
-.text-input-action-conditional-tooltip {
-  display: inline-block;
-}
-</style>
+<style module src="./TextInputAction.module.css" />

@@ -42,7 +42,7 @@ function menuItems() { return Array.from(document.querySelectorAll<HTMLElement>(
 async function overflow(wrapper: VueWrapper, selector = '[data-component="IconButton"], [data-component="Button"], [data-component="ActionBar.VerticalDivider"]') {
   observers[0]!.notify(wrapper.findAll(selector).map(node => node.element), 0)
   await settle()
-  await wrapper.get('.action-bar-more').trigger('click')
+  await wrapper.get('[class*="action-bar-more_"]').trigger('click')
   await settle()
 }
 beforeEach(() => {
@@ -65,7 +65,7 @@ describe('ActionBar behavior', () => {
     expect(observers[0]!.elements.has(wrapper.get('[data-component=IconButton]').element)).toBe(true)
     await overflow(wrapper)
     const menu = document.querySelector('[role=menu]')!
-    expect(menu.getAttribute('aria-labelledby')).toBe(wrapper.get('.action-bar-more').attributes('aria-labelledby'))
+    expect(menu.getAttribute('aria-labelledby')).toBe(wrapper.get('[class*="action-bar-more_"]').attributes('aria-labelledby'))
   })
   it('labels the toolbar and inherits size, gap and flush', async () => {
     const wrapper = render(() => [icon('Bold'), text('Code'), h(ActionBar.Group, null, { default: () => icon('Italic') }), h(ActionBar.Divider)], { size: 'large', gap: 'none', flush: true, class: 'custom' })
@@ -136,7 +136,7 @@ describe('ActionBar behavior', () => {
     expect(menuItems().map(item => item.textContent?.trim())).toEqual(['First', 'Last'])
     observers[0]!.notify([...observers[0]!.elements], 1); await settle()
     expect(menuItems()).toHaveLength(0)
-    expect(wrapper.get('.action-bar-more').attributes('data-more-button-inactive')).toBe('true')
+    expect(wrapper.get('[class*="action-bar-more_"]').attributes('data-more-button-inactive')).toBe('true')
     wrapper.unmount(); wrappers.splice(wrappers.indexOf(wrapper), 1)
     expect(observers[0]!.elements.size).toBe(0)
   })
@@ -161,7 +161,7 @@ describe('ActionBar behavior', () => {
     observers[0]!.notify([wrapper.get('[aria-label=Disabled]').element, wrapper.get('[aria-label=Last]').element], 0)
     await settle()
     first.focus(); keyboard(first, 'End')
-    expect(document.activeElement).toBe(wrapper.get('.action-bar-more').element)
+    expect(document.activeElement).toBe(wrapper.get('[class*="action-bar-more_"]').element)
     keyboard(document.activeElement!, 'Home')
     expect(document.activeElement).toBe(first)
   })

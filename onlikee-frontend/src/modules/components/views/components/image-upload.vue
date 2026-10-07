@@ -52,7 +52,7 @@ const apiCols: TableColumn[] = [
 const apiRows = [
   { name: 'modelValue', default: '[]', type: 'ImageUploadFile[]', description: '最多一张已选择或已确认裁剪的图片；置空后回退显示 previewUrl，两者均为空时显示空态。不绑定时也可在组件内预览。' },
   { name: 'previewUrl', default: "''", type: 'string', description: '已有图片的预览地址，支持动态更新；本地选择或确认裁剪后的图片优先展示。仅用于回显，不写入 modelValue，也不触发上传或裁剪。' },
-  { name: 'width', default: "''", type: 'string', description: '上传区域 .upload-drop 的宽度，支持 CSS 尺寸值，如 100px、100%；未设置时占满父容器宽度。' },
+  { name: 'width', default: "''", type: 'string', description: '上传区域的宽度，支持 CSS 尺寸值，如 100px、100%；未设置时占满父容器宽度。' },
   { name: 'circle', default: 'false', type: 'boolean', description: '以圆形显示上传区域和图片预览，不改变返回文件的形状。可与 crop 搭配使用。' },
   { name: 'crop', default: 'false', type: 'boolean', description: '是否启用裁剪。默认直接返回原图；启用后确认裁剪才提交。关闭时取消正在进行的裁剪并保留旧值。' },
   { name: 'accept', default: "''", type: 'string', description: '在 JPG、JPEG、PNG、WEBP、SVG 中进一步筛选，支持扩展名、MIME 和 image/*；不能扩大默认范围。' },

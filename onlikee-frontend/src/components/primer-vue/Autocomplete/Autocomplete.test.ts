@@ -330,7 +330,7 @@ describe('Autocomplete source contract', () => {
     const danger = wrapper.get('#danger')
     expect(danger.attributes('data-variant')).toBe('danger')
     expect(danger.attributes('data-size')).toBeUndefined()
-    expect(danger.get('.autocomplete-menu__content').attributes('data-size')).toBe('large')
+    expect(danger.get('[data-size="large"]').attributes('data-size')).toBe('large')
     expect(danger.attributes('tabindex')).toBe('0')
     await danger.trigger('keypress', { key: 'Enter' })
     expect(selected).toHaveBeenCalledWith([sourceItems[2]])

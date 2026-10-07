@@ -292,7 +292,7 @@ describe('ActionMenu public behavior', () => {
     vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: true, addEventListener: vi.fn(), removeEventListener: vi.fn() })))
     const wrapper = render(() => [h(ActionMenu.Button, null, { default: () => 'Responsive' }), h(ActionMenu.Overlay, { variant: { narrow: 'fullscreen' }, maxHeight: 'small', overflow: 'auto' }, { default: () => h(ActionList, null, { default: () => item('Copy') }) })])
     keyboard(wrapper.get('button').element, 'Enter'); await settle()
-    expect(document.querySelector('.action-menu-container')?.getAttribute('data-variant')).toBe('fullscreen')
+    expect(document.querySelector('[class*="action-menu-container_"]')?.getAttribute('data-variant')).toBe('fullscreen')
     keyboard(items()[0]!, 'Tab'); await settle()
     expect(menus()).toHaveLength(1)
     click(document.querySelector('[data-component="AnchoredOverlay.CloseButton"]')!); await settle()
