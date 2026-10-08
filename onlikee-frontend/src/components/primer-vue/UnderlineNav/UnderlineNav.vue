@@ -1,22 +1,36 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, provide, shallowRef, useTemplateRef, watch, type CSSProperties, type VNode } from 'vue'
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  provide,
+  shallowRef,
+  useTemplateRef,
+  watch,
+  type CSSProperties,
+  type VNode,
+} from 'vue'
 import { underlineNavKey, type UnderlineNavBreakpoint, type UnderlineNavEntry } from './context'
 
 defineOptions({ inheritAttrs: false })
 
-const props = withDefaults(defineProps<{
-  as?: string
-  ariaLabel?: string
-  loadingCounters?: boolean
-  variant?: 'inset' | 'flush'
-  hideIconsBreakpoint?: UnderlineNavBreakpoint | null
-}>(), {
-  as: 'nav',
-  ariaLabel: undefined,
-  loadingCounters: false,
-  variant: 'inset',
-  hideIconsBreakpoint: 'medium'
-})
+const props = withDefaults(
+  defineProps<{
+    as?: string
+    ariaLabel?: string
+    loadingCounters?: boolean
+    variant?: 'inset' | 'flush'
+    hideIconsBreakpoint?: UnderlineNavBreakpoint | null
+  }>(),
+  {
+    as: 'nav',
+    ariaLabel: undefined,
+    loadingCounters: false,
+    variant: 'inset',
+    hideIconsBreakpoint: 'medium',
+  },
+)
 
 const RenderNodes = (props: { nodes: VNode[] }) => props.nodes
 const wrapperRef = useTemplateRef<HTMLElement>('wrapper')
@@ -27,10 +41,18 @@ const menuStyle = shallowRef<CSSProperties>({})
 const entries = shallowRef<UnderlineNavEntry[]>([])
 const overflowIds = shallowRef<string[]>([])
 const menuOpen = shallowRef(false)
-const overflowEntries = computed(() => entries.value
-  .filter(entry => overflowIds.value.includes(entry.id))
-  .sort((left, right) => overflowIds.value.indexOf(left.id) - overflowIds.value.indexOf(right.id)))
-const overflowingCurrentItem = computed(() => overflowEntries.value.some(entry => entry.current !== undefined && entry.current !== false && entry.current !== 'false'))
+const overflowEntries = computed(() =>
+  entries.value
+    .filter((entry) => overflowIds.value.includes(entry.id))
+    .sort(
+      (left, right) => overflowIds.value.indexOf(left.id) - overflowIds.value.indexOf(right.id),
+    ),
+)
+const overflowingCurrentItem = computed(() =>
+  overflowEntries.value.some(
+    (entry) => entry.current !== undefined && entry.current !== false && entry.current !== 'false',
+  ),
+)
 let resizeObserver: ResizeObserver | undefined
 let measureFrame = 0
 
@@ -40,9 +62,15 @@ function measureOverflow() {
 
   const items = Array.from(list.querySelectorAll<HTMLLIElement>(':scope > [data-nav-id]'))
   const firstTop = items[0]?.offsetTop
-  const next = firstTop === undefined ? [] : items.filter(item => item.offsetTop > firstTop).map(item => item.dataset.navId ?? '')
+  const next =
+    firstTop === undefined
+      ? []
+      : items.filter((item) => item.offsetTop > firstTop).map((item) => item.dataset.navId ?? '')
 
-  if (next.length !== overflowIds.value.length || next.some((id, index) => id !== overflowIds.value[index])) {
+  if (
+    next.length !== overflowIds.value.length ||
+    next.some((id, index) => id !== overflowIds.value[index])
+  ) {
     overflowIds.value = next
   }
 }
@@ -56,26 +84,27 @@ function scheduleMeasure() {
 }
 
 function register(entry: UnderlineNavEntry) {
-  const index = entries.value.findIndex(item => item.id === entry.id)
-  entries.value = index < 0
-    ? [...entries.value, entry]
-    : entries.value.map(item => item.id === entry.id ? entry : item)
+  const index = entries.value.findIndex((item) => item.id === entry.id)
+  entries.value =
+    index < 0
+      ? [...entries.value, entry]
+      : entries.value.map((item) => (item.id === entry.id ? entry : item))
   if (entry.element) resizeObserver?.observe(entry.element)
   nextTick(scheduleMeasure)
 }
 
 function unregister(id: string) {
-  const element = entries.value.find(entry => entry.id === id)?.element
+  const element = entries.value.find((entry) => entry.id === id)?.element
   if (element) resizeObserver?.unobserve(element)
-  entries.value = entries.value.filter(entry => entry.id !== id)
+  entries.value = entries.value.filter((entry) => entry.id !== id)
   nextTick(scheduleMeasure)
 }
 
 provide(underlineNavKey, {
   loadingCounters: () => props.loadingCounters,
-  isOverflowing: id => overflowIds.value.includes(id),
+  isOverflowing: (id) => overflowIds.value.includes(id),
   register,
-  unregister
+  unregister,
 })
 
 function closeMenu() {
@@ -83,7 +112,11 @@ function closeMenu() {
 }
 
 function handleDocumentClick(event: MouseEvent) {
-  if (!wrapperRef.value?.contains(event.target as Node) && !menuRef.value?.contains(event.target as Node)) closeMenu()
+  if (
+    !wrapperRef.value?.contains(event.target as Node) &&
+    !menuRef.value?.contains(event.target as Node)
+  )
+    closeMenu()
 }
 
 function handleKeydown(event: KeyboardEvent) {
@@ -97,12 +130,13 @@ function positionMenu() {
   if (!anchor) return
   const menuWidth = menuRef.value?.offsetWidth ?? 192
   const menuHeight = menuRef.value?.offsetHeight ?? 0
-  const top = anchor.bottom + 4 + menuHeight > window.innerHeight && anchor.top - menuHeight - 4 >= 8
-    ? anchor.top - menuHeight - 4
-    : anchor.bottom + 4
+  const top =
+    anchor.bottom + 4 + menuHeight > window.innerHeight && anchor.top - menuHeight - 4 >= 8
+      ? anchor.top - menuHeight - 4
+      : anchor.bottom + 4
   menuStyle.value = {
     top: `${top}px`,
-    left: `${Math.max(8, Math.min(anchor.right - menuWidth, window.innerWidth - menuWidth - 8))}px`
+    left: `${Math.max(8, Math.min(anchor.right - menuWidth, window.innerWidth - menuWidth - 8))}px`,
   }
 }
 
@@ -112,8 +146,12 @@ function handleMenuKeydown(event: KeyboardEvent) {
   if (!links.length) return
   event.preventDefault()
   const index = links.indexOf(document.activeElement as HTMLAnchorElement)
-  const next = event.key === 'Home' ? 0 : event.key === 'End' ? links.length - 1
-    : (index + (event.key === 'ArrowDown' ? 1 : -1) + links.length) % links.length
+  const next =
+    event.key === 'Home'
+      ? 0
+      : event.key === 'End'
+        ? links.length - 1
+        : (index + (event.key === 'ArrowDown' ? 1 : -1) + links.length) % links.length
   links[next]?.focus()
 }
 
@@ -123,11 +161,11 @@ function selectOverflowItem(entry: UnderlineNavEntry, event: MouseEvent) {
   moreRef.value?.focus()
 }
 
-watch(overflowEntries, items => {
+watch(overflowEntries, (items) => {
   if (!items.length) closeMenu()
 })
 
-watch(menuOpen, async open => {
+watch(menuOpen, async (open) => {
   if (!open) {
     window.removeEventListener('resize', positionMenu)
     window.removeEventListener('scroll', positionMenu, true)
@@ -165,10 +203,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <h2
-    v-if="ariaLabel"
-    :class="[$style['underline-nav-visually-hidden']]"
-  >
+  <h2 v-if="ariaLabel" :class="[$style['underline-nav-visually-hidden']]">
     {{ ariaLabel }} navigation
   </h2>
   <component
@@ -182,26 +217,12 @@ onBeforeUnmount(() => {
     :data-has-overflow="overflowEntries.length ? 'true' : undefined"
     @keydown="handleKeydown"
   >
-    <ul
-      ref="list"
-      :class="[$style['underline-nav-list']]"
-      role="list"
-    >
-      <li
-        :class="[$style['underline-nav-spacer']]"
-        role="presentation"
-        aria-hidden="true"
-      />
+    <ul ref="list" :class="[$style['underline-nav-list']]" role="list">
+      <li :class="[$style['underline-nav-spacer']]" role="presentation" aria-hidden="true" />
       <slot />
     </ul>
-    <div
-      v-if="overflowEntries.length"
-      :class="[$style['underline-nav-more-container']]"
-    >
-      <span
-        :class="[$style['underline-nav-divider']]"
-        aria-hidden="true"
-      />
+    <div v-if="overflowEntries.length" :class="[$style['underline-nav-more-container']]">
+      <span :class="[$style['underline-nav-divider']]" aria-hidden="true" />
       <button
         ref="more"
         type="button"
@@ -223,18 +244,14 @@ onBeforeUnmount(() => {
           :style="menuStyle"
           @keydown="handleMenuKeydown"
         >
-          <li
-            v-for="entry in overflowEntries"
-            :key="entry.id"
-            role="none"
-          >
+          <li v-for="entry in overflowEntries" :key="entry.id" role="none">
             <component
               :is="entry.as"
               v-bind="entry.attrs"
               :class="[$style['underline-nav-menu-item']]"
               role="menuitem"
               :type="entry.as === 'button' ? 'button' : undefined"
-              :href="entry.as === 'a' ? entry.href ?? '#' : entry.href"
+              :href="entry.as === 'a' ? (entry.href ?? '#') : entry.href"
               :target="entry.target"
               :rel="entry.rel"
               :aria-current="entry.current"
@@ -245,13 +262,12 @@ onBeforeUnmount(() => {
                 v-if="entry.counter !== undefined"
                 :class="[$style['underline-nav-menu-counter']]"
               >
-                <span
-                  v-if="loadingCounters"
-                  :class="[$style['underline-nav-loading']]"
-                />
+                <span v-if="loadingCounters" :class="[$style['underline-nav-loading']]" />
                 <template v-else>
                   <span aria-hidden="true">{{ entry.counter }}</span>
-                  <span :class="[$style['underline-nav-visually-hidden']]">&nbsp;({{ entry.counter }})</span>
+                  <span :class="[$style['underline-nav-visually-hidden']]"
+                    >&nbsp;({{ entry.counter }})</span
+                  >
                 </template>
               </span>
             </component>

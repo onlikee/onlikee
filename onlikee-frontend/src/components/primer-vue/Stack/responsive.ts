@@ -2,7 +2,7 @@ import type { StackResponsive } from './types'
 
 export function getResponsiveAttributes<T extends string | boolean>(
   property: string,
-  value?: StackResponsive<T>
+  value?: StackResponsive<T>,
 ): Record<string, T> {
   if (value === undefined) return {}
   if (typeof value !== 'object') return { [`data-${property}`]: value }

@@ -8,26 +8,59 @@ import TextInputWithTokens from './TextInputWithTokens.vue'
 import Token from '../Token'
 import type { TextInputWithTokensProps } from './types'
 
-const tokens = [ { id: 'one', text: 'One' }, { id: 'two', text: 'Two' }, { id: 'three', text: 'Three' } ]
+const tokens = [
+  { id: 'one', text: 'One' },
+  { id: 'two', text: 'Two' },
+  { id: 'three', text: 'Three' },
+]
 const mounted: VueWrapper[] = []
-const tick = async () => { await nextTick(); await nextTick(); await nextTick() }
-function setup(props: Partial<Omit<TextInputWithTokensProps, 'tokenComponent'>> & { tokenComponent?: Component } = {}) {
-  const wrapper = mount(TextInputWithTokens, { props: { tokens, ...props }, attachTo: document.body })
+const tick = async () => {
+  await nextTick()
+  await nextTick()
+  await nextTick()
+}
+function setup(
+  props: Partial<Omit<TextInputWithTokensProps, 'tokenComponent'>> & {
+    tokenComponent?: Component
+  } = {},
+) {
+  const wrapper = mount(TextInputWithTokens, {
+    props: { tokens, ...props },
+    attachTo: document.body,
+  })
   mounted.push(wrapper)
   return wrapper
 }
-beforeEach(() => { vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }))) })
-afterEach(() => { mounted.splice(0).forEach(wrapper => wrapper.unmount()); document.body.innerHTML = ''; vi.useRealTimers() })
+beforeEach(() => {
+  vi.stubGlobal(
+    'matchMedia',
+    vi.fn(() => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() })),
+  )
+})
+afterEach(() => {
+  mounted.splice(0).forEach((wrapper) => wrapper.unmount())
+  document.body.innerHTML = ''
+  vi.useRealTimers()
+})
 
 describe('TextInputWithTokens source contract', () => {
   it('renders source component attributes and the native input', () => {
-    const wrapper = setup({ id: 'tokens', name: 'tokens', leadingVisual: 'Prefix', trailingVisual: 'Suffix' })
+    const wrapper = setup({
+      id: 'tokens',
+      name: 'tokens',
+      leadingVisual: 'Prefix',
+      trailingVisual: 'Suffix',
+    })
     expect(wrapper.attributes('data-component')).toBe('TextInputWithTokens')
     expect(wrapper.get('input').attributes('data-component')).toBe('TextInputWithTokens.Input')
     expect(wrapper.get('input').attributes('id')).toBe('tokens')
     expect(wrapper.findAll('[data-component="TextInputWithTokens.Token"]')).toHaveLength(3)
-    expect(wrapper.get('[data-component="TextInputWithTokens.LeadingVisual"]').text()).toBe('Prefix')
-    expect(wrapper.get('[data-component="TextInputWithTokens.TrailingVisual"]').text()).toBe('Suffix')
+    expect(wrapper.get('[data-component="TextInputWithTokens.LeadingVisual"]').text()).toBe(
+      'Prefix',
+    )
+    expect(wrapper.get('[data-component="TextInputWithTokens.TrailingVisual"]').text()).toBe(
+      'Suffix',
+    )
   })
 
   it('supports default value, controlled zero and named value updates', async () => {
@@ -36,18 +69,28 @@ describe('TextInputWithTokens source contract', () => {
     await wrapper.get('input').setValue('typed')
     expect(wrapper.emitted('update:value')?.[0]).toEqual(['typed'])
     await wrapper.setProps({ value: 0 })
-    await wrapper.get('input').setValue('rejected'); await tick()
+    await wrapper.get('input').setValue('rejected')
+    await tick()
     expect((wrapper.get('input').element as HTMLInputElement).value).toBe('0')
   })
 
   it('submits native values and resets without producing change callbacks', async () => {
-    const wrapper = mount(defineComponent({ setup: () => () => h('form', [h(TextInputWithTokens, { tokens: [], name: 'tags', defaultValue: 'Default' })]) }), { attachTo: document.body })
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h('form', [
+            h(TextInputWithTokens, { tokens: [], name: 'tags', defaultValue: 'Default' }),
+          ]),
+      }),
+      { attachTo: document.body },
+    )
     mounted.push(wrapper)
     const control = wrapper.getComponent(TextInputWithTokens)
     await control.get('input').setValue('Edited')
     expect(new FormData(wrapper.element as HTMLFormElement).get('tags')).toBe('Edited')
     const changeCount = control.emitted('change')?.length
-    ;(wrapper.element as HTMLFormElement).reset(); await tick()
+    ;(wrapper.element as HTMLFormElement).reset()
+    await tick()
     expect(new FormData(wrapper.element as HTMLFormElement).get('tags')).toBe('Default')
     expect(control.emitted('change')).toHaveLength(changeCount!)
     const removed = vi.spyOn(wrapper.element, 'removeEventListener')
@@ -91,7 +134,12 @@ describe('TextInputWithTokens source contract', () => {
 
   it('gives per-token rest props priority over collection defaults', async () => {
     const onRemove = vi.fn()
-    const wrapper = setup({ hideTokenRemoveButtons: true, tokens: [{ id: 'override', text: 'Override', size: 'small', hideRemoveButton: false, onRemove }] })
+    const wrapper = setup({
+      hideTokenRemoveButtons: true,
+      tokens: [
+        { id: 'override', text: 'Override', size: 'small', hideRemoveButton: false, onRemove },
+      ],
+    })
     const token = wrapper.get('[data-component="TextInputWithTokens.Token"]')
     expect(token.attributes('data-size')).toBe('small')
     expect(token.attributes('id')).toBeUndefined()
@@ -102,7 +150,14 @@ describe('TextInputWithTokens source contract', () => {
   })
 
   it('preserves explicit ARIA overrides and converts numeric dimensions to pixels', () => {
-    const wrapper = setup({ validationStatus: 'error', 'aria-invalid': false, maxHeight: 100, width: 320, minWidth: 100, maxWidth: 500 })
+    const wrapper = setup({
+      validationStatus: 'error',
+      'aria-invalid': false,
+      maxHeight: 100,
+      width: 320,
+      minWidth: 100,
+      maxWidth: 500,
+    })
     expect(wrapper.get('input').attributes('aria-invalid')).toBe('false')
     const root = wrapper.element as HTMLElement
     expect(root.style.maxHeight).toBe('100px')
@@ -114,7 +169,11 @@ describe('TextInputWithTokens source contract', () => {
   })
 
   it('retains visual nodes under an overlaid loader and reserves its slot while idle', async () => {
-    const wrapper = setup({ leadingVisual: 'Wide leading', trailingVisual: 'Trailing', loading: true })
+    const wrapper = setup({
+      leadingVisual: 'Wide leading',
+      trailingVisual: 'Trailing',
+      loading: true,
+    })
     const leading = wrapper.get('[data-component="TextInputWithTokens.LeadingVisual"]')
     const trailing = wrapper.get('[data-component="TextInputWithTokens.TrailingVisual"]')
     expect(leading.get('div[class*="visual-hidden_"]').text()).toBe('Wide leading')
@@ -129,7 +188,13 @@ describe('TextInputWithTokens source contract', () => {
   })
 
   it('preserves numeric style dimensions and unitless values on the wrapper', () => {
-    const wrapper = setup({ maxHeight: 100, style: [{ width: 280, maxHeight: 80, fontSize: 16, opacity: 0.7, lineHeight: 1.4 }, { '--custom-value': 4 }] })
+    const wrapper = setup({
+      maxHeight: 100,
+      style: [
+        { width: 280, maxHeight: 80, fontSize: 16, opacity: 0.7, lineHeight: 1.4 },
+        { '--custom-value': 4 },
+      ],
+    })
     const root = wrapper.element as HTMLElement
     expect(root.style.width).toBe('280px')
     expect(root.style.maxHeight).toBe('80px')
@@ -153,19 +218,23 @@ describe('TextInputWithTokens source contract', () => {
     const wrapper = setup({ visibleTokenCount: 1 })
     expect(wrapper.findAll('[data-component="TextInputWithTokens.Token"]')).toHaveLength(1)
     expect(wrapper.get('[data-component="TextInputWithTokens.OverflowCount"]').text()).toBe('+2')
-    ;(wrapper.get('input').element as HTMLInputElement).focus(); await tick()
+    ;(wrapper.get('input').element as HTMLInputElement).focus()
+    await tick()
     expect(wrapper.findAll('[data-component="TextInputWithTokens.Token"]')).toHaveLength(3)
     ;(wrapper.get('input').element as HTMLInputElement).blur()
-    vi.runAllTimers(); await tick()
+    vi.runAllTimers()
+    await tick()
     expect(wrapper.findAll('[data-component="TextInputWithTokens.Token"]')).toHaveLength(1)
   })
 
   it('keeps tokens expanded when focus moves from input to a token', async () => {
     vi.useFakeTimers()
     const wrapper = setup({ visibleTokenCount: 1 })
-    ;(wrapper.get('input').element as HTMLInputElement).focus(); await tick()
+    ;(wrapper.get('input').element as HTMLInputElement).focus()
+    await tick()
     ;(wrapper.get('[data-component="TextInputWithTokens.Token"]').element as HTMLElement).focus()
-    vi.runAllTimers(); await tick()
+    vi.runAllTimers()
+    await tick()
     expect(wrapper.findAll('[data-component="TextInputWithTokens.Token"]')).toHaveLength(3)
   })
 
@@ -177,7 +246,8 @@ describe('TextInputWithTokens source contract', () => {
     await input.trigger('keydown', { key: 'Backspace' })
     expect(wrapper.emitted('token-remove')).toEqual([['three']])
     expect((input.element as HTMLInputElement).value).toBe('Three ')
-    vi.runAllTimers(); await tick()
+    vi.runAllTimers()
+    await tick()
     expect((input.element as HTMLInputElement).selectionStart).toBe(0)
     expect((input.element as HTMLInputElement).selectionEnd).toBe(6)
   })
@@ -196,29 +266,51 @@ describe('TextInputWithTokens source contract', () => {
   it('removes a focused token and restores focus to the next surviving token', async () => {
     vi.useFakeTimers()
     const state = ref([...tokens])
-    const wrapper = mount(defineComponent({ setup: () => () => h(TextInputWithTokens, {
-      tokens: state.value, onTokenRemove: (id: string | number) => { state.value = state.value.filter(token => token.id !== id) }
-    }) }), { attachTo: document.body })
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h(TextInputWithTokens, {
+            tokens: state.value,
+            onTokenRemove: (id: string | number) => {
+              state.value = state.value.filter((token) => token.id !== id)
+            },
+          }),
+      }),
+      { attachTo: document.body },
+    )
     mounted.push(wrapper)
     const token = wrapper.get('[data-component="TextInputWithTokens.Token"]')
     ;(token.element as HTMLElement).focus()
-    await token.trigger('keydown', { key: 'Delete' }); await tick()
-    vi.runAllTimers(); await tick()
-    expect(state.value.map(token => token.id)).toEqual(['two', 'three'])
+    await token.trigger('keydown', { key: 'Delete' })
+    await tick()
+    vi.runAllTimers()
+    await tick()
+    expect(state.value.map((token) => token.id)).toEqual(['two', 'three'])
     expect(document.activeElement?.textContent).toContain('Two')
   })
 
   it('restores input focus after the final token is removed', async () => {
     vi.useFakeTimers()
     const state = ref(tokens.slice(0, 1))
-    const wrapper = mount(defineComponent({ setup: () => () => h(TextInputWithTokens, {
-      tokens: state.value, onTokenRemove: () => { state.value = [] }
-    }) }), { attachTo: document.body })
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h(TextInputWithTokens, {
+            tokens: state.value,
+            onTokenRemove: () => {
+              state.value = []
+            },
+          }),
+      }),
+      { attachTo: document.body },
+    )
     mounted.push(wrapper)
     const token = wrapper.get('[data-component="TextInputWithTokens.Token"]')
     ;(token.element as HTMLElement).focus()
-    await token.trigger('keydown', { key: 'Backspace' }); await tick()
-    vi.runAllTimers(); await tick()
+    await token.trigger('keydown', { key: 'Backspace' })
+    await tick()
+    vi.runAllTimers()
+    await tick()
     expect(document.activeElement).toBe(wrapper.get('input').element)
   })
 
@@ -227,9 +319,11 @@ describe('TextInputWithTokens source contract', () => {
     await tick()
     const first = wrapper.get('[data-component="TextInputWithTokens.Token"]')
     ;(first.element as HTMLElement).focus()
-    await first.trigger('keydown', { key: 'ArrowRight' }); await tick()
+    await first.trigger('keydown', { key: 'ArrowRight' })
+    await tick()
     expect(document.activeElement?.textContent).toContain('Two')
-    await wrapper.get('[data-is-selected="true"]').trigger('keyup', { key: 'Escape' }); await tick()
+    await wrapper.get('[data-is-selected="true"]').trigger('keyup', { key: 'Escape' })
+    await tick()
     expect(document.activeElement).toBe(wrapper.get('input').element)
   })
 
@@ -246,10 +340,16 @@ describe('TextInputWithTokens source contract', () => {
   })
 
   it('supports a custom token component and explicit visual props over slots', () => {
-    const custom = defineComponent({ props: { text: { type: String, required: true } }, setup: props => () => h('button', props.text) })
+    const custom = defineComponent({
+      props: { text: { type: String, required: true } },
+      setup: (props) => () => h('button', props.text),
+    })
     const wrapper = setup({ tokenComponent: custom })
     expect(wrapper.findAll('[data-component="TextInputWithTokens.Token"]')).toHaveLength(3)
-    const visual = mount(TextInputWithTokens, { props: { tokens: [], leadingVisual: 'prop' }, slots: { leadingVisual: 'slot' } })
+    const visual = mount(TextInputWithTokens, {
+      props: { tokens: [], leadingVisual: 'prop' },
+      slots: { leadingVisual: 'slot' },
+    })
     mounted.push(visual)
     expect(visual.text()).toContain('prop')
     expect(visual.text()).not.toContain('slot')
@@ -257,11 +357,18 @@ describe('TextInputWithTokens source contract', () => {
 
   it('exposes input ref/focus and has stable accessible SSR output', async () => {
     const wrapper = setup()
-    const exposed = wrapper.vm as unknown as { input: HTMLInputElement, focus: () => void }
+    const exposed = wrapper.vm as unknown as { input: HTMLInputElement; focus: () => void }
     expect(exposed.input).toBe(wrapper.get('input').element)
     exposed.focus()
     expect(document.activeElement).toBe(exposed.input)
-    const markup = await renderToString(h(TextInputWithTokens, { tokens, id: 'ssr', role: 'combobox', 'aria-describedby': 'caption' }))
+    const markup = await renderToString(
+      h(TextInputWithTokens, {
+        tokens,
+        id: 'ssr',
+        role: 'combobox',
+        'aria-describedby': 'caption',
+      }),
+    )
     expect(markup).toContain('Selected: One, Two, Three')
     expect(markup).toContain('aria-describedby="caption ')
   })
@@ -269,7 +376,10 @@ describe('TextInputWithTokens source contract', () => {
 
 describe('Token source contract', () => {
   it('normalizes numeric styles while preserving explicit border and unitless overrides', () => {
-    const wrapper = mount(Token, { props: { text: 'Styled' }, attrs: { style: { width: 100, fontSize: 16, borderWidth: 2, opacity: 0.7 } } })
+    const wrapper = mount(Token, {
+      props: { text: 'Styled' },
+      attrs: { style: { width: 100, fontSize: 16, borderWidth: 2, opacity: 0.7 } },
+    })
     mounted.push(wrapper)
     const root = wrapper.element as HTMLElement
     expect(root.style.width).toBe('100px')
@@ -278,8 +388,12 @@ describe('Token source contract', () => {
     expect(root.style.opacity).toBe('0.7')
   })
   it('splits interactive text and removal into separate action targets', async () => {
-    const remove = vi.fn(), click = vi.fn()
-    const wrapper = mount(Token, { props: { as: 'button', text: 'Token', onRemove: remove }, attrs: { onClick: click } })
+    const remove = vi.fn(),
+      click = vi.fn()
+    const wrapper = mount(Token, {
+      props: { as: 'button', text: 'Token', onRemove: remove },
+      attrs: { onClick: click },
+    })
     mounted.push(wrapper)
     expect(wrapper.element.tagName).toBe('SPAN')
     const text = wrapper.get('button[class*="token__text_"]')
@@ -295,7 +409,9 @@ describe('Token source contract', () => {
   })
 
   it('retains one interactive root when remove is hidden and a native remove button for plain tokens', () => {
-    const button = mount(Token, { props: { as: 'button', text: 'Button', onRemove: vi.fn(), hideRemoveButton: true } })
+    const button = mount(Token, {
+      props: { as: 'button', text: 'Button', onRemove: vi.fn(), hideRemoveButton: true },
+    })
     mounted.push(button)
     expect(button.element.tagName).toBe('BUTTON')
     expect(button.find('[class*="token__remove_"]').exists()).toBe(false)
@@ -303,15 +419,24 @@ describe('Token source contract', () => {
     mounted.push(plain)
     expect(plain.get('[class*="token__remove_"]').element.tagName).toBe('BUTTON')
     expect(plain.get('[class*="token__remove_"]').attributes('aria-hidden')).toBe('false')
-    const focusable = mount(Token, { props: { text: 'Focusable', onRemove: vi.fn() }, attrs: { tabindex: 0 } })
+    const focusable = mount(Token, {
+      props: { text: 'Focusable', onRemove: vi.fn() },
+      attrs: { tabindex: 0 },
+    })
     mounted.push(focusable)
     expect(focusable.get('[class*="token__remove_"]').element.tagName).toBe('SPAN')
     expect(focusable.get('[class*="token__remove_"]').attributes('aria-hidden')).toBe('true')
   })
 
   it('supports mouse and keyboard removal without propagating click', async () => {
-    const remove = vi.fn(), parent = vi.fn()
-    const wrapper = mount(defineComponent({ setup: () => () => h('div', { onClick: parent }, [h(Token, { text: 'Token', onRemove: remove })]) }))
+    const remove = vi.fn(),
+      parent = vi.fn()
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h('div', { onClick: parent }, [h(Token, { text: 'Token', onRemove: remove })]),
+      }),
+    )
     mounted.push(wrapper)
     await wrapper.get('button').trigger('click')
     expect(remove).toHaveBeenCalledTimes(1)

@@ -1,7 +1,6 @@
 import { computed, inject, unref, type ComputedRef, type InjectionKey, type MaybeRef } from 'vue'
 import { isMacOS } from '@primer/behaviors/utils'
 
-
 /**
  * The platform categories that affect how keyboard shortcut keys are displayed.
  *
@@ -15,7 +14,9 @@ export type Platform = 'apple' | 'windows' | 'other'
 /** SSR-unsafe detection of iOS/iPadOS (in addition to macOS, which is detected separately). */
 const ssrUnsafeIsIOS = () => {
   if (typeof navigator === 'undefined') return false
-  return /iphone|ipad|ipod/i.test(navigator.platform) || /iphone|ipad|ipod/i.test(navigator.userAgent)
+  return (
+    /iphone|ipad|ipod/i.test(navigator.platform) || /iphone|ipad|ipod/i.test(navigator.userAgent)
+  )
 }
 
 /** SSR-unsafe detection of Windows. */
@@ -38,7 +39,8 @@ const getServerSnapshot = (): Platform => 'other'
  * Storybook, where we want to preview how keyboard hints render on platforms other than the
  * one actually running. A `null` value (the default) means "use the detected platform".
  */
-export const PLATFORM_OVERRIDE_KEY: InjectionKey<MaybeRef<Platform | null>> = Symbol('PlatformOverride')
+export const PLATFORM_OVERRIDE_KEY: InjectionKey<MaybeRef<Platform | null>> =
+  Symbol('PlatformOverride')
 
 export function usePlatformRef(): ComputedRef<Platform> {
   const override = inject(PLATFORM_OVERRIDE_KEY, null)

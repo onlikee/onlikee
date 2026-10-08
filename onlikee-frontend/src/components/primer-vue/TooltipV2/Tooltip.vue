@@ -51,15 +51,16 @@ provide(TOOLTIP_CONTEXT_KEY, tooltipContextValue)
 
 const triggerEl = shallowRef<HTMLElement | null>(null)
 const tooltipEl = shallowRef<HTMLElement | null>(null)
-const { calculatedDirection, openTooltip, closeTooltip, makeTriggerHandlers } = useTooltipController({
-  direction: () => props.direction,
-  delay: () => props.delay,
-  type: () => props.type,
-  enabled: () => true,
-  privateDisableTooltip: () => props.privateDisableTooltip,
-  triggerRef: triggerEl,
-  tooltipRef: tooltipEl,
-})
+const { calculatedDirection, openTooltip, closeTooltip, makeTriggerHandlers } =
+  useTooltipController({
+    direction: () => props.direction,
+    delay: () => props.delay,
+    type: () => props.type,
+    enabled: () => true,
+    privateDisableTooltip: () => props.privateDisableTooltip,
+    triggerRef: triggerEl,
+    tooltipRef: tooltipEl,
+  })
 
 const keybindingHints = computed(() =>
   Array.isArray(props.keybindingHint) ? props.keybindingHint : [props.keybindingHint],
@@ -80,9 +81,14 @@ function setTriggerEl(node: Element | ComponentPublicInstance | null) {
 
 const RenderTrigger = (): VNode | VNode[] => {
   const nodes = slots.default?.() ?? []
-  const candidates = nodes.filter(node => node.type !== Comment)
+  const candidates = nodes.filter((node) => node.type !== Comment)
   const trigger = candidates[0]
-  if (candidates.length !== 1 || !trigger || trigger.type === Fragment || trigger.type === TextVNode) {
+  if (
+    candidates.length !== 1 ||
+    !trigger ||
+    trigger.type === Fragment ||
+    trigger.type === TextVNode
+  ) {
     if (import.meta.env.DEV) {
       console.warn(
         'The `Tooltip` component expects a single interactive element as its trigger. Pass a single element instead of a fragment or multiple nodes.',
@@ -91,7 +97,8 @@ const RenderTrigger = (): VNode | VNode[] => {
     return nodes
   }
   const originalProps = (trigger.props ?? {}) as Record<string, unknown>
-  const handler = <T>(key: string) => originalProps[key] as unknown as ((event: T) => void) | undefined
+  const handler = <T,>(key: string) =>
+    originalProps[key] as unknown as ((event: T) => void) | undefined
   const injected: Record<string, unknown> = { ref: setTriggerEl }
   if (props.type === 'description') {
     const existing = originalProps['aria-describedby'] as string | undefined

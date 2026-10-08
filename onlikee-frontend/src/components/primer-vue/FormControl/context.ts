@@ -1,4 +1,13 @@
-import { computed, inject, provide, toValue, type ComputedRef, type InjectionKey, type MaybeRefOrGetter, type Ref } from 'vue'
+import {
+  computed,
+  inject,
+  provide,
+  toValue,
+  type ComputedRef,
+  type InjectionKey,
+  type MaybeRefOrGetter,
+  type Ref,
+} from 'vue'
 
 export type FormControlValidationVariant = 'success' | 'error'
 
@@ -27,7 +36,7 @@ export function useFormControlContext() {
 }
 
 export function useFormControlForwardedProps<P extends object = FormControlForwardedProps>(
-  externalProps: MaybeRefOrGetter<P> = {} as P
+  externalProps: MaybeRefOrGetter<P> = {} as P,
 ): ComputedRef<P & FormControlForwardedProps> {
   const context = useFormControlContext()
   return computed(() => {
@@ -37,8 +46,10 @@ export function useFormControlForwardedProps<P extends object = FormControlForwa
       disabled: context.disabled.value,
       id: context.id.value,
       required: context.required.value,
-      'aria-describedby': [context.validationMessageId.value, context.captionId.value].filter(Boolean).join(' ') || undefined,
-      ...external
+      'aria-describedby':
+        [context.validationMessageId.value, context.captionId.value].filter(Boolean).join(' ') ||
+        undefined,
+      ...external,
     }
   })
 }

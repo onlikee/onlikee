@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, useAttrs, useSlots, type Component , useCssModule} from 'vue'
+import { computed, onMounted, ref, useAttrs, useSlots, type Component, useCssModule } from 'vue'
 import Button from '../Button/Button.vue'
 import SelectPanelButton from '../SelectPanel/SelectPanelButton.vue'
 import Tooltip from '../TooltipV2/Tooltip.vue'
@@ -20,7 +20,9 @@ const buttonRef = ref<{ element?: HTMLElement | null } | null>(null)
 const ariaLabel = computed(() => attrs['aria-label'] as string | undefined)
 const hasChildren = computed(() => Boolean(slots.default))
 const iconComponent = computed(() => props.icon as Component | undefined)
-const useIconButton = computed(() => Boolean(iconComponent.value && !hasChildren.value && ariaLabel.value))
+const useIconButton = computed(() =>
+  Boolean(iconComponent.value && !hasChildren.value && ariaLabel.value),
+)
 
 const restAttrs = computed(() => {
   const { 'aria-label': _label, 'aria-labelledby': _labelledBy, ...rest } = attrs
@@ -32,12 +34,24 @@ const accessibleLabel = computed<Record<string, unknown>>(() => {
   return { 'aria-label': '' }
 })
 const buttonBindings = computed(() => ({ ...restAttrs.value, ...accessibleLabel.value }))
-const buttonClassName = computed(() =>
-  [props.variant === 'invisible' ? styles['text-input-action-invisible'] : undefined, props.className].filter(Boolean).join(' ') || undefined)
+const buttonClassName = computed(
+  () =>
+    [
+      props.variant === 'invisible' ? styles['text-input-action-invisible'] : undefined,
+      props.className,
+    ]
+      .filter(Boolean)
+      .join(' ') || undefined,
+)
 
 onMounted(() => {
-  if (import.meta.env.DEV && ((props.icon && !ariaLabel.value) || (!hasChildren.value && !ariaLabel.value))) {
-    console.warn('Use the `aria-label` prop to provide an accessible label for assistive technology')
+  if (
+    import.meta.env.DEV &&
+    ((props.icon && !ariaLabel.value) || (!hasChildren.value && !ariaLabel.value))
+  ) {
+    console.warn(
+      'Use the `aria-label` prop to provide an accessible label for assistive technology',
+    )
   }
 })
 

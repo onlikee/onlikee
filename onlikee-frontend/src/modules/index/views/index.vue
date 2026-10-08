@@ -8,6 +8,4 @@ import Hero from '../components/Hero.vue'
 import SecondPage from '../components/secondPage.vue'
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

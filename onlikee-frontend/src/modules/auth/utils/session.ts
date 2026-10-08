@@ -4,7 +4,10 @@ export const oauthProviderKey = 'oauth_provider'
 export const loginReturnToKey = 'login_return_to'
 export const oauthSignupContextKey = 'oauth_pending_signup_context'
 
-export type OAuthSignupContext = Pick<OAuthCallbackResponse, 'provider' | 'avatarUrl' | 'suggestedNickname' | 'email'> & {
+export type OAuthSignupContext = Pick<
+  OAuthCallbackResponse,
+  'provider' | 'avatarUrl' | 'suggestedNickname' | 'email'
+> & {
   pendingSignupToken: string
 }
 
@@ -15,7 +18,7 @@ export const saveOAuthSignupContext = (response: OAuthCallbackResponse) => {
     provider: response.provider,
     avatarUrl: response.avatarUrl,
     suggestedNickname: response.suggestedNickname,
-    email: response.email
+    email: response.email,
   }
   sessionStorage.setItem(oauthSignupContextKey, JSON.stringify(context))
 }

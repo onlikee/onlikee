@@ -2,7 +2,9 @@
   <InputValidation
     :id="context?.validationMessageId.value ?? ''"
     :validation-status="variant"
-    :data-component="context?.parentName.value ? `${context.parentName.value}.Validation` : undefined"
+    :data-component="
+      context?.parentName.value ? `${context.parentName.value}.Validation` : undefined
+    "
   >
     <slot />
   </InputValidation>

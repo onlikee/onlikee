@@ -1,8 +1,5 @@
 <template>
-  <component
-    :is="as"
-    ref="element"
-  >
+  <component :is="as" ref="element">
     <slot />
   </component>
 </template>
@@ -12,13 +9,16 @@ import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 type AnnounceFromElement = typeof import('@primer/live-region-element').announceFromElement
 
 defineOptions({ name: 'AriaStatus' })
-const props = withDefaults(defineProps<{
-  as?: string
-  announceOnShow?: boolean
-  hidden?: boolean
-  delayMs?: number
-  politeness?: 'assertive' | 'polite'
-}>(), { as: 'div', announceOnShow: false, hidden: false, delayMs: undefined, politeness: 'polite' })
+const props = withDefaults(
+  defineProps<{
+    as?: string
+    announceOnShow?: boolean
+    hidden?: boolean
+    delayMs?: number
+    politeness?: 'assertive' | 'polite'
+  }>(),
+  { as: 'div', announceOnShow: false, hidden: false, delayMs: undefined, politeness: 'polite' },
+)
 const element = ref<HTMLElement | null>(null)
 let observer: MutationObserver | undefined
 let pending: ReturnType<AnnounceFromElement> | undefined
@@ -48,14 +48,35 @@ async function announce() {
 }
 
 onMounted(() => {
-  if (props.announceOnShow) void nextTick().then(() => { if (!disposed) return announce() })
+  if (props.announceOnShow)
+    void nextTick().then(() => {
+      if (!disposed) return announce()
+    })
   if (!element.value) return
   observer = new MutationObserver(announce)
-  observer.observe(element.value, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['aria-label'] })
+  observer.observe(element.value, {
+    subtree: true,
+    childList: true,
+    characterData: true,
+    attributes: true,
+    attributeFilter: ['aria-label'],
+  })
 })
-watch(() => props.hidden, hidden => {
-  if (hidden) { generation++; pending?.cancel() }
-}, { flush: 'post' })
-onBeforeUnmount(() => { disposed = true; generation++; observer?.disconnect(); pending?.cancel() })
+watch(
+  () => props.hidden,
+  (hidden) => {
+    if (hidden) {
+      generation++
+      pending?.cancel()
+    }
+  },
+  { flush: 'post' },
+)
+onBeforeUnmount(() => {
+  disposed = true
+  generation++
+  observer?.disconnect()
+  pending?.cancel()
+})
 defineExpose({ element })
 </script>

@@ -11,7 +11,7 @@
     :data-responsive="isResponsive ? '' : undefined"
     :style="avatarStyle"
     v-bind="$attrs"
-  >
+  />
   <span
     v-else
     :class="[$style['avatar'], $style['avatar-placeholder'], 'avatar-placeholder']"
@@ -22,7 +22,8 @@
     :role="alt ? 'img' : undefined"
     :aria-label="alt || undefined"
     v-bind="$attrs"
-  >{{ placeholder }}</span>
+    >{{ placeholder }}</span
+  >
 </template>
 
 <script setup lang="ts">
@@ -35,7 +36,7 @@ const props = withDefaults(defineProps<AvatarProps>(), {
   size: 20,
   square: false,
   alt: '',
-  placeholder: ''
+  placeholder: '',
 })
 
 const isResponsive = computed(() => typeof props.size === 'object')

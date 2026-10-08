@@ -4,10 +4,7 @@ import DropdownContent from './DropdownContent.vue'
 
 export const Dropdown = Object.assign(DropdownRoot, {
   trigger: DropdownTrigger,
-  content: DropdownContent
+  content: DropdownContent,
 })
 
-export {
-  DropdownTrigger,
-  DropdownContent
-}
+export { DropdownTrigger, DropdownContent }

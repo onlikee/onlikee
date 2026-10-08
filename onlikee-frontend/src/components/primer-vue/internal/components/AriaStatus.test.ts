@@ -19,7 +19,11 @@ afterEach(() => {
   vi.useRealTimers()
 })
 function status(props = {}, text = ref('Ready')) {
-  const wrapper = mount(AriaStatus, { props, attachTo: document.body, slots: { default: () => text.value } })
+  const wrapper = mount(AriaStatus, {
+    props,
+    attachTo: document.body,
+    slots: { default: () => text.value },
+  })
   wrappers.push(wrapper)
   return { wrapper, text }
 }
@@ -90,7 +94,10 @@ test('uses native visibility checks when available', async () => {
   text.value = 'Invisible'
   await nextTick()
   await flushPromises()
-  expect(checkVisibility).toHaveBeenCalledWith({ visibilityProperty: true, checkVisibilityCSS: true })
+  expect(checkVisibility).toHaveBeenCalledWith({
+    visibilityProperty: true,
+    checkVisibilityCSS: true,
+  })
   expect(computedStyle).not.toHaveBeenCalled()
   expect(region.getMessage()).toBe('')
 })

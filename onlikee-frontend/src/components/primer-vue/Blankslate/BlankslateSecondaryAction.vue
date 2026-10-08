@@ -10,8 +10,8 @@ const props = withDefaults(
     href: '',
     newTab: false,
     type: 'button',
-    disabled: false
-  }
+    disabled: false,
+  },
 )
 
 const emit = defineEmits<{ click: [] }>()

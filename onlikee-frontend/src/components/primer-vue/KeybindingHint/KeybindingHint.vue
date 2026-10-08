@@ -22,12 +22,7 @@ withDefaults(
     data-testid="keybinding-hint"
     data-component="KeybindingHint"
   >
-    <Sequence
-      :keys="keys"
-      :format="format"
-      :variant="variant"
-      :size="size"
-    />
+    <Sequence :keys="keys" :format="format" :variant="variant" :size="size" />
   </Text>
 </template>
 <style module src="./KeybindingHint.module.css" />

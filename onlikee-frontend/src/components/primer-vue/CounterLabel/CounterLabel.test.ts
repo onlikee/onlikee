@@ -5,15 +5,21 @@ import CounterLabel from './CounterLabel.vue'
 
 const wrappers: VueWrapper[] = []
 afterEach(() => {
-  wrappers.forEach(wrapper => wrapper.unmount()); wrappers.length = 0
+  wrappers.forEach((wrapper) => wrapper.unmount())
+  wrappers.length = 0
   document.body.innerHTML = ''
   vi.restoreAllMocks()
 })
-function track<T extends VueWrapper>(wrapper: T): T { wrappers.push(wrapper); return wrapper }
+function track<T extends VueWrapper>(wrapper: T): T {
+  wrappers.push(wrapper)
+  return wrapper
+}
 
 describe('CounterLabel', () => {
   it('renders the aria-hidden badge plus the screen-reader label', () => {
-    const wrapper = track(mount(CounterLabel, { props: {}, slots: { default: '5' }, attrs: { id: 'counter' } }))
+    const wrapper = track(
+      mount(CounterLabel, { props: {}, slots: { default: '5' }, attrs: { id: 'counter' } }),
+    )
     const badge = wrapper.get('span[class*="counter-label_"]')
     expect(badge.attributes('aria-hidden')).toBe('true')
     expect(badge.attributes('data-variant')).toBe('secondary')
@@ -25,9 +31,18 @@ describe('CounterLabel', () => {
   })
 
   it('prefers variant over the deprecated scheme and allows data-component overrides', () => {
-    const primary = track(mount(CounterLabel, { props: { variant: 'primary', scheme: 'secondary' }, slots: { default: '2' } }))
+    const primary = track(
+      mount(CounterLabel, {
+        props: { variant: 'primary', scheme: 'secondary' },
+        slots: { default: '2' },
+      }),
+    )
     expect(primary.get('span[class*="counter-label_"]').attributes('data-variant')).toBe('primary')
-    const custom = track(mount(CounterLabel, { props: { dataComponent: 'ButtonCounter' }, slots: { default: '9' } }))
-    expect(custom.get('span[class*="counter-label_"]').attributes('data-component')).toBe('ButtonCounter')
+    const custom = track(
+      mount(CounterLabel, { props: { dataComponent: 'ButtonCounter' }, slots: { default: '9' } }),
+    )
+    expect(custom.get('span[class*="counter-label_"]').attributes('data-component')).toBe(
+      'ButtonCounter',
+    )
   })
 })

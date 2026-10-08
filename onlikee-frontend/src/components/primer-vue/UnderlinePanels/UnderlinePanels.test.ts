@@ -6,10 +6,15 @@ import { renderToString } from '@vue/server-renderer'
 import { UnderlinePanels, type UnderlinePanelsProps } from './index'
 
 describe('SSR rendering', () => {
-  async function render(props: UnderlinePanelsProps & Record<string, unknown>, children: VNodeChild[]) {
-    return renderToString(createSSRApp({
-      render: () => h(UnderlinePanels, props, { default: () => children })
-    }))
+  async function render(
+    props: UnderlinePanelsProps & Record<string, unknown>,
+    children: VNodeChild[],
+  ) {
+    return renderToString(
+      createSSRApp({
+        render: () => h(UnderlinePanels, props, { default: () => children }),
+      }),
+    )
   }
 
   test('pairs tabs and panels by value and exposes the selected panel', async () => {
@@ -17,11 +22,13 @@ describe('SSR rendering', () => {
       h(UnderlinePanels.Tab, { value: 'branch' }, () => 'Branches'),
       h(UnderlinePanels.Tab, { value: 'tag' }, () => 'Tags'),
       h(UnderlinePanels.Panel, { value: 'branch' }, () => 'Branch panel'),
-      h(UnderlinePanels.Panel, { value: 'tag' }, () => 'Tag panel')
+      h(UnderlinePanels.Panel, { value: 'tag' }, () => 'Tag panel'),
     ])
 
     expect(html).toMatch(/role="tablist"[^>]*aria-label="Ref type"/)
-    expect(html).toMatch(/id="refs-tab-tag"[^>]*aria-controls="refs-panel-tag"[^>]*aria-selected="true"/)
+    expect(html).toMatch(
+      /id="refs-tab-tag"[^>]*aria-controls="refs-panel-tag"[^>]*aria-selected="true"/,
+    )
     expect(html).toMatch(/id="refs-panel-branch"[^>]*hidden/)
     expect(html).toMatch(/id="refs-panel-tag"[^>]*data-selected(?:\s|>)/)
   })
@@ -30,7 +37,7 @@ describe('SSR rendering', () => {
     const LeadingVisual = () => h('svg', { 'data-test-icon': 'code' })
     const html = await render({ id: 'visual' }, [
       h(UnderlinePanels.Tab, { value: 'code', leadingVisual: LeadingVisual }, () => 'Code'),
-      h(UnderlinePanels.Panel, { value: 'code' }, () => 'Repository files')
+      h(UnderlinePanels.Panel, { value: 'code' }, () => 'Repository files'),
     ])
 
     expect(html).toMatch(/data-component="icon"[^>]*><svg[^>]*data-test-icon="code"/)
@@ -42,7 +49,7 @@ describe('SSR rendering', () => {
       h(UnderlinePanels.Tab, null, () => 'One'),
       h(UnderlinePanels.Tab, { 'aria-selected': true }, () => 'Two'),
       h(UnderlinePanels.Panel, null, () => 'First'),
-      h(UnderlinePanels.Panel, null, () => 'Second')
+      h(UnderlinePanels.Panel, null, () => 'Second'),
     ])
 
     expect(html).toMatch(/<button(?=[^>]*id="ordered-tab-1")(?=[^>]*aria-selected="true")[^>]*>/)
@@ -55,22 +62,28 @@ describe('SSR rendering', () => {
       h(UnderlinePanels.Tab, { value: 'first', 'aria-selected': true }, () => 'First'),
       h(UnderlinePanels.Tab, { value: 'second' }, () => 'Second'),
       h(UnderlinePanels.Panel, { value: 'first' }, () => 'First panel'),
-      h(UnderlinePanels.Panel, { value: 'second' }, () => 'Second panel')
+      h(UnderlinePanels.Panel, { value: 'second' }, () => 'Second panel'),
     ]
     const preferred = await render({ id: 'preferred', defaultValue: 'second' }, children)
     const fallback = await render({ id: 'fallback', value: 'missing' }, children)
 
-    expect(preferred).toMatch(/<button(?=[^>]*id="preferred-tab-second")(?=[^>]*aria-selected="true")[^>]*>/)
-    expect(fallback).toMatch(/<button(?=[^>]*id="fallback-tab-first")(?=[^>]*aria-selected="true")[^>]*>/)
+    expect(preferred).toMatch(
+      /<button(?=[^>]*id="preferred-tab-second")(?=[^>]*aria-selected="true")[^>]*>/,
+    )
+    expect(fallback).toMatch(
+      /<button(?=[^>]*id="fallback-tab-first")(?=[^>]*aria-selected="true")[^>]*>/,
+    )
   })
 
   test('rejects duplicate tab values in development', async () => {
-    await expect(render({ id: 'duplicate' }, [
-      h(UnderlinePanels.Tab, { value: 'same' }, () => 'One'),
-      h(UnderlinePanels.Tab, { value: 'same' }, () => 'Two'),
-      h(UnderlinePanels.Panel, { value: 'same' }, () => 'First'),
-      h(UnderlinePanels.Panel, { value: 'other' }, () => 'Second')
-    ])).rejects.toThrow(/unique value/)
+    await expect(
+      render({ id: 'duplicate' }, [
+        h(UnderlinePanels.Tab, { value: 'same' }, () => 'One'),
+        h(UnderlinePanels.Tab, { value: 'same' }, () => 'Two'),
+        h(UnderlinePanels.Panel, { value: 'same' }, () => 'First'),
+        h(UnderlinePanels.Panel, { value: 'other' }, () => 'Second'),
+      ]),
+    ).rejects.toThrow(/unique value/)
   })
 })
 
@@ -93,11 +106,12 @@ describe('interactions', () => {
       attachTo: host,
       props: { id: 'panels', ...props },
       slots: {
-        default: () => ['one', 'two', 'three'].flatMap(value => [
-          h(UnderlinePanels.Tab, { value, disabled: disabled.includes(value) }, () => value),
-          h(UnderlinePanels.Panel, { value }, () => `${value} content`)
-        ])
-      }
+        default: () =>
+          ['one', 'two', 'three'].flatMap((value) => [
+            h(UnderlinePanels.Tab, { value, disabled: disabled.includes(value) }, () => value),
+            h(UnderlinePanels.Panel, { value }, () => `${value} content`),
+          ]),
+      },
     })
     wrappers.push(wrapper)
     return wrapper
@@ -200,7 +214,7 @@ describe('interactions', () => {
     expect(wrapper.emitted('change')).toStrictEqual([[{ value: 'two' }]])
   })
 
-  test.each(['Enter', ' '])('manual mode moves focus without selection until %s', async key => {
+  test.each(['Enter', ' '])('manual mode moves focus without selection until %s', async (key) => {
     const wrapper = mountPanels({ activationMode: 'manual' }, ['two'])
     const first = wrapper.get<HTMLButtonElement>('#panels-tab-one')
     const last = wrapper.get<HTMLButtonElement>('#panels-tab-three')

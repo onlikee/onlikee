@@ -6,9 +6,7 @@
     />
 
     <ComponentDocsSection title="基础用法">
-      <template #description>
-        通过 <code>v-model:value</code> 双向绑定多行文本内容。
-      </template>
+      <template #description> 通过 <code>v-model:value</code> 双向绑定多行文本内容。 </template>
       <ComponentDocsDemoBlock :code="demo1Code">
         <Textarea
           v-model:value="val1"
@@ -21,7 +19,8 @@
 
     <ComponentDocsSection title="预设行数与长度限制">
       <template #description>
-        可通过透传原生属性设置 <code>rows</code>、<code>maxlength</code>、<code>placeholder</code> 等参数。
+        可通过透传原生属性设置 <code>rows</code>、<code>maxlength</code>、<code>placeholder</code>
+        等参数。
       </template>
       <ComponentDocsDemoBlock :code="demo2Code">
         <Textarea
@@ -35,16 +34,9 @@
     </ComponentDocsSection>
 
     <ComponentDocsSection title="禁用状态">
-      <template #description>
-        设置原生属性 <code>disabled</code> 后文本域不可编辑。
-      </template>
+      <template #description> 设置原生属性 <code>disabled</code> 后文本域不可编辑。 </template>
       <ComponentDocsDemoBlock :code="demo3Code">
-        <Textarea
-          v-model:value="val3"
-          class="demo-textarea"
-          rows="4"
-          disabled
-        />
+        <Textarea v-model:value="val3" class="demo-textarea" rows="4" disabled />
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
@@ -55,28 +47,19 @@
       <ComponentDocsDemoBlock :code="demo4Code">
         <FormControl>
           <FormControl.Label>Project Description</FormControl.Label>
-          <Textarea
-            v-model:value="description"
-            class="demo-textarea"
-            rows="5"
-            maxlength="120"
-          />
-          <FormControl.Validation
-            v-if="descriptionTooLong"
-            variant="error"
-          >
+          <Textarea v-model:value="description" class="demo-textarea" rows="5" maxlength="120" />
+          <FormControl.Validation v-if="descriptionTooLong" variant="error">
             Keep the description under 80 characters
           </FormControl.Validation>
-          <FormControl.Caption>
-            This will be shown on the project detail page
-          </FormControl.Caption>
+          <FormControl.Caption> This will be shown on the project detail page </FormControl.Caption>
         </FormControl>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="自动高度与字符计数">
       <template #description>
-        <code>autoSize</code> 根据内容增长，<code>minHeight</code> 和 <code>maxHeight</code> 限制高度。
+        <code>autoSize</code> 根据内容增长，<code>minHeight</code> 和
+        <code>maxHeight</code> 限制高度。
         <code>characterLimit</code> 显示剩余字符及超限错误，不阻止继续输入。
       </template>
       <ComponentDocsDemoBlock :code="autoSizeDemoCode">
@@ -92,34 +75,13 @@
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="API"
-      variant="api"
-    >
+    <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <Table
-        :columns="apiCols"
-        :data="apiRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+      <Table :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
       <h3>原生属性透传（常用）</h3>
-      <Table
-        :columns="apiCols"
-        :data="nativeRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+      <Table :columns="apiCols" :data="nativeRows" row-key="name" compact :hoverable="false" />
       <h3>事件</h3>
-      <Table
-        :columns="eventCols"
-        :data="eventRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+      <Table :columns="eventCols" :data="eventRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
@@ -206,38 +168,81 @@ const apiCols: TableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '220px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '220px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '220px', wrap: true },
 ]
 
 const apiRows = [
-  { name: 'value', description: '受控绑定值（v-model:value）', type: 'string | number', default: '—' },
+  {
+    name: 'value',
+    description: '受控绑定值（v-model:value）',
+    type: 'string | number',
+    default: '—',
+  },
   { name: 'defaultValue', description: '非受控初始值', type: 'string | number', default: '—' },
-  { name: 'resize', description: '允许用户调整尺寸的方向', type: "'none' | 'both' | 'horizontal' | 'vertical'", default: "'both'" },
+  {
+    name: 'resize',
+    description: '允许用户调整尺寸的方向',
+    type: "'none' | 'both' | 'horizontal' | 'vertical'",
+    default: "'both'",
+  },
   { name: 'autoSize', description: '根据内容自动调整高度', type: 'boolean', default: 'false' },
-  { name: 'minHeight / maxHeight', description: '文本域高度限制，单位 px', type: 'number', default: '—' },
-  { name: 'characterLimit', description: '字符计数与超限错误状态，不阻止输入', type: 'number', default: '—' },
-  { name: 'validationStatus', description: '错误或成功状态', type: "'error' | 'success'", default: '—' },
-  { name: 'block / contrast', description: '占满容器和高对比背景', type: 'boolean', default: 'false' }
+  {
+    name: 'minHeight / maxHeight',
+    description: '文本域高度限制，单位 px',
+    type: 'number',
+    default: '—',
+  },
+  {
+    name: 'characterLimit',
+    description: '字符计数与超限错误状态，不阻止输入',
+    type: 'number',
+    default: '—',
+  },
+  {
+    name: 'validationStatus',
+    description: '错误或成功状态',
+    type: "'error' | 'success'",
+    default: '—',
+  },
+  {
+    name: 'block / contrast',
+    description: '占满容器和高对比背景',
+    type: 'boolean',
+    default: 'false',
+  },
 ]
 
 const nativeRows = [
   { name: 'placeholder', description: '占位文本', type: 'string', default: '-' },
-  { name: 'rows / cols', description: '默认可见行数与列数', type: 'number | string', default: '7 / 30' },
+  {
+    name: 'rows / cols',
+    description: '默认可见行数与列数',
+    type: 'number | string',
+    default: '7 / 30',
+  },
   { name: 'disabled', description: '禁用文本域', type: 'boolean', default: 'false' },
   { name: 'maxlength', description: '最大输入长度', type: 'number | string', default: '-' },
-  { name: 'id / name / aria-*', description: '其他原生属性会透传到 textarea 元素', type: 'string', default: '-' }
+  {
+    name: 'id / name / aria-*',
+    description: '其他原生属性会透传到 textarea 元素',
+    type: 'string',
+    default: '-',
+  },
 ]
 
 const eventCols: TableColumn[] = [
   { key: 'name', label: '事件名', rowHeader: true, minWidth: '180px' },
   { key: 'description', label: '说明', minWidth: '240px', wrap: true },
-  { key: 'type', label: '回调参数', minWidth: '200px', wrap: true }
+  { key: 'type', label: '回调参数', minWidth: '200px', wrap: true },
 ]
 
 const eventRows = [
-  { name: 'update:value', description: '输入值变化时触发（IME 组合输入在 compositionend 后更新）', type: 'string' }
+  {
+    name: 'update:value',
+    description: '输入值变化时触发（IME 组合输入在 compositionend 后更新）',
+    type: 'string',
+  },
 ]
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

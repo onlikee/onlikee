@@ -1,5 +1,13 @@
 <script lang="ts">
-import { computed, defineComponent, getCurrentInstance, h, ref, type PropType, useCssModule } from 'vue'
+import {
+  computed,
+  defineComponent,
+  getCurrentInstance,
+  h,
+  ref,
+  type PropType,
+  useCssModule,
+} from 'vue'
 import { renderNode, type NodeProp } from '../internal/renderNode'
 import TokenBase from './TokenBase.vue'
 import TokenTextContainer from './_TokenTextContainer.vue'
@@ -22,7 +30,7 @@ export default defineComponent({
     isSelected: { type: Boolean, default: undefined },
     fillColor: { type: String, default: '#999' },
     href: { type: String, default: undefined },
-    className: { type: String, default: undefined }
+    className: { type: String, default: undefined },
   },
   emits: { remove: () => true },
   setup(props, { attrs, emit, expose }) {
@@ -32,7 +40,7 @@ export default defineComponent({
     expose({
       element: computed(() => base.value?.element ?? null),
       focus: (options?: FocusOptions) => base.value?.element?.focus(options),
-      blur: () => base.value?.element?.blur()
+      blur: () => base.value?.element?.blur(),
     })
     const customProperties = computed(() => {
       const [r, g, b] = parseToRgba(props.fillColor)
@@ -43,50 +51,67 @@ export default defineComponent({
         '--label-b': String(b),
         '--label-h': String(Math.round(hue)),
         '--label-s': String(Math.round(s * 100)),
-        '--label-l': String(Math.round(l * 100))
+        '--label-l': String(Math.round(l * 100)),
       }
     })
     return () => {
       const removable = !!instance.vnode.props?.onRemove
       const tabIndex = Number(attrs.tabindex ?? attrs.tabIndex ?? -1)
       const interactive = isTokenInteractive({
-        as: props.as, onClick: attrs.onClick, onFocus: attrs.onFocus, tabIndex, disabled: props.disabled
+        as: props.as,
+        onClick: attrs.onClick,
+        onFocus: attrs.onFocus,
+        tabIndex,
+        disabled: props.disabled,
       })
       const multipleTargets = interactive && removable && !props.hideRemoveButton
       const interactiveTokenProps = { as: props.as, href: props.href, onClick: attrs.onClick }
       const { onClick: _onClick, class: _cls, ...restAttrs } = attrs
-      return h(TokenBase, {
-        ref: base,
-        ...(removable ? { onRemove: () => emit('remove') } : {}),
-        id: props.id?.toString(),
-        isSelected: props.isSelected,
-        className: [classes['issue-label'], props.className, _cls],
-        text: props.text,
-        size: props.size,
-        disabled: props.disabled,
-        style: customProperties.value,
-        'data-has-remove-button': !props.hideRemoveButton && removable,
-        'data-selected': props.isSelected,
-        ...(!multipleTargets ? interactiveTokenProps : {}),
-        ...restAttrs
-      }, {
-        default: () => [
-          h(TokenTextContainer, { ...(multipleTargets ? interactiveTokenProps : {}) }, {
-            default: () => [renderNode(props.text)]
-          }),
-          !props.hideRemoveButton && removable ? h(RemoveTokenButton, {
-            borderOffset: 1,
-            onClick: (event: MouseEvent) => { event.stopPropagation(); emit('remove') },
-            size: props.size,
-            'aria-hidden': multipleTargets ? 'true' : 'false',
-            isParentInteractive: interactive,
-            'data-has-multiple-action-targets': multipleTargets,
-            className: [classes['issue-label__remove']]
-          }) : null
-        ]
-      })
+      return h(
+        TokenBase,
+        {
+          ref: base,
+          ...(removable ? { onRemove: () => emit('remove') } : {}),
+          id: props.id?.toString(),
+          isSelected: props.isSelected,
+          className: [classes['issue-label'], props.className, _cls],
+          text: props.text,
+          size: props.size,
+          disabled: props.disabled,
+          style: customProperties.value,
+          'data-has-remove-button': !props.hideRemoveButton && removable,
+          'data-selected': props.isSelected,
+          ...(!multipleTargets ? interactiveTokenProps : {}),
+          ...restAttrs,
+        },
+        {
+          default: () => [
+            h(
+              TokenTextContainer,
+              { ...(multipleTargets ? interactiveTokenProps : {}) },
+              {
+                default: () => [renderNode(props.text)],
+              },
+            ),
+            !props.hideRemoveButton && removable
+              ? h(RemoveTokenButton, {
+                  borderOffset: 1,
+                  onClick: (event: MouseEvent) => {
+                    event.stopPropagation()
+                    emit('remove')
+                  },
+                  size: props.size,
+                  'aria-hidden': multipleTargets ? 'true' : 'false',
+                  isParentInteractive: interactive,
+                  'data-has-multiple-action-targets': multipleTargets,
+                  className: [classes['issue-label__remove']],
+                })
+              : null,
+          ],
+        },
+      )
     }
-  }
+  },
 })
 </script>
 

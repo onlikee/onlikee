@@ -6,7 +6,10 @@ import type { TooltipDelay, TooltipDirection, TooltipType } from './types'
 
 // 提示打开时独占 Escape，阻止事件继续关闭外层浮层。
 
-export const directionToPosition: Record<TooltipDirection, { side: AnchorSide; align: AnchorAlignment }> = {
+export const directionToPosition: Record<
+  TooltipDirection,
+  { side: AnchorSide; align: AnchorAlignment }
+> = {
   nw: { side: 'outside-top', align: 'end' },
   n: { side: 'outside-top', align: 'center' },
   ne: { side: 'outside-top', align: 'start' },
@@ -28,12 +31,19 @@ export const positionToDirection: Record<string, TooltipDirection> = {
   'outside-left-center': 'w',
 }
 
-const interactiveElements = ['a[href]', 'button:not([disabled])', 'summary', 'select', 'input:not([type=hidden])', 'textarea']
+const interactiveElements = [
+  'a[href]',
+  'button:not([disabled])',
+  'summary',
+  'select',
+  'input:not([type=hidden])',
+  'textarea',
+]
 
 export const delayTimeMap: Record<TooltipDelay, number> = { short: 50, medium: 400, long: 1200 }
 
 const isInteractive = (element: HTMLElement) =>
-  interactiveElements.some(selector => element.matches(selector)) ||
+  interactiveElements.some((selector) => element.matches(selector)) ||
   (element.hasAttribute('role') && element.getAttribute('role') === 'button')
 
 export interface TooltipControllerSettings {
@@ -103,7 +113,11 @@ export function useTooltipController(settings: TooltipControllerSettings) {
           side: directionToPosition[settings.direction()].side,
           align: directionToPosition[settings.direction()].align,
         }
-        const { top, left, anchorAlign, anchorSide } = getAnchoredPosition(tooltip, trigger, positionSettings)
+        const { top, left, anchorAlign, anchorSide } = getAnchoredPosition(
+          tooltip,
+          trigger,
+          positionSettings,
+        )
         // This is required to make sure the popover is positioned correctly i.e. when there is
         // not enough space on the specified direction, we set a new direction to position the ::after
         calculatedDirection.value = positionToDirection[`${anchorSide}-${anchorAlign}`]
@@ -123,7 +137,12 @@ export function useTooltipController(settings: TooltipControllerSettings) {
     }
     try {
       const tooltip = settings.tooltipRef.value
-      if (tooltip && settings.triggerRef.value && tooltip.hasAttribute('popover') && tooltip.matches(':popover-open')) {
+      if (
+        tooltip &&
+        settings.triggerRef.value &&
+        tooltip.hasAttribute('popover') &&
+        tooltip.matches(':popover-open')
+      ) {
         tooltip.hidePopover()
         isPopoverOpen.value = false
       } else {
@@ -196,10 +215,12 @@ export function useTooltipController(settings: TooltipControllerSettings) {
     const isTriggerInteractive = isInteractive(trigger)
     const triggerChildren = trigger.childNodes
     // two levels deep
-    const hasInteractiveDescendant = Array.from(triggerChildren).some(child => {
+    const hasInteractiveDescendant = Array.from(triggerChildren).some((child) => {
       return (
         (child instanceof HTMLElement && isInteractive(child)) ||
-        Array.from(child.childNodes).some(grandChild => grandChild instanceof HTMLElement && isInteractive(grandChild))
+        Array.from(child.childNodes).some(
+          (grandChild) => grandChild instanceof HTMLElement && isInteractive(grandChild),
+        )
       )
     })
     if (!(isTriggerInteractive || hasInteractiveDescendant)) {
@@ -212,7 +233,7 @@ export function useTooltipController(settings: TooltipControllerSettings) {
     if (settings.type() === 'label') {
       const hasAriaLabel = trigger.hasAttribute('aria-label')
       const hasAriaLabelInChildren = Array.from(trigger.childNodes).some(
-        child => child instanceof HTMLElement && child.hasAttribute('aria-label'),
+        (child) => child instanceof HTMLElement && child.hasAttribute('aria-label'),
       )
       if (import.meta.env.DEV && (hasAriaLabel || hasAriaLabelInChildren)) {
         console.warn(
@@ -234,14 +255,18 @@ export function useTooltipController(settings: TooltipControllerSettings) {
   onMounted(() => {
     if (settings.enabled()) runTriggerEffect()
   })
-  watch(() => [settings.direction(), settings.type(), settings.enabled()] as const, () => {
-    if (settings.enabled()) runTriggerEffect()
-  }, { flush: 'post' })
+  watch(
+    () => [settings.direction(), settings.type(), settings.enabled()] as const,
+    () => {
+      if (settings.enabled()) runTriggerEffect()
+    },
+    { flush: 'post' },
+  )
 
   // 提示打开时独占 Escape，阻止事件继续关闭外层浮层。
   let unregisterEscape: (() => void) | undefined
   onMounted(() => {
-    unregisterEscape = registerEscapeHandler(event => {
+    unregisterEscape = registerEscapeHandler((event) => {
       if (settings.enabled() && isPopoverOpen.value) {
         event.stopImmediatePropagation()
         event.preventDefault()
@@ -256,5 +281,12 @@ export function useTooltipController(settings: TooltipControllerSettings) {
     timeouts.clear()
   })
 
-  return { calculatedDirection, isPopoverOpen, openTooltip, closeTooltip, makeTriggerHandlers, safeSetTimeout }
+  return {
+    calculatedDirection,
+    isPopoverOpen,
+    openTooltip,
+    closeTooltip,
+    makeTriggerHandlers,
+    safeSetTimeout,
+  }
 }

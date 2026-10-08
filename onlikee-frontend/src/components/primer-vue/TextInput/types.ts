@@ -43,4 +43,5 @@ export interface TextInputActionOptions {
   tooltipDirection?: 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'nw'
   className?: string
 }
-export type TextInputActionProps = TextInputActionOptions & Omit<ButtonHTMLAttributes, keyof TextInputActionOptions>
+export type TextInputActionProps = TextInputActionOptions &
+  Omit<ButtonHTMLAttributes, keyof TextInputActionOptions>

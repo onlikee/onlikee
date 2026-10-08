@@ -8,11 +8,11 @@ import { authRoutes } from '../modules/auth/router/auth'
 import { errorRoutes } from '../modules/error/router/error'
 
 export const routes: Array<RouteRecordRaw> = [
-    ...indexRoutes,
-    ...applicationRoutes,
-    ...componentRoutes,
-    ...namecardRoutes,
-    ...authRoutes,
-    ...userRoutes,
-    ...errorRoutes
+  ...indexRoutes,
+  ...applicationRoutes,
+  ...componentRoutes,
+  ...namecardRoutes,
+  ...authRoutes,
+  ...userRoutes,
+  ...errorRoutes,
 ]

@@ -5,7 +5,8 @@
     :style="normalizeReactStyle(style)"
     :data-control-disabled="context?.disabled.value ? '' : undefined"
     data-component="FormControl.Caption"
-  ><slot /></span>
+    ><slot
+  /></span>
 </template>
 
 <script setup lang="ts">

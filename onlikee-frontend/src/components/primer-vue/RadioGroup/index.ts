@@ -6,7 +6,7 @@ export const RadioGroup = Object.assign(Root, { Label, Caption, Validation })
 export {
   Label as RadioGroupLabel,
   Caption as RadioGroupCaption,
-  Validation as RadioGroupValidation
+  Validation as RadioGroupValidation,
 }
 export { useRadioGroupContext, provideRadioGroupContext } from './context'
 export type { RadioGroupContextValue } from './context'
@@ -14,6 +14,6 @@ export type {
   RadioGroupProps,
   RadioGroupEmits,
   RadioGroupLabelProps,
-  RadioGroupValidationProps
+  RadioGroupValidationProps,
 } from './types'
 export default RadioGroup

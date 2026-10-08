@@ -9,18 +9,23 @@ import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
 
 const items = [
-  { id: 'javascript', text: 'JavaScript' }, { id: 'typescript', text: 'TypeScript' },
-  { id: 'python', text: 'Python' }, { id: 'rust', text: 'Rust' }, { id: 'ruby', text: 'Ruby' }
+  { id: 'javascript', text: 'JavaScript' },
+  { id: 'typescript', text: 'TypeScript' },
+  { id: 'python', text: 'Python' },
+  { id: 'rust', text: 'Rust' },
+  { id: 'ruby', text: 'Ruby' },
 ]
 const value = ref('')
 const selectedIds = ref<string[]>([])
 const filterValue = ref('')
 const multipleIds = ref<string[]>(['typescript'])
-const tokens = computed(() => items.filter(item => multipleIds.value.includes(item.id)))
+const tokens = computed(() => items.filter((item) => multipleIds.value.includes(item.id)))
 function select(selected: AutocompleteMenuItem | AutocompleteMenuItem[]) {
   value.value = (Array.isArray(selected) ? selected[0] : selected)?.text ?? ''
 }
-function removeToken(id: string | number) { multipleIds.value = multipleIds.value.filter(selected => selected !== id) }
+function removeToken(id: string | number) {
+  multipleIds.value = multipleIds.value.filter((selected) => selected !== id)
+}
 const singleCode = `<FormControl id="language">
   <FormControl.Label id="language-label">语言</FormControl.Label>
   <Autocomplete>
@@ -50,18 +55,14 @@ const multipleCode = `<Autocomplete>
     />
     <ComponentDocsSection title="单选与 FormControl">
       <template #description>
-        输入文字后显示建议，ArrowUp / ArrowDown 移动选项，Home / End 跳到首尾，Enter 选择，Escape 清空并关闭。焦点始终保留在输入框。
+        输入文字后显示建议，ArrowUp / ArrowDown 移动选项，Home / End 跳到首尾，Enter 选择，Escape
+        清空并关闭。焦点始终保留在输入框。
       </template>
       <ComponentDocsDemoBlock :code="singleCode">
         <FormControl id="docs-language">
-          <FormControl.Label id="docs-language-label">
-            语言
-          </FormControl.Label>
+          <FormControl.Label id="docs-language-label"> 语言 </FormControl.Label>
           <Autocomplete>
-            <Autocomplete.Input
-              v-model:value="value"
-              placeholder="输入语言名称"
-            />
+            <Autocomplete.Input v-model:value="value" placeholder="输入语言名称" />
             <Autocomplete.Overlay>
               <Autocomplete.Menu
                 v-model:selected-item-ids="selectedIds"
@@ -77,13 +78,12 @@ const multipleCode = `<Autocomplete>
     </ComponentDocsSection>
     <ComponentDocsSection title="多选与 Token">
       <template #description>
-        多选后列表保持打开。空输入框中的 Backspace 将最后一个 Token 还原为可编辑文本；聚焦 Token 后可用 Backspace / Delete 移除。
+        多选后列表保持打开。空输入框中的 Backspace 将最后一个 Token 还原为可编辑文本；聚焦 Token
+        后可用 Backspace / Delete 移除。
       </template>
       <ComponentDocsDemoBlock :code="multipleCode">
         <FormControl id="docs-languages">
-          <FormControl.Label id="docs-languages-label">
-            使用的语言
-          </FormControl.Label>
+          <FormControl.Label id="docs-languages-label"> 使用的语言 </FormControl.Label>
           <Autocomplete>
             <Autocomplete.Input
               v-model:value="filterValue"
@@ -101,16 +101,23 @@ const multipleCode = `<Autocomplete>
               />
             </Autocomplete.Overlay>
           </Autocomplete>
-          <FormControl.Caption>已选择：{{ tokens.map(token => token.text).join('、') || '无' }}</FormControl.Caption>
+          <FormControl.Caption
+            >已选择：{{ tokens.map((token) => token.text).join('、') || '无' }}</FormControl.Caption
+          >
         </FormControl>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
-    <ComponentDocsSection
-      title="接口说明"
-      variant="api"
-    >
-      <p>Autocomplete 提供 Context、Input、Menu、Overlay。Input 支持 TextInput 属性及 as；Menu 接收 items、selectedItemIds、selectionVariant、filterFn、sortOnCloseFn、loading、emptyStateText、addNewItem；Overlay 接收 menuAnchorRef 和弹层属性。</p>
-      <p>selected-change 的参数为选中项数组，update:selectedItemIds 支持命名双向绑定。单选切换时使用新的选中项替换旧项。节点型视觉属性可传组件、VNode 或同名具名插槽。</p>
+    <ComponentDocsSection title="接口说明" variant="api">
+      <p>
+        Autocomplete 提供 Context、Input、Menu、Overlay。Input 支持 TextInput 属性及 as；Menu 接收
+        items、selectedItemIds、selectionVariant、filterFn、sortOnCloseFn、loading、emptyStateText、addNewItem；Overlay
+        接收 menuAnchorRef 和弹层属性。
+      </p>
+      <p>
+        selected-change 的参数为选中项数组，update:selectedItemIds
+        支持命名双向绑定。单选切换时使用新的选中项替换旧项。节点型视觉属性可传组件、VNode
+        或同名具名插槽。
+      </p>
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

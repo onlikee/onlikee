@@ -4,8 +4,12 @@ import { getResponsiveAttributes } from './responsive'
 import type { StackProps } from './types'
 
 const props = withDefaults(defineProps<StackProps>(), {
-  as: 'div', direction: 'vertical', align: 'stretch', wrap: 'nowrap',
-  justify: 'start', padding: 'none'
+  as: 'div',
+  direction: 'vertical',
+  align: 'stretch',
+  wrap: 'nowrap',
+  justify: 'start',
+  padding: 'none',
 })
 const responsiveAttributes = computed(() => ({
   ...getResponsiveAttributes('gap', props.gap),
@@ -15,17 +19,12 @@ const responsiveAttributes = computed(() => ({
   ...getResponsiveAttributes('justify', props.justify),
   ...getResponsiveAttributes('padding', props.padding),
   ...getResponsiveAttributes('padding-block', props.paddingBlock),
-  ...getResponsiveAttributes('padding-inline', props.paddingInline)
+  ...getResponsiveAttributes('padding-inline', props.paddingInline),
 }))
 </script>
 
 <template>
-  <component
-    :is="as"
-    :class="$style['stack']"
-    data-component="Stack"
-    v-bind="responsiveAttributes"
-  >
+  <component :is="as" :class="$style['stack']" data-component="Stack" v-bind="responsiveAttributes">
     <slot />
   </component>
 </template>

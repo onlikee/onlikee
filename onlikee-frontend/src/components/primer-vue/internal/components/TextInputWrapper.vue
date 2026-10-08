@@ -23,7 +23,7 @@ defineProps<{
   baseOnly?: boolean
 }>()
 const element = ref<HTMLSpanElement>()
-const length = (value?: string | number) => typeof value === 'number' ? `${value}px` : value
+const length = (value?: string | number) => (typeof value === 'number' ? `${value}px` : value)
 defineExpose({ element })
 </script>
 
@@ -31,7 +31,11 @@ defineExpose({ element })
   <span
     ref="element"
     v-bind="$attrs"
-    :class="[$style['TextInput-base-wrapper'], className, { [$style['TextInput-wrapper']]: !baseOnly }]"
+    :class="[
+      $style['TextInput-base-wrapper'],
+      className,
+      { [$style['TextInput-wrapper']]: !baseOnly },
+    ]"
     :data-block="block || undefined"
     :data-contrast="contrast || undefined"
     :data-disabled="disabled || undefined"
@@ -47,8 +51,18 @@ defineExpose({ element })
     :data-trailing-visual="baseOnly ? undefined : hasTrailingVisual || undefined"
     :data-no-trailing-visual="baseOnly ? undefined : hasTrailingVisual ? undefined : true"
     :data-component="'data-component' in $attrs ? $attrs['data-component'] : 'TextInput'"
-    :style="normalizeReactStyle([{ width: width ? length(width) : undefined, minWidth: minWidth ? length(minWidth) : undefined, maxWidth: maxWidth ? length(maxWidth) : undefined }, style])"
-  ><slot /></span>
+    :style="
+      normalizeReactStyle([
+        {
+          width: width ? length(width) : undefined,
+          minWidth: minWidth ? length(minWidth) : undefined,
+          maxWidth: maxWidth ? length(maxWidth) : undefined,
+        },
+        style,
+      ])
+    "
+    ><slot
+  /></span>
 </template>
 
 <style module src="./TextInputWrapper.module.css"></style>

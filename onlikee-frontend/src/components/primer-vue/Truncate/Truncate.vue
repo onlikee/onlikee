@@ -1,21 +1,25 @@
 <script setup lang="ts">
 import { computed, type Component } from 'vue'
 
-const props = withDefaults(defineProps<{
-  title: string
-  as?: string | Component
-  inline?: boolean
-  expandable?: boolean
-  maxWidth?: number | string
-}>(), {
-  as: 'div',
-  inline: false,
-  expandable: false,
-  maxWidth: 125,
-})
+const props = withDefaults(
+  defineProps<{
+    title: string
+    as?: string | Component
+    inline?: boolean
+    expandable?: boolean
+    maxWidth?: number | string
+  }>(),
+  {
+    as: 'div',
+    inline: false,
+    expandable: false,
+    maxWidth: 125,
+  },
+)
 
 const truncateStyle = computed(() => ({
-  '--truncate-max-width': typeof props.maxWidth === 'number' ? `${props.maxWidth}px` : props.maxWidth,
+  '--truncate-max-width':
+    typeof props.maxWidth === 'number' ? `${props.maxWidth}px` : props.maxWidth,
 }))
 </script>
 

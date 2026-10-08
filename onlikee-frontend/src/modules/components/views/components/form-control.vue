@@ -7,19 +7,15 @@
 
     <ComponentDocsSection title="基础用法">
       <template #description>
-        使用 <code>FormControl</code>、<code>FormControl.Label</code> 和 <code>FormControl.Caption</code>
+        使用 <code>FormControl</code>、<code>FormControl.Label</code> 和
+        <code>FormControl.Caption</code>
         组织一个完整的表单项。
       </template>
       <ComponentDocsDemoBlock :code="basicDemoCode">
         <FormControl>
           <FormControl.Label>应用名称</FormControl.Label>
-          <TextInput
-            v-model:value="appName"
-            placeholder="请输入应用名称"
-          />
-          <FormControl.Caption>
-            将显示在应用卡片和页面标题中。
-          </FormControl.Caption>
+          <TextInput v-model:value="appName" placeholder="请输入应用名称" />
+          <FormControl.Caption> 将显示在应用卡片和页面标题中。 </FormControl.Caption>
         </FormControl>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -32,13 +28,8 @@
       <ComponentDocsDemoBlock :code="requiredDemoCode">
         <FormControl required>
           <FormControl.Label>应用地址前缀</FormControl.Label>
-          <TextInput
-            v-model:value="appUrlPrefix"
-            placeholder="onlikee-app"
-          />
-          <FormControl.Caption>
-            Label 会自动显示必填标记。
-          </FormControl.Caption>
+          <TextInput v-model:value="appUrlPrefix" placeholder="onlikee-app" />
+          <FormControl.Caption> Label 会自动显示必填标记。 </FormControl.Caption>
         </FormControl>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -46,16 +37,14 @@
     <ComponentDocsSection title="校验状态">
       <template #description>
         <code>FormControl.Validation</code> 支持 <code>error</code> 和 <code>success</code>
-        两种状态；纵向普通输入由 FormControl 读取校验插槽状态。横向输入不渲染校验消息；选择控件在组级校验。使用时建议放在
+        两种状态；纵向普通输入由 FormControl
+        读取校验插槽状态。横向输入不渲染校验消息；选择控件在组级校验。使用时建议放在
         <code>FormControl.Caption</code> 上方。
       </template>
       <ComponentDocsDemoBlock :code="validationDemoCode">
         <FormControl>
           <FormControl.Label>发布地址</FormControl.Label>
-          <TextInput
-            v-model:value="releaseSlug"
-            placeholder="onlikee-app"
-          />
+          <TextInput v-model:value="releaseSlug" placeholder="onlikee-app" />
           <FormControl.Validation :variant="isReleaseSlugValid ? 'success' : 'error'">
             {{
               isReleaseSlugValid
@@ -72,7 +61,8 @@
 
     <ComponentDocsSection title="灵活组合">
       <template #description>
-        输入控件应作为直接子组件。通过 leadingVisual 和 trailingVisual 添加前后缀；自定义包装组件使用 asSlot 和 useFormControlForwardedProps 接入。
+        输入控件应作为直接子组件。通过 leadingVisual 和 trailingVisual
+        添加前后缀；自定义包装组件使用 asSlot 和 useFormControlForwardedProps 接入。
       </template>
       <ComponentDocsDemoBlock :code="compositionDemoCode">
         <FormControl required>
@@ -83,28 +73,15 @@
             trailing-visual=".onlikee.com"
             placeholder="my-app"
           />
-          <FormControl.Caption>
-            你可以在结构块之间插入任意自定义内容。
-          </FormControl.Caption>
-          <p class="demo-preview">
-            预览地址：https://{{ domainPrefix || 'your-app' }}.onlikee.com
-          </p>
+          <FormControl.Caption> 你可以在结构块之间插入任意自定义内容。 </FormControl.Caption>
+          <p class="demo-preview">预览地址：https://{{ domainPrefix || 'your-app' }}.onlikee.com</p>
         </FormControl>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="API"
-      variant="api"
-    >
+    <ComponentDocsSection title="API" variant="api">
       <h3>FormControl Props</h3>
-      <Table
-        :columns="apiCols"
-        :data="rootPropRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+      <Table :columns="apiCols" :data="rootPropRows" row-key="name" compact :hoverable="false" />
 
       <h3>子组件</h3>
       <Table
@@ -219,49 +196,70 @@ const apiCols: TableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '180px' },
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '220px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '280px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '280px', wrap: true },
 ]
 
 const rootPropRows = [
-  { name: 'id', description: '输入控件的 ID；未指定时生成稳定 ID。', type: 'string', default: '自动生成' },
-  { name: 'disabled', description: '禁用输入及标签，并继承选择控件组的禁用状态。', type: 'boolean', default: 'false' },
-  { name: 'layout', description: '普通输入默认纵向；选择控件始终横向。横向普通输入不渲染校验消息。', type: "'vertical' | 'horizontal'", default: "'vertical'" },
-  { name: 'className / style', description: '根容器类名与行内样式；也支持 Vue 的 class 属性。', type: 'string / CSSProperties', default: '—' },
+  {
+    name: 'id',
+    description: '输入控件的 ID；未指定时生成稳定 ID。',
+    type: 'string',
+    default: '自动生成',
+  },
+  {
+    name: 'disabled',
+    description: '禁用输入及标签，并继承选择控件组的禁用状态。',
+    type: 'boolean',
+    default: 'false',
+  },
+  {
+    name: 'layout',
+    description: '普通输入默认纵向；选择控件始终横向。横向普通输入不渲染校验消息。',
+    type: "'vertical' | 'horizontal'",
+    default: "'vertical'",
+  },
+  {
+    name: 'className / style',
+    description: '根容器类名与行内样式；也支持 Vue 的 class 属性。',
+    type: 'string / CSSProperties',
+    default: '—',
+  },
   {
     name: 'required',
     description: '标记当前表单项为必填，并让 FormControl.Label 自动追加 *。',
     type: 'boolean',
-    default: 'false'
-  }
+    default: 'false',
+  },
 ]
 
 const subComponentCols: TableColumn[] = [
   { key: 'name', label: '子组件', rowHeader: true, minWidth: '200px' },
   { key: 'description', label: '说明', minWidth: '320px', wrap: true },
-  { key: 'publicProps', label: '公开 Props', minWidth: '220px', wrap: true }
+  { key: 'publicProps', label: '公开 Props', minWidth: '220px', wrap: true },
 ]
 
 const subComponentRows = [
   {
     name: 'FormControl.Label',
     description: '标签区域；读取根组件的 required 上下文并自动显示必填标记。',
-    publicProps: 'id、as、htmlFor、visuallyHidden、className、style'
+    publicProps: 'id、as、htmlFor、visuallyHidden、className、style',
   },
   {
     name: 'FormControl.Validation',
-    description: '校验消息区域；通常放在 Caption 上方，显示状态图标，FormControl 自动读取 variant。',
-    publicProps: '见下方 Validation Props'
+    description:
+      '校验消息区域；通常放在 Caption 上方，显示状态图标，FormControl 自动读取 variant。',
+    publicProps: '见下方 Validation Props',
   },
   {
     name: 'FormControl.Caption',
     description: '辅助说明区域；通常用于提示、说明或补充文案。',
-    publicProps: 'id、className、style'
+    publicProps: 'id、className、style',
   },
   {
     name: 'FormControl.LeadingVisual',
     description: '仅用于 Checkbox 和 Radio 左侧的视觉元素。',
-    publicProps: 'className、style'
-  }
+    publicProps: 'className、style',
+  },
 ]
 
 const validationPropRows = [
@@ -269,8 +267,8 @@ const validationPropRows = [
     name: 'variant',
     description: '校验信息的视觉状态；同时影响图标、文字颜色和纵向普通输入的校验状态。',
     type: "'error' | 'success'",
-    default: '必填'
-  }
+    default: '必填',
+  },
 ]
 </script>
 

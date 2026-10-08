@@ -6,29 +6,17 @@
     />
 
     <ComponentDocsSection title="基础用法">
-      <template #description>
-        通过 <code>v-model:value</code> 双向绑定输入值。
-      </template>
+      <template #description> 通过 <code>v-model:value</code> 双向绑定输入值。 </template>
       <ComponentDocsDemoBlock :code="demo1Code">
-        <TextInput
-          v-model:value="val1"
-          placeholder="请输入内容"
-        />
-        <p class="demo-info">
-          当前值：{{ val1 || '未输入' }}
-        </p>
+        <TextInput v-model:value="val1" placeholder="请输入内容" />
+        <p class="demo-info">当前值：{{ val1 || '未输入' }}</p>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="禁用状态">
-      <template #description>
-        设置原生属性 <code>disabled</code> 后输入框不可编辑。
-      </template>
+      <template #description> 设置原生属性 <code>disabled</code> 后输入框不可编辑。 </template>
       <ComponentDocsDemoBlock :code="demo2Code">
-        <TextInput
-          v-model:value="val2"
-          disabled
-        />
+        <TextInput v-model:value="val2" disabled />
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
@@ -56,7 +44,8 @@
 
     <ComponentDocsSection title="前后缀文本">
       <template #description>
-        使用 <code>leadingVisual</code> 与 <code>trailingVisual</code> 展示固定文本，原生 input 属性仍会透传到内部输入框。
+        使用 <code>leadingVisual</code> 与 <code>trailingVisual</code> 展示固定文本，原生 input
+        属性仍会透传到内部输入框。
       </template>
       <ComponentDocsDemoBlock :code="demo4Code">
         <TextInput
@@ -76,47 +65,26 @@
       </template>
       <ComponentDocsDemoBlock :code="demo5Code">
         <FormControl>
-          <FormControl.Label>
-            Name <span class="required-mark">*</span>
-          </FormControl.Label>
+          <FormControl.Label> Name <span class="required-mark">*</span> </FormControl.Label>
           <TextInput v-model:value="profileName" />
-          <FormControl.Validation
-            v-if="hasInvalidChars"
-            variant="error"
-          >
+          <FormControl.Validation v-if="hasInvalidChars" variant="error">
             Names may not contain symbols
           </FormControl.Validation>
-          <FormControl.Caption>
-            This will be publicly visible
-          </FormControl.Caption>
+          <FormControl.Caption> This will be publicly visible </FormControl.Caption>
         </FormControl>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="尺寸大小">
       <template #description>
-        通过 <code>size</code> 属性设置组件大小，支持 <code>small</code>、<code>medium</code> 和 <code>large</code>，默认为 <code>medium</code>。
+        通过 <code>size</code> 属性设置组件大小，支持 <code>small</code>、<code>medium</code> 和
+        <code>large</code>，默认为 <code>medium</code>。
       </template>
       <ComponentDocsDemoBlock :code="demo6Code">
-        <div
-          class="demo-row"
-          style="align-items: center;"
-        >
-          <TextInput
-            v-model:value="valSmall"
-            size="small"
-            placeholder="small (28px)"
-          />
-          <TextInput
-            v-model:value="valMedium"
-            size="medium"
-            placeholder="medium (32px)"
-          />
-          <TextInput
-            v-model:value="valLarge"
-            size="large"
-            placeholder="large (40px)"
-          />
+        <div class="demo-row" style="align-items: center">
+          <TextInput v-model:value="valSmall" size="small" placeholder="small (28px)" />
+          <TextInput v-model:value="valMedium" size="medium" placeholder="medium (32px)" />
+          <TextInput v-model:value="valLarge" size="large" placeholder="large (40px)" />
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -135,49 +103,22 @@
           placeholder="最多建议输入 20 个字符"
         >
           <template #trailingAction>
-            <TextInput.Action
-              aria-label="清空搜索"
-              @click="search = ''"
-            >
-              清空
-            </TextInput.Action>
+            <TextInput.Action aria-label="清空搜索" @click="search = ''"> 清空 </TextInput.Action>
           </template>
         </TextInput>
-        <label class="loading-toggle"><input
-          v-model="searchLoading"
-          type="checkbox"
-        >显示加载状态</label>
+        <label class="loading-toggle"
+          ><input v-model="searchLoading" type="checkbox" />显示加载状态</label
+        >
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="API"
-      variant="api"
-    >
+    <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <Table
-        :columns="apiCols"
-        :data="apiRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+      <Table :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
       <h3>原生属性透传（常用）</h3>
-      <Table
-        :columns="apiCols"
-        :data="nativeRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+      <Table :columns="apiCols" :data="nativeRows" row-key="name" compact :hoverable="false" />
       <h3>事件</h3>
-      <Table
-        :columns="eventCols"
-        :data="eventRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+      <Table :columns="eventCols" :data="eventRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
@@ -316,19 +257,59 @@ const apiCols: TableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '220px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '220px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '220px', wrap: true },
 ]
 
 const apiRows = [
-  { name: 'value', description: '受控绑定值（v-model:value）', type: 'string | number', default: '—' },
+  {
+    name: 'value',
+    description: '受控绑定值（v-model:value）',
+    type: 'string | number',
+    default: '—',
+  },
   { name: 'defaultValue', description: '非受控初始值', type: 'string | number', default: '—' },
-  { name: 'size', description: '输入框尺寸', type: "'small' | 'medium' | 'large'", default: "'medium'" },
-  { name: 'leadingVisual / trailingVisual', description: '输入框前后视觉元素；支持同名具名插槽', type: 'VNodeChild | Component', default: '—' },
-  { name: 'trailingAction', description: '输入框操作按钮，通常使用 TextInput.Action', type: 'VNodeChild | Component', default: '—' },
-  { name: 'loading / loaderPosition / loaderText', description: '加载状态、位置和无障碍提示', type: "boolean / 'auto' | 'leading' | 'trailing' / string", default: "— / 'auto' / 'Loading'" },
-  { name: 'characterLimit', description: '字符计数与超限错误状态，不阻止输入', type: 'number', default: '—' },
-  { name: 'validationStatus', description: '错误或成功状态', type: "'error' | 'success'", default: '—' },
-  { name: 'block / contrast / monospace', description: '占满容器、高对比背景和等宽字体', type: 'boolean', default: 'false' }
+  {
+    name: 'size',
+    description: '输入框尺寸',
+    type: "'small' | 'medium' | 'large'",
+    default: "'medium'",
+  },
+  {
+    name: 'leadingVisual / trailingVisual',
+    description: '输入框前后视觉元素；支持同名具名插槽',
+    type: 'VNodeChild | Component',
+    default: '—',
+  },
+  {
+    name: 'trailingAction',
+    description: '输入框操作按钮，通常使用 TextInput.Action',
+    type: 'VNodeChild | Component',
+    default: '—',
+  },
+  {
+    name: 'loading / loaderPosition / loaderText',
+    description: '加载状态、位置和无障碍提示',
+    type: "boolean / 'auto' | 'leading' | 'trailing' / string",
+    default: "— / 'auto' / 'Loading'",
+  },
+  {
+    name: 'characterLimit',
+    description: '字符计数与超限错误状态，不阻止输入',
+    type: 'number',
+    default: '—',
+  },
+  {
+    name: 'validationStatus',
+    description: '错误或成功状态',
+    type: "'error' | 'success'",
+    default: '—',
+  },
+  {
+    name: 'block / contrast / monospace',
+    description: '占满容器、高对比背景和等宽字体',
+    type: 'boolean',
+    default: 'false',
+  },
 ]
 
 const nativeRows = [
@@ -337,19 +318,28 @@ const nativeRows = [
   { name: 'disabled', description: '禁用输入', type: 'boolean', default: 'false' },
   { name: 'maxlength', description: '最大输入长度', type: 'number | string', default: '-' },
   { name: 'autocomplete', description: '自动填充提示', type: 'string', default: '-' },
-  { name: 'id / name / aria-*', description: '其他原生属性会透传到 input 元素', type: 'string', default: '-' }
+  {
+    name: 'id / name / aria-*',
+    description: '其他原生属性会透传到 input 元素',
+    type: 'string',
+    default: '-',
+  },
 ]
 
 const eventCols: TableColumn[] = [
   { key: 'name', label: '事件名', rowHeader: true, minWidth: '180px' },
   { key: 'description', label: '说明', minWidth: '240px', wrap: true },
-  { key: 'type', label: '回调参数', minWidth: '200px', wrap: true }
+  { key: 'type', label: '回调参数', minWidth: '200px', wrap: true },
 ]
 
 const eventRows = [
-  { name: 'update:value', description: '输入值变化时触发（IME 组合输入在 compositionend 后更新）', type: 'string' },
+  {
+    name: 'update:value',
+    description: '输入值变化时触发（IME 组合输入在 compositionend 后更新）',
+    type: 'string',
+  },
   { name: 'change / input', description: '原生输入事件；change 随文本修改触发', type: 'Event' },
-  { name: 'focus / blur', description: '原生焦点事件', type: 'FocusEvent' }
+  { name: 'focus / blur', description: '原生焦点事件', type: 'FocusEvent' },
 ]
 </script>
 

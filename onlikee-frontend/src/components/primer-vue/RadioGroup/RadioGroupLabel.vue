@@ -3,17 +3,13 @@
     :class="[
       className,
       classes['radio-group__label'],
-      { [classes['radio-group__visually-hidden']]: visuallyHidden }
+      { [classes['radio-group__visually-hidden']]: visuallyHidden },
     ]"
     :title="context?.required.value ? 'required field' : undefined"
     :data-label-disabled="context?.disabled.value ? '' : undefined"
     :data-component="context?.parentName.value ? `${context.parentName.value}.Label` : undefined"
   >
-    <Stack
-      v-if="context?.required.value"
-      direction="horizontal"
-      gap="none"
-    >
+    <Stack v-if="context?.required.value" direction="horizontal" gap="none">
       <div :class="[classes['radio-group__label-children']]"><slot /></div>
       <span>*</span>
     </Stack>

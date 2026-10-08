@@ -5,7 +5,10 @@ import ActionMenuOverlay from './ActionMenuOverlay.vue'
 import { ActionListDivider as ActionMenuDivider } from '../ActionList'
 
 export const ActionMenu = Object.assign(ActionMenuRoot, {
-  Button: ActionMenuButton, Anchor: ActionMenuAnchor, Overlay: ActionMenuOverlay, Divider: ActionMenuDivider
+  Button: ActionMenuButton,
+  Anchor: ActionMenuAnchor,
+  Overlay: ActionMenuOverlay,
+  Divider: ActionMenuDivider,
 })
 export { ActionMenuAnchor, ActionMenuButton, ActionMenuOverlay, ActionMenuDivider }
 export type * from './types'

@@ -8,9 +8,12 @@ import MenuOverlay from './ActionBarMenuOverlay.vue'
 import { actionBarKey, type RegisteredItem } from './context'
 import type { ActionBarProps } from './types'
 
-
 defineOptions({ inheritAttrs: false })
-const props = withDefaults(defineProps<ActionBarProps>(), { size: 'medium', flush: false, gap: 'condensed' })
+const props = withDefaults(defineProps<ActionBarProps>(), {
+  size: 'medium',
+  flush: false,
+  gap: 'condensed',
+})
 // Vue normalizes declared kebab-case prop keys at runtime; keep the public native ARIA names.
 const a11y = props as typeof props & { ariaLabel?: string; ariaLabelledby?: string }
 const attrs = useAttrs()
@@ -29,54 +32,87 @@ provide(actionBarKey, {
   size: computed(() => props.size),
   register(item) {
     registry.value = [...registry.value, item]
-    return () => { registry.value = registry.value.filter(candidate => candidate !== item) }
+    return () => {
+      registry.value = registry.value.filter((candidate) => candidate !== item)
+    }
   },
   observe(element, callback) {
     subscribers.set(element, callback)
     observer?.observe(element)
-    return () => { subscribers.delete(element); observer?.unobserve(element) }
-  }
+    return () => {
+      subscribers.delete(element)
+      observer?.unobserve(element)
+    }
+  },
 })
 // Registration order can differ from DOM order for nested and conditionally rendered children.
 function sortRegistry() {
   const sorted = [...registry.value].sort((a, b) => {
-    const position = a.element.value && b.element.value ? a.element.value.compareDocumentPosition(b.element.value) : 0
-    return position & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : position & Node.DOCUMENT_POSITION_PRECEDING ? 1 : 0
+    const position =
+      a.element.value && b.element.value
+        ? a.element.value.compareDocumentPosition(b.element.value)
+        : 0
+    return position & Node.DOCUMENT_POSITION_FOLLOWING
+      ? -1
+      : position & Node.DOCUMENT_POSITION_PRECEDING
+        ? 1
+        : 0
   })
   if (sorted.some((item, index) => item !== registry.value[index])) registry.value = sorted
 }
-const overflowItems = computed(() => registry.value.filter(item => item.overflowing.value))
-if (typeof document !== 'undefined') useFocusZone(() => {
-  void overflowItems.value
-  return {
-    containerRef: toolbar,
-    bindKeys: FocusKeys.ArrowHorizontal | FocusKeys.HomeAndEnd,
-    focusOutBehavior: 'wrap',
-    focusableElementFilter: element => element.matches(':is(button, a, input, [tabindex]):not(:disabled):not([data-more-button-inactive])') &&
-      !element.closest('[data-overflowing]')
-  }
-})
+const overflowItems = computed(() => registry.value.filter((item) => item.overflowing.value))
+if (typeof document !== 'undefined')
+  useFocusZone(() => {
+    void overflowItems.value
+    return {
+      containerRef: toolbar,
+      bindKeys: FocusKeys.ArrowHorizontal | FocusKeys.HomeAndEnd,
+      focusOutBehavior: 'wrap',
+      focusableElementFilter: (element) =>
+        element.matches(
+          ':is(button, a, input, [tabindex]):not(:disabled):not([data-more-button-inactive])',
+        ) && !element.closest('[data-overflowing]'),
+    }
+  })
 function openMore(event: KeyboardEvent) {
-  if (event.key === 'Tab' && open.value) { open.value = false; return }
+  if (event.key === 'Tab' && open.value) {
+    open.value = false
+    return
+  }
   if (event.defaultPrevented || !['ArrowDown', 'ArrowUp'].includes(event.key)) return
   last.value = event.key === 'ArrowUp'
   focusAnchor.value = false
   open.value = true
   event.preventDefault()
 }
-watch(overflowItems, items => { if (!items.length) open.value = false })
+watch(overflowItems, (items) => {
+  if (!items.length) open.value = false
+})
 onMounted(() => {
   if (typeof IntersectionObserver !== 'undefined' && toolbar.value) {
-    observer = new IntersectionObserver(entries => {
-      for (const entry of entries) subscribers.get(entry.target as HTMLElement)?.(!entry.isIntersecting || entry.intersectionRatio < 0.95)
-    }, { root: toolbar.value, threshold: [0, 0.95] })
+    observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries)
+          subscribers.get(entry.target as HTMLElement)?.(
+            !entry.isIntersecting || entry.intersectionRatio < 0.95,
+          )
+      },
+      { root: toolbar.value, threshold: [0, 0.95] },
+    )
     subscribers.forEach((_callback, element) => observer?.observe(element))
   }
   sortRegistry()
   orderObserver = new MutationObserver(sortRegistry)
-  orderObserver.observe(toolbar.value!.querySelector(`.${classes['action-bar-overflow-container']}`)!, { childList: true, subtree: true })
+  orderObserver.observe(
+    toolbar.value!.querySelector(`.${classes['action-bar-overflow-container']}`)!,
+    { childList: true, subtree: true },
+  )
 })
-onBeforeUnmount(() => { observer?.disconnect(); orderObserver?.disconnect(); subscribers.clear() })
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  orderObserver?.disconnect()
+  subscribers.clear()
+})
 </script>
 
 <template>
@@ -110,7 +146,7 @@ onBeforeUnmount(() => { observer?.disconnect(); orderObserver?.disconnect(); sub
         aria-haspopup="true"
         :aria-expanded="open"
         :data-more-button-inactive="overflowItems.length ? undefined : true"
-        @click="last = false; focusAnchor = $event.detail > 0; open = !open"
+        @click="((last = false), (focusAnchor = $event.detail > 0), (open = !open))"
         @keydown="openMore"
       />
     </div>

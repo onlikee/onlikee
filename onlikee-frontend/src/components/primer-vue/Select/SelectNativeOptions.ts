@@ -1,4 +1,13 @@
-import { cloneVNode, Comment, defineComponent, Fragment, inject, isVNode, type VNode, type VNodeChild } from 'vue'
+import {
+  cloneVNode,
+  Comment,
+  defineComponent,
+  Fragment,
+  inject,
+  isVNode,
+  type VNode,
+  type VNodeChild,
+} from 'vue'
 import { selectValueKey } from './context'
 
 /** Apply SSR defaults to native option children, including native optgroups. */
@@ -15,7 +24,12 @@ export default defineComponent({
       if (Array.isArray(nodes)) return nodes.map(children)
       if (!isVNode(nodes)) return nodes
       if (nodes.type === 'option' && initialValue !== undefined) {
-        const optionValue = nodes.props?.value !== undefined ? String(nodes.props.value ?? '') : text(nodes.children as VNodeChild).replace(/[\t\n\f\r ]+/g, ' ').trim()
+        const optionValue =
+          nodes.props?.value !== undefined
+            ? String(nodes.props.value ?? '')
+            : text(nodes.children as VNodeChild)
+                .replace(/[\t\n\f\r ]+/g, ' ')
+                .trim()
         return cloneVNode(nodes, { selected: optionValue === initialValue })
       }
       if (nodes.type === Fragment || nodes.type === 'optgroup') {

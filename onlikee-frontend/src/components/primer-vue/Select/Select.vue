@@ -8,7 +8,10 @@ import { selectValueKey } from './context'
 import SelectNativeOptions from './SelectNativeOptions'
 // eslint-disable-next-line vue/no-reserved-component-names -- Keep the reference component name for slot diagnostics.
 defineOptions({ name: 'Select', inheritAttrs: false, __SLOT__: Symbol('Select') })
-const props = withDefaults(defineProps<SelectOptions>(), { disabled: undefined, required: undefined })
+const props = withDefaults(defineProps<SelectOptions>(), {
+  disabled: undefined,
+  required: undefined,
+})
 const emit = defineEmits<SelectEmits>()
 const element = ref<HTMLSelectElement>()
 const attrs = useAttrs()
@@ -16,23 +19,46 @@ const { value, commit, setUncontrolledValue } = useInputValue(props, element, (n
   emit('update:value', next)
   emit('change', event)
 })
-provide(selectValueKey, computed(() => props.value !== undefined || props.defaultValue !== undefined || props.placeholder ? value.value : undefined))
+provide(
+  selectValueKey,
+  computed(() =>
+    props.value !== undefined || props.defaultValue !== undefined || props.placeholder
+      ? value.value
+      : undefined,
+  ),
+)
 function nativeAttrs() {
   const { class: _class, style: _style, ...native } = attrs
   return { ...native, width: props.width, minWidth: props.minWidth, maxWidth: props.maxWidth }
 }
 onMounted(() => {
   // Browser selection defaults to the first option when no default is provided.
-  if (props.value === undefined && props.defaultValue === undefined && !props.placeholder && element.value) {
+  if (
+    props.value === undefined &&
+    props.defaultValue === undefined &&
+    !props.placeholder &&
+    element.value
+  ) {
     const options = Array.from(element.value.options)
-    const initial = options.find(option => option.defaultSelected) ?? options.find(option => !option.disabled && !(option.parentElement instanceof HTMLOptGroupElement && option.parentElement.disabled))
+    const initial =
+      options.find((option) => option.defaultSelected) ??
+      options.find(
+        (option) =>
+          !option.disabled &&
+          !(option.parentElement instanceof HTMLOptGroupElement && option.parentElement.disabled),
+      )
     if (initial) {
       element.value.value = initial.value
       setUncontrolledValue(initial.value)
     }
   }
 })
-defineExpose({ element, input: element, focus: (options?: FocusOptions) => element.value?.focus(options), blur: () => element.value?.blur() })
+defineExpose({
+  element,
+  input: element,
+  focus: (options?: FocusOptions) => element.value?.focus(options),
+  blur: () => element.value?.blur(),
+})
 </script>
 
 <template>
@@ -77,7 +103,11 @@ defineExpose({ element, input: element, focus: (options?: FocusOptions) => eleme
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
       :class="$style['select-arrow']"
-    ><path d="m4.074 9.427 3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.043 9H4.251a.25.25 0 0 0-.177.427ZM4.074 7.47 7.47 4.073a.25.25 0 0 1 .354 0L11.22 7.47a.25.25 0 0 1-.177.426H4.251a.25.25 0 0 1-.177-.426Z" /></svg>
+    >
+      <path
+        d="m4.074 9.427 3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.043 9H4.251a.25.25 0 0 0-.177.427ZM4.074 7.47 7.47 4.073a.25.25 0 0 1 .354 0L11.22 7.47a.25.25 0 0 1-.177.426H4.251a.25.25 0 0 1-.177-.426Z"
+      />
+    </svg>
   </TextInputWrapper>
 </template>
 <style module src="./Select.module.css" />

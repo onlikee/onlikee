@@ -24,7 +24,8 @@ export interface AutocompleteContextValue {
   notifyControlBlur: () => void
 }
 
-export const AutocompleteContext: InjectionKey<AutocompleteContextValue> = Symbol('AutocompleteContext')
+export const AutocompleteContext: InjectionKey<AutocompleteContextValue> =
+  Symbol('AutocompleteContext')
 export const AutocompleteInputContext = AutocompleteContext
 export const AutocompleteDeferredInputContext = AutocompleteContext
 export function useAutocompleteContext() {

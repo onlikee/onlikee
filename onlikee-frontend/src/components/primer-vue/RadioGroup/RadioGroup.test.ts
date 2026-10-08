@@ -19,7 +19,14 @@ afterEach(() => {
   host.remove()
 })
 
-function mountGroup(options: { disabled?: boolean; optionDisabled?: boolean; controlled?: boolean; acceptChanges?: boolean } = {}) {
+function mountGroup(
+  options: {
+    disabled?: boolean
+    optionDisabled?: boolean
+    controlled?: boolean
+    acceptChanges?: boolean
+  } = {},
+) {
   const selected = ref('one')
   const onChange = vi.fn((value: string | null, _event: Event) => {
     if (options.acceptChanges && value !== null) selected.value = value
@@ -30,18 +37,25 @@ function mountGroup(options: { disabled?: boolean; optionDisabled?: boolean; con
     slots: {
       default: () => [
         h(RadioGroup.Label, null, () => 'Choose one'),
-        ...['one', 'two'].map(value => h(FormControl, {
-          id: `option-${value}`, disabled: value === 'two' && options.optionDisabled
-        }, () => [
-          h(Radio, {
-            value,
-            checked: options.controlled ? selected.value === value : undefined,
-            defaultChecked: value === 'one'
-          }),
-          h(FormControl.Label, null, () => `Option ${value}`)
-        ]))
-      ]
-    }
+        ...['one', 'two'].map((value) =>
+          h(
+            FormControl,
+            {
+              id: `option-${value}`,
+              disabled: value === 'two' && options.optionDisabled,
+            },
+            () => [
+              h(Radio, {
+                value,
+                checked: options.controlled ? selected.value === value : undefined,
+                defaultChecked: value === 'one',
+              }),
+              h(FormControl.Label, null, () => `Option ${value}`),
+            ],
+          ),
+        ),
+      ],
+    },
   })
   wrappers.push(wrapper)
   return { wrapper, onChange }
@@ -137,11 +151,13 @@ test('a direct Radio respects its disabled prop in a RadioGroup', async () => {
   const wrapper = mount(RadioGroup, {
     attachTo: host,
     props: { name: 'direct' },
-    slots: { default: () => [
-      h(RadioGroup.Label, null, () => 'Direct radios'),
-      h(Radio, { value: 'one', defaultChecked: true }),
-      h(Radio, { value: 'two', disabled: true })
-    ] }
+    slots: {
+      default: () => [
+        h(RadioGroup.Label, null, () => 'Direct radios'),
+        h(Radio, { value: 'one', defaultChecked: true }),
+        h(Radio, { value: 'two', disabled: true }),
+      ],
+    },
   })
   wrappers.push(wrapper)
   const second = wrapper.get<HTMLInputElement>('input[value="two"]')

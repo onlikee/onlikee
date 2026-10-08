@@ -18,7 +18,11 @@ function nativeAttrs() {
   <option
     v-bind="nativeAttrs()"
     :value="value"
-    :selected="hasInitialValue ? initiallySelected || undefined : ($attrs.selected as OptionHTMLAttributes['selected'])"
+    :selected="
+      hasInitialValue
+        ? initiallySelected || undefined
+        : ($attrs.selected as OptionHTMLAttributes['selected'])
+    "
     :style="normalizeReactStyle($attrs.style)"
     data-component="Select.Option"
   >

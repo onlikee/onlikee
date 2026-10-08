@@ -1,24 +1,24 @@
 <template>
-  <div
-    :class="[$style['table'], tableClasses]"
-  >
+  <div :class="[$style['table'], tableClasses]">
     <div :class="$style['table__container']">
-      <table
-        :class="$style['table__table']"
-        :aria-label="ariaLabel"
-      >
-        <caption
-          v-if="caption"
-          :class="$style['table__sr-caption']"
-        >
-          {{ caption }}
+      <table :class="$style['table__table']" :aria-label="ariaLabel">
+        <caption v-if="caption" :class="$style['table__sr-caption']">
+          {{
+            caption
+          }}
         </caption>
         <thead :class="$style['table__head']">
           <tr :class="$style['table__row']">
             <th
               v-for="column in columns"
               :key="column.key"
-              :class="[$style['table__cell'], $style['table__cell--head'], alignClass(column.align), column.headerClassName, { [$style['is-wrap']]: column.wrap }]"
+              :class="[
+                $style['table__cell'],
+                $style['table__cell--head'],
+                alignClass(column.align),
+                column.headerClassName,
+                { [$style['is-wrap']]: column.wrap },
+              ]"
               :style="columnStyle(column)"
               scope="col"
             >
@@ -29,25 +29,25 @@
           </tr>
         </thead>
 
-        <tbody
-          v-if="displayRows.length > 0"
-        >
+        <tbody v-if="displayRows.length > 0">
           <tr
             v-for="(row, rowIndex) in displayRows"
             :key="resolveRowKey(row, rowIndex)"
-            :class="[$style['table__row'], $style['table__row--body'], { [$style['is-clickable']]: rowClickable }]"
+            :class="[
+              $style['table__row'],
+              $style['table__row--body'],
+              { [$style['is-clickable']]: rowClickable },
+            ]"
             @click="onRowClick(row, rowIndex)"
           >
-            <template
-              v-for="column in columns"
-              :key="column.key"
-            >
+            <template v-for="column in columns" :key="column.key">
               <component
                 :is="column.rowHeader ? 'th' : 'td'"
-                :class="[$style['table__cell'],
-                         alignClass(column.align),
-                         column.className,
-                         { [$style['is-row-header']]: column.rowHeader, [$style['is-wrap']]: column.wrap }
+                :class="[
+                  $style['table__cell'],
+                  alignClass(column.align),
+                  column.className,
+                  { [$style['is-row-header']]: column.rowHeader, [$style['is-wrap']]: column.wrap },
                 ]"
                 :style="columnStyle(column)"
                 :scope="column.rowHeader ? 'row' : undefined"
@@ -58,14 +58,9 @@
           </tr>
         </tbody>
 
-        <tbody
-          v-else
-        >
+        <tbody v-else>
           <tr :class="$style['table__row']">
-            <td
-              :class="$style['table__cell--empty']"
-              :colspan="colspan"
-            >
+            <td :class="$style['table__cell--empty']" :colspan="colspan">
               {{ emptyText }}
             </td>
           </tr>
@@ -119,8 +114,8 @@ const props = withDefaults(
     hoverable: true,
     bordered: true,
     compact: false,
-    rowClickable: false
-  }
+    rowClickable: false,
+  },
 )
 
 const emit = defineEmits<{
@@ -132,7 +127,7 @@ const colspan = computed(() => Math.max(props.columns.length, 1))
 const tableClasses = computed(() => ({
   [styles['is-bordered']]: props.bordered,
   [styles['is-hoverable']]: props.hoverable,
-  [styles['is-compact']]: props.compact
+  [styles['is-compact']]: props.compact,
 }))
 
 const displayRows = computed(() => props.data.slice())
@@ -198,6 +193,5 @@ function columnStyle(column: TableColumn) {
   if (column.minWidth) style.minWidth = column.minWidth
   return style
 }
-
 </script>
 <style module src="./Table.module.css" />

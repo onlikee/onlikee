@@ -10,7 +10,9 @@ const props = defineProps<{ name: string; format: KeybindingHintFormat }>()
 const platform = usePlatformRef()
 const accessible = computed(() => accessibleKeyName(props.name, platform.value))
 const visible = computed(() =>
-  props.format === 'condensed' ? condensedKeyName(props.name, platform.value) : fullKeyName(props.name, platform.value),
+  props.format === 'condensed'
+    ? condensedKeyName(props.name, platform.value)
+    : fullKeyName(props.name, platform.value),
 )
 </script>
 <template>

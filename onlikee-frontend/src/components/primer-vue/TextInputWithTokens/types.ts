@@ -3,15 +3,23 @@ import type { NodeProp } from '../internal/renderNode'
 import type Token from '../Token/Token.vue'
 import type { TokenProps, TokenSizeKeys } from '../Token'
 
-export type TokenComponentProps<T extends Component> = T extends new (...args: never[]) => { $props: infer Props }
-  ? Props : T extends (props: infer Props, ...args: never[]) => unknown ? Props : TokenProps
+export type TokenComponentProps<T extends Component> = T extends new (...args: never[]) => {
+  $props: infer Props
+}
+  ? Props
+  : T extends (props: infer Props, ...args: never[]) => unknown
+    ? Props
+    : TokenProps
 
 export interface TokenData {
   id?: string | number
   text?: NodeProp
 }
 
-export interface TextInputWithTokensProps<T extends Component = typeof Token> extends Omit<InputHTMLAttributes, 'size' | 'value' | 'onInput'> {
+export interface TextInputWithTokensProps<T extends Component = typeof Token> extends Omit<
+  InputHTMLAttributes,
+  'size' | 'value' | 'onInput'
+> {
   tokens: TokenComponentProps<T>[]
   tokenComponent?: T
   onTokenRemove?: (tokenId: string | number) => void

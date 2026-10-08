@@ -1,13 +1,7 @@
 <template>
   <main class="not-found-page">
-    <img
-      class="not-found-image"
-      src="../assets/404-user.svg"
-      alt="404 User Not Found"
-    >
-    <p class="not-found-text">
-      404 User not found.
-    </p>
+    <img class="not-found-image" src="../assets/404-user.svg" alt="404 User Not Found" />
+    <p class="not-found-text">404 User not found.</p>
   </main>
 </template>
 

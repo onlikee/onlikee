@@ -1,7 +1,6 @@
 import { onMounted, shallowRef, toValue, watch, type MaybeRefOrGetter, type Ref } from 'vue'
 import { getAnchoredPosition, type AnchorPosition, type PositionSettings } from '@primer/behaviors'
 
-
 export interface AnchoredPositionHookSettings extends Partial<PositionSettings> {
   floatingElementRef?: Ref<HTMLElement | null>
   anchorElementRef?: Ref<HTMLElement | null>
@@ -40,11 +39,16 @@ export function useAnchoredPosition(settings: MaybeRefOrGetter<AnchoredPositionH
     return { current, floating, anchorEl }
   }
 
-  function topPositionChanged(prevPosition: AnchorPosition | undefined, newPosition: AnchorPosition): boolean {
-    return !!prevPosition &&
+  function topPositionChanged(
+    prevPosition: AnchorPosition | undefined,
+    newPosition: AnchorPosition,
+  ): boolean {
+    return (
+      !!prevPosition &&
       ['outside-top', 'inside-top'].includes(prevPosition.anchorSide) &&
       // either the anchor changed or the element is trying to shrink in height
       (prevPosition.anchorSide !== newPosition.anchorSide || prevPosition.top < newPosition.top)
+    )
   }
 
   function updateElementHeight(floating: HTMLElement): boolean {
@@ -87,66 +91,70 @@ export function useAnchoredPosition(settings: MaybeRefOrGetter<AnchoredPositionH
     if (!(floating instanceof Element && anchorEl instanceof Element)) updatePosition()
   })
 
-  watch(() => {
-    const { current, floating, anchorEl } = resolve()
-    return { enabled: current.enabled !== false, floating, anchorEl }
-  }, ({ enabled, floating, anchorEl }, _previous, onCleanup) => {
-    if (!enabled || typeof window === 'undefined') return
-    if (floating instanceof Element && anchorEl instanceof Element) updatePosition()
+  watch(
+    () => {
+      const { current, floating, anchorEl } = resolve()
+      return { enabled: current.enabled !== false, floating, anchorEl }
+    },
+    ({ enabled, floating, anchorEl }, _previous, onCleanup) => {
+      if (!enabled || typeof window === 'undefined') return
+      if (floating instanceof Element && anchorEl instanceof Element) updatePosition()
 
-    let frame = 0
-    const schedule = () => {
-      if (frame === 0) {
-        frame = requestAnimationFrame(() => {
-          frame = 0
-          updatePosition()
-        })
-      }
-    }
-
-    const observers: ResizeObserver[] = []
-    const fallbackListeners: Array<() => void> = []
-    if (typeof ResizeObserver === 'function') {
-      const rootObserver = new ResizeObserver(() => updatePosition())
-      rootObserver.observe(document.documentElement)
-      observers.push(rootObserver)
-      if (floating instanceof Element) {
-        const floatingObserver = new ResizeObserver(() => updatePosition())
-        floatingObserver.observe(floating)
-        observers.push(floatingObserver)
-      }
-    } else {
-      const addFallback = (targetEl: Element) => {
-        let cached: DOMRect | null = null
-        const listener = () => {
-          const rect = targetEl.getBoundingClientRect()
-          if (rect.width !== cached?.width || rect.height !== cached?.height) updatePosition()
-          cached = rect
+      let frame = 0
+      const schedule = () => {
+        if (frame === 0) {
+          frame = requestAnimationFrame(() => {
+            frame = 0
+            updatePosition()
+          })
         }
-        window.addEventListener('resize', listener)
-        fallbackListeners.push(listener)
       }
-      addFallback(document.documentElement)
-      if (floating instanceof Element) addFallback(floating)
-    }
 
-    const scrollables = anchorEl instanceof Element ? getScrollableAncestors(anchorEl) : []
-    for (const scrollable of scrollables) {
-      scrollable.addEventListener('scroll', schedule)
-    }
+      const observers: ResizeObserver[] = []
+      const fallbackListeners: Array<() => void> = []
+      if (typeof ResizeObserver === 'function') {
+        const rootObserver = new ResizeObserver(() => updatePosition())
+        rootObserver.observe(document.documentElement)
+        observers.push(rootObserver)
+        if (floating instanceof Element) {
+          const floatingObserver = new ResizeObserver(() => updatePosition())
+          floatingObserver.observe(floating)
+          observers.push(floatingObserver)
+        }
+      } else {
+        const addFallback = (targetEl: Element) => {
+          let cached: DOMRect | null = null
+          const listener = () => {
+            const rect = targetEl.getBoundingClientRect()
+            if (rect.width !== cached?.width || rect.height !== cached?.height) updatePosition()
+            cached = rect
+          }
+          window.addEventListener('resize', listener)
+          fallbackListeners.push(listener)
+        }
+        addFallback(document.documentElement)
+        if (floating instanceof Element) addFallback(floating)
+      }
 
-    onCleanup(() => {
+      const scrollables = anchorEl instanceof Element ? getScrollableAncestors(anchorEl) : []
       for (const scrollable of scrollables) {
-        scrollable.removeEventListener('scroll', schedule)
+        scrollable.addEventListener('scroll', schedule)
       }
-      for (const observer of observers) observer.disconnect()
-      for (const listener of fallbackListeners) window.removeEventListener('resize', listener)
-      if (frame !== 0) {
-        cancelAnimationFrame(frame)
-        frame = 0
-      }
-    })
-  }, { flush: 'post', immediate: true })
+
+      onCleanup(() => {
+        for (const scrollable of scrollables) {
+          scrollable.removeEventListener('scroll', schedule)
+        }
+        for (const observer of observers) observer.disconnect()
+        for (const listener of fallbackListeners) window.removeEventListener('resize', listener)
+        if (frame !== 0) {
+          cancelAnimationFrame(frame)
+          frame = 0
+        }
+      })
+    },
+    { flush: 'post', immediate: true },
+  )
 
   return { floatingElementRef, anchorElementRef, position, updatePosition }
 }

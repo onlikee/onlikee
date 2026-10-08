@@ -6,11 +6,7 @@ import TimelineBody from './TimelineBody.vue'
 export const Timeline = Object.assign(TimelineRoot, {
   Item: TimelineItem,
   Badge: TimelineBadge,
-  Body: TimelineBody
+  Body: TimelineBody,
 })
 
-export {
-  TimelineItem,
-  TimelineBadge,
-  TimelineBody
-}
+export { TimelineItem, TimelineBadge, TimelineBody }

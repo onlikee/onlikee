@@ -1,17 +1,10 @@
 <template>
-  <div
-    :class="[$style['tooltip-wrapper']]"
-    @mouseenter="show"
-    @mouseleave="hide"
-  >
+  <div :class="[$style['tooltip-wrapper']]" @mouseenter="show" @mouseleave="hide">
     <!-- 触发元素插槽 -->
     <slot />
-    
+
     <!-- Tooltip 内容 -->
-    <div 
-      v-if="visible" 
-      :class="[$style['tooltip'], $style[`tooltip--${placement}`]]"
-    >
+    <div v-if="visible" :class="[$style['tooltip'], $style[`tooltip--${placement}`]]">
       <div>
         {{ content }}
       </div>
@@ -27,14 +20,7 @@ interface Props {
   content: string
   /** Tooltip 显示位置 */
   placement?:
-    | 'top'
-    | 'bottom'
-    | 'left'
-    | 'right'
-    | 'left-top'
-    | 'left-bottom'
-    | 'right-top'
-    | 'right-bottom'
+    'top' | 'bottom' | 'left' | 'right' | 'left-top' | 'left-bottom' | 'right-top' | 'right-bottom'
   /** 延迟显示时间（毫秒） */
   showDelay?: number
   /** 延迟隐藏时间（毫秒） */
@@ -47,7 +33,7 @@ const props = withDefaults(defineProps<Props>(), {
   placement: 'top',
   showDelay: 0,
   hideDelay: 0,
-  disabled: false
+  disabled: false,
 })
 
 const visible = ref(false)
@@ -56,9 +42,9 @@ let hideTimer: number | undefined
 
 function show() {
   if (props.disabled) return
-  
+
   clearTimeout(hideTimer)
-  
+
   if (props.showDelay > 0) {
     showTimer = window.setTimeout(() => {
       visible.value = true
@@ -70,7 +56,7 @@ function show() {
 
 function hide() {
   clearTimeout(showTimer)
-  
+
   if (props.hideDelay > 0) {
     hideTimer = window.setTimeout(() => {
       visible.value = false

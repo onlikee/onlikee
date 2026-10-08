@@ -10,7 +10,7 @@ export const ActionBar = Object.assign(ActionBarRoot, {
   IconButton: ActionBarIconButton,
   Divider: ActionBarDivider,
   Group: ActionBarGroup,
-  Menu: ActionBarMenu
+  Menu: ActionBarMenu,
 })
 export { ActionBarButton, ActionBarIconButton, ActionBarDivider, ActionBarGroup, ActionBarMenu }
 export type * from './types'

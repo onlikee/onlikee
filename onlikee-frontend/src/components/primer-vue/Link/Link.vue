@@ -1,26 +1,23 @@
 <template>
   <span :class="$style['link-wrapper']">
-    <span
-      v-if="prefixText"
-      :class="$style['link-prefix']"
-    >{{ prefixText }}</span>
-    <a 
-      :href="href" 
-      :target="target" 
-      :rel="(external || target === '_blank') ? 'noopener noreferrer' : undefined"
-      :class="[$style['link'], {
-        [$style['link-external']]: external,
-        [$style['link-primary']]: variant === 'primary',
-        [$style['link-secondary']]: variant === 'secondary',
-        [$style['link-danger']]: variant === 'danger'
-      }]"
+    <span v-if="prefixText" :class="$style['link-prefix']">{{ prefixText }}</span>
+    <a
+      :href="href"
+      :target="target"
+      :rel="external || target === '_blank' ? 'noopener noreferrer' : undefined"
+      :class="[
+        $style['link'],
+        {
+          [$style['link-external']]: external,
+          [$style['link-primary']]: variant === 'primary',
+          [$style['link-secondary']]: variant === 'secondary',
+          [$style['link-danger']]: variant === 'danger',
+        },
+      ]"
     >
       {{ linkText }}
     </a>
-    <span
-      v-if="suffixText"
-      :class="$style['link-suffix']"
-    >{{ suffixText }}</span>
+    <span v-if="suffixText" :class="$style['link-suffix']">{{ suffixText }}</span>
   </span>
 </template>
 
@@ -47,7 +44,7 @@ withDefaults(defineProps<Props>(), {
   prefixText: '',
   suffixText: '',
   target: '_self',
-  variant: 'primary'
+  variant: 'primary',
 })
 </script>
 <style module src="./Link.module.css" />

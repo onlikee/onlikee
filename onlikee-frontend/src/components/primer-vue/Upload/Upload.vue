@@ -19,20 +19,18 @@
           viewBox="0 0 16 16"
           fill="currentColor"
         >
-          <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Z" />
-          <path d="M11.78 4.72a.749.749 0 1 1-1.06 1.06L8.75 3.811V9.5a.75.75 0 0 1-1.5 0V3.811L5.28 5.78a.749.749 0 1 1-1.06-1.06l3.25-3.25a.749.749 0 0 1 1.06 0l3.25 3.25Z" />
+          <path
+            d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Z"
+          />
+          <path
+            d="M11.78 4.72a.749.749 0 1 1-1.06 1.06L8.75 3.811V9.5a.75.75 0 0 1-1.5 0V3.811L5.28 5.78a.749.749 0 1 1-1.06-1.06l3.25-3.25a.749.749 0 0 1 1.06 0l3.25 3.25Z"
+          />
         </svg>
-        <span
-          v-if="text"
-          :class="[$style['upload-text']]"
-        >
+        <span v-if="text" :class="[$style['upload-text']]">
           {{ text }}
         </span>
       </slot>
-      <span
-        v-if="hint"
-        :class="[$style['upload-hint']]"
-      >
+      <span v-if="hint" :class="[$style['upload-hint']]">
         {{ hint }}
       </span>
     </button>
@@ -43,28 +41,19 @@
       v-bind="inputAttrs"
       hidden
       @change="onFileChange"
-    >
+    />
 
-    <div
-      v-if="selectedFiles.length"
-      :class="[$style['upload-file']]"
-    >
+    <div v-if="selectedFiles.length" :class="[$style['upload-file']]">
       <div :class="[$style['upload-file-meta']]">
         <span :class="[$style['upload-file-name']]">{{ selectedFileLabel }}</span>
         <span :class="[$style['upload-file-size']]">{{ selectedFileSizeLabel }}</span>
       </div>
-      <button
-        :class="[$style['upload-file-remove']]"
-        type="button"
-        @click="clearFiles"
-      >
-        <svg
-          aria-hidden="true"
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          fill="currentColor"
-        ><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z" /></svg>
+      <button :class="[$style['upload-file-remove']]" type="button" @click="clearFiles">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+          <path
+            d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"
+          />
+        </svg>
       </button>
     </div>
   </div>
@@ -92,7 +81,7 @@ const props = withDefaults(defineProps<Props>(), {
   hint: '',
   width: '',
   height: '',
-  directory: false
+  directory: false,
 })
 
 const emit = defineEmits<{
@@ -112,7 +101,7 @@ const inputAttrs = computed(() => {
   return {
     directory: '',
     webkitdirectory: '',
-    multiple: true
+    multiple: true,
   }
 })
 
@@ -144,7 +133,7 @@ async function onDrop(event: DragEvent) {
   try {
     const files = await collectFilesFromDrop(event.dataTransfer, {
       accept: props.accept,
-      directory: props.directory
+      directory: props.directory,
     })
     emit('update:modelValue', files)
   } catch (error) {
@@ -163,7 +152,7 @@ async function onFileChange(event: Event) {
   try {
     const files = collectFilesFromInput(target.files, {
       accept: props.accept,
-      directory: props.directory
+      directory: props.directory,
     })
     emit('update:modelValue', files)
   } finally {

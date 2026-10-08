@@ -39,16 +39,18 @@ export interface ActionBarIconButtonProps extends ActionBarButtonProps {
   icon: Component
   'aria-label': string
 }
-export type ActionBarMenuItemProps = {
-  type?: 'action'
-  label: string
-  disabled?: boolean
-  leadingVisual?: Component
-  trailingVisual?: Component | string
-  variant?: 'default' | 'danger'
-  onClick?: (event: SelectEvent) => void
-  items?: ActionBarMenuItemProps[]
-} | { type: 'divider' }
+export type ActionBarMenuItemProps =
+  | {
+      type?: 'action'
+      label: string
+      disabled?: boolean
+      leadingVisual?: Component
+      trailingVisual?: Component | string
+      variant?: 'default' | 'danger'
+      onClick?: (event: SelectEvent) => void
+      items?: ActionBarMenuItemProps[]
+    }
+  | { type: 'divider' }
 export interface ActionBarMenuProps extends ActionBarIconButtonProps {
   items: ActionBarMenuItemProps[]
   overflowIcon?: Component | 'none'

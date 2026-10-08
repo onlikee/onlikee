@@ -16,13 +16,17 @@ const slots = useSlots()
 const context = useUnderlinePanels()
 const value = computed(() => props.value ?? '')
 const selected = computed(() => context.selectedValue.value === value.value)
-const tabStop = computed(() => context.activationMode.value === 'manual' && context.focusedValue.value !== undefined
-  ? context.focusedValue.value === value.value
-  : selected.value)
-const textContent = computed(() => (slots.default?.() ?? [])
-  .filter(node => typeof node.children === 'string' || typeof node.children === 'number')
-  .map(node => String(node.children))
-  .join(''))
+const tabStop = computed(() =>
+  context.activationMode.value === 'manual' && context.focusedValue.value !== undefined
+    ? context.focusedValue.value === value.value
+    : selected.value,
+)
+const textContent = computed(() =>
+  (slots.default?.() ?? [])
+    .filter((node) => typeof node.children === 'string' || typeof node.children === 'number')
+    .map((node) => String(node.children))
+    .join(''),
+)
 
 function handleFocus() {
   if (props.disabled) return
@@ -69,26 +73,14 @@ function handleKeydown(event: KeyboardEvent) {
     @click="handleClick"
     @keydown="handleKeydown"
   >
-    <span
-      v-if="leadingVisual"
-      data-component="icon"
-    ><component :is="leadingVisual" /></span>
-    <span
-      data-component="text"
-      :data-content="textContent || undefined"
-    ><slot /></span>
-    <span
-      v-if="counter !== undefined"
-      data-component="counter"
-    >
+    <span v-if="leadingVisual" data-component="icon"><component :is="leadingVisual" /></span>
+    <span data-component="text" :data-content="textContent || undefined"><slot /></span>
+    <span v-if="counter !== undefined" data-component="counter">
       <span
         v-if="context.loadingCounters.value"
         :class="[$style['underline-panels__loading-counter']]"
       />
-      <span
-        v-else
-        :class="[$style['underline-panels__counter']]"
-      >{{ counter }}</span>
+      <span v-else :class="[$style['underline-panels__counter']]">{{ counter }}</span>
     </span>
   </button>
 </template>

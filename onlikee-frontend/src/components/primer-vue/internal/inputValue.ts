@@ -7,7 +7,9 @@ export function useInputValue<T extends HTMLInputElement | HTMLTextAreaElement |
   update: (value: string, event: Event) => void,
 ) {
   const localValue = ref(String(props.defaultValue ?? ''))
-  const value = computed(() => props.value === undefined ? localValue.value : String(props.value ?? ''))
+  const value = computed(() =>
+    props.value === undefined ? localValue.value : String(props.value ?? ''),
+  )
   let composing = false
   let form: HTMLFormElement | null | undefined
   let justComposedValue: string | undefined
@@ -17,7 +19,8 @@ export function useInputValue<T extends HTMLInputElement | HTMLTextAreaElement |
     update(next, event)
     void nextTick(() => {
       // 仅在值变化时写回 DOM，避免重置选区和光标；父组件拒绝更新时恢复受控值。
-      if (element.value && props.value !== undefined && element.value.value !== value.value) element.value.value = value.value
+      if (element.value && props.value !== undefined && element.value.value !== value.value)
+        element.value.value = value.value
     })
   }
   function input(event: Event) {
@@ -30,7 +33,9 @@ export function useInputValue<T extends HTMLInputElement | HTMLTextAreaElement |
     justComposedValue = undefined
     commit(event)
   }
-  function compositionStart() { composing = true }
+  function compositionStart() {
+    composing = true
+  }
   function compositionEnd(event: CompositionEvent) {
     if (!composing) return
     composing = false
@@ -65,5 +70,14 @@ export function useInputValue<T extends HTMLInputElement | HTMLTextAreaElement |
     }
   })
   onBeforeUnmount(() => form?.removeEventListener('reset', reset))
-  return { value, input, commit, compositionStart, compositionEnd, setUncontrolledValue: (next: string) => { localValue.value = next } }
+  return {
+    value,
+    input,
+    commit,
+    compositionStart,
+    compositionEnd,
+    setUncontrolledValue: (next: string) => {
+      localValue.value = next
+    },
+  }
 }

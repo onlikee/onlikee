@@ -10,10 +10,13 @@ const props = defineProps<{ item: MenuEntry }>()
 const anchor = shallowRef<HTMLElement | null>(null)
 const open = shallowRef(false)
 const focusAnchor = shallowRef(false)
-const action = computed(() => props.item.type === 'divider' ? null : props.item)
+const action = computed(() => (props.item.type === 'divider' ? null : props.item))
 const hasSubmenu = computed(() => Boolean(action.value?.items?.length))
-function setAnchor(value: unknown) { anchor.value = (value as { element: HTMLElement } | null)?.element ?? null }
-const RenderLabel = () => typeof action.value?.label === 'function' ? action.value.label() : action.value?.label
+function setAnchor(value: unknown) {
+  anchor.value = (value as { element: HTMLElement } | null)?.element ?? null
+}
+const RenderLabel = () =>
+  typeof action.value?.label === 'function' ? action.value.label() : action.value?.label
 function select(event: SelectEvent) {
   if (hasSubmenu.value) {
     focusAnchor.value = event instanceof MouseEvent && event.detail > 0
@@ -47,10 +50,7 @@ function keydown(event: KeyboardEvent) {
       <RenderLabel />
       <ActionList.TrailingVisual v-if="action.trailingVisual || hasSubmenu">
         <span v-if="typeof action.trailingVisual === 'string'">{{ action.trailingVisual }}</span>
-        <component
-          :is="action.trailingVisual || ChevronRightIcon"
-          v-else
-        />
+        <component :is="action.trailingVisual || ChevronRightIcon" v-else />
       </ActionList.TrailingVisual>
     </ActionList.Item>
     <MenuOverlay

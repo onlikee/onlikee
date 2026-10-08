@@ -6,8 +6,15 @@ import { ActionList } from './index'
 
 const wrappers: VueWrapper[] = []
 
-function render(listProps: Partial<InstanceType<typeof ActionList>['$props']> = {}, items: VNode[] = []) {
-  const wrapper = mount(ActionList, { props: listProps, slots: { default: () => items }, attachTo: document.body })
+function render(
+  listProps: Partial<InstanceType<typeof ActionList>['$props']> = {},
+  items: VNode[] = [],
+) {
+  const wrapper = mount(ActionList, {
+    props: listProps,
+    slots: { default: () => items },
+    attachTo: document.body,
+  })
   wrappers.push(wrapper)
   return wrapper
 }
@@ -26,11 +33,19 @@ function click(el: Element) {
 
 beforeEach(() => {
   // Spinner.vue onMounted 读取 window.matchMedia（prefers-reduced-motion）
-  vi.stubGlobal('matchMedia', vi.fn((media: string) => ({ matches: false, media, addEventListener: vi.fn(), removeEventListener: vi.fn() })))
+  vi.stubGlobal(
+    'matchMedia',
+    vi.fn((media: string) => ({
+      matches: false,
+      media,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })),
+  )
 })
 
 afterEach(() => {
-  wrappers.forEach(wrapper => wrapper.unmount())
+  wrappers.forEach((wrapper) => wrapper.unmount())
   wrappers.length = 0
   document.body.innerHTML = ''
   vi.restoreAllMocks()
@@ -42,7 +57,10 @@ describe('ActionList behavior', () => {
       item({ class: 'consumer-class' }, ['Plain']),
       item({ disabled: true }, ['Disabled']),
       item({ variant: 'danger', active: true, size: 'large' }, ['Danger']),
-      item({}, ['Described', h(ActionList.Description, { variant: 'block' }, { default: () => 'meta' })])
+      item({}, [
+        'Described',
+        h(ActionList.Description, { variant: 'block' }, { default: () => 'meta' }),
+      ]),
     ])
     const lis = wrapper.findAll('li[class*="action-list-item_"]')
     expect(lis).toHaveLength(4)
@@ -59,20 +77,24 @@ describe('ActionList behavior', () => {
     expect(lis[2].get('[class*="action-list-content_"]').attributes('data-size')).toBe('large')
     expect(lis[0].get('[class*="action-list-content_"]').attributes('data-size')).toBe('medium')
     expect(lis[0].classes()).toEqual(expect.arrayContaining(['consumer-class']))
-    expect(lis[0].classes().some(name => name.includes('action-list-item_'))).toBe(true)
+    expect(lis[0].classes().some((name) => name.includes('action-list-item_'))).toBe(true)
   })
 
   it('default item uses buttonSemantics: li > button[type=button][tabindex=0], spacer first', () => {
     const wrapper = render({}, [item({ id: 'my-id' }, ['Alpha'])])
     const li = wrapper.get('li')
     expect(li.attributes('role')).toBeUndefined()
-    expect(li.attributes('tabindex')).toBeUndefined()   // menuItemProps 不落 li
+    expect(li.attributes('tabindex')).toBeUndefined() // menuItemProps 不落 li
     const button = li.get('button[class*="action-list-content_"]')
     expect(button.attributes('type')).toBe('button')
     expect(button.attributes('id')).toBe('my-id')
     expect(button.attributes('tabindex')).toBe('0')
     expect(button.attributes('disabled')).toBeUndefined()
-    expect(Array.from(button.element.firstElementChild?.classList ?? []).some(name => name.includes('action-list-spacer_'))).toBe(true)
+    expect(
+      Array.from(button.element.firstElementChild?.classList ?? []).some((name) =>
+        name.includes('action-list-spacer_'),
+      ),
+    ).toBe(true)
     const label = button.get('[data-component="ActionList.Item.Label"]')
     expect(label.attributes('id')).toBe('my-id--label')
     expect(button.attributes('aria-labelledby')).toBe('my-id--label')
@@ -84,7 +106,7 @@ describe('ActionList behavior', () => {
   it('listbox + selectionVariant infers role=option on li with inner div', () => {
     const wrapper = render({ role: 'listbox', selectionVariant: 'single' }, [
       item({ selected: true }, ['Sel']),
-      item({}, ['Other'])
+      item({}, ['Other']),
     ])
     const ul = wrapper.get('ul')
     expect(ul.attributes('role')).toBe('listbox')
@@ -93,7 +115,7 @@ describe('ActionList behavior', () => {
     expect(sel.attributes('aria-selected')).toBe('true')
     expect(other.attributes('aria-selected')).toBeUndefined() // Source default selected is undefined.
     expect(sel.attributes('tabindex')).toBe('0')
-    const content = sel.get('div[class*="action-list-content_"]')   // DefaultItemWrapper = DivItemContainer :219,63-71
+    const content = sel.get('div[class*="action-list-content_"]') // DefaultItemWrapper = DivItemContainer :219,63-71
     expect(content.attributes('role')).toBeUndefined()
     expect(content.attributes('tabindex')).toBeUndefined()
     expect(sel.attributes('data-action-list-control')).toBeUndefined()
@@ -115,7 +137,9 @@ describe('ActionList behavior', () => {
     expect(singleSel.find('svg[class*="action-list-checkmark_"]').exists()).toBe(true)
 
     const multi = render({ selectionVariant: 'multiple' }, [item({ selected: true }, ['M'])])
-    const box = multi.get('[data-component="ActionList.Selection"] div[class*="action-list-checkbox_"]')
+    const box = multi.get(
+      '[data-component="ActionList.Selection"] div[class*="action-list-checkbox_"]',
+    )
     expect(box.element.children).toHaveLength(0)
 
     const radio = render({ selectionVariant: 'radio' }, [item({ selected: true }, ['R'])])
@@ -124,20 +148,30 @@ describe('ActionList behavior', () => {
     expect(input.attributes('value')).toBe('unused')
     expect(input.attributes('tabindex')).toBe('-1')
 
-    const menu = render({ role: 'menu', selectionVariant: 'multiple' }, [item({ selected: true }, ['Menu'])])
-    expect(menu.find('[data-component="ActionList.Selection"] svg[class*="action-list-checkmark_"]').exists()).toBe(true)
+    const menu = render({ role: 'menu', selectionVariant: 'multiple' }, [
+      item({ selected: true }, ['Menu']),
+    ])
+    expect(
+      menu
+        .find('[data-component="ActionList.Selection"] svg[class*="action-list-checkmark_"]')
+        .exists(),
+    ).toBe(true)
     expect(menu.find('div[class*="action-list-checkbox_"]').exists()).toBe(false)
   })
 
   it('stamps visual data-components and composes aria-labelledby', () => {
     const icon = () => h('svg', { 'data-test-icon': true })
-    const withTrailing = render({}, [item({ id: 't' }, [
-      'Alpha',
-      h(ActionList.LeadingVisual, null, { default: () => [icon()] }),
-      h(ActionList.TrailingVisual, null, { default: () => ['hint'] })
-    ])])
+    const withTrailing = render({}, [
+      item({ id: 't' }, [
+        'Alpha',
+        h(ActionList.LeadingVisual, null, { default: () => [icon()] }),
+        h(ActionList.TrailingVisual, null, { default: () => ['hint'] }),
+      ]),
+    ])
     const content = withTrailing.get('[class*="action-list-content_"]')
-    expect(content.get('[data-component="ActionList.LeadingVisual"]').find('[data-test-icon]').exists()).toBe(true)
+    expect(
+      content.get('[data-component="ActionList.LeadingVisual"]').find('[data-test-icon]').exists(),
+    ).toBe(true)
     const trailing = content.get('[data-component="ActionList.TrailingVisual"]')
     expect(trailing.attributes('id')).toBe('t--trailing-visual')
     expect(trailing.text()).toBe('hint')
@@ -145,39 +179,70 @@ describe('ActionList behavior', () => {
     expect(content.attributes('aria-labelledby')).toBe('t--label t--trailing-visual')
 
     const withoutTrailing = render({}, [item({ id: 'n' }, ['Beta'])])
-    expect(withoutTrailing.get('[class*="action-list-content_"]').attributes('aria-labelledby')).toBe('n--label')
-    expect(withoutTrailing.find('[data-component="ActionList.TrailingVisual"]').exists()).toBe(false)
+    expect(
+      withoutTrailing.get('[class*="action-list-content_"]').attributes('aria-labelledby'),
+    ).toBe('n--label')
+    expect(withoutTrailing.find('[data-component="ActionList.TrailingVisual"]').exists()).toBe(
+      false,
+    )
     expect(withoutTrailing.find('[data-component="ActionList.LeadingVisual"]').exists()).toBe(false)
   })
 
   it('wraps label+description in a div only when description exists', () => {
-    const inline = render({}, [item({ id: 'i' }, ['Alpha', h(ActionList.Description, null, { default: () => 'meta' })])])
+    const inline = render({}, [
+      item({ id: 'i' }, ['Alpha', h(ActionList.Description, null, { default: () => 'meta' })]),
+    ])
     const wrap = inline.get('div[class*="action-list-description-wrap_"]')
     expect(wrap.attributes('data-description-variant')).toBe('inline')
     const desc = wrap.get('[data-component="ActionList.Description"]')
     expect(desc.attributes('id')).toBe('i--inline-description')
     expect(desc.text()).toBe('meta')
-    expect(inline.get('[class*="action-list-content_"]').attributes('aria-describedby')).toBe('i--inline-description')
+    expect(inline.get('[class*="action-list-content_"]').attributes('aria-describedby')).toBe(
+      'i--inline-description',
+    )
     expect(wrap.find('[data-component="ActionList.Item.Label"]').exists()).toBe(true)
 
-    const block = render({}, [item({ id: 'b' }, ['Beta', h(ActionList.Description, { variant: 'block' }, { default: () => 'meta' })])])
-    expect(block.get('div[class*="action-list-description-wrap_"]').attributes('data-description-variant')).toBe('block')
-    expect(block.get('[data-component="ActionList.Description"]').attributes('id')).toBe('b--block-description')
-    expect(block.get('[class*="action-list-content_"]').attributes('aria-describedby')).toBe('b--block-description')
+    const block = render({}, [
+      item({ id: 'b' }, [
+        'Beta',
+        h(ActionList.Description, { variant: 'block' }, { default: () => 'meta' }),
+      ]),
+    ])
+    expect(
+      block
+        .get('div[class*="action-list-description-wrap_"]')
+        .attributes('data-description-variant'),
+    ).toBe('block')
+    expect(block.get('[data-component="ActionList.Description"]').attributes('id')).toBe(
+      'b--block-description',
+    )
+    expect(block.get('[class*="action-list-content_"]').attributes('aria-describedby')).toBe(
+      'b--block-description',
+    )
 
     const none = render({}, [item({ id: 'x' }, ['Gamma'])])
     expect(none.find('[class*="action-list-description-wrap_"]').exists()).toBe(false)
-    expect(none.get('[class*="action-list-content_"]').attributes('aria-describedby')).toBeUndefined()
-    expect(none.find('[data-component="ActionList.Item--DividerContainer"] > [data-component="ActionList.Item.Label"]').exists()).toBe(true)
+    expect(
+      none.get('[class*="action-list-content_"]').attributes('aria-describedby'),
+    ).toBeUndefined()
+    expect(
+      none
+        .find(
+          '[data-component="ActionList.Item--DividerContainer"] > [data-component="ActionList.Item.Label"]',
+        )
+        .exists(),
+    ).toBe(true)
   })
 
   it('loading: spinner replaces leading visual, or lands trailing without leading; data-loading + hidden Loading', () => {
     const icon = () => h('svg', { 'data-test-icon': true })
-    const withLeading = render({}, [item({ loading: true }, [
-      'Alpha',
-      h(ActionList.LeadingVisual, null, { default: () => [icon()] }),
-      h(ActionList.TrailingVisual, null, { default: () => ['hint'] })
-    ])])
+    const withLeading = render({}, [
+      item({ loading: true }, [
+        'Alpha',
+        h(ActionList.LeadingVisual, null, { default: () => [icon()] }),
+        h(ActionList.TrailingVisual, null, { default: () => ['hint'] }),
+      ]),
+    ])
     const content = withLeading.get('[class*="action-list-content_"]')
     expect(content.attributes('data-loading')).toBe('true')
     const leading = content.get('[data-component="ActionList.LeadingVisual"]')
@@ -186,10 +251,17 @@ describe('ActionList behavior', () => {
     const trailing = content.get('[data-component="ActionList.TrailingVisual"]')
     expect(trailing.text()).toBe('hint')
     expect(trailing.find('[data-component="Spinner"]').exists()).toBe(false)
-    const hidden = content.get('[data-component="ActionList.Item.Label"] span.internal-visually-hidden')
+    const hidden = content.get(
+      '[data-component="ActionList.Item.Label"] span.internal-visually-hidden',
+    )
     expect(hidden.text()).toBe('Loading')
 
-    const withoutLeading = render({}, [item({ loading: true }, ['Beta', h(ActionList.TrailingVisual, null, { default: () => ['hint'] })])])
+    const withoutLeading = render({}, [
+      item({ loading: true }, [
+        'Beta',
+        h(ActionList.TrailingVisual, null, { default: () => ['hint'] }),
+      ]),
+    ])
     const content2 = withoutLeading.get('[class*="action-list-content_"]')
     expect(content2.find('[data-component="ActionList.LeadingVisual"]').exists()).toBe(false)
     const trailing2 = content2.get('[data-component="ActionList.TrailingVisual"]')
@@ -202,10 +274,10 @@ describe('ActionList behavior', () => {
     const wrapper = render({ role: 'menu' }, [
       item({ onSelect, role: 'menuitem' }, ['Alpha']),
       item({ onSelect, disabled: true, role: 'menuitem' }, ['Disabled']),
-      item({ onSelect, role: 'menuitem' }, ['Charlie'])
+      item({ onSelect, role: 'menuitem' }, ['Charlie']),
     ])
-    const buttons = wrapper.findAll('[role=menuitem]').map(b => b.element as HTMLElement)
-    expect(buttons.map(b => b.getAttribute('disabled'))).toEqual([null, null, null])
+    const buttons = wrapper.findAll('[role=menuitem]').map((b) => b.element as HTMLElement)
+    expect(buttons.map((b) => b.getAttribute('disabled'))).toEqual([null, null, null])
     expect(buttons[1].getAttribute('aria-disabled')).toBe('true')
     expect(wrapper.findAll('li')[1].attributes('data-is-disabled')).toBe('true')
     await nextTick()
@@ -224,7 +296,9 @@ describe('ActionList behavior', () => {
 
   it('keypress Enter/Space emits select only for non-buttonSemantics; Space preventDefaults', () => {
     const onSelect = vi.fn()
-    const wrapper = render({ role: 'listbox', selectionVariant: 'single' }, [item({ onSelect }, ['Alpha'])])
+    const wrapper = render({ role: 'listbox', selectionVariant: 'single' }, [
+      item({ onSelect }, ['Alpha']),
+    ])
     const li = wrapper.get('li')
     keyboard(li.element, 'Enter', 'keypress')
     expect(onSelect).toHaveBeenCalledTimes(1)
@@ -245,7 +319,13 @@ describe('ActionList behavior', () => {
 
   it('LinkItem forwards native link props; inactive links render spans', () => {
     const onClick = vi.fn()
-    const wrapper = render({}, [h(ActionList.LinkItem, { href: '#a', target: '_blank', rel: 'noopener noreferrer', onClick }, { default: () => ['Link'] })])
+    const wrapper = render({}, [
+      h(
+        ActionList.LinkItem,
+        { href: '#a', target: '_blank', rel: 'noopener noreferrer', onClick },
+        { default: () => ['Link'] },
+      ),
+    ])
     const li = wrapper.get('li')
     const link = li.get('a[class*="action-list-content_"]')
     expect(li.attributes('role')).toBeUndefined()
@@ -255,11 +335,19 @@ describe('ActionList behavior', () => {
     expect(link.attributes('tabindex')).toBe('0')
     click(link.element)
     expect(onClick).toHaveBeenCalledTimes(1)
-    const withRole = render({}, [h(ActionList.LinkItem, { href: '#b', role: 'option' }, { default: () => ['Opt'] })])
+    const withRole = render({}, [
+      h(ActionList.LinkItem, { href: '#b', role: 'option' }, { default: () => ['Opt'] }),
+    ])
     expect(withRole.get('li').attributes('role')).toBeUndefined()
     expect(withRole.get('a').attributes('role')).toBe('option')
     expect(withRole.get('a').attributes('aria-selected')).toBeUndefined()
-    const inactive = render({}, [h(ActionList.LinkItem, { href: '#c', inactiveText: 'Unavailable', onClick }, { default: () => ['No'] })])
+    const inactive = render({}, [
+      h(
+        ActionList.LinkItem,
+        { href: '#c', inactiveText: 'Unavailable', onClick },
+        { default: () => ['No'] },
+      ),
+    ])
     expect(inactive.find('a').exists()).toBe(false)
     expect(inactive.get('li').attributes('data-inactive')).toBe('true')
     expect(inactive.find('span[class*="action-list-content_"]').exists()).toBe(true)
@@ -273,7 +361,12 @@ describe('ActionList behavior', () => {
     expect(ul.attributes('data-variant')).toBe('inset')
     expect(ul.attributes('role')).toBeUndefined()
 
-    const withProps = render({ showDividers: true, selectionVariant: 'single', variant: 'full', role: 'listbox' })
+    const withProps = render({
+      showDividers: true,
+      selectionVariant: 'single',
+      variant: 'full',
+      role: 'listbox',
+    })
     const ul2 = withProps.get('ul')
     expect(ul2.attributes('data-dividers')).toBe('true')
     expect(ul2.attributes('data-variant')).toBe('full')
@@ -284,7 +377,7 @@ describe('ActionList behavior', () => {
   it('writes data-mixed-descriptions when descriptions are mixed', async () => {
     const wrapper = render({}, [
       item({}, ['A', h(ActionList.Description, null, { default: () => 'meta' })]),
-      item({}, ['B'])
+      item({}, ['B']),
     ])
     await nextTick()
     expect(wrapper.get('ul').attributes('data-mixed-descriptions')).toBe('true')
@@ -297,15 +390,22 @@ describe('ActionList behavior', () => {
   it('dev-warns when selected without selectionVariant', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     render({}, [item({ selected: true }, ['Sel'])])
-    expect(warn).toHaveBeenCalledWith('Warning:', 'For Item to be selected, ActionList or ActionList.Group should have a selectionVariant defined.')
+    expect(warn).toHaveBeenCalledWith(
+      'Warning:',
+      'For Item to be selected, ActionList or ActionList.Group should have a selectionVariant defined.',
+    )
     warn.mockClear()
     render({ selectionVariant: 'single' }, [item({ selected: true }, ['Sel'])])
     expect(warn).not.toHaveBeenCalled()
   })
 
   it('focus zone: Home/End/PageUp/PageDown jump to first/last; arrows wrap', async () => {
-    const wrapper = render({ role: 'menu' }, [item({ role: 'menuitem' }, ['A']), item({ role: 'menuitem' }, ['B']), item({ role: 'menuitem' }, ['C'])])
-    const buttons = wrapper.findAll('[role=menuitem]').map(b => b.element as HTMLElement)
+    const wrapper = render({ role: 'menu' }, [
+      item({ role: 'menuitem' }, ['A']),
+      item({ role: 'menuitem' }, ['B']),
+      item({ role: 'menuitem' }, ['C']),
+    ])
+    const buttons = wrapper.findAll('[role=menuitem]').map((b) => b.element as HTMLElement)
     await nextTick()
     buttons[1].focus()
     keyboard(buttons[1], 'Home')

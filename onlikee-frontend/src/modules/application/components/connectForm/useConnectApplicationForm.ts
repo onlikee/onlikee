@@ -1,8 +1,6 @@
 import { computed, ref } from 'vue'
 
-import type {
-  ConnectApplicationRequest
-} from '@/modules/application/api/create-connect'
+import type { ConnectApplicationRequest } from '@/modules/application/api/create-connect'
 
 export function useConnectApplicationForm() {
   const appName = ref('')
@@ -60,9 +58,7 @@ export function useConnectApplicationForm() {
   })
 
   const isFormValid = computed(() => {
-    return !appNameError.value
-      && !appUrlError.value
-      && !appDescriptionError.value
+    return !appNameError.value && !appUrlError.value && !appDescriptionError.value
   })
 
   function setAppName(value: string) {
@@ -89,7 +85,7 @@ export function useConnectApplicationForm() {
       appName: appName.value,
       appUrl: appUrl.value,
       visibility: visibility.value,
-      appDescription: appDescription.value
+      appDescription: appDescription.value,
     }
   }
 
@@ -111,6 +107,6 @@ export function useConnectApplicationForm() {
     setVisibility,
     setAppDescription,
     prepareSubmit,
-    buildRequest
+    buildRequest,
   }
 }

@@ -1,4 +1,12 @@
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes, Component, CSSProperties, HTMLAttributes, VNode, VNodeChild } from 'vue'
+import type {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes,
+  Component,
+  CSSProperties,
+  HTMLAttributes,
+  VNode,
+  VNodeChild,
+} from 'vue'
 import type { TooltipDirection } from '../TooltipV2/types'
 
 export type ActionListVariant = 'inset' | 'horizontal-inset' | 'full'
@@ -75,8 +83,13 @@ export interface ActionListDescriptionProps {
   className?: string
   style?: CSSProperties
 }
-export interface ActionListDividerProps { className?: string; style?: CSSProperties }
-export interface ActionListLeadingVisualProps extends /* @vue-ignore */ HTMLAttributes { className?: string }
+export interface ActionListDividerProps {
+  className?: string
+  style?: CSSProperties
+}
+export interface ActionListLeadingVisualProps extends /* @vue-ignore */ HTMLAttributes {
+  className?: string
+}
 export type ActionListTrailingVisualProps = ActionListLeadingVisualProps
 export interface ActionListTrailingActionCommonProps extends /* @vue-ignore */ HTMLAttributes {
   icon?: Component
@@ -95,9 +108,14 @@ interface TrailingLinkProps extends /* @vue-ignore */ AnchorHTMLAttributes {
   href: string
   loading?: never
 }
-export type ActionListTrailingActionProps = ActionListTrailingActionCommonProps & (TrailingButtonProps | TrailingLinkProps)
-export type ActionListGroupHeadingTrailingActionProps = Omit<ActionListTrailingActionProps, 'icon' | 'as' | 'href' | 'loading'> &
-  { icon: Component } & ({ as?: 'button'; href?: never; loading?: boolean } | { as: 'a'; href: string; loading?: never })
+export type ActionListTrailingActionProps = ActionListTrailingActionCommonProps &
+  (TrailingButtonProps | TrailingLinkProps)
+export type ActionListGroupHeadingTrailingActionProps = Omit<
+  ActionListTrailingActionProps,
+  'icon' | 'as' | 'href' | 'loading'
+> & { icon: Component } & (
+    { as?: 'button'; href?: never; loading?: boolean } | { as: 'a'; href: string; loading?: never }
+  )
 export interface ActionListContainerContextValue {
   container?: string
   listRole?: HTMLAttributes['role']

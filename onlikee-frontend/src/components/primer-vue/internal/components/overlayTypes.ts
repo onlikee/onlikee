@@ -2,7 +2,8 @@ import type { AnchorAlignment, AnchorPosition, AnchorSide } from '@primer/behavi
 import type { Component, HTMLAttributes, Ref, StyleValue, VNodeChild } from 'vue'
 import type { FocusZoneHookSettings } from '../../composables/useFocusZone'
 export type OverlayWidth = 'auto' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge'
-export type OverlayHeight = 'auto' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'initial' | 'fit-content'
+export type OverlayHeight =
+  'auto' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'initial' | 'fit-content'
 export type OverlayCloseGesture = 'escape' | 'click-outside'
 export interface CSSAnchorPositioningSettings {
   disable?: boolean
@@ -74,7 +75,10 @@ export interface AnchoredOverlayProps {
   alignmentOffset?: number
   width?: OverlayWidth
   height?: OverlayHeight
-  variant?: 'anchored' | 'fullscreen' | { narrow?: 'anchored' | 'fullscreen'; regular?: 'anchored' | 'fullscreen' }
+  variant?:
+    | 'anchored'
+    | 'fullscreen'
+    | { narrow?: 'anchored' | 'fullscreen'; regular?: 'anchored' | 'fullscreen' }
   displayInViewport?: boolean
   pinPosition?: boolean
   preventOverflow?: boolean

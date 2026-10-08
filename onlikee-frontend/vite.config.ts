@@ -4,10 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  plugins: [
-    vue(), 
-    tailwindcss(), 
-  ],
+  plugins: [vue(), tailwindcss()],
   css: {
     modules: {
       localsConvention: 'camelCase',
@@ -27,6 +24,6 @@ export default defineConfig({
     sourcemap: false,
     reportCompressedSize: false,
     minify: 'esbuild',
-    target: 'es2018'
+    target: 'es2018',
   },
 })

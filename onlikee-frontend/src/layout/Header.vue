@@ -1,52 +1,28 @@
 <template>
   <header class="header">
     <div class="header-inner">
-      <div
-        class="logo"
-        @click="navigateToPage('/')"
-      >
+      <div class="logo" @click="navigateToPage('/')">
         <LogoOnlikeeIcon size="32" />
         <span>onlikee</span>
       </div>
 
       <div class="nav-list">
-        <div
-          v-for="item in navigationItems"
-          :key="item.name"
-        >
-          <div
-            :class="['nav-link', { active: item.active }]"
-            @click="navigateToPage(item.href)"
-          >
+        <div v-for="item in navigationItems" :key="item.name">
+          <div :class="['nav-link', { active: item.active }]" @click="navigateToPage(item.href)">
             {{ item.name }}
           </div>
         </div>
       </div>
 
       <div class="user-menu">
-        <div
-          v-if="!userStore.userInfo"
-          class="nav-link"
-          @click="goToLogin"
-        >
-          登录
-        </div>
-        <Dropdown
-          v-else
-          side="outside-bottom"
-        >
+        <div v-if="!userStore.userInfo" class="nav-link" @click="goToLogin">登录</div>
+        <Dropdown v-else side="outside-bottom">
           <Dropdown.trigger>
-            <Avatar
-              :src="userStore.userInfo?.avatarUrl"
-              :size="32"
-            />
+            <Avatar :src="userStore.userInfo?.avatarUrl" :size="32" />
           </Dropdown.trigger>
           <Dropdown.content>
             <div class="user-header">
-              <Avatar
-                :src="userStore.userInfo?.avatarUrl"
-                :size="36"
-              />
+              <Avatar :src="userStore.userInfo?.avatarUrl" :size="36" />
               <div class="user-info">
                 <div class="user-name">
                   {{ userStore.userInfo?.nickname }}
@@ -56,34 +32,22 @@
                 </div>
               </div>
             </div>
-            <ActionList
-              role="menu"
-              aria-label="账户操作"
-            >
+            <ActionList role="menu" aria-label="账户操作">
               <ActionList.Divider />
-              <ActionList.Item
-                role="menuitem"
-                @select="goToProfile"
-              >
+              <ActionList.Item role="menuitem" @select="goToProfile">
                 <ActionList.LeadingVisual>
                   <PersonIcon />
                 </ActionList.LeadingVisual>
                 个人资料
               </ActionList.Item>
-              <ActionList.Item
-                role="menuitem"
-                @select="navigateToPage('/application')"
-              >
+              <ActionList.Item role="menuitem" @select="navigateToPage('/application')">
                 <ActionList.LeadingVisual>
                   <AppsIcon />
                 </ActionList.LeadingVisual>
                 我的应用
               </ActionList.Item>
               <ActionList.Divider />
-              <ActionList.Item
-                role="menuitem"
-                @select="navigateToPage('/auth/logout')"
-              >
+              <ActionList.Item role="menuitem" @select="navigateToPage('/auth/logout')">
                 <ActionList.LeadingVisual>
                   <SignOutIcon />
                 </ActionList.LeadingVisual>
@@ -153,11 +117,11 @@ const navigationItems = ref<NavigationItem[]>([
   { name: '首页', href: '/', active: false },
   { name: '应用', href: '/application', active: false },
   { name: '组件', href: '/component', active: false },
-  { name: '名片', href: '/namecard', active: false }
+  { name: '名片', href: '/namecard', active: false },
 ])
 
 const updateActiveState = () => {
-  navigationItems.value.forEach(navItem => {
+  navigationItems.value.forEach((navItem) => {
     navItem.active = navItem.href === route.path
   })
 }
@@ -174,9 +138,12 @@ onMounted(() => {
   updateActiveState()
 })
 
-watch(() => route.path, () => {
-  updateActiveState()
-})
+watch(
+  () => route.path,
+  () => {
+    updateActiveState()
+  },
+)
 </script>
 
 <style scoped>
@@ -228,7 +195,9 @@ watch(() => route.path, () => {
   line-height: 1;
   color: var(--fgColor-muted);
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .nav-link.active {
@@ -236,7 +205,7 @@ watch(() => route.path, () => {
   color: var(--fgColor-default);
 }
 
-.nav-link:active{
+.nav-link:active {
   background-color: var(--bgColor-neutral-muted);
   color: var(--fgColor-default);
 }
@@ -296,7 +265,7 @@ watch(() => route.path, () => {
     padding: 6px 8px;
   }
 
-  .logo{
+  .logo {
     display: none;
   }
 

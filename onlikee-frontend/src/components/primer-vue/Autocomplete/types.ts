@@ -3,7 +3,9 @@ import type { NodeProp } from '../internal/renderNode'
 import type { TextInputProps } from '../TextInput'
 import type { OverlayProps } from '../internal/components/overlayTypes'
 
-export interface AutocompleteProps { id?: string }
+export interface AutocompleteProps {
+  id?: string
+}
 export interface AutocompleteInputProps extends TextInputProps {
   as?: Component
   openOnFocus?: boolean
@@ -44,7 +46,8 @@ export interface AutocompleteMenuProps<T extends AutocompleteMenuItem = Autocomp
   customScrollContainerRef?: Ref<HTMLElement | null> | HTMLElement
   'aria-labelledby': string
 }
-export type AutocompleteMenuInternalProps<T extends AutocompleteMenuItem = AutocompleteMenuItem> = AutocompleteMenuProps<T>
+export type AutocompleteMenuInternalProps<T extends AutocompleteMenuItem = AutocompleteMenuItem> =
+  AutocompleteMenuProps<T>
 export interface AutocompleteOverlayProps extends Partial<OverlayProps> {
   menuAnchorRef?: Ref<HTMLElement | null> | HTMLElement
   overlayProps?: Partial<OverlayProps>

@@ -1,7 +1,12 @@
 import { expect, expectTypeOf, test } from 'vitest'
 import type { ComputedRef } from 'vue'
 import { useFormControlForwardedProps } from './context'
-import type { FormControlForwardedProps, FormControlLabelProps, FormControlProps, FormControlValidationProps } from './index'
+import type {
+  FormControlForwardedProps,
+  FormControlLabelProps,
+  FormControlProps,
+  FormControlValidationProps,
+} from './index'
 
 test('preserves layout, validation and label discriminants in the public types', () => {
   const props = { layout: 'horizontal', disabled: false, required: true } satisfies FormControlProps

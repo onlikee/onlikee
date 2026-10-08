@@ -32,7 +32,8 @@ let observer: ResizeObserver | undefined
 
 function flatten(nodes: VNode[]): VNode[] {
   return nodes.flatMap((node) => {
-    if (node.type === Fragment && Array.isArray(node.children)) return flatten(node.children as VNode[])
+    if (node.type === Fragment && Array.isArray(node.children))
+      return flatten(node.children as VNode[])
     return node.type === Comment || node.type === Text ? [] : [node]
   })
 }
@@ -42,7 +43,10 @@ function measure() {
   availableWidth.value = container.value.clientWidth
   const items = container.value.querySelectorAll<HTMLElement>('[data-measure-item]')
   const next = Array.from(items, (item) => item.offsetWidth)
-  if (next.length !== widths.value.length || next.some((width, index) => width !== widths.value[index]))
+  if (
+    next.length !== widths.value.length ||
+    next.some((width, index) => width !== widths.value[index])
+  )
     widths.value = next
   observer?.observe(container.value)
   items.forEach((item) => observer?.observe(item))
@@ -63,7 +67,13 @@ function escape(event: KeyboardEvent) {
 function separator() {
   return h(
     'svg',
-    { class: classes['breadcrumbs-separator'], width: 16, height: 16, viewBox: '0 0 16 16', 'aria-hidden': 'true' },
+    {
+      class: classes['breadcrumbs-separator'],
+      width: 16,
+      height: 16,
+      viewBox: '0 0 16 16',
+      'aria-hidden': 'true',
+    },
     [
       h('path', {
         d: 'M10.956 1.27994L6.06418 14.7201L5 14.7201L9.89181 1.27994L10.956 1.27994Z',
@@ -90,13 +100,20 @@ function RenderBreadcrumbs() {
   const children = flatten(slots.default?.() ?? [])
   let count = 0
   let keepRoot = props.overflow === 'menu-with-root'
-  if (props.overflow !== 'wrap' && widths.value.length === children.length && availableWidth.value > 0) {
+  if (
+    props.overflow !== 'wrap' &&
+    widths.value.length === children.length &&
+    availableWidth.value > 0
+  ) {
     const limit = keepRoot ? 3 : availableWidth.value < 544 && children.length > 2 ? 1 : 4
     const total = (start: number) =>
       widths.value.slice(start).reduce((sum, width) => sum + width, 0) +
       (start > 0 ? 44 : 0) +
       (keepRoot && start > 0 ? (widths.value[0] ?? 0) : 0)
-    while (count < children.length - 1 && (children.length - count > limit || total(count) > availableWidth.value))
+    while (
+      count < children.length - 1 &&
+      (children.length - count > limit || total(count) > availableWidth.value)
+    )
       count++
     if (keepRoot && count > 0 && total(count) > availableWidth.value) keepRoot = false
   }
@@ -120,34 +137,42 @@ function RenderBreadcrumbs() {
     nodes.splice(
       keepRoot ? 1 : 0,
       0,
-      h('li', { class: [classes['breadcrumbs-item'], classes['breadcrumbs-menu']], key: 'overflow', ref: menu }, [
-        h(
-          'button',
-          {
-            ref: trigger,
-            type: 'button',
-            class: classes['breadcrumbs-trigger'],
-            'aria-label': `${menuItems.length} more breadcrumb items`,
-            'aria-expanded': open.value,
-            onClick: () => {
-              open.value = !open.value
+      h(
+        'li',
+        {
+          class: [classes['breadcrumbs-item'], classes['breadcrumbs-menu']],
+          key: 'overflow',
+          ref: menu,
+        },
+        [
+          h(
+            'button',
+            {
+              ref: trigger,
+              type: 'button',
+              class: classes['breadcrumbs-trigger'],
+              'aria-label': `${menuItems.length} more breadcrumb items`,
+              'aria-expanded': open.value,
+              onClick: () => {
+                open.value = !open.value
+              },
             },
-          },
-          [
-            h('svg', { width: 16, height: 16, viewBox: '0 0 16 16', 'aria-hidden': 'true' }, [
-              ...[2, 8, 14].map((cx) => h('circle', { cx, cy: 8, r: 1.5, fill: 'currentColor' })),
-            ]),
-          ],
-        ),
-        separator(),
-        open.value
-          ? h(
-              'ul',
-              { class: classes['breadcrumbs-overlay'] },
-              menuItems.map((child, index) => h('li', { key: index }, [cloneVNode(child)])),
-            )
-          : null,
-      ]),
+            [
+              h('svg', { width: 16, height: 16, viewBox: '0 0 16 16', 'aria-hidden': 'true' }, [
+                ...[2, 8, 14].map((cx) => h('circle', { cx, cy: 8, r: 1.5, fill: 'currentColor' })),
+              ]),
+            ],
+          ),
+          separator(),
+          open.value
+            ? h(
+                'ul',
+                { class: classes['breadcrumbs-overlay'] },
+                menuItems.map((child, index) => h('li', { key: index }, [cloneVNode(child)])),
+              )
+            : null,
+        ],
+      ),
     )
   }
   return h(

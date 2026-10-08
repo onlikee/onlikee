@@ -4,40 +4,22 @@
       <slot />
     </div>
     <div class="demo-actions">
-      <Tooltip
-        :content="codeCopied ? copiedLabel : copyLabel"
-        placement="bottom"
-      >
+      <Tooltip :content="codeCopied ? copiedLabel : copyLabel" placement="bottom">
         <CopyButton @click="copyCode" />
       </Tooltip>
-      <Tooltip
-        :content="codeVisible ? hideCodeLabel : showCodeLabel"
-        placement="bottom"
-      >
-        <button
-          class="action-btn"
-          @click="codeVisible = !codeVisible"
-        >
+      <Tooltip :content="codeVisible ? hideCodeLabel : showCodeLabel" placement="bottom">
+        <button class="action-btn" @click="codeVisible = !codeVisible">
           <CodeIcon />
         </button>
       </Tooltip>
     </div>
     <transition name="code-expand">
-      <div
-        v-if="codeVisible"
-        class="demo-code"
-      >
+      <div v-if="codeVisible" class="demo-code">
         <!-- eslint-disable vue/no-v-html -->
-        <div
-          class="code-content"
-          v-html="highlightedCode"
-        />
+        <div class="code-content" v-html="highlightedCode" />
         <!-- eslint-enable vue/no-v-html -->
         <div class="code-footer">
-          <button
-            class="hide-code-btn"
-            @click="codeVisible = false"
-          >
+          <button class="hide-code-btn" @click="codeVisible = false">
             {{ hideSourceLabel }}
           </button>
         </div>

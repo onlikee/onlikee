@@ -1,13 +1,20 @@
 <template>
-  <input
-    ref="input"
-    v-bind="getInputAttrs()"
-    @change="onChange"
-  >
+  <input ref="input" v-bind="getInputAttrs()" @change="onChange" />
 </template>
 
 <script setup lang="ts">
-import { computed, inject, nextTick, onBeforeUnmount, onMounted, onUpdated, ref, ssrContextKey, useAttrs, useCssModule } from 'vue'
+import {
+  computed,
+  inject,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  onUpdated,
+  ref,
+  ssrContextKey,
+  useAttrs,
+  useCssModule,
+} from 'vue'
 import type { RadioOptions, RadioEmits } from './types'
 import { registerRadio, restoreRadioGroup } from './controlled'
 import { useRadioGroupContext } from '../RadioGroup/context'
@@ -24,7 +31,7 @@ const props = withDefaults(defineProps<RadioOptions>(), {
   required: false,
   checked: undefined,
   defaultChecked: undefined,
-  ariaHidden: false
+  ariaHidden: false,
 })
 const emit = defineEmits<RadioEmits>()
 const input = ref<HTMLInputElement | null>(null)
@@ -34,13 +41,15 @@ const serverRendering = inject(ssrContextKey, null) !== null
 
 const inputName = computed(() => props.name || group?.name.value)
 
-const initialChecked = computed(() => (props.checked != null ? props.checked : props.defaultChecked) ?? false)
+const initialChecked = computed(
+  () => (props.checked != null ? props.checked : props.defaultChecked) ?? false,
+)
 const selectionAttrs = computed(() =>
   serverRendering
     ? { checked: initialChecked.value }
     : props.checked === undefined
-    ? { defaultChecked: initialChecked.value }
-    : { defaultChecked: initialChecked.value, checked: props.checked }
+      ? { defaultChecked: initialChecked.value }
+      : { defaultChecked: initialChecked.value, checked: props.checked },
 )
 
 function getInputAttrs() {
@@ -56,14 +65,14 @@ function getInputAttrs() {
     ...attrs,
     style: normalizeReactStyle(attrs.style),
     class: [attrs.class, props.className, styles['radio-input'], styles['radio']],
-    'data-component': 'Radio'
+    'data-component': 'Radio',
   }
 }
 
 function warnMissingName() {
   if (!inputName.value && !props.ariaHidden) {
     console.warn(
-      'A radio input must have a `name` attribute. Pass `name` as a prop directly to each Radio, or nest them in a `RadioGroup` component with a `name` prop'
+      'A radio input must have a `name` attribute. Pass `name` as a prop directly to each Radio, or nest them in a `RadioGroup` component with a `name` prop',
     )
   }
 }
@@ -91,7 +100,7 @@ defineExpose({
   input,
   element: input,
   focus: (options?: FocusOptions) => input.value?.focus(options),
-  blur: () => input.value?.blur()
+  blur: () => input.value?.blur(),
 })
 </script>
 <style module src="./Radio.module.css" />

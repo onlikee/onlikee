@@ -21,24 +21,27 @@
 <script setup lang="ts">
 import ProgressBarItem from './ProgressBarItem.vue'
 
-withDefaults(defineProps<{
-  progress?: string | number
-  bg?: string
-  barSize?: 'small' | 'default' | 'large'
-  inline?: boolean
-  animated?: boolean
-  ariaLabel?: string
-  ariaValuenow?: number | string
-  ariaValuetext?: string
-}>(), {
-  progress: undefined,
-  bg: 'success.emphasis',
-  barSize: 'default',
-  inline: false,
-  animated: false,
-  ariaLabel: undefined,
-  ariaValuenow: undefined,
-  ariaValuetext: undefined
-})
+withDefaults(
+  defineProps<{
+    progress?: string | number
+    bg?: string
+    barSize?: 'small' | 'default' | 'large'
+    inline?: boolean
+    animated?: boolean
+    ariaLabel?: string
+    ariaValuenow?: number | string
+    ariaValuetext?: string
+  }>(),
+  {
+    progress: undefined,
+    bg: 'success.emphasis',
+    barSize: 'default',
+    inline: false,
+    animated: false,
+    ariaLabel: undefined,
+    ariaValuenow: undefined,
+    ariaValuetext: undefined,
+  },
+)
 </script>
 <style module src="./ProgressBar.module.css" />

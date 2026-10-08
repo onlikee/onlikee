@@ -5,11 +5,7 @@
     :data-removable="showRemove ? '' : undefined"
     :style="customStyle"
   >
-    <span
-      v-if="hasLeadingVisual"
-      :class="$style['tag__visual']"
-      :data-size="size"
-    >
+    <span v-if="hasLeadingVisual" :class="$style['tag__visual']" :data-size="size">
       <RenderNodes :nodes="parsedChildren.leadingVisual" />
     </span>
     <RenderNodes :nodes="parsedChildren.label" />
@@ -26,7 +22,11 @@
         data-octicon="x"
         viewBox="0 0 16 16"
         fill="currentColor"
-      ><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z" /></svg>
+      >
+        <path
+          d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.749.749 0 0 1 1.275.326.749.749 0 0 1-.215.734L9.06 8l3.22 3.22a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8 9.06l-3.22 3.22a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"
+        />
+      </svg>
     </button>
   </span>
 </template>
@@ -65,7 +65,7 @@ function isWhitespaceNode(node: VNode) {
 }
 
 function flattenChildren(nodes: VNode[]): VNode[] {
-  return nodes.flatMap(node => {
+  return nodes.flatMap((node) => {
     if (node.type === Fragment && Array.isArray(node.children)) {
       return flattenChildren(node.children as VNode[])
     }
@@ -91,17 +91,20 @@ const slots = useSlots()
 const parsedChildren = computed(() => parseTagChildren(slots.default?.() ?? []))
 const hasLeadingVisual = computed(() => Boolean(parsedChildren.value.leadingVisual.length))
 
-const props = withDefaults(defineProps<{
-  size?: 'small' | 'medium' | 'large' | 'xlarge'
-  color?: string
-  background?: string
-  removable?: boolean
-}>(), {
-  size: 'medium',
-  color: '',
-  background: '',
-  removable: false,
-})
+const props = withDefaults(
+  defineProps<{
+    size?: 'small' | 'medium' | 'large' | 'xlarge'
+    color?: string
+    background?: string
+    removable?: boolean
+  }>(),
+  {
+    size: 'medium',
+    color: '',
+    background: '',
+    removable: false,
+  },
+)
 
 const emit = defineEmits<{
   remove: []
@@ -115,7 +118,7 @@ const handleRemove = () => {
 
 const customStyle = computed(() => ({
   color: props.color,
-  background: props.background
+  background: props.background,
 }))
 </script>
 <style module src="./Tag.module.css" />

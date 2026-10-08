@@ -6,5 +6,5 @@ export type {
   TextWeight,
   TextWhiteSpace,
   TextElement,
-  TextInstance
+  TextInstance,
 } from './types'

@@ -13,7 +13,7 @@ type WebkitDataTransferItem = DataTransferItem & {
 
 export function collectFilesFromInput(
   fileList: FileList | null,
-  options: CollectUploadFilesOptions = {}
+  options: CollectUploadFilesOptions = {},
 ): UploadFile[] {
   const files = fileList ? Array.from(fileList, toUploadFile) : []
   return normalizeUploadFiles(files, options)
@@ -21,7 +21,7 @@ export function collectFilesFromInput(
 
 export async function collectFilesFromDrop(
   dataTransfer: DataTransfer | null,
-  options: CollectUploadFilesOptions = {}
+  options: CollectUploadFilesOptions = {},
 ): Promise<UploadFile[]> {
   if (!dataTransfer) {
     return []
@@ -40,10 +40,10 @@ function toUploadFile(file: File): UploadFile {
 
 function normalizeUploadFiles(
   files: UploadFile[],
-  options: CollectUploadFilesOptions
+  options: CollectUploadFilesOptions,
 ): UploadFile[] {
   const selectedFiles = options.directory ? files : files.slice(0, 1)
-  return selectedFiles.filter(item => isAccepted(item.file, options.accept))
+  return selectedFiles.filter((item) => isAccepted(item.file, options.accept))
 }
 
 async function collectDirectoryDropFiles(dataTransfer: DataTransfer): Promise<UploadFile[]> {
@@ -55,16 +55,18 @@ async function collectDirectoryDropFiles(dataTransfer: DataTransfer): Promise<Up
   return Array.from(dataTransfer.files ?? [], toUploadFile)
 }
 
-async function collectFilesFromItems(items: DataTransferItemList | undefined): Promise<UploadFile[]> {
+async function collectFilesFromItems(
+  items: DataTransferItemList | undefined,
+): Promise<UploadFile[]> {
   if (!items || items.length === 0) {
     return []
   }
 
-  const fileItems = Array.from(items).filter(item => item.kind === 'file')
+  const fileItems = Array.from(items).filter((item) => item.kind === 'file')
   const fileGroups = await mapWithConcurrency(
     fileItems,
     DIRECTORY_TRAVERSAL_CONCURRENCY,
-    async item => {
+    async (item) => {
       const webkitItem = item as WebkitDataTransferItem
       const entry = webkitItem.webkitGetAsEntry?.()
       if (entry) {
@@ -73,7 +75,7 @@ async function collectFilesFromItems(items: DataTransferItemList | undefined): P
 
       const file = item.getAsFile()
       return file ? [toUploadFile(file)] : []
-    }
+    },
   )
 
   return flattenFileGroups(fileGroups)
@@ -92,7 +94,7 @@ async function collectFilesFromEntry(entry: FileSystemEntry): Promise<UploadFile
   const fileGroups = await mapWithConcurrency(
     childEntries,
     DIRECTORY_TRAVERSAL_CONCURRENCY,
-    childEntry => collectFilesFromEntry(childEntry)
+    (childEntry) => collectFilesFromEntry(childEntry),
   )
 
   return flattenFileGroups(fileGroups)
@@ -100,15 +102,13 @@ async function collectFilesFromEntry(entry: FileSystemEntry): Promise<UploadFile
 
 function readFileEntry(entry: FileSystemFileEntry): Promise<UploadFile> {
   return new Promise((resolve, reject) => {
-    entry.file(file => {
+    entry.file((file) => {
       resolve({ file, relativePath: entry.fullPath.replace(/^\//, '') })
     }, reject)
   })
 }
 
-async function readDirectoryEntries(
-  entry: FileSystemDirectoryEntry
-): Promise<FileSystemEntry[]> {
+async function readDirectoryEntries(entry: FileSystemDirectoryEntry): Promise<FileSystemEntry[]> {
   const reader = entry.createReader()
   const entries: FileSystemEntry[] = []
 
@@ -122,9 +122,7 @@ async function readDirectoryEntries(
   }
 }
 
-function readDirectoryEntriesChunk(
-  reader: FileSystemDirectoryReader
-): Promise<FileSystemEntry[]> {
+function readDirectoryEntriesChunk(reader: FileSystemDirectoryReader): Promise<FileSystemEntry[]> {
   return new Promise((resolve, reject) => {
     reader.readEntries(resolve, reject)
   })
@@ -133,7 +131,7 @@ function readDirectoryEntriesChunk(
 async function mapWithConcurrency<T, R>(
   items: readonly T[],
   limit: number,
-  mapper: (item: T, index: number) => Promise<R>
+  mapper: (item: T, index: number) => Promise<R>,
 ): Promise<R[]> {
   if (items.length === 0) {
     return []
@@ -172,10 +170,10 @@ function isAccepted(file: File, accept = ''): boolean {
 
   const acceptedTypes = trimmedAccept
     .split(',')
-    .map(type => type.trim())
+    .map((type) => type.trim())
     .filter(Boolean)
 
-  return acceptedTypes.some(type => matchesAcceptType(file, type))
+  return acceptedTypes.some((type) => matchesAcceptType(file, type))
 }
 
 function matchesAcceptType(file: File, acceptType: string): boolean {

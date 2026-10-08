@@ -19,19 +19,9 @@ const splitSequence = (sequence: string) => sequence.split(' ')
 const chords = computed(() => splitSequence(props.keys))
 </script>
 <template>
-  <template
-    v-for="(c, i) in chords"
-    :key="i"
-  >
+  <template v-for="(c, i) in chords" :key="i">
     <!-- Since we audibly separate individual keys in chord with space, we need some other separator for chords in a sequence -->
-    <template v-if="i > 0">
-      <VisuallyHidden>then</VisuallyHidden>{{ ' ' }}
-    </template>
-    <Chord
-      :keys="c"
-      :format="format"
-      :variant="variant"
-      :size="size"
-    />
+    <template v-if="i > 0"> <VisuallyHidden>then</VisuallyHidden>{{ ' ' }} </template>
+    <Chord :keys="c" :format="format" :variant="variant" :size="size" />
   </template>
 </template>

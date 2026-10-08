@@ -6,4 +6,6 @@ export interface CheckboxGroupProps {
   'aria-labelledby'?: string
   'data-component'?: string
 }
-export interface CheckboxGroupEmits { change: [selected: string[], event?: Event] }
+export interface CheckboxGroupEmits {
+  change: [selected: string[], event?: Event]
+}

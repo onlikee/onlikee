@@ -11,16 +11,9 @@
       </template>
       <ComponentDocsDemoBlock :code="basicCode">
         <div class="progress-examples">
-          <div
-            v-for="value in [0, 50, 100]"
-            :key="value"
-            class="progress-example"
-          >
+          <div v-for="value in [0, 50, 100]" :key="value" class="progress-example">
             <span>{{ value }}%</span>
-            <ProgressBar
-              :progress="value"
-              :aria-label="`任务完成 ${value}%`"
-            />
+            <ProgressBar :progress="value" :aria-label="`任务完成 ${value}%`" />
           </div>
         </div>
       </ComponentDocsDemoBlock>
@@ -32,17 +25,9 @@
       </template>
       <ComponentDocsDemoBlock :code="sizeCode">
         <div class="progress-examples">
-          <div
-            v-for="size in sizes"
-            :key="size"
-            class="progress-example"
-          >
+          <div v-for="size in sizes" :key="size" class="progress-example">
             <span>{{ size }}</span>
-            <ProgressBar
-              progress="66"
-              :bar-size="size"
-              :aria-label="`${size} 进度条`"
-            />
+            <ProgressBar progress="66" :bar-size="size" :aria-label="`${size} 进度条`" />
           </div>
         </div>
       </ComponentDocsDemoBlock>
@@ -50,22 +35,14 @@
 
     <ComponentDocsSection title="颜色">
       <template #description>
-        <code>bg</code> 使用主题颜色名称，默认是 <code>success.emphasis</code>。
-        省略第二部分时使用 emphasis，例如 <code>danger</code>。
+        <code>bg</code> 使用主题颜色名称，默认是 <code>success.emphasis</code>。 省略第二部分时使用
+        emphasis，例如 <code>danger</code>。
       </template>
       <ComponentDocsDemoBlock :code="colorCode">
         <div class="progress-examples">
-          <div
-            v-for="color in colors"
-            :key="color"
-            class="progress-example"
-          >
+          <div v-for="color in colors" :key="color" class="progress-example">
             <span>{{ color }}</span>
-            <ProgressBar
-              :progress="60"
-              :bg="color"
-              :aria-label="`${color} 进度条`"
-            />
+            <ProgressBar :progress="60" :bg="color" :aria-label="`${color} 进度条`" />
           </div>
         </div>
       </ComponentDocsDemoBlock>
@@ -79,21 +56,9 @@
       <ComponentDocsDemoBlock :code="multipleCode">
         <div class="progress-examples">
           <ProgressBar>
-            <ProgressBar.Item
-              :progress="33"
-              bg="accent.emphasis"
-              aria-label="照片占比"
-            />
-            <ProgressBar.Item
-              :progress="23"
-              bg="danger.emphasis"
-              aria-label="应用占比"
-            />
-            <ProgressBar.Item
-              :progress="14"
-              bg="severe.emphasis"
-              aria-label="音乐占比"
-            />
+            <ProgressBar.Item :progress="33" bg="accent.emphasis" aria-label="照片占比" />
+            <ProgressBar.Item :progress="23" bg="danger.emphasis" aria-label="应用占比" />
+            <ProgressBar.Item :progress="14" bg="severe.emphasis" aria-label="音乐占比" />
           </ProgressBar>
           <span>照片 33% · 应用 23% · 音乐 14%</span>
         </div>
@@ -107,12 +72,7 @@
       <ComponentDocsDemoBlock :code="inlineCode">
         <div class="progress-inline">
           <span>上传进度</span>
-          <ProgressBar
-            inline
-            progress="66"
-            style="width: 120px"
-            aria-label="上传进度"
-          />
+          <ProgressBar inline progress="66" style="width: 120px" aria-label="上传进度" />
           <span>66%</span>
         </div>
       </ComponentDocsDemoBlock>
@@ -125,11 +85,7 @@
       </template>
       <ComponentDocsDemoBlock :code="animatedCode">
         <div class="progress-examples">
-          <ProgressBar
-            :progress="50"
-            animated
-            aria-label="正在上传"
-          />
+          <ProgressBar :progress="50" animated aria-label="正在上传" />
           <ProgressBar>
             <ProgressBar.Item
               :progress="35"
@@ -137,42 +93,21 @@
               data-animated="true"
               aria-label="正在处理的文件"
             />
-            <ProgressBar.Item
-              :progress="25"
-              aria-label="已处理的文件"
-            />
+            <ProgressBar.Item :progress="25" aria-label="已处理的文件" />
           </ProgressBar>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="API"
-      variant="api"
-    >
-      <Table
-        :columns="apiColumns"
-        :data="apiRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+    <ComponentDocsSection title="API" variant="api">
+      <Table :columns="apiColumns" :data="apiRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
-    <ComponentDocsSection
-      title="ProgressBar.Item API"
-      variant="api"
-    >
+    <ComponentDocsSection title="ProgressBar.Item API" variant="api">
       <template #description>
         也可以具名导入 <code>ProgressBarItem</code>。两种组件均支持原生属性、class 和 style。
         多段模式下，父级颜色、动画和下列 ARIA 属性不会自动传给子项。
       </template>
-      <Table
-        :columns="apiColumns"
-        :data="itemApiRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+      <Table :columns="apiColumns" :data="itemApiRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
@@ -226,28 +161,63 @@ const apiColumns: TableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'type', label: '类型', minWidth: '180px', wrap: true },
   { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'description', label: '说明', minWidth: '220px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '220px', wrap: true },
 ]
 
 const sharedApiRows = [
-  { name: 'progress', type: 'string | number', default: '—', description: '百分比数值，不带 %；未设置时显示 0%，不自动限制范围。' },
-  { name: 'bg', type: 'string', default: 'success.emphasis', description: '主题背景颜色，例如 accent.emphasis 或 danger。' },
+  {
+    name: 'progress',
+    type: 'string | number',
+    default: '—',
+    description: '百分比数值，不带 %；未设置时显示 0%，不自动限制范围。',
+  },
+  {
+    name: 'bg',
+    type: 'string',
+    default: 'success.emphasis',
+    description: '主题背景颜色，例如 accent.emphasis 或 danger。',
+  },
   { name: 'aria-label', type: 'string', default: '—', description: '进度条的无障碍名称。' },
-  { name: 'aria-valuenow', type: 'number | string', default: '由 progress 计算', description: '覆盖向辅助技术报告的当前数值，支持显式设置 0。' },
-  { name: 'aria-valuetext', type: 'string', default: '—', description: '用文字描述当前进度，例如“已完成 3 项，共 5 项”。' }
+  {
+    name: 'aria-valuenow',
+    type: 'number | string',
+    default: '由 progress 计算',
+    description: '覆盖向辅助技术报告的当前数值，支持显式设置 0。',
+  },
+  {
+    name: 'aria-valuetext',
+    type: 'string',
+    default: '—',
+    description: '用文字描述当前进度，例如“已完成 3 项，共 5 项”。',
+  },
 ]
 
 const apiRows = [
   ...sharedApiRows,
-  { name: 'barSize', type: "'small' | 'default' | 'large'", default: 'default', description: '高度分别为 5px、8px、10px。' },
-  { name: 'inline', type: 'boolean', default: 'false', description: '使用行内布局，由调用方设置宽度。' },
+  {
+    name: 'barSize',
+    type: "'small' | 'default' | 'large'",
+    default: 'default',
+    description: '高度分别为 5px、8px、10px。',
+  },
+  {
+    name: 'inline',
+    type: 'boolean',
+    default: 'false',
+    description: '使用行内布局，由调用方设置宽度。',
+  },
   { name: 'animated', type: 'boolean', default: 'false', description: '为默认单段启用流光动画。' },
-  { name: 'default 插槽', type: 'ProgressBar.Item', default: '单段进度', description: '有效内容优先；空插槽回退为单段，多段标签需分别设置。' }
+  {
+    name: 'default 插槽',
+    type: 'ProgressBar.Item',
+    default: '单段进度',
+    description: '有效内容优先；空插槽回退为单段，多段标签需分别设置。',
+  },
 ]
 
 const itemApiRows = [
   ...sharedApiRows,
-  { name: 'data-animated', type: "'true'", default: '—', description: '为当前分段启用流光动画。' }
+  { name: 'data-animated', type: "'true'", default: '—', description: '为当前分段启用流光动画。' },
 ]
 </script>
 

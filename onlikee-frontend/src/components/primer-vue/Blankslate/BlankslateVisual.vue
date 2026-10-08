@@ -1,11 +1,7 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <div
-    :class="$style['blankslate-visual']"
-    aria-hidden="true"
-  >
+  <div :class="$style['blankslate-visual']" aria-hidden="true">
     <slot />
   </div>
 </template>

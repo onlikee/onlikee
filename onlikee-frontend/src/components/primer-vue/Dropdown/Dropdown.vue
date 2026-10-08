@@ -1,8 +1,5 @@
 <template>
-  <div
-    ref="dropdownRef"
-    :class="$style['dropdown']"
-  >
+  <div ref="dropdownRef" :class="$style['dropdown']">
     <div
       ref="triggerRef"
       :class="$style['dropdown-trigger']"
@@ -30,23 +27,26 @@
 </template>
 
 <script setup lang="ts">
-import { Comment, Fragment, Text, computed, ref, onMounted, onBeforeUnmount, watch, nextTick, useSlots, type CSSProperties, type VNode } from 'vue'
+import {
+  Comment,
+  Fragment,
+  Text,
+  computed,
+  ref,
+  onMounted,
+  onBeforeUnmount,
+  watch,
+  nextTick,
+  useSlots,
+  type CSSProperties,
+  type VNode,
+} from 'vue'
 
-type InsideSide =
-  | 'inside-top'
-  | 'inside-bottom'
-  | 'inside-left'
-  | 'inside-right'
-  | 'inside-center'
+type InsideSide = 'inside-top' | 'inside-bottom' | 'inside-left' | 'inside-right' | 'inside-center'
 
 type OutsideSide = 'outside-top' | 'outside-bottom' | 'outside-left' | 'outside-right'
 
-type DropdownSide =
-  | InsideSide
-  | 'outside-top'
-  | 'outside-bottom'
-  | 'outside-left'
-  | 'outside-right'
+type DropdownSide = InsideSide | 'outside-top' | 'outside-bottom' | 'outside-left' | 'outside-right'
 
 type DropdownAlign = 'start' | 'center' | 'end'
 type DropdownContentWidth = 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge' | 'auto'
@@ -105,27 +105,30 @@ type ScrollTarget = Element | Window | VisualViewport
 const ALTERNATE_ALIGNMENTS: Record<DropdownAlign, DropdownAlign[]> = {
   start: ['end', 'center'],
   end: ['start', 'center'],
-  center: ['end', 'start']
+  center: ['end', 'start'],
 }
 const VIEWPORT_MARGIN = 8
 const DEFAULT_ANCHOR_OFFSET = 4
 const DEFAULT_ALIGNMENT_OFFSET = 4
 
-const props = withDefaults(defineProps<{
-  side?: DropdownSide
-  align?: DropdownAlign
-  anchorOffset?: number
-  alignmentOffset?: number
-  allowOutOfBounds?: boolean
-  displayInViewport?: boolean
-}>(), {
-  side: 'outside-bottom',
-  align: 'start',
-  anchorOffset: undefined,
-  alignmentOffset: undefined,
-  allowOutOfBounds: false,
-  displayInViewport: false
-})
+const props = withDefaults(
+  defineProps<{
+    side?: DropdownSide
+    align?: DropdownAlign
+    anchorOffset?: number
+    alignmentOffset?: number
+    allowOutOfBounds?: boolean
+    displayInViewport?: boolean
+  }>(),
+  {
+    side: 'outside-bottom',
+    align: 'start',
+    anchorOffset: undefined,
+    alignmentOffset: undefined,
+    allowOutOfBounds: false,
+    displayInViewport: false,
+  },
+)
 
 const slots = useSlots()
 const isOpen = ref(false)
@@ -143,16 +146,19 @@ const resolvedPositionAlign = computed(() => position.value?.anchorAlign ?? prop
 const contentStyle = computed<DropdownContentStyle>(() => ({
   top: `${position.value?.top ?? 0}px`,
   left: `${position.value?.left ?? 0}px`,
-  '--dropdown-available-width': position.value?.maxWidth === undefined ? undefined : `${position.value.maxWidth}px`,
-  visibility: position.value ? undefined : 'hidden'
+  '--dropdown-available-width':
+    position.value?.maxWidth === undefined ? undefined : `${position.value.maxWidth}px`,
+  visibility: position.value ? undefined : 'hidden',
 }))
 const positionSettings = computed<PositionSettings>(() => ({
   side: props.side,
   align: props.align,
   anchorOffset: props.anchorOffset ?? (props.side === 'inside-center' ? 0 : DEFAULT_ANCHOR_OFFSET),
-  alignmentOffset: props.alignmentOffset ?? (props.align !== 'center' && props.side.startsWith('inside-') ? DEFAULT_ALIGNMENT_OFFSET : 0),
+  alignmentOffset:
+    props.alignmentOffset ??
+    (props.align !== 'center' && props.side.startsWith('inside-') ? DEFAULT_ALIGNMENT_OFFSET : 0),
   allowOutOfBounds: props.allowOutOfBounds,
-  displayInViewport: props.displayInViewport
+  displayInViewport: props.displayInViewport,
 }))
 
 const positionDependencies = computed(() => [
@@ -162,7 +168,7 @@ const positionDependencies = computed(() => [
   props.alignmentOffset,
   props.allowOutOfBounds,
   props.displayInViewport,
-  parsedChildren.value.contentWidth
+  parsedChildren.value.contentWidth,
 ])
 
 const RenderNodes = (props: { nodes: VNode[] }) => props.nodes
@@ -187,7 +193,7 @@ function getVisualViewportHorizontalBoundary(): HorizontalBoundary {
 
   return {
     left: viewport?.offsetLeft ?? 0,
-    width: Math.min(viewport?.width ?? layoutWidth, layoutWidth)
+    width: Math.min(viewport?.width ?? layoutWidth, layoutWidth),
   }
 }
 
@@ -201,19 +207,21 @@ function getDocumentVerticalBoundary(): DocumentVerticalBoundary {
     documentElement.scrollHeight,
     documentElement.offsetHeight,
     body?.scrollHeight ?? 0,
-    body?.offsetHeight ?? 0
+    body?.offsetHeight ?? 0,
   )
   const viewportTop = viewport?.offsetTop ?? 0
   const top = viewportTop - scrollingElement.scrollTop
 
   return {
     top,
-    bottom: top + documentHeight
+    bottom: top + documentHeight,
   }
 }
 
 function isClippingOverflow(style: CSSStyleDeclaration) {
-  return /auto|scroll|overlay|hidden|clip/.test(`${style.overflow} ${style.overflowX} ${style.overflowY}`)
+  return /auto|scroll|overlay|hidden|clip/.test(
+    `${style.overflow} ${style.overflowX} ${style.overflowY}`,
+  )
 }
 
 function isScrollableOverflow(style: CSSStyleDeclaration) {
@@ -234,7 +242,10 @@ function getClippingAncestor(element: HTMLElement) {
   return null
 }
 
-function getHorizontalBoundary(anchorElement: HTMLElement, displayInViewport: boolean): HorizontalBoundary {
+function getHorizontalBoundary(
+  anchorElement: HTMLElement,
+  displayInViewport: boolean,
+): HorizontalBoundary {
   if (displayInViewport) return getVisualViewportHorizontalBoundary()
 
   const clippingAncestor = getClippingAncestor(anchorElement)
@@ -247,7 +258,7 @@ function getHorizontalBoundary(anchorElement: HTMLElement, displayInViewport: bo
 
   return {
     left: rect.left + borderLeft,
-    width: Math.max(0, rect.width - borderLeft - borderRight)
+    width: Math.max(0, rect.width - borderLeft - borderRight),
   }
 }
 
@@ -278,7 +289,7 @@ function calculatePosition(
   side: DropdownSide,
   align: DropdownAlign,
   anchorOffset: number,
-  alignmentOffset: number
+  alignmentOffset: number,
 ) {
   const anchorRight = getRectRight(anchorRect)
   const anchorBottom = getRectBottom(anchorRect)
@@ -363,7 +374,12 @@ function getHorizontalFlipSide(side: DropdownSide): OutsideSide | undefined {
 }
 
 function shouldTryHorizontalAlignment(side: DropdownSide) {
-  return side === 'outside-top' || side === 'outside-bottom' || side === 'inside-top' || side === 'inside-bottom'
+  return (
+    side === 'outside-top' ||
+    side === 'outside-bottom' ||
+    side === 'inside-top' ||
+    side === 'inside-bottom'
+  )
 }
 
 function getHorizontalOverflow(left: number, floatingWidth: number, boundary: HorizontalBoundary) {
@@ -373,15 +389,27 @@ function getHorizontalOverflow(left: number, floatingWidth: number, boundary: Ho
   return Math.max(0, minLeft - left) + Math.max(0, left + floatingWidth - maxRight)
 }
 
-function getVerticalOverflow(top: number, floatingHeight: number, boundary: DocumentVerticalBoundary) {
+function getVerticalOverflow(
+  top: number,
+  floatingHeight: number,
+  boundary: DocumentVerticalBoundary,
+) {
   const minTop = boundary.top + VIEWPORT_MARGIN
   const maxBottom = boundary.bottom - VIEWPORT_MARGIN
 
   return Math.max(0, minTop - top) + Math.max(0, top + floatingHeight - maxBottom)
 }
 
-function clampHorizontalPosition(left: number, floatingWidth: number, boundary: HorizontalBoundary) {
-  return clamp(left, boundary.left + VIEWPORT_MARGIN, getRectRight(boundary) - floatingWidth - VIEWPORT_MARGIN)
+function clampHorizontalPosition(
+  left: number,
+  floatingWidth: number,
+  boundary: HorizontalBoundary,
+) {
+  return clamp(
+    left,
+    boundary.left + VIEWPORT_MARGIN,
+    getRectRight(boundary) - floatingWidth - VIEWPORT_MARGIN,
+  )
 }
 
 function toRectLike(rect: DOMRect | RectLike): RectLike {
@@ -389,7 +417,7 @@ function toRectLike(rect: DOMRect | RectLike): RectLike {
     top: rect.top,
     left: rect.left,
     width: rect.width,
-    height: rect.height
+    height: rect.height,
   }
 }
 
@@ -398,13 +426,18 @@ function calculateAnchoredPosition(
   documentVerticalBoundary: DocumentVerticalBoundary,
   floatingRect: RectLike,
   anchorRect: RectLike,
-  settings: PositionSettings
+  settings: PositionSettings,
 ): DropdownPosition {
-  const maxWidth = settings.allowOutOfBounds ? undefined : Math.max(0, horizontalBoundary.width - VIEWPORT_MARGIN * 2)
+  const maxWidth = settings.allowOutOfBounds
+    ? undefined
+    : Math.max(0, horizontalBoundary.width - VIEWPORT_MARGIN * 2)
   const normalizedFloatingRect = toRectLike(floatingRect)
   const effectiveFloatingRect = {
     ...normalizedFloatingRect,
-    width: maxWidth === undefined ? normalizedFloatingRect.width : Math.min(normalizedFloatingRect.width, maxWidth)
+    width:
+      maxWidth === undefined
+        ? normalizedFloatingRect.width
+        : Math.min(normalizedFloatingRect.width, maxWidth),
   }
   let currentPosition = calculatePosition(
     effectiveFloatingRect,
@@ -412,7 +445,7 @@ function calculateAnchoredPosition(
     settings.side,
     settings.align,
     settings.anchorOffset,
-    settings.alignmentOffset
+    settings.alignmentOffset,
   )
   let anchorSide = settings.side
   let anchorAlign = settings.align
@@ -420,7 +453,11 @@ function calculateAnchoredPosition(
   if (!settings.allowOutOfBounds) {
     const verticalFlipSide = getVerticalFlipSide(anchorSide)
     if (verticalFlipSide) {
-      const currentOverflow = getVerticalOverflow(currentPosition.top, effectiveFloatingRect.height, documentVerticalBoundary)
+      const currentOverflow = getVerticalOverflow(
+        currentPosition.top,
+        effectiveFloatingRect.height,
+        documentVerticalBoundary,
+      )
 
       if (currentOverflow > 0) {
         const nextPosition = calculatePosition(
@@ -429,9 +466,13 @@ function calculateAnchoredPosition(
           verticalFlipSide,
           anchorAlign,
           settings.anchorOffset,
-          settings.alignmentOffset
+          settings.alignmentOffset,
         )
-        const nextOverflow = getVerticalOverflow(nextPosition.top, effectiveFloatingRect.height, documentVerticalBoundary)
+        const nextOverflow = getVerticalOverflow(
+          nextPosition.top,
+          effectiveFloatingRect.height,
+          documentVerticalBoundary,
+        )
 
         if (nextOverflow <= currentOverflow) {
           currentPosition = nextPosition
@@ -442,7 +483,11 @@ function calculateAnchoredPosition(
 
     const horizontalFlipSide = getHorizontalFlipSide(anchorSide)
     if (horizontalFlipSide) {
-      const currentOverflow = getHorizontalOverflow(currentPosition.left, effectiveFloatingRect.width, horizontalBoundary)
+      const currentOverflow = getHorizontalOverflow(
+        currentPosition.left,
+        effectiveFloatingRect.width,
+        horizontalBoundary,
+      )
 
       if (currentOverflow > 0) {
         const nextPosition = calculatePosition(
@@ -451,9 +496,13 @@ function calculateAnchoredPosition(
           horizontalFlipSide,
           anchorAlign,
           settings.anchorOffset,
-          settings.alignmentOffset
+          settings.alignmentOffset,
         )
-        const nextOverflow = getHorizontalOverflow(nextPosition.left, effectiveFloatingRect.width, horizontalBoundary)
+        const nextOverflow = getHorizontalOverflow(
+          nextPosition.left,
+          effectiveFloatingRect.width,
+          horizontalBoundary,
+        )
 
         if (nextOverflow < currentOverflow) {
           currentPosition = nextPosition
@@ -465,7 +514,11 @@ function calculateAnchoredPosition(
     if (shouldTryHorizontalAlignment(anchorSide)) {
       let bestPosition = currentPosition
       let bestAlign = anchorAlign
-      let bestOverflow = getHorizontalOverflow(currentPosition.left, effectiveFloatingRect.width, horizontalBoundary)
+      let bestOverflow = getHorizontalOverflow(
+        currentPosition.left,
+        effectiveFloatingRect.width,
+        horizontalBoundary,
+      )
 
       for (const nextAlign of ALTERNATE_ALIGNMENTS[anchorAlign]) {
         const nextPosition = calculatePosition(
@@ -474,9 +527,13 @@ function calculateAnchoredPosition(
           anchorSide,
           nextAlign,
           settings.anchorOffset,
-          settings.alignmentOffset
+          settings.alignmentOffset,
         )
-        const nextOverflow = getHorizontalOverflow(nextPosition.left, effectiveFloatingRect.width, horizontalBoundary)
+        const nextOverflow = getHorizontalOverflow(
+          nextPosition.left,
+          effectiveFloatingRect.width,
+          horizontalBoundary,
+        )
 
         if (nextOverflow < bestOverflow) {
           bestPosition = nextPosition
@@ -493,7 +550,11 @@ function calculateAnchoredPosition(
 
     currentPosition = {
       ...currentPosition,
-      left: clampHorizontalPosition(currentPosition.left, effectiveFloatingRect.width, horizontalBoundary)
+      left: clampHorizontalPosition(
+        currentPosition.left,
+        effectiveFloatingRect.width,
+        horizontalBoundary,
+      ),
     }
   }
 
@@ -501,7 +562,7 @@ function calculateAnchoredPosition(
     ...currentPosition,
     maxWidth,
     anchorSide,
-    anchorAlign
+    anchorAlign,
   }
 }
 
@@ -526,7 +587,7 @@ function isWhitespaceNode(node: VNode) {
 }
 
 function flattenChildren(nodes: VNode[]): VNode[] {
-  return nodes.flatMap(node => {
+  return nodes.flatMap((node) => {
     if (node.type === Fragment && Array.isArray(node.children)) {
       return flattenChildren(node.children as VNode[])
     }
@@ -539,7 +600,7 @@ function parseDropdownChildren(nodes: VNode[]): ParsedDropdownChildren {
   const parsed: ParsedDropdownChildren = {
     trigger: [],
     content: [],
-    contentWidth: 'auto'
+    contentWidth: 'auto',
   }
 
   for (const node of flattenChildren(nodes)) {
@@ -576,7 +637,13 @@ function updatePosition() {
   const contentRect = content.getBoundingClientRect()
   const horizontalBoundary = getHorizontalBoundary(anchor, positionSettings.value.displayInViewport)
   const documentVerticalBoundary = getDocumentVerticalBoundary()
-  position.value = calculateAnchoredPosition(horizontalBoundary, documentVerticalBoundary, contentRect, anchorRect, positionSettings.value)
+  position.value = calculateAnchoredPosition(
+    horizontalBoundary,
+    documentVerticalBoundary,
+    contentRect,
+    anchorRect,
+    positionSettings.value,
+  )
 }
 
 function scheduleUpdatePosition() {
@@ -649,7 +716,7 @@ onBeforeUnmount(() => {
   stopPositionObservers()
 })
 
-watch(isOpen, async open => {
+watch(isOpen, async (open) => {
   if (!open) {
     position.value = undefined
     stopPositionObservers()
@@ -661,14 +728,22 @@ watch(isOpen, async open => {
   startPositionObservers()
 })
 
-watch(positionDependencies, async () => {
-  if (!isOpen.value) return
+watch(
+  positionDependencies,
+  async () => {
+    if (!isOpen.value) return
 
-  await nextTick()
-  scheduleUpdatePosition()
-}, { flush: 'post' })
+    await nextTick()
+    scheduleUpdatePosition()
+  },
+  { flush: 'post' },
+)
 
-defineExpose({ close: () => { isOpen.value = false } })
+defineExpose({
+  close: () => {
+    isOpen.value = false
+  },
+})
 </script>
 
 <style module src="./Dropdown.module.css"></style>

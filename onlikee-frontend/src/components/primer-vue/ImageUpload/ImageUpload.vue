@@ -1,29 +1,40 @@
 <script setup lang="ts">
 import { computed, nextTick, shallowRef, useId, useTemplateRef, watch } from 'vue'
 import type { ImageUploadFile } from './types'
-import { cropImage, getImageAccept, isImageAccepted, moveCrop, resizeCrop, type CropCorner, type CropRect } from './image'
+import {
+  cropImage,
+  getImageAccept,
+  isImageAccepted,
+  moveCrop,
+  resizeCrop,
+  type CropCorner,
+  type CropRect,
+} from './image'
 
-const props = withDefaults(defineProps<{
-  modelValue?: ImageUploadFile[]
-  previewUrl?: string
-  accept?: string
-  text?: string
-  hint?: string
-  width?: string
-  disabled?: boolean
-  circle?: boolean
-  crop?: boolean
-}>(), {
-  modelValue: () => [],
-  previewUrl: '',
-  accept: '',
-  text: '',
-  hint: '',
-  width: '',
-  disabled: false,
-  circle: false,
-  crop: false
-})
+const props = withDefaults(
+  defineProps<{
+    modelValue?: ImageUploadFile[]
+    previewUrl?: string
+    accept?: string
+    text?: string
+    hint?: string
+    width?: string
+    disabled?: boolean
+    circle?: boolean
+    crop?: boolean
+  }>(),
+  {
+    modelValue: () => [],
+    previewUrl: '',
+    accept: '',
+    text: '',
+    hint: '',
+    width: '',
+    disabled: false,
+    circle: false,
+    crop: false,
+  },
+)
 
 const emit = defineEmits<{
   'update:modelValue': [value: ImageUploadFile[]]
@@ -46,8 +57,10 @@ const cropRect = shallowRef<CropRect>({ x: 0, y: 0, size: 0 })
 const id = useId()
 const inputAccept = computed(() => getImageAccept(props.accept))
 const corners: { corner: CropCorner; label: string }[] = [
-  { corner: 'nw', label: '左上' }, { corner: 'ne', label: '右上' },
-  { corner: 'sw', label: '左下' }, { corner: 'se', label: '右下' }
+  { corner: 'nw', label: '左上' },
+  { corner: 'ne', label: '右上' },
+  { corner: 'sw', label: '左下' },
+  { corner: 'se', label: '右下' },
 ]
 let generation = 0
 let backdropPointerDown = false
@@ -61,33 +74,49 @@ let drag: {
 } | null = null
 
 const selectionStyle = computed(() => ({
-  left: `${cropRect.value.x / dimensions.value.width * 100}%`,
-  top: `${cropRect.value.y / dimensions.value.height * 100}%`,
-  width: `${cropRect.value.size / dimensions.value.width * 100}%`,
-  height: `${cropRect.value.size / dimensions.value.height * 100}%`
+  left: `${(cropRect.value.x / dimensions.value.width) * 100}%`,
+  top: `${(cropRect.value.y / dimensions.value.height) * 100}%`,
+  width: `${(cropRect.value.size / dimensions.value.width) * 100}%`,
+  height: `${(cropRect.value.size / dimensions.value.height) * 100}%`,
 }))
 
-watch(() => props.modelValue.slice(0, 1), value => {
-  cancelCrop()
-  selectedFiles.value = value
-}, { immediate: true })
-
-watch(() => selectedFiles.value[0]?.file, (file, _previous, onCleanup) => {
-  localPreviewUrl.value = file ? URL.createObjectURL(file) : ''
-  const url = localPreviewUrl.value
-  onCleanup(() => { if (url) URL.revokeObjectURL(url) })
-}, { immediate: true })
-
-watch(() => props.disabled, disabled => {
-  if (disabled) {
-    dragging.value = false
+watch(
+  () => props.modelValue.slice(0, 1),
+  (value) => {
     cancelCrop()
-  }
-})
+    selectedFiles.value = value
+  },
+  { immediate: true },
+)
 
-watch(() => props.crop, enabled => {
-  if (!enabled) cancelCrop()
-})
+watch(
+  () => selectedFiles.value[0]?.file,
+  (file, _previous, onCleanup) => {
+    localPreviewUrl.value = file ? URL.createObjectURL(file) : ''
+    const url = localPreviewUrl.value
+    onCleanup(() => {
+      if (url) URL.revokeObjectURL(url)
+    })
+  },
+  { immediate: true },
+)
+
+watch(
+  () => props.disabled,
+  (disabled) => {
+    if (disabled) {
+      dragging.value = false
+      cancelCrop()
+    }
+  },
+)
+
+watch(
+  () => props.crop,
+  (enabled) => {
+    if (!enabled) cancelCrop()
+  },
+)
 
 watch(pendingFile, async (file, _previous, onCleanup) => {
   generation += 1
@@ -139,7 +168,10 @@ function onDrop(event: DragEvent) {
 }
 
 function onDragLeave(event: DragEvent) {
-  if (!(event.relatedTarget instanceof Node) || !(event.currentTarget as HTMLElement).contains(event.relatedTarget)) {
+  if (
+    !(event.relatedTarget instanceof Node) ||
+    !(event.currentTarget as HTMLElement).contains(event.relatedTarget)
+  ) {
     dragging.value = false
   }
 }
@@ -165,8 +197,12 @@ function startDrag(event: PointerEvent, corner?: CropCorner) {
   const target = event.currentTarget as HTMLElement
   target.setPointerCapture(event.pointerId)
   drag = {
-    pointerId: event.pointerId, corner, x: event.clientX, y: event.clientY,
-    crop: { ...cropRect.value }, scale: dimensions.value.width / stageRef.value.getBoundingClientRect().width
+    pointerId: event.pointerId,
+    corner,
+    x: event.clientX,
+    y: event.clientY,
+    crop: { ...cropRect.value },
+    scale: dimensions.value.width / stageRef.value.getBoundingClientRect().width,
   }
 }
 
@@ -185,7 +221,8 @@ function endDrag(event: PointerEvent) {
 }
 
 function onCropKeydown(event: KeyboardEvent, corner?: CropCorner) {
-  if (saving.value || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return
+  if (saving.value || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key))
+    return
   event.preventDefault()
   const step = event.shiftKey ? 10 : 1
   const dx = event.key === 'ArrowLeft' ? -step : event.key === 'ArrowRight' ? step : 0
@@ -200,7 +237,12 @@ function isOutsideDialog(event: PointerEvent) {
   const dialog = dialogRef.value
   if (!dialog || event.target !== dialog) return false
   const rect = dialog.getBoundingClientRect()
-  return event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom
+  return (
+    event.clientX < rect.left ||
+    event.clientX > rect.right ||
+    event.clientY < rect.top ||
+    event.clientY > rect.bottom
+  )
 }
 
 function onDialogPointerUp(event: PointerEvent) {
@@ -235,10 +277,7 @@ async function confirmCrop() {
 </script>
 
 <template>
-  <div
-    :class="$style['image-upload']"
-    :data-disabled="disabled"
-  >
+  <div :class="$style['image-upload']" :data-disabled="disabled">
     <button
       :class="$style['upload-drop']"
       type="button"
@@ -258,11 +297,8 @@ async function confirmCrop() {
         :class="$style['image-upload-preview']"
         :src="previewUrl"
         :alt="selectedFiles[0]?.file.name || '图片预览'"
-      >
-      <span
-        v-else
-        :class="$style['image-upload-placeholder']"
-      >
+      />
+      <span v-else :class="$style['image-upload-placeholder']">
         <slot>
           <svg
             :class="$style['upload-icon']"
@@ -270,20 +306,18 @@ async function confirmCrop() {
             viewBox="0 0 16 16"
             fill="currentColor"
           >
-            <path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Z" />
-            <path d="M11.78 4.72a.749.749 0 1 1-1.06 1.06L8.75 3.811V9.5a.75.75 0 0 1-1.5 0V3.811L5.28 5.78a.749.749 0 1 1-1.06-1.06l3.25-3.25a.749.749 0 0 1 1.06 0l3.25 3.25Z" />
+            <path
+              d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Z"
+            />
+            <path
+              d="M11.78 4.72a.749.749 0 1 1-1.06 1.06L8.75 3.811V9.5a.75.75 0 0 1-1.5 0V3.811L5.28 5.78a.749.749 0 1 1-1.06-1.06l3.25-3.25a.749.749 0 0 1 1.06 0l3.25 3.25Z"
+            />
           </svg>
-          <span
-            v-if="text"
-            :class="$style['upload-text']"
-          >
+          <span v-if="text" :class="$style['upload-text']">
             {{ text }}
           </span>
         </slot>
-        <span
-          v-if="hint"
-          :class="$style['upload-hint']"
-        >
+        <span v-if="hint" :class="$style['upload-hint']">
           {{ hint }}
         </span>
       </span>
@@ -295,7 +329,7 @@ async function confirmCrop() {
       :disabled="disabled"
       hidden
       @change="onFileChange"
-    >
+    />
     <Teleport to="body">
       <dialog
         ref="dialog"
@@ -307,12 +341,7 @@ async function confirmCrop() {
       >
         <header :class="$style['avatar-cropper-header']">
           <div :class="$style['avatar-cropper-header-content']">
-            <h2
-              :id="`${id}-title`"
-              :class="$style['avatar-cropper-title']"
-            >
-              裁剪图片
-            </h2>
+            <h2 :id="`${id}-title`" :class="$style['avatar-cropper-title']">裁剪图片</h2>
           </div>
           <button
             :class="$style['avatar-cropper-close']"
@@ -321,13 +350,11 @@ async function confirmCrop() {
             autofocus
             @click="cancelCrop"
           >
-            <svg
-              aria-hidden="true"
-              width="16"
-              height="16"
-              viewBox="0 0 16 16"
-              fill="currentColor"
-            ><path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z" /></svg>
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+              <path
+                d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"
+              />
+            </svg>
           </button>
         </header>
         <div :class="$style['avatar-cropper-body']">
@@ -347,7 +374,7 @@ async function confirmCrop() {
                 draggable="false"
                 @load="onImageLoad"
                 @error="cropError = '无法读取这张图片，请选择有效的图片文件。'"
-              >
+              />
               <div
                 v-if="cropRect.size"
                 :class="$style['avatar-cropper-selection']"
@@ -379,11 +406,7 @@ async function confirmCrop() {
               </div>
             </div>
           </div>
-          <p
-            v-if="cropError"
-            :class="$style['image-upload-error']"
-            role="alert"
-          >
+          <p v-if="cropError" :class="$style['image-upload-error']" role="alert">
             {{ cropError }}
           </p>
         </div>

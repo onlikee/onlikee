@@ -1,18 +1,11 @@
 <template>
   <div class="second-step">
-    <div
-      v-if="selectedFramework === null"
-      class="upload-tip"
-    >
+    <div v-if="selectedFramework === null" class="upload-tip">
       <LightBulbIcon />
       请先选择一个框架
     </div>
 
-    <div
-      v-else
-      class="step-panel"
-      :class="{ 'step-panel--invalid': invalid }"
-    >
+    <div v-else class="step-panel" :class="{ 'step-panel--invalid': invalid }">
       <HtmlMonacoEditor
         v-if="selectedFramework === 'html'"
         :model-value="htmlSource"
@@ -28,9 +21,7 @@
         @update:model-value="updateFiles"
       />
     </div>
-    <p
-      v-if="invalid && validation"
-    >
+    <p v-if="invalid && validation">
       <FormControlValidation variant="error">
         {{ validation }}
       </FormControlValidation>
@@ -56,7 +47,7 @@ interface Props {
 
 withDefaults(defineProps<Props>(), {
   invalid: false,
-  validation: ''
+  validation: '',
 })
 
 const emit = defineEmits<{

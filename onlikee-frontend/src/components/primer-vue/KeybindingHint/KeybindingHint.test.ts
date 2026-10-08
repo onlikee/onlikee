@@ -9,14 +9,20 @@ import { accessibleChordString, accessibleSequenceString, splitChord } from './c
 
 const wrappers: VueWrapper[] = []
 afterEach(() => {
-  wrappers.forEach(wrapper => wrapper.unmount()); wrappers.length = 0
+  wrappers.forEach((wrapper) => wrapper.unmount())
+  wrappers.length = 0
   document.body.innerHTML = ''
   vi.restoreAllMocks()
 })
-function track<T extends VueWrapper>(wrapper: T): T { wrappers.push(wrapper); return wrapper }
+function track<T extends VueWrapper>(wrapper: T): T {
+  wrappers.push(wrapper)
+  return wrapper
+}
 /** 收集元素内所有 VisuallyHidden（internal-visually-hidden）节点的文本。 */
 function hiddenTexts(wrapper: { element: Element }): string[] {
-  return Array.from(wrapper.element.querySelectorAll('.internal-visually-hidden')).map(node => node.textContent ?? '')
+  return Array.from(wrapper.element.querySelectorAll('.internal-visually-hidden')).map(
+    (node) => node.textContent ?? '',
+  )
 }
 
 describe('KeybindingHint', () => {
@@ -25,10 +31,10 @@ describe('KeybindingHint', () => {
     const kbd = wrapper.get('kbd')
     expect(kbd.attributes('data-component')).toBe('KeybindingHint')
     expect(kbd.attributes('data-testid')).toBe('keybinding-hint')
-    expect(kbd.classes().some(name => name.includes('keybinding-hint_'))).toBe(true)
+    expect(kbd.classes().some((name) => name.includes('keybinding-hint_'))).toBe(true)
     const chord = kbd.get('[data-kbd-chord]')
     expect(chord.attributes('data-kbd-chord')).toBe('true')
-    expect(chord.classes().some(name => name.includes('keybinding-chord--normal_'))).toBe(true)
+    expect(chord.classes().some((name) => name.includes('keybinding-chord--normal_'))).toBe(true)
     expect(chord.text()).toContain('⌃')
     expect(chord.text()).toContain('⇧')
     expect(chord.text()).toContain('P')
@@ -43,21 +49,31 @@ describe('KeybindingHint', () => {
   })
 
   it('honors variant/size classes and the full format plus separators', () => {
-    const wrapper = track(mount(KeybindingHint, { props: { keys: 'Mod+K', format: 'full', variant: 'onEmphasis', size: 'small' } }))
+    const wrapper = track(
+      mount(KeybindingHint, {
+        props: { keys: 'Mod+K', format: 'full', variant: 'onEmphasis', size: 'small' },
+      }),
+    )
     const chord = wrapper.get('[data-kbd-chord]')
-    expect(chord.classes().some(name => name.includes('keybinding-chord--on-emphasis_'))).toBe(true)
-    expect(chord.classes().some(name => name.includes('keybinding-chord--small_'))).toBe(true)
-    const hiddenTexts = chord.findAll('span[aria-hidden]').map(node => node.element.textContent ?? '')
+    expect(chord.classes().some((name) => name.includes('keybinding-chord--on-emphasis_'))).toBe(
+      true,
+    )
+    expect(chord.classes().some((name) => name.includes('keybinding-chord--small_'))).toBe(true)
+    const hiddenTexts = chord
+      .findAll('span[aria-hidden]')
+      .map((node) => node.element.textContent ?? '')
     expect(hiddenTexts).toContain(' + ')
     expect(hiddenTexts).toContain('Control')
     expect(hiddenTexts).toContain('K')
   })
 
   it('applies the platform override injection (apple)', () => {
-    const wrapper = track(mount(KeybindingHint, {
-      props: { keys: 'Mod+K' },
-      global: { provide: { [PLATFORM_OVERRIDE_KEY as symbol]: 'apple' } },
-    }))
+    const wrapper = track(
+      mount(KeybindingHint, {
+        props: { keys: 'Mod+K' },
+        global: { provide: { [PLATFORM_OVERRIDE_KEY as symbol]: 'apple' } },
+      }),
+    )
     const chord = wrapper.get('[data-kbd-chord]')
     expect(chord.text()).toContain('⌘')
     expect(hiddenTexts(chord).join(' ')).toBe('command k')
@@ -65,11 +81,14 @@ describe('KeybindingHint', () => {
 
   it('updates rendered hints when the platform override ref changes', async () => {
     const override = ref<Platform | null>('apple')
-    const wrapper = track(mount(KeybindingHint, {
-      props: { keys: 'Meta+K' },
-      global: { provide: { [PLATFORM_OVERRIDE_KEY as symbol]: override } },
-    }))
-    const visibleKeys = () => wrapper.findAll('span[aria-hidden]').map(node => node.element.textContent ?? '')
+    const wrapper = track(
+      mount(KeybindingHint, {
+        props: { keys: 'Meta+K' },
+        global: { provide: { [PLATFORM_OVERRIDE_KEY as symbol]: override } },
+      }),
+    )
+    const visibleKeys = () =>
+      wrapper.findAll('span[aria-hidden]').map((node) => node.element.textContent ?? '')
     expect(visibleKeys()).toContain('⌘')
     expect(hiddenTexts(wrapper.get('[data-kbd-chord]')).join(' ')).toBe('command k')
     override.value = 'windows'
@@ -84,7 +103,9 @@ describe('KeybindingHint', () => {
   })
 
   it('does not forward unknown attrs to the root kbd (source drops rest in Chord)', () => {
-    const wrapper = track(mount(KeybindingHint, { props: { keys: 'Mod+K' }, attrs: { id: 'hint', 'data-extra': 'x' } }))
+    const wrapper = track(
+      mount(KeybindingHint, { props: { keys: 'Mod+K' }, attrs: { id: 'hint', 'data-extra': 'x' } }),
+    )
     const kbd = wrapper.get('kbd')
     expect(kbd.attributes('id')).toBeUndefined()
     expect(kbd.attributes('data-extra')).toBeUndefined()
@@ -102,7 +123,9 @@ describe('KeybindingHint', () => {
     expect(getAccessibleKeybindingHintString('Mod+K', false)).toBe('control k')
     expect(getAccessibleKeybindingHintString('Mod+K', 'windows')).toBe('control k')
     expect(getAccessibleKeybindingHintString('Meta', 'windows')).toBe('Windows')
-    expect(getAccessibleKeybindingHintString('PageUp ArrowDown', 'other')).toBe('page up then down arrow')
+    expect(getAccessibleKeybindingHintString('PageUp ArrowDown', 'other')).toBe(
+      'page up then down arrow',
+    )
     expect(getAccessibleKeybindingHintString('Mod+.', 'apple')).toBe('command period')
   })
 })

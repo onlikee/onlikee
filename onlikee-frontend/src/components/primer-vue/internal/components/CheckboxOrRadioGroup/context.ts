@@ -7,5 +7,9 @@ export interface ChoiceGroupContextValue {
   parentName: Readonly<Ref<string | undefined>>
 }
 const choiceGroupKey: InjectionKey<ChoiceGroupContextValue> = Symbol('CheckboxOrRadioGroup')
-export function provideChoiceGroupContext(value: ChoiceGroupContextValue) { provide(choiceGroupKey, value) }
-export function useChoiceGroupContext() { return inject(choiceGroupKey, null) }
+export function provideChoiceGroupContext(value: ChoiceGroupContextValue) {
+  provide(choiceGroupKey, value)
+}
+export function useChoiceGroupContext() {
+  return inject(choiceGroupKey, null)
+}

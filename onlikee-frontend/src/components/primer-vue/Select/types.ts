@@ -13,7 +13,8 @@ export interface SelectOptions {
   minWidth?: string | number
   maxWidth?: string | number
 }
-export type SelectProps = SelectOptions & Omit<SelectHTMLAttributes, keyof SelectOptions | 'multiple'>
+export type SelectProps = SelectOptions &
+  Omit<SelectHTMLAttributes, keyof SelectOptions | 'multiple'>
 export interface SelectEmits {
   'update:value': [value: string]
   change: [event: Event]

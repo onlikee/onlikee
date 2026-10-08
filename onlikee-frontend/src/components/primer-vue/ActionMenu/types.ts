@@ -3,7 +3,8 @@ import type { AnchorPosition } from '@primer/behaviors'
 import type { OverlayProps } from '../internal/components/overlayTypes'
 import type { TooltipDirection } from '../TooltipV2/types'
 
-export type MenuCloseGesture = 'anchor-click' | 'click-outside' | 'escape' | 'tab' | 'item-select' | 'arrow-left' | 'close'
+export type MenuCloseGesture =
+  'anchor-click' | 'click-outside' | 'escape' | 'tab' | 'item-select' | 'arrow-left' | 'close'
 export type MenuCloseHandler = (gesture: MenuCloseGesture) => void
 export interface ActionMenuProps {
   open?: boolean
@@ -38,8 +39,15 @@ export interface ActionMenuButtonProps extends /* @vue-ignore */ ButtonHTMLAttri
   keyshortcuts?: string
   keybindingHint?: string | string[]
 }
-export type ActionMenuVariant = { regular?: 'anchored'; narrow?: 'anchored' | 'fullscreen'; wide?: 'anchored' }
-export interface ActionMenuOverlayProps extends Omit<OverlayProps, 'open' | 'anchor' | 'onPositionChange'> {
+export type ActionMenuVariant = {
+  regular?: 'anchored'
+  narrow?: 'anchored' | 'fullscreen'
+  wide?: 'anchored'
+}
+export interface ActionMenuOverlayProps extends Omit<
+  OverlayProps,
+  'open' | 'anchor' | 'onPositionChange'
+> {
   variant?: ActionMenuVariant
   onPositionChange?: (event: { position: AnchorPosition }) => void
 }

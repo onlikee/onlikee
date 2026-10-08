@@ -39,11 +39,13 @@ export function registerEscapeHandler(handler: EscapeHandler): () => void {
 
 export function registerOutsideClickHandler(handler: OutsideHandler): () => void {
   if (typeof document === 'undefined') return () => {}
-  if (outsideRegistry.size === 0) document.addEventListener('mousedown', handleClick, { capture: true })
+  if (outsideRegistry.size === 0)
+    document.addEventListener('mousedown', handleClick, { capture: true })
   const id = handlerId++
   outsideRegistry.set(id, handler)
   return () => {
     outsideRegistry.delete(id)
-    if (outsideRegistry.size === 0) document.removeEventListener('mousedown', handleClick, { capture: true })
+    if (outsideRegistry.size === 0)
+      document.removeEventListener('mousedown', handleClick, { capture: true })
   }
 }

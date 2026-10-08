@@ -4,8 +4,18 @@ import Button from '../SelectPanel/SelectPanelButton.vue'
 import { exposeElement } from './context'
 import { normalizeReactStyle } from '../internal/style'
 import type { ActionListGroupHeadingTrailingActionProps } from './types'
-defineOptions({ name: 'ActionListGroupHeadingTrailingAction', __SLOT__: Symbol('ActionList.GroupHeading.TrailingAction'), inheritAttrs: false })
-const props = withDefaults(defineProps<ActionListGroupHeadingTrailingActionProps>(), { as: 'button', tooltipDirection: 'w', loading: undefined, className: undefined, style: undefined })
+defineOptions({
+  name: 'ActionListGroupHeadingTrailingAction',
+  __SLOT__: Symbol('ActionList.GroupHeading.TrailingAction'),
+  inheritAttrs: false,
+})
+const props = withDefaults(defineProps<ActionListGroupHeadingTrailingActionProps>(), {
+  as: 'button',
+  tooltipDirection: 'w',
+  loading: undefined,
+  className: undefined,
+  style: undefined,
+})
 const attrs = useAttrs()
 const button = ref<InstanceType<typeof Button> | null>(null)
 const element = computed(() => button.value?.element ?? null)

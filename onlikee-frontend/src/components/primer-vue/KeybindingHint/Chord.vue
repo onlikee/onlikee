@@ -30,23 +30,14 @@ const chordKeys = computed(() => splitChord(props.keys))
       },
     ]"
   >
-    <template
-      v-for="(k, i) in chordKeys"
-      :key="i"
-    >
+    <template v-for="(k, i) in chordKeys" :key="i">
       <!-- hiding the plus sign helps screen readers be more concise -->
-      <span
-        v-if="i > 0 && format === 'full'"
-        aria-hidden="true"
-      > + </span>
+      <span v-if="i > 0 && format === 'full'" aria-hidden="true"> + </span>
       <!-- space is nonvisual due to flex layout but critical for labelling / screen readers -->
       <template v-else>
         {{ ' ' }}
       </template>
-      <Key
-        :name="k"
-        :format="format"
-      />
+      <Key :name="k" :format="format" />
     </template>
   </Text>
 </template>

@@ -19,7 +19,7 @@ function getRootAttrs() {
     'data-size': props.size,
     'data-weight': props.weight,
     'data-white-space': props.whiteSpace,
-    ...rest
+    ...rest,
   }
 }
 
@@ -27,11 +27,7 @@ defineExpose({ element })
 </script>
 
 <template>
-  <component
-    :is="as"
-    ref="element"
-    v-bind="getRootAttrs()"
-  >
+  <component :is="as" ref="element" v-bind="getRootAttrs()">
     <slot />
   </component>
 </template>

@@ -1,7 +1,6 @@
 import { accessibleSequenceString } from './chordUtils'
 import type { Platform } from './platform'
 
-
 /**
  * AVOID: `KeybindingHint` is nearly always sufficient for providing both visible and accessible keyboard hints.
  * However, there may be cases where we need a plain string version, such as when building `aria-label` or
@@ -15,4 +14,7 @@ import type { Platform } from './platform'
  * treated as `'other'`.
  */
 export const getAccessibleKeybindingHintString = (sequence: string, platform: Platform | boolean) =>
-  accessibleSequenceString(sequence, typeof platform === 'boolean' ? (platform ? 'apple' : 'other') : platform)
+  accessibleSequenceString(
+    sequence,
+    typeof platform === 'boolean' ? (platform ? 'apple' : 'other') : platform,
+  )

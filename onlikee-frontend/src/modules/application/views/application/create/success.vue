@@ -7,11 +7,7 @@
           {{ successTitle }}
         </h2>
       </div>
-      <Link
-        :href="appUrl"
-        :link-text="appUrl"
-        target="_blank"
-      />
+      <Link :href="appUrl" :link-text="appUrl" target="_blank" />
     </div>
   </Container>
 </template>
@@ -49,18 +45,18 @@ function fireSuccessConfetti() {
     gravity: 0.75,
     scalar: 1,
     zIndex: 1000,
-    disableForReducedMotion: true
+    disableForReducedMotion: true,
   }
 
   void confetti({
     ...sharedOptions,
     angle: 55,
-    origin: { x: 0.08, y: 0.72 }
+    origin: { x: 0.08, y: 0.72 },
   })
   void confetti({
     ...sharedOptions,
     angle: 125,
-    origin: { x: 0.92, y: 0.72 }
+    origin: { x: 0.92, y: 0.72 },
   })
 }
 

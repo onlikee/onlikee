@@ -1,11 +1,6 @@
 <template>
-  <Container
-    max-width="1280px"
-  >
-    <div
-      v-if="profile !== null && profile !== undefined"
-      class="layout"
-    >
+  <Container max-width="1280px">
+    <div v-if="profile !== null && profile !== undefined" class="layout">
       <div class="left-column">
         <div class="profile">
           <div class="profile-header">
@@ -21,10 +16,7 @@
               text="选择头像"
               @update:model-value="uploadAvatar"
             />
-            <div
-              v-if="!profileEditing"
-              class="profile-info"
-            >
+            <div v-if="!profileEditing" class="profile-info">
               <div class="name">
                 {{ profile?.nickname }}
               </div>
@@ -34,11 +26,7 @@
               </div>
             </div>
           </div>
-          <form
-            v-if="profileEditing"
-            class="profile-edit-form"
-            @submit.prevent="saveProfileEdit"
-          >
+          <form v-if="profileEditing" class="profile-edit-form" @submit.prevent="saveProfileEdit">
             <FormControl disabled>
               <FormControl.Label>昵称</FormControl.Label>
               <TextInput
@@ -69,11 +57,7 @@
             </FormControl>
             <div>
               <div class="profile-icon-input">
-                <LocationIcon
-                  size="16"
-                  color="#5a5a5a"
-                  class="input-icon"
-                />
+                <LocationIcon size="16" color="#5a5a5a" class="input-icon" />
                 <TextInput
                   v-model:value="profileEditDraft.location"
                   block
@@ -83,11 +67,7 @@
                 />
               </div>
               <div class="profile-icon-input">
-                <MailIcon
-                  size="16"
-                  color="#5a5a5a"
-                  class="input-icon"
-                />
+                <MailIcon size="16" color="#5a5a5a" class="input-icon" />
                 <TextInput
                   v-model:value="profileEditDraft.email"
                   block
@@ -99,15 +79,9 @@
             </div>
 
             <div>
-              <div class="social-header">
-                社交账号
-              </div>
+              <div class="social-header">社交账号</div>
               <div class="profile-icon-input">
-                <LinkIcon
-                  size="16"
-                  color="#5a5a5a"
-                  class="input-icon"
-                />
+                <LinkIcon size="16" color="#5a5a5a" class="input-icon" />
                 <TextInput
                   v-model:value="profileEditDraft.socialAccount0"
                   block
@@ -117,11 +91,7 @@
                 />
               </div>
               <div class="profile-icon-input">
-                <LinkIcon
-                  size="16"
-                  color="#5a5a5a"
-                  class="input-icon"
-                />
+                <LinkIcon size="16" color="#5a5a5a" class="input-icon" />
                 <TextInput
                   v-model:value="profileEditDraft.socialAccount1"
                   block
@@ -131,11 +101,7 @@
                 />
               </div>
               <div class="profile-icon-input">
-                <LinkIcon
-                  size="16"
-                  color="#5a5a5a"
-                  class="input-icon"
-                />
+                <LinkIcon size="16" color="#5a5a5a" class="input-icon" />
                 <TextInput
                   v-model:value="profileEditDraft.socialAccount2"
                   block
@@ -146,69 +112,39 @@
               </div>
             </div>
             <div class="profile-edit-actions">
-              <Button
-                type="submit"
-                variant="primary"
-                size="small"
-                :loading="profileSaving"
-              >
+              <Button type="submit" variant="primary" size="small" :loading="profileSaving">
                 保存
               </Button>
-              <Button
-                type="button"
-                size="small"
-                @click="cancelProfileEdit"
-              >
-                取消
-              </Button>
+              <Button type="button" size="small" @click="cancelProfileEdit"> 取消 </Button>
             </div>
           </form>
           <template v-else>
             <p class="bio">
               {{ profile?.bio || '这个用户还没有填写简介。' }}
             </p>
-            <Button
-              v-if="isOwn"
-              class="edit-profile-button"
-              @click="openProfileEdit"
-            >
+            <Button v-if="isOwn" class="edit-profile-button" @click="openProfileEdit">
               编辑资料
             </Button>
             <div class="links">
               <ul>
                 <li v-if="profile?.location">
-                  <LocationIcon
-                    size="16"
-                    color="#5a5a5a"
-                  />
+                  <LocationIcon size="16" color="#5a5a5a" />
                   <span>{{ profile?.location }}</span>
                 </li>
                 <li v-if="profile?.email">
-                  <MailIcon
-                    size="16"
-                    color="#5a5a5a"
-                  />
+                  <MailIcon size="16" color="#5a5a5a" />
                   <span>{{ profile?.email }}</span>
                 </li>
                 <li v-if="profile?.socialAccount0">
-                  <LinkIcon
-                    size="16"
-                    color="#5a5a5a"
-                  />
+                  <LinkIcon size="16" color="#5a5a5a" />
                   <span>{{ profile?.socialAccount0 }}</span>
                 </li>
                 <li v-if="profile?.socialAccount1">
-                  <LinkIcon
-                    size="16"
-                    color="#5a5a5a"
-                  />
+                  <LinkIcon size="16" color="#5a5a5a" />
                   <span>{{ profile?.socialAccount1 }}</span>
                 </li>
                 <li v-if="profile?.socialAccount2">
-                  <LinkIcon
-                    size="16"
-                    color="#5a5a5a"
-                  />
+                  <LinkIcon size="16" color="#5a5a5a" />
                   <span>{{ profile?.socialAccount2 }}</span>
                 </li>
               </ul>
@@ -218,15 +154,8 @@
       </div>
       <div class="right-column">
         <!-- 外层 .layout 已保证 profile 非空；此处的 truthy 守卫仅为向 vue-tsc 传递类型收窄（子组件 prop 为必填 UserProfile） -->
-        <UserApplicationTab
-          v-if="activeTab === 'application' && profile"
-          :profile="profile"
-        />
-        <UserProfileTab
-          v-else-if="profile"
-          :profile="profile"
-          :is-own="isOwn"
-        />
+        <UserApplicationTab v-if="activeTab === 'application' && profile" :profile="profile" />
+        <UserProfileTab v-else-if="profile" :profile="profile" :is-own="isOwn" />
       </div>
     </div>
   </Container>
@@ -249,7 +178,7 @@ import {
   getPublicUserProfile,
   saveCurrentUserProfile,
   uploadCurrentUserAvatar,
-  type UserProfile
+  type UserProfile,
 } from '../api/user'
 import UserApplicationTab from '../components/application.vue'
 import UserProfileTab from '../components/profile.vue'
@@ -275,7 +204,7 @@ const profileEditDraft = reactive({
   email: '',
   socialAccount0: '',
   socialAccount1: '',
-  socialAccount2: ''
+  socialAccount2: '',
 })
 
 const activeTab = computed<UserTab>(() => {
@@ -348,7 +277,7 @@ const saveProfileEdit = async () => {
       location: profileEditDraft.location,
       socialAccount0: profileEditDraft.socialAccount0,
       socialAccount1: profileEditDraft.socialAccount1,
-      socialAccount2: profileEditDraft.socialAccount2
+      socialAccount2: profileEditDraft.socialAccount2,
     })
     profile.value = updatedProfile
     userStore.setUserInfo(updatedProfile)
@@ -370,7 +299,6 @@ const fetchProfile = async () => {
 onMounted(async () => {
   await fetchProfile()
 })
-
 </script>
 
 <style scoped>
@@ -498,8 +426,8 @@ onMounted(async () => {
 
 @media (max-width: 768px) {
   .layout {
-      flex-direction: column;
-      gap: 10px;
+    flex-direction: column;
+    gap: 10px;
   }
 
   .left-column,

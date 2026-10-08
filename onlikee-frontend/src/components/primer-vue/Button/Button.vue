@@ -12,26 +12,15 @@
     :data-block="block || undefined"
     @click="handleClick"
   >
-    <span
-      :class="$style['button__content']"
-    >
+    <span :class="$style['button__content']">
       <span :class="$style['button__content-row']">
-        <span
-          v-if="leadingVisual"
-          :class="$style['button__visual']"
-        >
+        <span v-if="leadingVisual" :class="$style['button__visual']">
           <component :is="leadingVisual" />
         </span>
-        <span
-          v-if="hasLabel()"
-          :class="$style['button__label']"
-        >
+        <span v-if="hasLabel()" :class="$style['button__label']">
           <slot />
         </span>
-        <span
-          v-if="trailingVisual"
-          :class="$style['button__visual']"
-        >
+        <span v-if="trailingVisual" :class="$style['button__visual']">
           <component :is="trailingVisual" />
         </span>
       </span>
@@ -99,10 +88,7 @@
           vector-effect="non-scaling-stroke"
         />
       </svg>
-      <component
-        :is="trailingAction"
-        v-else
-      />
+      <component :is="trailingAction" v-else />
     </span>
   </component>
 </template>
@@ -133,13 +119,13 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   leadingVisual: undefined,
   trailingVisual: undefined,
-  trailingAction: undefined
+  trailingAction: undefined,
 })
 
 const slots = useSlots()
 
 function hasContent(nodes: VNode[]): boolean {
-  return nodes.some(node => node.type !== Comment)
+  return nodes.some((node) => node.type !== Comment)
 }
 
 function hasLabel() {

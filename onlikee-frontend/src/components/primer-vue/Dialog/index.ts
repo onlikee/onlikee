@@ -4,12 +4,8 @@ import DialogFooter from './DialogFooter.vue'
 
 export const Dialog = Object.assign(DialogRoot, {
   Body: DialogBody,
-  Footer: DialogFooter
+  Footer: DialogFooter,
 })
 
 export { DialogBody, DialogFooter }
-export type {
-  DialogCloseGesture,
-  DialogWidth,
-  DialogHeight
-} from './Dialog.vue'
+export type { DialogCloseGesture, DialogWidth, DialogHeight } from './Dialog.vue'

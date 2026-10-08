@@ -12,7 +12,7 @@ const router = createRouter({
     // 否则滚动到顶部（新页面）
     return { top: 0 }
   },
-  routes
+  routes,
 })
 
 router.beforeEach((to, _from, next) => {

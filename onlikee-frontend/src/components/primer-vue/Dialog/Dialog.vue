@@ -5,7 +5,10 @@ const DIALOG_SCROLLBAR_COMPENSATION_PROPERTY = '--dialog-scrollbar-compensation'
 function lockDocumentScroll() {
   if (activeDialogScrollLocks === 0) {
     const scrollbarWidth = Math.max(window.innerWidth - document.documentElement.clientWidth, 0)
-    document.documentElement.style.setProperty(DIALOG_SCROLLBAR_COMPENSATION_PROPERTY, `${scrollbarWidth}px`)
+    document.documentElement.style.setProperty(
+      DIALOG_SCROLLBAR_COMPENSATION_PROPERTY,
+      `${scrollbarWidth}px`,
+    )
   }
 
   activeDialogScrollLocks += 1
@@ -51,8 +54,8 @@ const props = withDefaults(
     height: 'auto',
     role: 'dialog',
     closeOnEscape: true,
-    closeOnBackdrop: true
-  }
+    closeOnBackdrop: true,
+  },
 )
 
 const emit = defineEmits<{
@@ -60,11 +63,16 @@ const emit = defineEmits<{
   close: [gesture: DialogCloseGesture]
 }>()
 
-const isPresetWidth = computed(() =>
-  typeof props.width === 'string' && ['small', 'medium', 'large', 'xlarge'].includes(props.width)
+const isPresetWidth = computed(
+  () =>
+    typeof props.width === 'string' && ['small', 'medium', 'large', 'xlarge'].includes(props.width),
 )
 const customWidth = computed(() =>
-  isPresetWidth.value ? undefined : typeof props.width === 'number' ? `${props.width}px` : props.width
+  isPresetWidth.value
+    ? undefined
+    : typeof props.width === 'number'
+      ? `${props.width}px`
+      : props.width,
 )
 
 const dialogRef = ref<HTMLElement | null>(null)
@@ -84,15 +92,17 @@ const FOCUSABLE_SELECTOR = [
   'select:not([disabled])',
   'textarea:not([disabled])',
   '[tabindex]:not([tabindex="-1"])',
-  '[contenteditable="true"]'
+  '[contenteditable="true"]',
 ].join(',')
 
 function getFocusableElements() {
   const dialog = dialogRef.value
   if (!dialog) return []
 
-  return Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
-    .filter(element => element.getAttribute('aria-hidden') !== 'true' && element.getClientRects().length > 0)
+  return Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+    (element) =>
+      element.getAttribute('aria-hidden') !== 'true' && element.getClientRects().length > 0,
+  )
 }
 
 function focusInitialElement() {
@@ -194,10 +204,10 @@ function handleKeydown(event: KeyboardEvent) {
 
 watch(
   () => props.open,
-  open => {
+  (open) => {
     void handleOpenChange(open)
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 onBeforeUnmount(unlockPageScroll)
@@ -205,10 +215,7 @@ onBeforeUnmount(unlockPageScroll)
 
 <template>
   <Teleport to="body">
-    <Transition
-      name="dialog-fade"
-      @after-leave="handleAfterLeave"
-    >
+    <Transition name="dialog-fade" @after-leave="handleAfterLeave">
       <div
         v-if="open"
         :class="$style['dialog-layer']"
@@ -230,17 +237,10 @@ onBeforeUnmount(unlockPageScroll)
         >
           <header :class="$style['dialog__header']">
             <div :class="$style['dialog__header-content']">
-              <div
-                :id="titleId"
-                :class="$style['dialog__title']"
-              >
+              <div :id="titleId" :class="$style['dialog__title']">
                 {{ title }}
               </div>
-              <p
-                v-if="subtitle"
-                :id="subtitleId"
-                :class="$style['dialog__subtitle']"
-              >
+              <p v-if="subtitle" :id="subtitleId" :class="$style['dialog__subtitle']">
                 {{ subtitle }}
               </p>
             </div>
@@ -251,12 +251,7 @@ onBeforeUnmount(unlockPageScroll)
               aria-label="关闭对话框"
               @click="requestClose('close-button')"
             >
-              <svg
-                aria-hidden="true"
-                height="16"
-                viewBox="0 0 16 16"
-                width="16"
-              >
+              <svg aria-hidden="true" height="16" viewBox="0 0 16 16" width="16">
                 <path
                   d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"
                   fill="currentColor"

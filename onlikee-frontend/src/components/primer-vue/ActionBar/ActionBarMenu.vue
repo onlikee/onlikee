@@ -6,10 +6,20 @@ import { useActionBarItem } from './context'
 import type { ActionBarMenuProps } from './types'
 
 defineOptions({ inheritAttrs: false })
-const props = withDefaults(defineProps<ActionBarMenuProps>(), { loading: undefined, inactive: undefined, labelWrap: undefined })
+const props = withDefaults(defineProps<ActionBarMenuProps>(), {
+  loading: undefined,
+  inactive: undefined,
+  labelWrap: undefined,
+})
 const normalizedProps = props as typeof props & { ariaLabel: string }
 const buttonProps = computed(() => {
-  const { ariaLabel, items: _items, overflowIcon: _overflowIcon, returnFocusRef: _returnFocusRef, ...rest } = normalizedProps
+  const {
+    ariaLabel,
+    items: _items,
+    overflowIcon: _overflowIcon,
+    returnFocusRef: _returnFocusRef,
+    ...rest
+  } = normalizedProps
   return { ...rest, 'aria-label': ariaLabel }
 })
 const emit = defineEmits<{ click: [event: MouseEvent] }>()
@@ -17,24 +27,40 @@ const open = shallowRef(false)
 const last = shallowRef(false)
 const focusAnchor = shallowRef(false)
 const { element, setElement, dataOverflowing, overflowing, size } = useActionBarItem(() => ({
-  label: normalizedProps.ariaLabel, items: props.items,
-  leadingVisual: props.overflowIcon === 'none' ? undefined : props.overflowIcon ?? props.icon,
-  returnFocusRef: props.returnFocusRef
+  label: normalizedProps.ariaLabel,
+  items: props.items,
+  leadingVisual: props.overflowIcon === 'none' ? undefined : (props.overflowIcon ?? props.icon),
+  returnFocusRef: props.returnFocusRef,
 }))
 function click(event: MouseEvent) {
   if (props.disabled || props.loading) return
   emit('click', event)
-  if (!event.defaultPrevented) { last.value = false; focusAnchor.value = event.detail > 0; open.value = !open.value }
+  if (!event.defaultPrevented) {
+    last.value = false
+    focusAnchor.value = event.detail > 0
+    open.value = !open.value
+  }
 }
 function keydown(event: KeyboardEvent) {
-  if (event.key === 'Tab' && open.value) { open.value = false; return }
-  if (event.defaultPrevented || props.disabled || props.loading || !['ArrowDown', 'ArrowUp'].includes(event.key)) return
+  if (event.key === 'Tab' && open.value) {
+    open.value = false
+    return
+  }
+  if (
+    event.defaultPrevented ||
+    props.disabled ||
+    props.loading ||
+    !['ArrowDown', 'ArrowUp'].includes(event.key)
+  )
+    return
   last.value = event.key === 'ArrowUp'
   focusAnchor.value = false
   open.value = true
   event.preventDefault()
 }
-watch(overflowing, value => { if (value) open.value = false })
+watch(overflowing, (value) => {
+  if (value) open.value = false
+})
 defineExpose({ element, focus: (options?: FocusOptions) => element.value?.focus(options) })
 </script>
 

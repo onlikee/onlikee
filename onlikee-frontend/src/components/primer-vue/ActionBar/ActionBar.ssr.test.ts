@@ -5,12 +5,33 @@ import { ActionBar } from './index'
 
 it('renders all ActionBar children without browser globals or portal content', async () => {
   const Icon = () => h('svg')
-  const html = await renderToString(createSSRApp(() => h(ActionBar, { 'aria-label': 'SSR' }, { default: () => [
-    h(ActionBar.IconButton, { icon: Icon, 'aria-label': 'Bold', unsafeDisableTooltip: true }),
-    h(ActionBar.Group, null, { default: () => [h(ActionBar.Button, null, { default: () => 'Code' })] }),
-    h(ActionBar.Divider),
-    h(ActionBar.Menu, { icon: Icon, 'aria-label': 'Menu', unsafeDisableTooltip: true, items: [{ label: 'Copy' }] })
-  ] })))
+  const html = await renderToString(
+    createSSRApp(() =>
+      h(
+        ActionBar,
+        { 'aria-label': 'SSR' },
+        {
+          default: () => [
+            h(ActionBar.IconButton, {
+              icon: Icon,
+              'aria-label': 'Bold',
+              unsafeDisableTooltip: true,
+            }),
+            h(ActionBar.Group, null, {
+              default: () => [h(ActionBar.Button, null, { default: () => 'Code' })],
+            }),
+            h(ActionBar.Divider),
+            h(ActionBar.Menu, {
+              icon: Icon,
+              'aria-label': 'Menu',
+              unsafeDisableTooltip: true,
+              items: [{ label: 'Copy' }],
+            }),
+          ],
+        },
+      ),
+    ),
+  )
   expect(html).toContain('role="toolbar"')
   expect(html).toContain('aria-label="SSR"')
   expect(html).toContain('Code')

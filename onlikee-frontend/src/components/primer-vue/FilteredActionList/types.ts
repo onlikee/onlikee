@@ -45,7 +45,9 @@ export interface ListPropsBase {
   selectionVariant?: 'single' | 'multiple' | 'radio'
   showItemDividers?: boolean
 }
-export interface GroupedListProps extends ListPropsBase { groupMetadata: GroupMetadata[] }
+export interface GroupedListProps extends ListPropsBase {
+  groupMetadata: GroupMetadata[]
+}
 export interface FilteredActionListProps extends ListPropsBase {
   groupMetadata?: GroupMetadata[]
   loading?: boolean
@@ -65,8 +67,17 @@ export interface FilteredActionListProps extends ListPropsBase {
   onSelectAllChange?: (checked: boolean) => void
   onInputRefChanged?: (element: HTMLInputElement | null) => void
   onListContainerRefChanged?: (element: HTMLElement | null) => void
-  onActiveDescendantChanged?: (current: HTMLElement | undefined, previous: HTMLElement | undefined, directlyActivated: boolean) => void
-  actionListProps?: HTMLAttributes & { className?: string; variant?: ListPropsBase['variant']; selectionVariant?: ListPropsBase['selectionVariant'] | false; showDividers?: boolean }
+  onActiveDescendantChanged?: (
+    current: HTMLElement | undefined,
+    previous: HTMLElement | undefined,
+    directlyActivated: boolean,
+  ) => void
+  actionListProps?: HTMLAttributes & {
+    className?: string
+    variant?: ListPropsBase['variant']
+    selectionVariant?: ListPropsBase['selectionVariant'] | false
+    showDividers?: boolean
+  }
   focusOutBehavior?: 'stop' | 'wrap'
   _PrivateFocusManagement?: 'roving-tabindex' | 'active-descendant'
   disableSelectOnHover?: boolean
@@ -78,14 +89,19 @@ export interface FilteredActionListProps extends ListPropsBase {
 export class FilteredActionListLoadingType {
   name: string
   appearsInBody: boolean
-  constructor(name: string, appearsInBody: boolean) { this.name = name; this.appearsInBody = appearsInBody }
+  constructor(name: string, appearsInBody: boolean) {
+    this.name = name
+    this.appearsInBody = appearsInBody
+  }
 }
 export const FilteredActionListLoadingTypes = {
   bodySpinner: new FilteredActionListLoadingType('body-spinner', true),
   bodySkeleton: new FilteredActionListLoadingType('body-skeleton', true),
-  input: new FilteredActionListLoadingType('input', false)
+  input: new FilteredActionListLoadingType('input', false),
 }
-export interface FilteredActionListInputProps extends Partial<Omit<TextInputOptions, 'onChange' | 'onKeydown'>> {
+export interface FilteredActionListInputProps extends Partial<
+  Omit<TextInputOptions, 'onChange' | 'onKeydown'>
+> {
   inputRef: Ref<HTMLInputElement | null> | ((element: HTMLInputElement | null) => void)
   onInputChange?: (event: Event) => void
   onInputFocus?: (event: FocusEvent) => void

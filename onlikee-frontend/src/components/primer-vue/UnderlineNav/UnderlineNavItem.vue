@@ -1,26 +1,40 @@
 <script setup lang="ts">
-import { computed, inject, onBeforeUnmount, onMounted, useAttrs, useId, useSlots, useTemplateRef, watch, type Component } from 'vue'
+import {
+  computed,
+  inject,
+  onBeforeUnmount,
+  onMounted,
+  useAttrs,
+  useId,
+  useSlots,
+  useTemplateRef,
+  watch,
+  type Component,
+} from 'vue'
 import { underlineNavKey, type UnderlineNavCurrent } from './context'
 
 defineOptions({ inheritAttrs: false })
 
-const props = withDefaults(defineProps<{
-  as?: string | Component
-  href?: string
-  target?: string
-  rel?: string
-  ariaCurrent?: UnderlineNavCurrent
-  counter?: number | string
-  leadingVisual?: Component
-}>(), {
-  as: 'a',
-  href: undefined,
-  target: undefined,
-  rel: undefined,
-  ariaCurrent: undefined,
-  counter: undefined,
-  leadingVisual: undefined
-})
+const props = withDefaults(
+  defineProps<{
+    as?: string | Component
+    href?: string
+    target?: string
+    rel?: string
+    ariaCurrent?: UnderlineNavCurrent
+    counter?: number | string
+    leadingVisual?: Component
+  }>(),
+  {
+    as: 'a',
+    href: undefined,
+    target: undefined,
+    rel: undefined,
+    ariaCurrent: undefined,
+    counter: undefined,
+    leadingVisual: undefined,
+  },
+)
 
 const emit = defineEmits<{ select: [event: MouseEvent | KeyboardEvent] }>()
 const context = inject(underlineNavKey)
@@ -30,7 +44,7 @@ const id = useId()
 const itemRef = useTemplateRef<HTMLLIElement>('item')
 const labelRef = useTemplateRef<HTMLSpanElement>('label')
 const overflowing = computed(() => context?.isOverflowing(id) ?? false)
-const linkHref = computed(() => props.as === 'a' ? (props.href ?? '#') : props.href)
+const linkHref = computed(() => (props.as === 'a' ? (props.href ?? '#') : props.href))
 const labelText = computed(() => labelRef.value?.textContent?.trim() || undefined)
 
 function select(event: MouseEvent | KeyboardEvent) {
@@ -53,11 +67,15 @@ function register() {
     current: props.ariaCurrent,
     counter: props.counter,
     label: () => slots.default?.() ?? [],
-    select
+    select,
   })
 }
 
-watch(() => [props.as, props.href, props.target, props.rel, props.ariaCurrent, props.counter], register, { flush: 'post' })
+watch(
+  () => [props.as, props.href, props.target, props.rel, props.ariaCurrent, props.counter],
+  register,
+  { flush: 'post' },
+)
 onMounted(register)
 
 onBeforeUnmount(() => context?.unregister(id))
@@ -103,15 +121,11 @@ onBeforeUnmount(() => context?.unregister(id))
         :class="[$style['underline-nav-counter']]"
         data-component="counter"
       >
-        <span
-          v-if="context?.loadingCounters()"
-          :class="[$style['underline-nav-loading']]"
-        />
+        <span v-if="context?.loadingCounters()" :class="[$style['underline-nav-loading']]" />
         <template v-else>
-          <span
-            :class="[$style['underline-nav-counter-value']]"
-            aria-hidden="true"
-          >{{ counter }}</span>
+          <span :class="[$style['underline-nav-counter-value']]" aria-hidden="true">{{
+            counter
+          }}</span>
           <span :class="[$style['underline-nav-visually-hidden']]">&nbsp;({{ counter }})</span>
         </template>
       </span>

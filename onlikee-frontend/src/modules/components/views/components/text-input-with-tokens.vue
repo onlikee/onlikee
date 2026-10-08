@@ -8,8 +8,14 @@ import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
 
 const value = ref('')
-const tokens = ref([{ id: 'vue', text: 'Vue' }, { id: 'typescript', text: 'TypeScript' }, { id: 'vite', text: 'Vite' }])
-function remove(id: string | number) { tokens.value = tokens.value.filter(token => token.id !== id) }
+const tokens = ref([
+  { id: 'vue', text: 'Vue' },
+  { id: 'typescript', text: 'TypeScript' },
+  { id: 'vite', text: 'Vite' },
+])
+function remove(id: string | number) {
+  tokens.value = tokens.value.filter((token) => token.id !== id)
+}
 function add(event: KeyboardEvent) {
   if (event.key !== 'Enter' || event.isComposing || !value.value.trim()) return
   event.preventDefault()
@@ -33,7 +39,8 @@ const code = `<FormControl>
     />
     <ComponentDocsSection title="添加、移除与折叠">
       <template #description>
-        输入文字后按 Enter 添加。聚焦输入框会展开折叠的 Token；左右方向键在 Token 间移动；Escape 返回输入框；Backspace / Delete 移除聚焦 Token。
+        输入文字后按 Enter 添加。聚焦输入框会展开折叠的 Token；左右方向键在 Token 间移动；Escape
+        返回输入框；Backspace / Delete 移除聚焦 Token。
       </template>
       <ComponentDocsDemoBlock :code="code">
         <FormControl>
@@ -46,25 +53,29 @@ const code = `<FormControl>
             @token-remove="remove"
             @keydown="add"
           />
-          <FormControl.Caption>当前标签：{{ tokens.map(token => token.text).join('、') || '无' }}</FormControl.Caption>
+          <FormControl.Caption
+            >当前标签：{{
+              tokens.map((token) => token.text).join('、') || '无'
+            }}</FormControl.Caption
+          >
         </FormControl>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
     <ComponentDocsSection title="尺寸与禁用">
-      <ComponentDocsDemoBlock code="<TextInputWithTokens :tokens=&quot;tokens&quot; size=&quot;small&quot; disabled />">
-        <TextInputWithTokens
-          :tokens="tokens"
-          size="small"
-          disabled
-        />
+      <ComponentDocsDemoBlock code='<TextInputWithTokens :tokens="tokens" size="small" disabled />'>
+        <TextInputWithTokens :tokens="tokens" size="small" disabled />
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
-    <ComponentDocsSection
-      title="接口"
-      variant="api"
-    >
-      <p>tokens 为 Token 属性数组。token-remove 传递被移除的 ID，组件保留 tokens 的受控状态。value / defaultValue 管理输入文本，v-model:value 监听 update:value。</p>
-      <p>size 支持 small、medium、large、xlarge；visibleTokenCount 控制折叠数量；preventTokenWrapping 控制换行；maxHeight 限制高度；hideTokenRemoveButtons 隐藏移除按钮；tokenComponent 替换默认 Token。支持 TextInput 的视觉、加载、校验与尺寸属性。</p>
+    <ComponentDocsSection title="接口" variant="api">
+      <p>
+        tokens 为 Token 属性数组。token-remove 传递被移除的 ID，组件保留 tokens 的受控状态。value /
+        defaultValue 管理输入文本，v-model:value 监听 update:value。
+      </p>
+      <p>
+        size 支持 small、medium、large、xlarge；visibleTokenCount 控制折叠数量；preventTokenWrapping
+        控制换行；maxHeight 限制高度；hideTokenRemoveButtons 隐藏移除按钮；tokenComponent 替换默认
+        Token。支持 TextInput 的视觉、加载、校验与尺寸属性。
+      </p>
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

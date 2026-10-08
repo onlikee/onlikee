@@ -9,4 +9,7 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes, 'checked' | 'va
   value?: string
   className?: string
 }
-export interface CheckboxEmits { change: [event: Event]; 'update:checked': [checked: boolean] }
+export interface CheckboxEmits {
+  change: [event: Event]
+  'update:checked': [checked: boolean]
+}

@@ -4,11 +4,13 @@ import { getResponsiveAttributes } from './responsive'
 import type { StackItemProps } from './types'
 
 const props = withDefaults(defineProps<StackItemProps>(), {
-  as: 'div', grow: false, shrink: true
+  as: 'div',
+  grow: false,
+  shrink: true,
 })
 const responsiveAttributes = computed(() => ({
   ...getResponsiveAttributes('grow', props.grow),
-  ...getResponsiveAttributes('shrink', props.shrink)
+  ...getResponsiveAttributes('shrink', props.shrink),
 }))
 </script>
 

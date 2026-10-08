@@ -1,30 +1,17 @@
 <template>
   <div class="signup-page">
-    <form
-      class="signup-panel"
-      @submit.prevent="submit"
-    >
+    <form class="signup-panel" @submit.prevent="submit">
       <div class="signup-header">
-        <h1 class="signup-title">
-          完善资料
-        </h1>
-        <p class="signup-subtitle">
-          使用 {{ providerLabel }} 账号完成注册
-        </p>
+        <h1 class="signup-title">完善资料</h1>
+        <p class="signup-subtitle">使用 {{ providerLabel }} 账号完成注册</p>
       </div>
 
       <div class="account-card">
         <div class="account-meta">
-          <Avatar
-            :src="signupContext?.avatarUrl"
-            :placeholder="avatarPlaceholder"
-            :size="32"
-          />
+          <Avatar :src="signupContext?.avatarUrl" :placeholder="avatarPlaceholder" :size="32" />
 
           <div class="account-copy">
-            <p class="account-label">
-              {{ providerLabel }} 账号
-            </p>
+            <p class="account-label">{{ providerLabel }} 账号</p>
             <p class="account-name">
               {{ accountName }}
             </p>
@@ -35,16 +22,8 @@
       <div class="signup-fields">
         <FormControl required>
           <FormControl.Label>用户名</FormControl.Label>
-          <TextInput
-            v-model:value="nickname"
-            block
-            autocomplete="username"
-            placeholder="onlikee"
-          />
-          <FormControl.Validation
-            v-if="nicknameError"
-            variant="error"
-          >
+          <TextInput v-model:value="nickname" block autocomplete="username" placeholder="onlikee" />
+          <FormControl.Validation v-if="nicknameError" variant="error">
             {{ nicknameError }}
           </FormControl.Validation>
           <FormControl.Caption>
@@ -61,23 +40,14 @@
             autocomplete="email"
             placeholder="you@example.com"
           />
-          <FormControl.Validation
-            v-if="emailError"
-            variant="error"
-          >
+          <FormControl.Validation v-if="emailError" variant="error">
             {{ emailError }}
           </FormControl.Validation>
         </FormControl>
       </div>
 
       <div class="signup-actions">
-        <Button
-          type="submit"
-          :loading="loading"
-          :disabled="!canSubmit"
-        >
-          完成注册
-        </Button>
+        <Button type="submit" :loading="loading" :disabled="!canSubmit"> 完成注册 </Button>
       </div>
     </form>
   </div>
@@ -96,7 +66,7 @@ import {
   clearOAuthSignupContext,
   loginReturnToKey,
   readOAuthSignupContext,
-  type OAuthSignupContext
+  type OAuthSignupContext,
 } from '../../utils/session'
 
 const userStore = useUserStore()
@@ -117,7 +87,11 @@ const providerLabel = computed(() => {
 const avatarPlaceholder = computed(() => providerLabel.value.slice(0, 2).toUpperCase())
 
 const accountName = computed(() => {
-  return signupContext.value?.suggestedNickname || signupContext.value?.email || `${providerLabel.value} 用户`
+  return (
+    signupContext.value?.suggestedNickname ||
+    signupContext.value?.email ||
+    `${providerLabel.value} 用户`
+  )
 })
 
 const nicknameError = computed(() => {
@@ -135,7 +109,12 @@ const emailError = computed(() => {
 })
 
 const canSubmit = computed(() => {
-  return Boolean(signupContext.value?.pendingSignupToken) && !nicknameError.value && !emailError.value && !loading.value
+  return (
+    Boolean(signupContext.value?.pendingSignupToken) &&
+    !nicknameError.value &&
+    !emailError.value &&
+    !loading.value
+  )
 })
 
 const submit = async () => {
@@ -148,7 +127,7 @@ const submit = async () => {
     const response = await completeOAuthSignup({
       pendingSignupToken: signupContext.value.pendingSignupToken,
       nickname: nickname.value.trim(),
-      email: email.value.trim()
+      email: email.value.trim(),
     })
     userStore.setUserInfo(response.userInfo)
     const returnTo = sessionStorage.getItem(loginReturnToKey) || '/'

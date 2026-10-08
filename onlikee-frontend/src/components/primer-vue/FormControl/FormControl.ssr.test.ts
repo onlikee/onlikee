@@ -4,10 +4,16 @@ import { renderToString } from '@vue/server-renderer'
 import { FormControl } from './index'
 import { TextInput } from '../TextInput'
 test('SSR uses a stable generated id and wires label, caption and validation before mount', async () => {
-  const app = () => createSSRApp({ render: () => h(FormControl, null, () => [
-    h(FormControl.Label, null, () => 'Name'), h(TextInput),
-    h(FormControl.Caption, null, () => 'Help'), h(FormControl.Validation, { variant: 'error' }, () => 'Invalid')
-  ]) })
+  const app = () =>
+    createSSRApp({
+      render: () =>
+        h(FormControl, null, () => [
+          h(FormControl.Label, null, () => 'Name'),
+          h(TextInput),
+          h(FormControl.Caption, null, () => 'Help'),
+          h(FormControl.Validation, { variant: 'error' }, () => 'Invalid'),
+        ]),
+    })
   const first = await renderToString(app())
   expect(await renderToString(app())).toBe(first)
   const id = first.match(/<input[^>]*\sid="([^"]+)"/)?.[1]

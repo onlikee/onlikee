@@ -1,10 +1,9 @@
-
 export const isTokenInteractive = ({
   as = 'span',
   onClick,
   onFocus,
   tabIndex = -1,
-  disabled
+  disabled,
 }: {
   as?: 'button' | 'a' | 'span' | undefined
   onClick?: unknown

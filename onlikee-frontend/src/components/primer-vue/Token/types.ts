@@ -25,6 +25,9 @@ export interface IssueLabelTokenProps extends TokenBaseProps {
 }
 
 export const tokenSizes: Record<TokenSizeKeys, string> = {
-  small: '16px', medium: '20px', large: '24px', xlarge: '32px'
+  small: '16px',
+  medium: '20px',
+  large: '24px',
+  xlarge: '32px',
 }
 export const defaultTokenSize: TokenSizeKeys = 'medium'

@@ -1,72 +1,27 @@
 <template>
   <div class="index-page">
-    <div
-      class="background-root"
-    >
-      <div
-        class="background-0"
-        aria-hidden="true"
-      />
-      <div
-        class="background-1"
-        aria-hidden="true"
-      />
-      <div
-        class="background-2"
-        aria-hidden="true"
-      />
+    <div class="background-root">
+      <div class="background-0" aria-hidden="true" />
+      <div class="background-1" aria-hidden="true" />
+      <div class="background-2" aria-hidden="true" />
       <div class="hero-stage">
-        <div
-          class="background-3"
-          aria-hidden="true"
-        />
-        <div
-          class="background-4"
-          aria-hidden="true"
-        />
-        <div
-          class="background-5 animate-stretch-vertical-loop"
-          aria-hidden="true"
-        />
-        <div
-          class="background-6 animate-stretch-horizontal-loop"
-          aria-hidden="true"
-        />
-        <div
-          class="background-7"
-          aria-hidden="true"
-        />
-        <div
-          class="background-8 animate-stretch-vertical-loop"
-          aria-hidden="true"
-        />
-        <div
-          class="background-9 animate-stretch-horizontal-loop"
-          aria-hidden="true"
-        />
-        <div
-          class="background-10"
-          aria-hidden="true"
-        />
-        <div
-          class="background-11"
-          aria-hidden="true"
-        />
-        <div
-          class="background-12"
-          aria-hidden="true"
-        />
+        <div class="background-3" aria-hidden="true" />
+        <div class="background-4" aria-hidden="true" />
+        <div class="background-5 animate-stretch-vertical-loop" aria-hidden="true" />
+        <div class="background-6 animate-stretch-horizontal-loop" aria-hidden="true" />
+        <div class="background-7" aria-hidden="true" />
+        <div class="background-8 animate-stretch-vertical-loop" aria-hidden="true" />
+        <div class="background-9 animate-stretch-horizontal-loop" aria-hidden="true" />
+        <div class="background-10" aria-hidden="true" />
+        <div class="background-11" aria-hidden="true" />
+        <div class="background-12" aria-hidden="true" />
       </div>
     </div>
-    <div class="title">
-      onlikee
-    </div>
+    <div class="title">onlikee</div>
   </div>
 </template>
 
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <style scoped>
 .index-page {
@@ -74,7 +29,9 @@
   height: calc(100svh - var(--header-height));
   min-height: calc(100svh - var(--header-height));
   overflow: hidden;
-  clip-path: inset(0 0 0 0); /* Create a clipping context to contain fixed children to this section */
+  clip-path: inset(
+    0 0 0 0
+  ); /* Create a clipping context to contain fixed children to this section */
 }
 
 .hero-wrapper {
@@ -134,21 +91,21 @@
 
 .background-0 {
   z-index: 0;
-  background-image: url("../assests/background-0.svg");
+  background-image: url('../assests/background-0.svg');
 }
 
 .background-1 {
   z-index: 1;
-  background-image: url("../assests/background-1.svg");
+  background-image: url('../assests/background-1.svg');
 }
 
 .background-2 {
   z-index: 3;
-  background-image: url("../assests/background-2.svg");
+  background-image: url('../assests/background-2.svg');
 }
 .background-3 {
   z-index: 2;
-  background-image: url("../assests/background-3.svg");
+  background-image: url('../assests/background-3.svg');
 }
 
 .background-4 {
@@ -158,7 +115,7 @@
   width: min(125vw, 112.5rem);
   max-width: 125vw;
   aspect-ratio: 2427 / 1503;
-  background-image: url("../assests/background-4.svg");
+  background-image: url('../assests/background-4.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -171,7 +128,7 @@
   top: calc(min(1.5vw, 1.35rem) + var(--bg-offset));
   width: min(0.5vw, 0.45rem);
   aspect-ratio: 10 / 537;
-  background-image: url("../assests/background-5.svg");
+  background-image: url('../assests/background-5.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -184,7 +141,7 @@
   top: calc(min(13.7vw, 12.33rem) + var(--bg-offset));
   width: min(20vw, 18rem);
   aspect-ratio: 355 / 10;
-  background-image: url("../assests/background-6.svg");
+  background-image: url('../assests/background-6.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -197,7 +154,7 @@
   top: calc(min(13.35vw, 12.015rem) + var(--bg-offset));
   height: min(1.1vw, 0.99rem);
   width: min(1.1vw, 0.99rem);
-  background-image: url("../assests/background-7.svg");
+  background-image: url('../assests/background-7.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -210,7 +167,7 @@
   top: calc(min(7.2vw, 6.48rem) + var(--bg-offset));
   width: min(0.55vw, 0.495rem);
   aspect-ratio: 11 / 135;
-  background-image: url("../assests/background-8.svg");
+  background-image: url('../assests/background-8.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -224,7 +181,7 @@
   top: calc(min(10.3vw, 9.27rem) + var(--bg-offset));
   width: min(11.5vw, 10.35rem);
   aspect-ratio: 246 / 11;
-  background-image: url("../assests/background-9.svg");
+  background-image: url('../assests/background-9.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -238,7 +195,7 @@
   top: calc(min(9.925vw, 8.9325rem) + var(--bg-offset));
   height: min(1.2vw, 1.08rem);
   width: min(1.2vw, 1.08rem);
-  background-image: url("../assests/background-10.svg");
+  background-image: url('../assests/background-10.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -248,10 +205,12 @@
 .background-11 {
   position: absolute;
   right: calc(min(29.76vw, 26.784rem) + (min(1.1vw, 0.99rem) - min(4.2vw, 70px)) / 2);
-  top: calc(min(13.35vw, 12.015rem) + var(--bg-offset) + (min(1.1vw, 0.99rem) - min(4.2vw, 70px)) / 2);
+  top: calc(
+    min(13.35vw, 12.015rem) + var(--bg-offset) + (min(1.1vw, 0.99rem) - min(4.2vw, 70px)) / 2
+  );
   width: min(4.2vw, 70px);
   aspect-ratio: 1 / 1;
-  background-image: url("../assests/background-11.svg");
+  background-image: url('../assests/background-11.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -261,10 +220,12 @@
 .background-12 {
   position: absolute;
   right: calc(min(34.5vw, 31.05rem) + (min(1.2vw, 1.08rem) - min(3.6vw, 52px)) / 2);
-  top: calc(min(9.925vw, 8.9325rem) + var(--bg-offset) + (min(1.2vw, 1.08rem) - min(3.6vw, 52px)) / 2);
+  top: calc(
+    min(9.925vw, 8.9325rem) + var(--bg-offset) + (min(1.2vw, 1.08rem) - min(3.6vw, 52px)) / 2
+  );
   width: min(3.6vw, 52px);
   aspect-ratio: 1 / 1;
-  background-image: url("../assests/background-12.svg");
+  background-image: url('../assests/background-12.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -279,7 +240,8 @@
   transform: translate(-50%, -50%);
   font-size: 6rem;
   color: var(--fgColor-onEmphasis);
-  text-shadow: 2px 2px 4px color-mix(in srgb, var(--fgColor-default) 70%, var(--bgColor-transparent));
+  text-shadow: 2px 2px 4px
+    color-mix(in srgb, var(--fgColor-default) 70%, var(--bgColor-transparent));
   pointer-events: none;
   z-index: 2;
   font-weight: bold;
@@ -346,7 +308,7 @@
   .index-page {
     min-height: 100svh;
   }
-  
+
   .title {
     font-size: 3.5rem;
   }

@@ -3,7 +3,7 @@ import type {
   ComponentPublicInstance,
   FunctionalComponent,
   HTMLAttributes,
-  NativeElements
+  NativeElements,
 } from 'vue'
 
 export type TextSize = 'large' | 'medium' | 'small'

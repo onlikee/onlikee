@@ -5,7 +5,7 @@ import IssueLabelToken from './IssueLabelToken.vue'
 
 const wrappers: VueWrapper[] = []
 afterEach(() => {
-  wrappers.forEach(wrapper => wrapper.unmount())
+  wrappers.forEach((wrapper) => wrapper.unmount())
   wrappers.length = 0
   document.body.innerHTML = ''
 })
@@ -38,10 +38,12 @@ describe('IssueLabelToken 自定义属性与数据属性', () => {
   })
 
   test('消费者 style 整体覆盖 customProperties', () => {
-    const wrapper = track(mount(IssueLabelToken, {
-      props: { text: 'bug' },
-      attrs: { style: { color: 'rgb(1, 2, 3)' } }
-    }))
+    const wrapper = track(
+      mount(IssueLabelToken, {
+        props: { text: 'bug' },
+        attrs: { style: { color: 'rgb(1, 2, 3)' } },
+      }),
+    )
     const style = wrapper.get<HTMLElement>('[class*="issue-label_"]').element.style
     expect(style.getPropertyValue('--label-r')).toBe('')
     expect(style.color).toBe('rgb(1, 2, 3)')
@@ -59,10 +61,21 @@ describe('IssueLabelToken 自定义属性与数据属性', () => {
 
   test('data-has-remove-button：无 onRemove 为 "false"，有 onRemove 为 "true"；hideRemoveButton 压回 "false"', () => {
     const without = track(mount(IssueLabelToken, { props: { text: 'bug' } }))
-    expect(without.get('[class*="issue-label_"]').attributes('data-has-remove-button')).toBe('false')
-    const withRemove = track(mount(IssueLabelToken, { props: { text: 'bug' }, attrs: { onRemove: () => {} } }))
-    expect(withRemove.get('[class*="issue-label_"]').attributes('data-has-remove-button')).toBe('true')
-    const hidden = track(mount(IssueLabelToken, { props: { text: 'bug', hideRemoveButton: true }, attrs: { onRemove: () => {} } }))
+    expect(without.get('[class*="issue-label_"]').attributes('data-has-remove-button')).toBe(
+      'false',
+    )
+    const withRemove = track(
+      mount(IssueLabelToken, { props: { text: 'bug' }, attrs: { onRemove: () => {} } }),
+    )
+    expect(withRemove.get('[class*="issue-label_"]').attributes('data-has-remove-button')).toBe(
+      'true',
+    )
+    const hidden = track(
+      mount(IssueLabelToken, {
+        props: { text: 'bug', hideRemoveButton: true },
+        attrs: { onRemove: () => {} },
+      }),
+    )
     expect(hidden.get('[class*="issue-label_"]').attributes('data-has-remove-button')).toBe('false')
     expect(hidden.find('[class*="token__remove_"]').exists()).toBe(false)
   })
@@ -71,10 +84,12 @@ describe('IssueLabelToken 自定义属性与数据属性', () => {
 describe('IssueLabelToken 移除按钮与文本容器', () => {
   test('移除按钮挂 issue-label__remove 类、data-has-multiple-action-targets、transform(1px,-1px)', async () => {
     // 非交互根（span、无 tabindex/onClick）→ isParentInteractive=false → button 分支
-    const wrapper = track(mount(IssueLabelToken, { props: { text: 'bug' }, attrs: { onRemove: () => {} } }))
+    const wrapper = track(
+      mount(IssueLabelToken, { props: { text: 'bug' }, attrs: { onRemove: () => {} } }),
+    )
     const remove = wrapper.get('[class*="token__remove_"]')
     expect(remove.element.tagName).toBe('BUTTON')
-    expect(remove.classes().some(name => name.includes('issue-label__remove_'))).toBe(true)
+    expect(remove.classes().some((name) => name.includes('issue-label__remove_'))).toBe(true)
     expect(remove.attributes('data-has-multiple-action-targets')).toBe('false')
     expect(remove.attributes('aria-hidden')).toBe('false')
     expect(remove.attributes('aria-label')).toBe('Remove token')
@@ -84,10 +99,12 @@ describe('IssueLabelToken 移除按钮与文本容器', () => {
   })
 
   test('可交互根（as=button）→ 根降为 span、按钮 aria-hidden="true"、文本容器承接 as/href', () => {
-    const wrapper = track(mount(IssueLabelToken, {
-      props: { text: 'bug', as: 'button', href: '/labels/bug' },
-      attrs: { onRemove: () => {} }
-    }))
+    const wrapper = track(
+      mount(IssueLabelToken, {
+        props: { text: 'bug', as: 'button', href: '/labels/bug' },
+        attrs: { onRemove: () => {} },
+      }),
+    )
     const root = wrapper.get('[class*="issue-label_"]')
     expect(root.element.tagName).toBe('SPAN')
     expect(root.attributes('href')).toBeUndefined()
@@ -102,7 +119,9 @@ describe('IssueLabelToken 移除按钮与文本容器', () => {
   })
 
   test('不渲染 VisuallyHidden 移除快捷键说明', () => {
-    const wrapper = track(mount(IssueLabelToken, { props: { text: 'bug' }, attrs: { onRemove: () => {} } }))
+    const wrapper = track(
+      mount(IssueLabelToken, { props: { text: 'bug' }, attrs: { onRemove: () => {} } }),
+    )
     expect(wrapper.find('.internal-visually-hidden').exists()).toBe(false)
   })
 
@@ -112,7 +131,12 @@ describe('IssueLabelToken 移除按钮与文本容器', () => {
   })
 
   test('Backspace/Delete 触发 remove（TokenBase 包装器，无 disabled 守卫）', async () => {
-    const wrapper = track(mount(IssueLabelToken, { props: { text: 'bug', disabled: true }, attrs: { onRemove: () => {} } }))
+    const wrapper = track(
+      mount(IssueLabelToken, {
+        props: { text: 'bug', disabled: true },
+        attrs: { onRemove: () => {} },
+      }),
+    )
     await wrapper.get('[class*="issue-label_"]').trigger('keydown', { key: 'Backspace' })
     await wrapper.get('[class*="issue-label_"]').trigger('keydown', { key: 'Delete' })
     expect(wrapper.emitted('remove')).toHaveLength(2)

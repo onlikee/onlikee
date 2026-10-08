@@ -4,7 +4,7 @@ import SelectOptGroup from './SelectOptGroup.vue'
 
 export const Select = Object.assign(SelectRoot, {
   Option: SelectOption,
-  OptGroup: SelectOptGroup
+  OptGroup: SelectOptGroup,
 })
 
 export { SelectOption, SelectOptGroup }

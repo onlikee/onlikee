@@ -9,10 +9,14 @@ export const DefaultFeatureFlags = FeatureFlagScope.create({
   primer_react_action_list_group_heading_trailing_action: false,
   primer_react_action_list_item_gap: false,
   primer_react_timeline_list_semantics: false,
-  primer_react_merged_forwarded_refs: false
+  primer_react_merged_forwarded_refs: false,
 })
-export const featureFlagContextKey: InjectionKey<ComputedRef<FeatureFlagScope>> = Symbol('FeatureFlagContext')
+export const featureFlagContextKey: InjectionKey<ComputedRef<FeatureFlagScope>> =
+  Symbol('FeatureFlagContext')
 export function useFeatureFlag(flag: string): ComputedRef<boolean> {
-  const scope = inject(featureFlagContextKey, computed(() => DefaultFeatureFlags))
+  const scope = inject(
+    featureFlagContextKey,
+    computed(() => DefaultFeatureFlags),
+  )
   return computed(() => scope.value.enabled(flag))
 }

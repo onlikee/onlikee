@@ -10,7 +10,7 @@ export const Blankslate = Object.assign(BlankslateRoot, {
   Heading: BlankslateHeading,
   Description: BlankslateDescription,
   PrimaryAction: BlankslatePrimaryAction,
-  SecondaryAction: BlankslateSecondaryAction
+  SecondaryAction: BlankslateSecondaryAction,
 })
 
 export {
@@ -18,5 +18,5 @@ export {
   BlankslateHeading,
   BlankslateDescription,
   BlankslatePrimaryAction,
-  BlankslateSecondaryAction
+  BlankslateSecondaryAction,
 }

@@ -5,16 +5,25 @@ import { useActionBarItem } from './context'
 import type { ActionBarButtonProps } from './types'
 
 defineOptions({ inheritAttrs: false })
-const props = withDefaults(defineProps<ActionBarButtonProps>(), { loading: undefined, inactive: undefined, labelWrap: undefined })
+const props = withDefaults(defineProps<ActionBarButtonProps>(), {
+  loading: undefined,
+  inactive: undefined,
+  labelWrap: undefined,
+})
 const emit = defineEmits<{ click: [event: MouseEvent | KeyboardEvent] }>()
 const slots = useSlots()
 function click(event: MouseEvent | KeyboardEvent) {
-  if (props.disabled || props.loading) { event.preventDefault(); return }
+  if (props.disabled || props.loading) {
+    event.preventDefault()
+    return
+  }
   emit('click', event)
 }
 const { element, setElement, dataOverflowing, size } = useActionBarItem(() => ({
-  label: () => slots.default?.(), leadingVisual: props.leadingVisual,
-  disabled: props.disabled, onClick: click
+  label: () => slots.default?.(),
+  leadingVisual: props.leadingVisual,
+  disabled: props.disabled,
+  onClick: click,
 }))
 defineExpose({ element, focus: (options?: FocusOptions) => element.value?.focus(options) })
 </script>

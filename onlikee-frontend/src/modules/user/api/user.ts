@@ -1,5 +1,8 @@
 import { get, post } from '@/api'
-import { uploadWithPresignedTicket, type PresignedUploadTicket } from '@/api/common/presigned-upload'
+import {
+  uploadWithPresignedTicket,
+  type PresignedUploadTicket,
+} from '@/api/common/presigned-upload'
 
 export type UserProfile = {
   uuid: string
@@ -69,7 +72,9 @@ export type AvatarUploadTicket = PresignedUploadTicket & {
 }
 
 export const createAvatarUploadTicket = (request: AvatarUploadTicketRequest) =>
-  post<AvatarUploadTicket>('/resources/images/avatars/upload-tickets', request, { withCredentials: true })
+  post<AvatarUploadTicket>('/resources/images/avatars/upload-tickets', request, {
+    withCredentials: true,
+  })
 
 export const saveCurrentUserAvatar = (avatarUrl: string) =>
   post<CurrentUserProfile>('/users/me/avatar', { avatarUrl }, { withCredentials: true })
@@ -78,7 +83,7 @@ export const uploadCurrentUserAvatar = async (file: File) => {
   const ticket = await createAvatarUploadTicket({
     originalFilename: file.name,
     contentType: file.type,
-    sizeBytes: file.size
+    sizeBytes: file.size,
   })
   await uploadWithPresignedTicket(ticket, file)
   // 上传凭证的查询参数只用于 PUT 签名，公开资源地址只保留对象路径。

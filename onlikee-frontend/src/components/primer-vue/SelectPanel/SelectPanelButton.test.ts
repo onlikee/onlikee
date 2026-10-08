@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+/* eslint-disable vue/one-component-per-file -- Test fixtures intentionally render multiple icon components. */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount, flushPromises, type VueWrapper } from '@vue/test-utils'
 import { defineComponent, h, nextTick } from 'vue'
@@ -7,25 +8,50 @@ import { registerEscapeHandler } from '../internal/documentRegistries'
 
 const wrappers: VueWrapper[] = []
 const unregisters: Array<() => void> = []
-async function settle() { await nextTick(); await flushPromises(); await nextTick() }
-const IconStub = defineComponent({ name: 'IconStub', render: () => h('svg', { 'data-component': 'Octicon' }) })
+async function settle() {
+  await nextTick()
+  await flushPromises()
+  await nextTick()
+}
+const IconStub = defineComponent({
+  name: 'IconStub',
+  render: () => h('svg', { 'data-component': 'Octicon' }),
+})
 // 不自带 data-component 的图标桩：验证 Octicon 标记由渲染位点注入
-const PlainIconStub = defineComponent({ name: 'PlainIconStub', render: () => h('svg', { 'data-octicon': 'eye' }) })
+const PlainIconStub = defineComponent({
+  name: 'PlainIconStub',
+  render: () => h('svg', { 'data-octicon': 'eye' }),
+})
 // Spinner 依赖 window.matchMedia（与 SelectPanel.test.ts 相同的 jsdom 垫片）
 beforeEach(() => {
-  vi.stubGlobal('matchMedia', vi.fn((media: string) => ({ matches: false, media, addEventListener: vi.fn(), removeEventListener: vi.fn() })))
+  vi.stubGlobal(
+    'matchMedia',
+    vi.fn((media: string) => ({
+      matches: false,
+      media,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })),
+  )
 })
 afterEach(() => {
-  unregisters.splice(0).forEach(unregister => unregister())
-  wrappers.forEach(wrapper => wrapper.unmount()); wrappers.length = 0
+  unregisters.splice(0).forEach((unregister) => unregister())
+  wrappers.forEach((wrapper) => wrapper.unmount())
+  wrappers.length = 0
   document.body.innerHTML = ''
-  vi.restoreAllMocks(); vi.useRealTimers()
+  vi.restoreAllMocks()
+  vi.useRealTimers()
 })
-function track<T extends VueWrapper>(wrapper: T): T { wrappers.push(wrapper); return wrapper }
+function track<T extends VueWrapper>(wrapper: T): T {
+  wrappers.push(wrapper)
+  return wrapper
+}
 
 describe('SelectPanelButton (ButtonBase + IconButton fusion)', () => {
   it('renders base button semantics without a wrapper while loading is undefined', async () => {
-    const wrapper = track(mount(SelectPanelButton, { props: {}, slots: { default: 'Save' }, attachTo: document.body }))
+    const wrapper = track(
+      mount(SelectPanelButton, { props: {}, slots: { default: 'Save' }, attachTo: document.body }),
+    )
     await settle()
     const button = wrapper.get('button')
     expect(button.attributes('data-component')).toBe('Button')
@@ -33,7 +59,9 @@ describe('SelectPanelButton (ButtonBase + IconButton fusion)', () => {
     expect(button.attributes('data-loading')).toBe('false')
     expect(button.attributes('data-size')).toBe('medium')
     expect(button.attributes('data-variant')).toBe('default')
-    expect(button.classes().some(className => className.includes('select-panel-button_'))).toBe(true)
+    expect(button.classes().some((className) => className.includes('select-panel-button_'))).toBe(
+      true,
+    )
     expect(wrapper.find('div[data-loading-wrapper]').exists()).toBe(false)
     const content = button.get('[data-component="buttonContent"]')
     expect(content.attributes('data-align')).toBe('center')
@@ -41,13 +69,32 @@ describe('SelectPanelButton (ButtonBase + IconButton fusion)', () => {
   })
 
   it('honors explicit type, anchor semantics, and the icon-button default type', async () => {
-    const submit = track(mount(SelectPanelButton, { props: { type: 'submit' }, slots: { default: 'Go' }, attachTo: document.body }))
+    const submit = track(
+      mount(SelectPanelButton, {
+        props: { type: 'submit' },
+        slots: { default: 'Go' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     expect(submit.get('button').attributes('type')).toBe('submit')
-    const anchor = track(mount(SelectPanelButton, { props: { as: 'a' }, attrs: { href: '#' }, slots: { default: 'Link' }, attachTo: document.body }))
+    const anchor = track(
+      mount(SelectPanelButton, {
+        props: { as: 'a' },
+        attrs: { href: '#' },
+        slots: { default: 'Link' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     expect(anchor.get('a').attributes('type')).toBeUndefined()
-    const icon = track(mount(SelectPanelButton, { props: { icon: IconStub }, attrs: { 'aria-label': 'Close' }, attachTo: document.body }))
+    const icon = track(
+      mount(SelectPanelButton, {
+        props: { icon: IconStub },
+        attrs: { 'aria-label': 'Close' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     expect(icon.get('button').attributes('type')).toBe('button')
     expect(icon.get('button').attributes('data-component')).toBe('IconButton')
@@ -55,19 +102,27 @@ describe('SelectPanelButton (ButtonBase + IconButton fusion)', () => {
   })
 
   it('treats whitespace-only children as content', async () => {
-    const wrapper = track(mount(SelectPanelButton, { props: {}, slots: { default: () => ' ' }, attachTo: document.body }))
+    const wrapper = track(
+      mount(SelectPanelButton, {
+        props: {},
+        slots: { default: () => ' ' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     expect(wrapper.find('[data-component="text"]').exists()).toBe(true)
   })
 
   it('seeds ids from the user id and renders the custom loading announcement', async () => {
     const onClick = vi.fn()
-    const wrapper = track(mount(SelectPanelButton, {
-      props: { id: 'save-button', loading: true, loadingAnnouncement: 'Saving changes' },
-      attrs: { onClick },
-      slots: { default: 'Save' },
-      attachTo: document.body,
-    }))
+    const wrapper = track(
+      mount(SelectPanelButton, {
+        props: { id: 'save-button', loading: true, loadingAnnouncement: 'Saving changes' },
+        attrs: { onClick },
+        slots: { default: 'Save' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     const button = wrapper.get('button')
     expect(button.attributes('data-loading')).toBe('true')
@@ -84,23 +139,46 @@ describe('SelectPanelButton (ButtonBase + IconButton fusion)', () => {
   })
 
   it('keeps raw data-label-wrap and wires count into CounterLabel slots', async () => {
-    const plain = track(mount(SelectPanelButton, { props: { labelWrap: false }, slots: { default: 'Wrap' }, attachTo: document.body }))
+    const plain = track(
+      mount(SelectPanelButton, {
+        props: { labelWrap: false },
+        slots: { default: 'Wrap' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     expect(plain.get('button').attributes('data-label-wrap')).toBe('false')
-    const counted = track(mount(SelectPanelButton, { props: { count: 3 }, slots: { default: 'Inbox' }, attachTo: document.body }))
+    const counted = track(
+      mount(SelectPanelButton, {
+        props: { count: 3 },
+        slots: { default: 'Inbox' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     const button = counted.get('button')
     expect(button.attributes('data-has-count')).toBe('true')
     const counter = button.get('[data-component="trailingVisual"] [data-component="ButtonCounter"]')
     expect(counter.attributes('data-variant')).toBe('secondary')
-    expect(counter.classes().some(name => name.includes('counter-label_'))).toBe(true)
+    expect(counter.classes().some((name) => name.includes('counter-label_'))).toBe(true)
     expect(counter.attributes('aria-hidden')).toBe('true')
     expect(counter.text()).toBe('3')
     expect(button.get('[data-component="trailingVisual"]').text()).toContain('(3)')
-    const iconOnly = track(mount(SelectPanelButton, { props: { count: 7, leadingVisual: IconStub }, attachTo: document.body }))
+    const iconOnly = track(
+      mount(SelectPanelButton, {
+        props: { count: 7, leadingVisual: IconStub },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     expect(iconOnly.get('button').attributes('data-icon-only-counter')).toBe('true')
-    const loadingCounter = track(mount(SelectPanelButton, { props: { count: 3, loading: true }, slots: { default: 'Inbox' }, attachTo: document.body }))
+    const loadingCounter = track(
+      mount(SelectPanelButton, {
+        props: { count: 3, loading: true },
+        slots: { default: 'Inbox' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     const trailing = loadingCounter.get('[data-component="trailingVisual"]')
     expect(trailing.find('[data-component="ButtonCounter"]').exists()).toBe(false)
@@ -109,30 +187,46 @@ describe('SelectPanelButton (ButtonBase + IconButton fusion)', () => {
 
   it('lets user data-component win and warns about invalid notificationIndicator', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-    const wrapper = track(mount(SelectPanelButton, {
-      props: { notificationIndicator: 'leadingVisual' },
-      attrs: { 'data-component': 'SelectPanel.SecondaryActionButton' },
-      slots: { default: 'Secondary' },
-      attachTo: document.body,
-    }))
+    const wrapper = track(
+      mount(SelectPanelButton, {
+        props: { notificationIndicator: 'leadingVisual' },
+        attrs: { 'data-component': 'SelectPanel.SecondaryActionButton' },
+        slots: { default: 'Secondary' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
-    expect(wrapper.get('button').attributes('data-component')).toBe('SelectPanel.SecondaryActionButton')
-    expect(warn).toHaveBeenCalledWith('Button: `notificationIndicator="leadingVisual"` requires a `leadingVisual` prop.')
+    expect(wrapper.get('button').attributes('data-component')).toBe(
+      'SelectPanel.SecondaryActionButton',
+    )
+    expect(warn).toHaveBeenCalledWith(
+      'Button: `notificationIndicator="leadingVisual"` requires a `leadingVisual` prop.',
+    )
   })
 
   it('warns when the rendered element is not a semantic button or anchor', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-    track(mount(SelectPanelButton, { props: { as: 'div' }, slots: { default: 'Nope' }, attachTo: document.body }))
+    track(
+      mount(SelectPanelButton, {
+        props: { as: 'div' },
+        slots: { default: 'Nope' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
-    expect(warn).toHaveBeenCalledWith('This component should be an instanceof a semantic button or anchor')
+    expect(warn).toHaveBeenCalledWith(
+      'This component should be an instanceof a semantic button or anchor',
+    )
   })
 
   it('renders the label tooltip for icon buttons and suppresses the button aria-label', async () => {
-    const wrapper = track(mount(SelectPanelButton, {
-      props: { icon: IconStub, tooltipDirection: 'nw', keyshortcuts: 'Escape' },
-      attrs: { 'aria-label': 'Cancel and close' },
-      attachTo: document.body,
-    }))
+    const wrapper = track(
+      mount(SelectPanelButton, {
+        props: { icon: IconStub, tooltipDirection: 'nw', keyshortcuts: 'Escape' },
+        attrs: { 'aria-label': 'Cancel and close' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     const button = wrapper.get('button')
     const tooltip = wrapper.get('[data-component="Tooltip"]')
@@ -151,11 +245,13 @@ describe('SelectPanelButton (ButtonBase + IconButton fusion)', () => {
   })
 
   it('renders the description tooltip and keeps aria-label', async () => {
-    const wrapper = track(mount(SelectPanelButton, {
-      props: { icon: IconStub, description: 'Dismiss this dialog' },
-      attrs: { 'aria-label': 'Close' },
-      attachTo: document.body,
-    }))
+    const wrapper = track(
+      mount(SelectPanelButton, {
+        props: { icon: IconStub, description: 'Dismiss this dialog' },
+        attrs: { 'aria-label': 'Close' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     const button = wrapper.get('button')
     const tooltip = wrapper.get('[data-component="Tooltip"]')
@@ -166,12 +262,14 @@ describe('SelectPanelButton (ButtonBase + IconButton fusion)', () => {
   })
 
   it('composes loading announcement, label and tooltip ids like ButtonBase + Tooltip injection', async () => {
-    const wrapper = track(mount(SelectPanelButton, {
-      props: { id: 'compose', loading: true },
-      attrs: { 'aria-label': 'Publish' },
-      slots: { default: 'Publish' },
-      attachTo: document.body,
-    }))
+    const wrapper = track(
+      mount(SelectPanelButton, {
+        props: { id: 'compose', loading: true },
+        attrs: { 'aria-label': 'Publish' },
+        slots: { default: 'Publish' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     const button = wrapper.get('button')
     const tooltip = wrapper.get('[data-component="Tooltip"]')
@@ -185,16 +283,36 @@ describe('SelectPanelButton (ButtonBase + IconButton fusion)', () => {
   })
 
   it('skips the tooltip for missing, empty, disabled or unsafe-disable cases', async () => {
-    const noLabel = track(mount(SelectPanelButton, { props: { icon: IconStub }, attachTo: document.body }))
+    const noLabel = track(
+      mount(SelectPanelButton, { props: { icon: IconStub }, attachTo: document.body }),
+    )
     await settle()
     expect(noLabel.find('[data-component="Tooltip"]').exists()).toBe(false)
-    const emptyLabel = track(mount(SelectPanelButton, { props: { icon: IconStub }, attrs: { 'aria-label': '' }, attachTo: document.body }))
+    const emptyLabel = track(
+      mount(SelectPanelButton, {
+        props: { icon: IconStub },
+        attrs: { 'aria-label': '' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     expect(emptyLabel.find('[data-component="Tooltip"]').exists()).toBe(false)
-    const disabled = track(mount(SelectPanelButton, { props: { icon: IconStub, disabled: true }, attrs: { 'aria-label': 'Close' }, attachTo: document.body }))
+    const disabled = track(
+      mount(SelectPanelButton, {
+        props: { icon: IconStub, disabled: true },
+        attrs: { 'aria-label': 'Close' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     expect(disabled.find('[data-component="Tooltip"]').exists()).toBe(false)
-    const unsafe = track(mount(SelectPanelButton, { props: { icon: IconStub, unsafeDisableTooltip: true }, attrs: { 'aria-label': 'Close' }, attachTo: document.body }))
+    const unsafe = track(
+      mount(SelectPanelButton, {
+        props: { icon: IconStub, unsafeDisableTooltip: true },
+        attrs: { 'aria-label': 'Close' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     expect(unsafe.find('[data-component="Tooltip"]').exists()).toBe(false)
   })
@@ -203,11 +321,13 @@ describe('SelectPanelButton (ButtonBase + IconButton fusion)', () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
     const outer = vi.fn()
     unregisters.push(registerEscapeHandler(outer))
-    const wrapper = track(mount(SelectPanelButton, {
-      props: { icon: IconStub },
-      attrs: { 'aria-label': 'Cancel and close' },
-      attachTo: document.body,
-    }))
+    const wrapper = track(
+      mount(SelectPanelButton, {
+        props: { icon: IconStub },
+        attrs: { 'aria-label': 'Cancel and close' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     const button = wrapper.get('button').element
     const tooltip = wrapper.get('[data-component="Tooltip"]').element
@@ -215,22 +335,28 @@ describe('SelectPanelButton (ButtonBase + IconButton fusion)', () => {
     await vi.advanceTimersByTimeAsync(50)
     await settle()
     expect(tooltip.classList.contains(':popover-open')).toBe(true)
-    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))
+    document.body.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    )
     await settle()
     expect(tooltip.classList.contains(':popover-open')).toBe(false)
     expect(outer).not.toHaveBeenCalled()
-    document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))
+    document.body.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    )
     await settle()
     expect(outer).toHaveBeenCalledOnce()
   })
 
   it('closes the tooltip on mouseleave and blur but not on non focus-visible focus', async () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
-    const wrapper = track(mount(SelectPanelButton, {
-      props: { icon: IconStub },
-      attrs: { 'aria-label': 'Cancel and close' },
-      attachTo: document.body,
-    }))
+    const wrapper = track(
+      mount(SelectPanelButton, {
+        props: { icon: IconStub },
+        attrs: { 'aria-label': 'Cancel and close' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     const button = wrapper.get('button').element
     const tooltip = wrapper.get('[data-component="Tooltip"]').element
@@ -247,18 +373,41 @@ describe('SelectPanelButton (ButtonBase + IconButton fusion)', () => {
   })
 
   it('lets consumer attrs override the aria-disabled loading default', async () => {
-    const overridden = track(mount(SelectPanelButton, { props: { loading: true }, attrs: { 'aria-disabled': 'false' }, slots: { default: 'Save' }, attachTo: document.body }))
+    const overridden = track(
+      mount(SelectPanelButton, {
+        props: { loading: true },
+        attrs: { 'aria-disabled': 'false' },
+        slots: { default: 'Save' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     expect(overridden.get('button').attributes('aria-disabled')).toBe('false')
-    const defaulted = track(mount(SelectPanelButton, { props: { loading: true }, slots: { default: 'Save' }, attachTo: document.body }))
+    const defaulted = track(
+      mount(SelectPanelButton, {
+        props: { loading: true },
+        slots: { default: 'Save' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
     expect(defaulted.get('button').attributes('aria-disabled')).toBe('true')
   })
 
   it('stamps data-component="Octicon" onto leading/trailing visual svgs', async () => {
-    const visuals = track(mount(SelectPanelButton, { props: { leadingVisual: PlainIconStub, trailingVisual: PlainIconStub }, slots: { default: 'Inbox' }, attachTo: document.body }))
+    const visuals = track(
+      mount(SelectPanelButton, {
+        props: { leadingVisual: PlainIconStub, trailingVisual: PlainIconStub },
+        slots: { default: 'Inbox' },
+        attachTo: document.body,
+      }),
+    )
     await settle()
-    expect(visuals.get('[data-component="leadingVisual"] svg').attributes('data-component')).toBe('Octicon')
-    expect(visuals.get('[data-component="trailingVisual"] svg').attributes('data-component')).toBe('Octicon')
+    expect(visuals.get('[data-component="leadingVisual"] svg').attributes('data-component')).toBe(
+      'Octicon',
+    )
+    expect(visuals.get('[data-component="trailingVisual"] svg').attributes('data-component')).toBe(
+      'Octicon',
+    )
   })
 })

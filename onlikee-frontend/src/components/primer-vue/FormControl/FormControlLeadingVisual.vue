@@ -14,7 +14,11 @@
 import { useFormControlContext } from './context'
 import type { StyleValue } from 'vue'
 import { normalizeReactStyle } from '../internal/style'
-defineOptions({ name: 'FormControlLeadingVisual', __SLOT__: Symbol('FormControlLeadingVisual'), inheritAttrs: false })
+defineOptions({
+  name: 'FormControlLeadingVisual',
+  __SLOT__: Symbol('FormControlLeadingVisual'),
+  inheritAttrs: false,
+})
 defineProps<{ style?: StyleValue }>()
 const context = useFormControlContext()
 </script>

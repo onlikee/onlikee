@@ -8,7 +8,10 @@ import { TextInput } from './index'
 import { Textarea } from '../Textarea'
 
 const wrappers: VueWrapper[] = []
-afterEach(() => { wrappers.splice(0).forEach(wrapper => wrapper.unmount()); document.body.innerHTML = '' })
+afterEach(() => {
+  wrappers.splice(0).forEach((wrapper) => wrapper.unmount())
+  document.body.innerHTML = ''
+})
 
 describe.each([
   ['TextInput', TextInput, 'input'],
@@ -21,7 +24,10 @@ describe.each([
   }
   it('preserves uncontrolled defaults and sends native change events while typing', async () => {
     const change = vi.fn()
-    const wrapper = render({ defaultValue: 'start', onChange: change }, { id: 'native', name: 'field', readonly: true })
+    const wrapper = render(
+      { defaultValue: 'start', onChange: change },
+      { id: 'native', name: 'field', readonly: true },
+    )
     const field = wrapper.get(selector)
     expect((field.element as HTMLInputElement).value).toBe('start')
     expect(field.attributes('name')).toBe('field')
@@ -44,7 +50,19 @@ describe.each([
   })
   it('accepts named controlled updates and derives error styling without blocking text', async () => {
     const current = ref('')
-    const wrapper = mount(defineComponent({ setup: () => () => h(component as Component, { value: current.value, characterLimit: 3, 'onUpdate:value': (next: string) => { current.value = next } }) }), { attachTo: document.body })
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h(component as Component, {
+            value: current.value,
+            characterLimit: 3,
+            'onUpdate:value': (next: string) => {
+              current.value = next
+            },
+          }),
+      }),
+      { attachTo: document.body },
+    )
     wrappers.push(wrapper)
     await wrapper.get(selector).setValue('abcd')
     expect(current.value).toBe('abcd')
@@ -67,7 +85,10 @@ describe.each([
     expect(wrapper.emitted('update:value')).toEqual([['输入']])
   })
   it('combines character-limit descriptions with existing accessible hints', () => {
-    const wrapper = render({ characterLimit: 1, defaultValue: 'x' }, { 'aria-describedby': 'caption validation' })
+    const wrapper = render(
+      { characterLimit: 1, defaultValue: 'x' },
+      { 'aria-describedby': 'caption validation' },
+    )
     const ids = wrapper.get(selector).attributes('aria-describedby')?.split(' ')
     expect(ids).toHaveLength(3)
     expect(ids?.slice(1)).toEqual(['caption', 'validation'])
@@ -75,18 +96,28 @@ describe.each([
     expect(wrapper.text()).toContain('0 characters remaining')
   })
   it('preserves explicit accessible invalid/required attributes over defaults', () => {
-    const wrapper = render({ required: false, validationStatus: 'success' }, { 'aria-invalid': 'true', 'aria-required': 'true' })
+    const wrapper = render(
+      { required: false, validationStatus: 'success' },
+      { 'aria-invalid': 'true', 'aria-required': 'true' },
+    )
     expect(wrapper.get(selector).attributes('aria-invalid')).toBe('true')
     expect(wrapper.get(selector).attributes('aria-required')).toBe('true')
   })
   it('allows explicit null ARIA attributes to clear derived validation and required state', () => {
-    const wrapper = render({ required: true, validationStatus: 'error' }, { 'aria-invalid': null, 'aria-required': null })
+    const wrapper = render(
+      { required: true, validationStatus: 'error' },
+      { 'aria-invalid': null, 'aria-required': null },
+    )
     expect(wrapper.get(selector).attributes('aria-invalid')).toBeUndefined()
     expect(wrapper.get(selector).attributes('aria-required')).toBeUndefined()
   })
   it('updates native description IDs when only a parent attribute changes', async () => {
     const description = ref('caption')
-    const wrapper = mount(defineComponent({ setup: () => () => h(component as Component, { 'aria-describedby': description.value }) }))
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () => h(component as Component, { 'aria-describedby': description.value }),
+      }),
+    )
     wrappers.push(wrapper)
     expect(wrapper.get(selector).attributes('aria-describedby')).toBe('caption')
     description.value = 'validation caption'
@@ -97,7 +128,12 @@ describe.each([
     expect(wrapper.get(selector).attributes('aria-describedby')).toBeUndefined()
   })
   it('restores native form defaults without emitting change on reset', async () => {
-    const wrapper = mount(defineComponent({ setup: () => () => h('form', {}, h(component as Component, { defaultValue: 'original' })) }), { attachTo: document.body })
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () => h('form', {}, h(component as Component, { defaultValue: 'original' })),
+      }),
+      { attachTo: document.body },
+    )
     wrappers.push(wrapper)
     await wrapper.get(selector).setValue('edited')
     ;(wrapper.element as HTMLFormElement).reset()
@@ -105,7 +141,17 @@ describe.each([
     expect((wrapper.get(selector).element as HTMLInputElement).value).toBe('original')
   })
   it('renders stable accessible counter IDs in SSR and has no DOM requirement', async () => {
-    const app = () => createSSRApp({ render: () => h(component as Component, { id: 'field', defaultValue: 'ab', characterLimit: 5, required: true, disabled: true }) })
+    const app = () =>
+      createSSRApp({
+        render: () =>
+          h(component as Component, {
+            id: 'field',
+            defaultValue: 'ab',
+            characterLimit: 5,
+            required: true,
+            disabled: true,
+          }),
+      })
     const first = await renderToString(app())
     expect(first).toBe(await renderToString(app()))
     expect(first).toContain('aria-required="true"')
@@ -116,7 +162,14 @@ describe.each([
 
 describe('TextInput visual and action slots', () => {
   it('uses explicit visual props before slots and connects visible text descriptions', () => {
-    const wrapper = mount(TextInput, { props: { leadingVisual: '$', trailingVisual: '.com' }, attrs: { 'aria-describedby': 'hint' }, slots: { leadingVisual: 'ignored', trailingAction: () => h(TextInput.Action, { 'aria-label': 'Clear' }) } })
+    const wrapper = mount(TextInput, {
+      props: { leadingVisual: '$', trailingVisual: '.com' },
+      attrs: { 'aria-describedby': 'hint' },
+      slots: {
+        leadingVisual: 'ignored',
+        trailingAction: () => h(TextInput.Action, { 'aria-label': 'Clear' }),
+      },
+    })
     wrappers.push(wrapper)
     expect(wrapper.text()).toContain('$')
     expect(wrapper.text()).not.toContain('ignored')
@@ -126,9 +179,20 @@ describe('TextInput visual and action slots', () => {
   })
   it('supports trailingAction VNodes and shows its label as a focus tooltip', async () => {
     const click = vi.fn()
-    const wrapper = mount(TextInput, { props: { trailingAction: h(TextInput.Action, { 'aria-label': 'Clear input', onClick: click }, () => 'Clear') }, attachTo: document.body })
+    const wrapper = mount(TextInput, {
+      props: {
+        trailingAction: h(
+          TextInput.Action,
+          { 'aria-label': 'Clear input', onClick: click },
+          () => 'Clear',
+        ),
+      },
+      attachTo: document.body,
+    })
     wrappers.push(wrapper)
-    expect(wrapper.get('[data-component="TextInput"]').attributes('data-no-trailing-action')).toBeUndefined()
+    expect(
+      wrapper.get('[data-component="TextInput"]').attributes('data-no-trailing-action'),
+    ).toBeUndefined()
     const button = wrapper.get('button')
     const tooltip = document.body.querySelector('[role="tooltip"]')
     expect(tooltip?.textContent).toBe('Clear input')
@@ -143,14 +207,23 @@ describe('TextInput visual and action slots', () => {
     expect(tooltip?.classList.contains(':popover-open')).toBe(false)
   })
   it('renders the icon-only action as an IconButton with a label tooltip', async () => {
-    const icon = defineComponent({ name: 'ClearIcon', render: () => h('svg', { 'data-component': 'Octicon' }) })
-    const wrapper = mount(TextInput.Action, { props: { icon, tooltipDirection: 'nw' }, attrs: { 'aria-label': 'Clear' }, attachTo: document.body })
+    const icon = defineComponent({
+      name: 'ClearIcon',
+      render: () => h('svg', { 'data-component': 'Octicon' }),
+    })
+    const wrapper = mount(TextInput.Action, {
+      props: { icon, tooltipDirection: 'nw' },
+      attrs: { 'aria-label': 'Clear' },
+      attachTo: document.body,
+    })
     wrappers.push(wrapper)
     const button = wrapper.get('button')
     expect(button.attributes('data-component')).toBe('IconButton')
     expect(button.attributes('data-size')).toBe('small')
     expect(button.attributes('type')).toBe('button')
-    expect(button.classes().some(className => className.includes('text-input-action-invisible_'))).toBe(true)
+    expect(
+      button.classes().some((className) => className.includes('text-input-action-invisible_')),
+    ).toBe(true)
     expect(wrapper.find('[data-component="TextInput.Action"]').exists()).toBe(true)
     // label 型气泡：无 role=tooltip，aria-labelledby 指向气泡 id，aria-label 被移除（IconButton 语义）
     const tooltip = document.body.querySelector('[data-component="Tooltip"][data-direction="nw"]')
@@ -163,7 +236,16 @@ describe('TextInput visual and action slots', () => {
   })
   it('calls the trailing action before focusing the native input', async () => {
     const order: string[] = []
-    const wrapper = mount(TextInput, { props: { trailingAction: h(TextInput.Action, { 'aria-label': 'Clear input', onClick: () => order.push('action') }), onFocus: () => order.push('input focus') }, attachTo: document.body })
+    const wrapper = mount(TextInput, {
+      props: {
+        trailingAction: h(TextInput.Action, {
+          'aria-label': 'Clear input',
+          onClick: () => order.push('action'),
+        }),
+        onFocus: () => order.push('input focus'),
+      },
+      attachTo: document.body,
+    })
     wrappers.push(wrapper)
     await wrapper.get('button').trigger('click')
     expect(order).toEqual(['action', 'input focus'])
@@ -175,34 +257,62 @@ describe('TextInput visual and action slots', () => {
     wrappers.push(wrapper)
     await wrapper.get('svg').trigger('click')
     expect(document.activeElement).toBe(wrapper.get('input').element)
-    expect(wrapper.get('input').attributes('aria-describedby')).toBe(wrapper.get('[data-component="TextInput.LeadingVisual"]').attributes('id'))
+    expect(wrapper.get('input').attributes('aria-describedby')).toBe(
+      wrapper.get('[data-component="TextInput.LeadingVisual"]').attributes('id'),
+    )
   })
   it('describes loading and preserves visual slots across loader transitions', async () => {
-    vi.stubGlobal('matchMedia', vi.fn(() => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() })))
-    const wrapper = mount(TextInput, { props: { loading: false, leadingVisual: 'Search', loaderText: 'Finding items' } })
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn(() => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() })),
+    )
+    const wrapper = mount(TextInput, {
+      props: { loading: false, leadingVisual: 'Search', loaderText: 'Finding items' },
+    })
     wrappers.push(wrapper)
-    const leadingId = wrapper.get('[data-component="TextInput.LeadingVisual"] [id]').attributes('id')
+    const leadingId = wrapper
+      .get('[data-component="TextInput.LeadingVisual"] [id]')
+      .attributes('id')
     await wrapper.setProps({ loading: true })
     expect(wrapper.get('[aria-busy]').attributes('aria-busy')).toBe('true')
     const ids = wrapper.get('input').attributes('aria-describedby')?.split(' ')
     expect(ids?.[0]).toBe(leadingId)
     expect(wrapper.get(`#${ids?.[1]}`).text()).toBe('Finding items')
-    expect(wrapper.get('[data-component="TextInput.LeadingVisual"] div[class*="visual-hidden_"]').text()).toBe('Search')
+    expect(
+      wrapper.get('[data-component="TextInput.LeadingVisual"] div[class*="visual-hidden_"]').text(),
+    ).toBe('Search')
     await wrapper.setProps({ loading: false })
     expect(wrapper.get('input').attributes('aria-describedby')).toBe(leadingId)
   })
   it('keeps width styling on the wrapper and native inline styles on the input', () => {
-    const wrapper = mount(TextInput, { props: { width: 240, minWidth: 100, style: { fontWeight: 600 } } })
+    const wrapper = mount(TextInput, {
+      props: { width: 240, minWidth: 100, style: { fontWeight: 600 } },
+    })
     wrappers.push(wrapper)
-    expect((wrapper.get('[data-component="TextInput"]').element as HTMLElement).style.width).toBe('240px')
-    expect((wrapper.get('[data-component="TextInput"]').element as HTMLElement).style.minWidth).toBe('100px')
+    expect((wrapper.get('[data-component="TextInput"]').element as HTMLElement).style.width).toBe(
+      '240px',
+    )
+    expect(
+      (wrapper.get('[data-component="TextInput"]').element as HTMLElement).style.minWidth,
+    ).toBe('100px')
     expect(wrapper.get('input').element.style.fontWeight).toBe('600')
   })
   it('normalizes numeric native styles and preserves Vue style arrays', () => {
-    const wrapper = mount(TextInput, { props: { width: 240, style: [{ width: 180, fontSize: 16, lineHeight: 1.5, fontWeight: 600 }, 'color: red;', { '--custom': 8 }] } })
+    const wrapper = mount(TextInput, {
+      props: {
+        width: 240,
+        style: [
+          { width: 180, fontSize: 16, lineHeight: 1.5, fontWeight: 600 },
+          'color: red;',
+          { '--custom': 8 },
+        ],
+      },
+    })
     wrappers.push(wrapper)
     const field = wrapper.get('input').element
-    expect((wrapper.get('[data-component="TextInput"]').element as HTMLElement).style.width).toBe('240px')
+    expect((wrapper.get('[data-component="TextInput"]').element as HTMLElement).style.width).toBe(
+      '240px',
+    )
     expect(field.style.width).toBe('180px')
     expect(field.style.fontSize).toBe('16px')
     expect(field.style.lineHeight).toBe('1.5')
@@ -223,7 +333,14 @@ describe('TextInput visual and action slots', () => {
 
 describe('Textarea sizing', () => {
   it('lets explicit numeric and array styles override height limits during automatic sizing', async () => {
-    const wrapper = mount(Textarea, { props: { autoSize: true, minHeight: 10, maxHeight: 40, style: ['font-size:16px;', { minHeight: 20, maxHeight: 80, lineHeight: 1.5 }] } })
+    const wrapper = mount(Textarea, {
+      props: {
+        autoSize: true,
+        minHeight: 10,
+        maxHeight: 40,
+        style: ['font-size:16px;', { minHeight: 20, maxHeight: 80, lineHeight: 1.5 }],
+      },
+    })
     wrappers.push(wrapper)
     const element = wrapper.get('textarea').element
     Object.defineProperty(element, 'scrollHeight', { value: 100, configurable: true })
@@ -235,14 +352,20 @@ describe('Textarea sizing', () => {
     expect(element.style.lineHeight).toBe('1.5')
   })
   it('preserves native data attribute priority over generated metadata', () => {
-    const wrapper = mount(Textarea, { props: { autoSize: true, resize: 'vertical' }, attrs: { 'data-component': 'CustomTextarea', 'data-resize': 'none', 'data-auto-size': null } })
+    const wrapper = mount(Textarea, {
+      props: { autoSize: true, resize: 'vertical' },
+      attrs: { 'data-component': 'CustomTextarea', 'data-resize': 'none', 'data-auto-size': null },
+    })
     wrappers.push(wrapper)
     expect(wrapper.get('textarea').attributes('data-component')).toBe('CustomTextarea')
     expect(wrapper.get('textarea').attributes('data-resize')).toBe('none')
     expect(wrapper.get('textarea').attributes('data-auto-size')).toBeUndefined()
   })
   it('disables automatic height when the native data-auto-size attribute overrides the prop', async () => {
-    const wrapper = mount(Textarea, { props: { autoSize: true, style: { height: 60 } }, attrs: { 'data-auto-size': false } })
+    const wrapper = mount(Textarea, {
+      props: { autoSize: true, style: { height: 60 } },
+      attrs: { 'data-auto-size': false },
+    })
     wrappers.push(wrapper)
     const element = wrapper.get('textarea').element
     Object.defineProperty(element, 'scrollHeight', { value: 200, configurable: true })
@@ -254,7 +377,10 @@ describe('Textarea sizing', () => {
     const wrapper = mount(Textarea, { props: { value: 'a', autoSize: true } })
     wrappers.push(wrapper)
     const element = wrapper.get('textarea').element
-    Object.defineProperty(element, 'scrollHeight', { get: () => element.value.length * 20, configurable: true })
+    Object.defineProperty(element, 'scrollHeight', {
+      get: () => element.value.length * 20,
+      configurable: true,
+    })
     await wrapper.get('textarea').setValue('long rejected edit')
     expect(element.value).toBe('a')
     expect(element.style.height).toBe('20px')

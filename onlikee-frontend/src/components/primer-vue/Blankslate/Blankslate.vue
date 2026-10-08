@@ -10,21 +10,22 @@ withDefaults(
     border: false,
     narrow: false,
     spacious: false,
-    size: 'medium'
-  }
+    size: 'medium',
+  },
 )
 </script>
 
 <template>
-  <section
-    :class="$style['blankslate-container']"
-  >
+  <section :class="$style['blankslate-container']">
     <div
-      :class="[$style['blankslate'], {
-        [$style['blankslate--border']]: border,
-        [$style['blankslate--narrow']]: narrow,
-        [$style['blankslate--spacious']]: spacious
-      }]"
+      :class="[
+        $style['blankslate'],
+        {
+          [$style['blankslate--border']]: border,
+          [$style['blankslate--narrow']]: narrow,
+          [$style['blankslate--spacious']]: spacious,
+        },
+      ]"
       :data-size="size"
     >
       <slot />

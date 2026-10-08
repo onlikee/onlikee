@@ -1,7 +1,6 @@
 import { accessibleKeyName } from './key-names'
 import type { Platform } from './platform'
 
-
 /**
  * Consistent sort order for modifier keys. There should never be more than one non-modifier
  * key in a chord, so we don't need to worry about sorting those - we just put them at the end.
@@ -23,7 +22,7 @@ const compareLowercaseKeys = (a: string, b: string) => keySortPriority(a) - keyS
 export const splitChord = (chord: string) =>
   chord
     .split('+')
-    .map(k => k.toLowerCase())
+    .map((k) => k.toLowerCase())
     .sort(compareLowercaseKeys)
 
 const splitSequence = (sequence: string) => sequence.split(' ')
@@ -31,11 +30,11 @@ const splitSequence = (sequence: string) => sequence.split(' ')
 /** Plain string version of `Chord` for use in `aria` string attributes. */
 export const accessibleChordString = (chord: string, platform: Platform) =>
   splitChord(chord)
-    .map(key => accessibleKeyName(key, platform))
+    .map((key) => accessibleKeyName(key, platform))
     .join(' ')
 
 /** Plain string version of `Sequence` for use in `aria` string attributes. */
 export const accessibleSequenceString = (sequence: string, platform: Platform) =>
   splitSequence(sequence)
-    .map(chord => accessibleChordString(chord, platform))
+    .map((chord) => accessibleChordString(chord, platform))
     .join(' then ')

@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="user-application-tab"
-    :data-user-id="profile.uuid"
-  />
+  <div class="user-application-tab" :data-user-id="profile.uuid" />
 </template>
 
 <script setup lang="ts">

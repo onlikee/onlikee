@@ -1,13 +1,12 @@
 <template>
   <ComponentDocsPage>
-    <ComponentDocsHeader
-      title="Avatar 头像"
-      description="用于展示用户头像或占位符。"
-    />
+    <ComponentDocsHeader title="Avatar 头像" description="用于展示用户头像或占位符。" />
 
     <ComponentDocsSection title="基础用法">
       <template #description>
-        通过 <code>src</code> 设置图片地址，或使用 <code>placeholder</code> 显示占位文字。占位文字仅在 src 为空时显示，图片加载中或失败时不会替换图片。
+        通过 <code>src</code> 设置图片地址，或使用
+        <code>placeholder</code> 显示占位文字。占位文字仅在 src
+        为空时显示，图片加载中或失败时不会替换图片。
       </template>
 
       <ComponentDocsDemoBlock :code="demo1Code">
@@ -26,57 +25,25 @@
 
       <ComponentDocsDemoBlock :code="demo2Code">
         <div class="avatar-row">
-          <Avatar
-            src="https://avatars.githubusercontent.com/u/131276691?v=4"
-            :size="24"
-          />
-          <Avatar
-            src="https://avatars.githubusercontent.com/u/131276691?v=4"
-            :size="32"
-          />
-          <Avatar
-            src="https://avatars.githubusercontent.com/u/131276691?v=4"
-            :size="40"
-          />
-          <Avatar
-            src="https://avatars.githubusercontent.com/u/131276691?v=4"
-            :size="56"
-          />
-          <Avatar
-            src="https://avatars.githubusercontent.com/u/131276691?v=4"
-            :size="72"
-          />
+          <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" :size="24" />
+          <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" :size="32" />
+          <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" :size="40" />
+          <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" :size="56" />
+          <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" :size="72" />
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="占位符尺寸">
-      <template #description>
-        占位符文字大小会根据头像尺寸自动计算。
-      </template>
+      <template #description> 占位符文字大小会根据头像尺寸自动计算。 </template>
 
       <ComponentDocsDemoBlock :code="demo3Code">
         <div class="avatar-row">
-          <Avatar
-            placeholder="S"
-            :size="24"
-          />
-          <Avatar
-            placeholder="M"
-            :size="32"
-          />
-          <Avatar
-            placeholder="L"
-            :size="40"
-          />
-          <Avatar
-            placeholder="XL"
-            :size="56"
-          />
-          <Avatar
-            placeholder="XXL"
-            :size="72"
-          />
+          <Avatar placeholder="S" :size="24" />
+          <Avatar placeholder="M" :size="32" />
+          <Avatar placeholder="L" :size="40" />
+          <Avatar placeholder="XL" :size="56" />
+          <Avatar placeholder="XXL" :size="72" />
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -87,17 +54,8 @@
       </template>
       <ComponentDocsDemoBlock :code="squareCode">
         <div class="avatar-row">
-          <Avatar
-            src="https://avatars.githubusercontent.com/u/131276691?v=4"
-            :size="40"
-            square
-          />
-          <Avatar
-            placeholder="AB"
-            :size="40"
-            square
-            alt="用户 AB"
-          />
+          <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" :size="40" square />
+          <Avatar placeholder="AB" :size="40" square alt="用户 AB" />
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -113,10 +71,7 @@
             src="https://avatars.githubusercontent.com/u/131276691?v=4"
             :size="{ narrow: 24, regular: 40, wide: 64 }"
           />
-          <Avatar
-            placeholder="AB"
-            :size="{ narrow: 24, regular: 40, wide: 64 }"
-          />
+          <Avatar placeholder="AB" :size="{ narrow: 24, regular: 40, wide: 64 }" />
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -139,10 +94,7 @@
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="API"
-      variant="api"
-    >
+    <ComponentDocsSection title="API" variant="api">
       <Table
         :columns="apiTableColumns"
         :data="apiTableRows"
@@ -215,7 +167,7 @@ const apiTableColumns: TableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '160px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
 ]
 
 const apiTableRows = [
@@ -223,32 +175,32 @@ const apiTableRows = [
     name: 'src',
     description: '头像图片地址；未提供或为空时显示 placeholder',
     type: 'string',
-    default: '—'
+    default: '—',
   },
   {
     name: 'alt',
     description: '图片替代文本；占位分支用作无障碍名称',
     type: 'string',
-    default: '空字符串'
+    default: '空字符串',
   },
   {
     name: 'placeholder',
     description: '占位文字（仅 src 为空时显示）',
     type: 'string',
-    default: '空字符串'
+    default: '空字符串',
   },
   {
     name: 'size',
     description: '头像尺寸',
     type: 'number | { narrow?: number; regular?: number; wide?: number }',
-    default: '20'
+    default: '20',
   },
   {
     name: 'square',
     description: '使用圆角方形头像',
     type: 'boolean',
-    default: 'false'
-  }
+    default: 'false',
+  },
 ]
 </script>
 
