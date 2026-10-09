@@ -145,22 +145,11 @@ defineExpose({
       :aria-describedby="describedBy"
       :style="textareaStyle"
       :data-component="'data-component' in $attrs ? $attrs['data-component'] : 'Textarea'"
-      @input="
-        emit('input', $event)
-        input($event)
-        resizeToContent()
-        nextTick(resizeToContent)
-      "
+      @input="(emit('input', $event), input($event), resizeToContent(), nextTick(resizeToContent))"
       @focus="emit('focus', $event)"
       @blur="emit('blur', $event)"
-      @compositionstart="
-        compositionStart()
-        emit('compositionstart', $event)
-      "
-      @compositionend="
-        compositionEnd($event)
-        emit('compositionend', $event)
-      "
+      @compositionstart="(compositionStart(), emit('compositionstart', $event))"
+      @compositionend="(compositionEnd($event), emit('compositionend', $event))"
     />
   </TextInputWrapper>
   <CharacterCounter

@@ -157,26 +157,11 @@ defineExpose({
       :value="value"
       :aria-describedby="describedBy"
       :data-component="$attrs['data-component'] ?? 'input'"
-      @input="
-        emit('input', $event)
-        updateInput($event)
-      "
-      @focus="
-        focused = true
-        emit('focus', $event)
-      "
-      @blur="
-        focused = false
-        emit('blur', $event)
-      "
-      @compositionstart="
-        compositionStart()
-        emit('compositionstart', $event)
-      "
-      @compositionend="
-        compositionEnd($event)
-        emit('compositionend', $event)
-      "
+      @input="(emit('input', $event), updateInput($event))"
+      @focus="((focused = true), emit('focus', $event))"
+      @blur="((focused = false), emit('blur', $event))"
+      @compositionstart="(compositionStart(), emit('compositionstart', $event))"
+      @compositionend="(compositionEnd($event), emit('compositionend', $event))"
     />
     <span v-if="loading" :id="loadingId" :class="$style['text-input-hidden']">{{
       loaderText
