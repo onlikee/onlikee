@@ -1,138 +1,110 @@
-<template>
-  <ul
-    ref="listRef"
-    class="action-list"
-    :data-variant="variant"
-    :data-dividers="showDividers || undefined"
-    :data-selection-variant="selectionVariant"
-    :role="role"
-    @keydown="handleKeydown"
-  >
-    <slot />
-  </ul>
-</template>
-
-<script setup lang="ts">
-import { computed, ref } from 'vue'
+<script lang="ts">
+import classes from './ActionList.module.css'
 import {
-  createContext,
-  provideContext,
-  type ActionListSelectionVariant,
-  type ActionListVariant
-} from './context'
+  computed,
+  defineComponent,
+  h,
+  onMounted,
+  onUpdated,
+  ref,
+  useId,
+  type Component,
+  type PropType,
+} from 'vue'
+import { provideContext, useContainerContext, exposeElement } from './context'
+import type { ActionListSelectionVariant, ActionListVariant } from './types'
+import Heading from './ActionListHeading.vue'
+import { useSlots } from '../composables/useSlots'
+import { useFocusZone, FocusKeys } from '../composables/useFocusZone'
+import { useFeatureFlag } from '../FeatureFlags/context'
+import { normalizeReactStyle } from '../internal/style'
 
-const props = withDefaults(
-  defineProps<{
-    variant?: ActionListVariant
-    selectionVariant?: ActionListSelectionVariant
-    showDividers?: boolean
-    role?: string
-  }>(),
-  {
-    variant: 'inset',
-    selectionVariant: undefined,
-    showDividers: false,
-    role: undefined
-  }
-)
-
-const listRef = ref<HTMLUListElement>()
-const selectionVariant = computed(() => props.selectionVariant)
-const listRole = computed(() => props.role)
-
-const focusableSelector = [
-  '[data-action-list-control]',
-  ':not([aria-disabled="true"])',
-  ':not(:disabled)'
-].join('')
-
-function getFocusableItems() {
-  const list = listRef.value
-  if (!list) return []
-
-  return Array.from(list.querySelectorAll<HTMLElement>(focusableSelector))
-    .filter(item => item.closest('.action-list') === list)
-}
-
-function handleKeydown(event: KeyboardEvent) {
-  if (event.defaultPrevented) return
-  if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return
-
-  const items = getFocusableItems()
-  if (!items.length) return
-
-  const activeIndex = items.indexOf(document.activeElement as HTMLElement)
-  if (activeIndex === -1) return
-
-  event.preventDefault()
-
-  if (event.key === 'Home') {
-    items[0]?.focus()
-    return
-  }
-
-  if (event.key === 'End') {
-    items[items.length - 1]?.focus()
-    return
-  }
-
-  const offset = event.key === 'ArrowDown' ? 1 : -1
-  const nextIndex = (activeIndex + offset + items.length) % items.length
-  items[nextIndex]?.focus()
-}
-
-provideContext(createContext({
-  selectionVariant,
-  listRole
-}))
+export default defineComponent({
+  name: 'ActionList',
+  inheritAttrs: false,
+  props: {
+    as: { type: [String, Object, Function] as PropType<string | Component>, default: 'ul' },
+    variant: { type: String as PropType<ActionListVariant>, default: 'inset' },
+    selectionVariant: { type: String as PropType<ActionListSelectionVariant>, default: undefined },
+    showDividers: Boolean,
+    role: { type: String, default: undefined },
+    disableFocusZone: Boolean,
+    disableItemGap: Boolean,
+    className: { type: String, default: undefined },
+  },
+  setup(props, { slots, attrs, expose }) {
+    const container = useContainerContext()
+    const element = ref<HTMLElement | null>(null)
+    const setElement = (node: unknown) => {
+      const instance = node as { element?: HTMLElement; $el?: HTMLElement } | null
+      element.value =
+        node instanceof HTMLElement ? node : (instance?.element ?? instance?.$el ?? null)
+    }
+    const headingId = useId()
+    const listRole = computed(() => props.role || container.listRole)
+    const selectionVariant = computed(() => props.selectionVariant || container.selectionVariant)
+    const itemGapFlag = useFeatureFlag('primer_react_action_list_item_gap')
+    provideContext({
+      selectionVariant,
+      listRole,
+      variant: computed(() => props.variant),
+      headingId,
+    })
+    useFocusZone(() => ({
+      containerRef: element,
+      disabled: !(
+        container.enableFocusZone ??
+        (Boolean(listRole.value) &&
+          !props.disableFocusZone &&
+          ['menu', 'menubar', 'listbox'].includes(listRole.value!))
+      ),
+      bindKeys: FocusKeys.ArrowVertical | FocusKeys.HomeAndEnd | FocusKeys.PageUpDown,
+      focusOutBehavior:
+        listRole.value === 'menu' ||
+        container.container === 'SelectPanel' ||
+        container.container === 'FilteredActionList'
+          ? 'wrap'
+          : undefined,
+    }))
+    function syncMixedDescriptions() {
+      const list = element.value
+      if (!list) return
+      const mixed =
+        list.querySelector('[data-has-description="true"]') !== null &&
+        list.querySelector('[data-has-description="false"]') !== null
+      if (mixed) list.setAttribute('data-mixed-descriptions', 'true')
+      else list.removeAttribute('data-mixed-descriptions')
+    }
+    onMounted(syncMixedDescriptions)
+    onUpdated(syncMixedDescriptions)
+    expose(exposeElement(element))
+    return () => {
+      const [matched, rest] = useSlots(slots.default?.(), { heading: Heading })
+      return [
+        matched.heading,
+        h(
+          props.as,
+          {
+            role: listRole.value,
+            'aria-labelledby': matched.heading
+              ? (matched.heading.props?.id ?? headingId)
+              : container.listLabelledBy,
+            ref: setElement,
+            'data-component': 'ActionList',
+            'data-dividers': props.showDividers,
+            'data-variant': props.variant,
+            'data-item-gap':
+              itemGapFlag.value && !props.disableItemGap && container.container === 'NavList'
+                ? ''
+                : undefined,
+            ...attrs,
+            class: [classes['action-list'], props.className, attrs.class],
+            style: normalizeReactStyle(attrs.style),
+          },
+          typeof props.as === 'string' ? rest : { default: () => rest },
+        ),
+      ]
+    }
+  },
+})
 </script>
-
-<style scoped>
-.action-list {
-  --action-list-inset: 8px;
-  --action-list-gap: 8px;
-  --action-list-item-radius: var(--borderRadius-medium, 6px);
-  --action-list-item-padding-block: 6px;
-  --action-list-item-padding-inline: 8px;
-  --action-list-row-height: 20px;
-
-  box-sizing: border-box;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.action-list[data-variant='inset'] {
-  padding: var(--action-list-inset);
-}
-
-.action-list[data-variant='horizontal-inset'] {
-  padding-block-end: var(--action-list-inset);
-}
-
-.action-list[data-variant='horizontal-inset'] :deep(.action-list-item) {
-  margin-inline: var(--action-list-inset);
-}
-
-.action-list :deep(.action-list-list) {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.action-list[data-dividers='true'] :deep(.action-list-item:not(:first-child) .action-list-sub-content::before) {
-  position: absolute;
-  top: -7px;
-  display: block;
-  width: 100%;
-  height: 1px;
-  content: '';
-  background: var(--borderColor-muted, #d1d9e0b3);
-}
-
-.action-list[data-dividers='true'] :deep(.action-list-divider + .action-list-item .action-list-sub-content::before),
-.action-list[data-dividers='true'] :deep(.action-list-group + .action-list-item .action-list-sub-content::before) {
-  visibility: hidden;
-}
-</style>

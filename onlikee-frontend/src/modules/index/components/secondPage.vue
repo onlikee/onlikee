@@ -2,35 +2,23 @@
   <div class="second-page">
     <div class="second-grid">
       <div class="panel-text panel-vision">
-        <h2 class="panel-title">
-          Vision
-        </h2>
+        <h2 class="panel-title">Vision</h2>
         <p class="panel-description">
           不同于行业巨头Vecel，我希望提供门槛更低的页面托管服务，简单的就是最棒的。
         </p>
-        <p class="italic text-gray-600">
-          绝不是因为只能做成这样！:(
-        </p>
+        <p class="italic text-gray-600">绝不是因为只能做成这样！:(</p>
       </div>
       <div class="panel-image panel-city">
-        <img
-          src="../assests/image-0.svg"
-          alt="Futuristic city illustration"
-        >
+        <img src="../assests/image-0.svg" alt="Futuristic city illustration" />
       </div>
       <div class="panel-text panel-mission">
-        <h2 class="panel-title">
-          Mission
-        </h2>
+        <h2 class="panel-title">Mission</h2>
         <p class="panel-description">
           我希望每个刚踏入编程领域的新手们，都能在最短时间内，把自己的代码变成真正被世界访问的作品，以便获得10倍的成就感。
         </p>
       </div>
       <div class="panel-image panel-space">
-        <img
-          src="../assests/image-1.webp"
-          alt="Astronaut floating near a colorful cosmic ring"
-        >
+        <img src="../assests/image-1.webp" alt="Astronaut floating near a colorful cosmic ring" />
       </div>
     </div>
   </div>
@@ -130,7 +118,7 @@
     padding: 4rem 2rem;
   }
 
-  .panel-title{
+  .panel-title {
     font-size: 3rem;
   }
 

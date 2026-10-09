@@ -15,6 +15,7 @@ export const underlinePanelsKey: InjectionKey<UnderlinePanelsContext> = Symbol('
 
 export function useUnderlinePanels() {
   const context = inject(underlinePanelsKey)
-  if (!context) throw new Error('UnderlinePanels.Tab and UnderlinePanels.Panel must be inside UnderlinePanels')
+  if (!context)
+    throw new Error('UnderlinePanels.Tab and UnderlinePanels.Panel must be inside UnderlinePanels')
   return context
 }

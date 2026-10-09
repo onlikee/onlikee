@@ -10,18 +10,13 @@
       </template>
       <ComponentDocsDemoBlock :code="codes.basic">
         <FormControl>
-          <Radio
-            name="radio-default"
-            value="default"
-          />
+          <Radio name="radio-default" value="default" />
           <FormControl.Label>默认选项</FormControl.Label>
         </FormControl>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
     <ComponentDocsSection title="受控状态">
-      <template #description>
-        通过 checked 设置选中状态，并在 change 事件中更新当前值。
-      </template>
+      <template #description> 通过 checked 设置选中状态，并在 change 事件中更新当前值。 </template>
       <ComponentDocsDemoBlock :code="codes.controlled">
         <div class="examples">
           <FormControl>
@@ -40,9 +35,7 @@
               @change="select"
             /><FormControl.Label>选项 B</FormControl.Label>
           </FormControl>
-          <p class="demo-status">
-            当前值：{{ selected }}
-          </p>
+          <p class="demo-status">当前值：{{ selected }}</p>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -53,21 +46,16 @@
       <ComponentDocsDemoBlock :code="codes.defaultChecked">
         <form class="examples">
           <FormControl>
-            <Radio
-              name="radio-delivery"
-              value="standard"
-              default-checked
-            /><FormControl.Label>标准配送</FormControl.Label>
+            <Radio name="radio-delivery" value="standard" default-checked /><FormControl.Label
+              >标准配送</FormControl.Label
+            >
           </FormControl>
           <FormControl>
-            <Radio
-              name="radio-delivery"
-              value="express"
-            /><FormControl.Label>加急配送</FormControl.Label>
+            <Radio name="radio-delivery" value="express" /><FormControl.Label
+              >加急配送</FormControl.Label
+            >
           </FormControl>
-          <Button type="reset">
-            重置表单
-          </Button>
+          <Button type="reset"> 重置表单 </Button>
         </form>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -78,17 +66,14 @@
       <ComponentDocsDemoBlock :code="codes.disabled">
         <div class="examples">
           <FormControl disabled>
-            <Radio
-              name="radio-disabled-off"
-              value="off"
-            /><FormControl.Label>禁用未选中</FormControl.Label>
+            <Radio name="radio-disabled-off" value="off" /><FormControl.Label
+              >禁用未选中</FormControl.Label
+            >
           </FormControl>
           <FormControl disabled>
-            <Radio
-              name="radio-disabled-on"
-              value="on"
-              checked
-            /><FormControl.Label>禁用已选中</FormControl.Label><FormControl.Caption>此选项暂不可更改。</FormControl.Caption>
+            <Radio name="radio-disabled-on" value="on" checked /><FormControl.Label
+              >禁用已选中</FormControl.Label
+            ><FormControl.Caption>此选项暂不可更改。</FormControl.Caption>
           </FormControl>
         </div>
       </ComponentDocsDemoBlock>
@@ -96,9 +81,7 @@
     <ComponentDocsSection title="RadioGroup 联动">
       <template #description>
         使用 RadioGroup 统一设置组名、标题和说明。更多用法见
-        <RouterLink to="/component/radio-group">
-          RadioGroup 文档
-        </RouterLink>。
+        <RouterLink to="/component/radio-group"> RadioGroup 文档 </RouterLink>。
       </template>
       <ComponentDocsDemoBlock :code="codes.group">
         <RadioGroup name="radio-frequency">
@@ -113,44 +96,15 @@
         </RadioGroup>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
-    <ComponentDocsSection
-      title="属性"
-      variant="api"
-    >
-      <Table
-        :columns="columns"
-        :data="rows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+    <ComponentDocsSection title="属性" variant="api">
+      <Table :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
-    <ComponentDocsSection
-      title="事件"
-      variant="api"
-    >
-      <Table
-        :columns="columns"
-        :data="eventRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+    <ComponentDocsSection title="事件" variant="api">
+      <Table :columns="columns" :data="eventRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
-    <ComponentDocsSection
-      title="组件实例"
-      variant="api"
-    >
-      <template #description>
-        通过模板 ref 获取组件实例，可访问输入元素或控制焦点。
-      </template>
-      <Table
-        :columns="columns"
-        :data="instanceRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+    <ComponentDocsSection title="组件实例" variant="api">
+      <template #description> 通过模板 ref 获取组件实例，可访问输入元素或控制焦点。 </template>
+      <Table :columns="columns" :data="instanceRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
@@ -199,12 +153,12 @@ function select(event: Event) { selected.value = (event.currentTarget as HTMLInp
   <RadioGroup.Caption>选择一种通知方式。</RadioGroup.Caption>
   <FormControl><Radio value="daily" /><FormControl.Label>每天</FormControl.Label></FormControl>
   <FormControl><Radio value="weekly" /><FormControl.Label>每周</FormControl.Label></FormControl>
-</RadioGroup>`
+</RadioGroup>`,
 }
 const columns: TableColumn[] = [
   { key: 'name', label: '名称', rowHeader: true },
   { key: 'type', label: '类型', wrap: true },
-  { key: 'description', label: '说明', wrap: true }
+  { key: 'description', label: '说明', wrap: true },
 ]
 const rows = [
   { name: 'value', type: 'string（必填）', description: '选项的表单值' },
@@ -212,41 +166,41 @@ const rows = [
   {
     name: 'checked',
     type: 'boolean | undefined',
-    description: '受控选中状态；未提供时使用非受控模式'
+    description: '受控选中状态；未提供时使用非受控模式',
   },
   { name: 'defaultChecked', type: 'boolean', description: '非受控初始状态' },
   {
     name: 'disabled',
     type: 'boolean',
-    description: '禁用选项；与 FormControl 组合时，在 FormControl 上设置'
+    description: '禁用选项；与 FormControl 组合时，在 FormControl 上设置',
   },
   {
     name: 'required',
     type: 'boolean',
-    description: '设置原生表单必填校验；与 FormControl 组合时，使用组级校验提示'
+    description: '设置原生表单必填校验；与 FormControl 组合时，使用组级校验提示',
   },
   {
     name: 'id',
     type: 'string',
-    description: '输入元素标识；与 FormControl 组合时，在 FormControl 上设置'
+    description: '输入元素标识；与 FormControl 组合时，在 FormControl 上设置',
   },
   {
     name: 'class / className',
     type: 'string',
-    description: '为单选框添加自定义样式类'
-  }
+    description: '为单选框添加自定义样式类',
+  },
 ]
 const eventRows = [
   {
     name: 'change',
     type: '(event: Event) => void',
-    description: '选择选项时触发，通过 event.currentTarget 获取输入元素'
-  }
+    description: '选择选项时触发，通过 event.currentTarget 获取输入元素',
+  },
 ]
 const instanceRows = [
   { name: 'input', type: 'HTMLInputElement | null', description: '单选框的输入元素' },
   { name: 'focus', type: '(options?: FocusOptions) => void', description: '让单选框获得焦点' },
-  { name: 'blur', type: '() => void', description: '让单选框失去焦点' }
+  { name: 'blur', type: '() => void', description: '让单选框失去焦点' },
 ]
 </script>
 

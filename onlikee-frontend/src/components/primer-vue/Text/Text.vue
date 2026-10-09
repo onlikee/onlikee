@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { shallowRef, useAttrs } from 'vue'
+import { shallowRef, useAttrs, useCssModule } from 'vue'
 import type { TextElement, TextOptions } from './types'
 
 // eslint-disable-next-line vue/no-reserved-component-names -- Keep the public component name.
@@ -7,18 +7,19 @@ defineOptions({ name: 'Text', inheritAttrs: false })
 
 const props = withDefaults(defineProps<TextOptions>(), { as: 'span' })
 const attrs = useAttrs()
+const styles = useCssModule()
 const element = shallowRef<TextElement | null>(null)
 
 function getRootAttrs() {
   const { class: classValue, ...rest } = attrs
 
   return {
-    class: [props.className, classValue, 'text'],
+    class: [props.className, classValue, styles['text']],
     'data-component': 'Text',
     'data-size': props.size,
     'data-weight': props.weight,
     'data-white-space': props.whiteSpace,
-    ...rest
+    ...rest,
   }
 }
 
@@ -26,66 +27,8 @@ defineExpose({ element })
 </script>
 
 <template>
-  <component
-    :is="as"
-    ref="element"
-    v-bind="getRootAttrs()"
-  >
+  <component :is="as" ref="element" v-bind="getRootAttrs()">
     <slot />
   </component>
 </template>
-
-<style scoped>
-.text {
-  &:where([data-size='small']) {
-    font-size: var(--text-body-size-small, 0.75rem);
-    line-height: var(--text-body-lineHeight-small, 1.625);
-  }
-
-  &:where([data-size='medium']) {
-    font-size: var(--text-body-size-medium, 0.875rem);
-    line-height: var(--text-body-lineHeight-medium, 1.5);
-  }
-
-  &:where([data-size='large']) {
-    font-size: var(--text-body-size-large, 1rem);
-    line-height: var(--text-body-lineHeight-large, 1.5);
-  }
-
-  &:where([data-weight='light']) {
-    font-weight: var(--base-text-weight-light, 300);
-  }
-
-  &:where([data-weight='normal']) {
-    font-weight: var(--base-text-weight-normal, 400);
-  }
-
-  &:where([data-weight='medium']) {
-    font-weight: var(--base-text-weight-medium, 500);
-  }
-
-  &:where([data-weight='semibold']) {
-    font-weight: var(--base-text-weight-semibold, 600);
-  }
-
-  &:where([data-white-space='pre']) {
-    white-space: pre;
-  }
-
-  &:where([data-white-space='normal']) {
-    white-space: normal;
-  }
-
-  &:where([data-white-space='nowrap']) {
-    white-space: nowrap;
-  }
-
-  &:where([data-white-space='pre-wrap']) {
-    white-space: pre-wrap;
-  }
-
-  &:where([data-white-space='pre-line']) {
-    white-space: pre-line;
-  }
-}
-</style>
+<style module src="./Text.module.css" />

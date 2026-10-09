@@ -35,7 +35,10 @@ export const getOAuthRenderUrl = (provider: string) =>
 
 export const loginWithOAuthCallback = (provider: string, params: OAuthCallbackParams) => {
   const query = { code: params.code, state: params.state }
-  return get<OAuthCallbackResponse>(`/oauth/${provider}/callback`, { params: query, withCredentials: true })
+  return get<OAuthCallbackResponse>(`/oauth/${provider}/callback`, {
+    params: query,
+    withCredentials: true,
+  })
 }
 
 export const completeOAuthSignup = (request: OAuthSignupCompleteRequest) =>

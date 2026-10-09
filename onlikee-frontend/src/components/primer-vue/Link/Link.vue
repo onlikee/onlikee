@@ -1,27 +1,23 @@
 <template>
-  <span class="link-wrapper">
-    <span
-      v-if="prefixText"
-      class="link-prefix"
-    >{{ prefixText }}</span>
-    <a 
-      :href="href" 
-      :target="target" 
-      :rel="(external || target === '_blank') ? 'noopener noreferrer' : undefined"
-      class="link"
-      :class="{
-        'link-external': external,
-        'link-primary': variant === 'primary',
-        'link-secondary': variant === 'secondary',
-        'link-danger': variant === 'danger'
-      }"
+  <span :class="$style['link-wrapper']">
+    <span v-if="prefixText" :class="$style['link-prefix']">{{ prefixText }}</span>
+    <a
+      :href="href"
+      :target="target"
+      :rel="external || target === '_blank' ? 'noopener noreferrer' : undefined"
+      :class="[
+        $style['link'],
+        {
+          [$style['link-external']]: external,
+          [$style['link-primary']]: variant === 'primary',
+          [$style['link-secondary']]: variant === 'secondary',
+          [$style['link-danger']]: variant === 'danger',
+        },
+      ]"
     >
       {{ linkText }}
     </a>
-    <span
-      v-if="suffixText"
-      class="link-suffix"
-    >{{ suffixText }}</span>
+    <span v-if="suffixText" :class="$style['link-suffix']">{{ suffixText }}</span>
   </span>
 </template>
 
@@ -48,77 +44,7 @@ withDefaults(defineProps<Props>(), {
   prefixText: '',
   suffixText: '',
   target: '_self',
-  variant: 'primary'
+  variant: 'primary',
 })
 </script>
-
-<style scoped>
-.link-wrapper {
-  display: inline;
-}
-
-.link-prefix,
-.link-suffix {
-  color: inherit;
-}
-
-.link {
-  color: var(--fgColor-link, #0969da);
-  text-decoration: none;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  border-radius: 3px;
-  padding: 0 2px;
-}
-
-.link:hover {
-  color: var(--fgColor-link, #0969da);
-  text-decoration: underline;
-}
-
-.link:active {
-  color: var(--fgColor-link, #0969da);
-}
-
-/* 变体样式 */
-.link-primary {
-  color: var(--fgColor-link, #0969da);
-}
-
-.link-primary:hover {
-  color: var(--fgColor-link, #0969da);
-}
-
-.link-secondary {
-  color: var(--fgColor-muted, #59636e);
-}
-
-.link-secondary:hover {
-  color: var(--fgColor-default, #1f2328);
-}
-
-.link-danger {
-  color: var(--fgColor-danger, #d1242f);
-}
-
-.link-danger:hover {
-  color: var(--fgColor-danger, #d1242f);
-}
-
-/* 外部链接样式 */
-.link-external::after {
-  content: '↗';
-  font-size: 0.8em;
-  margin-left: 2px;
-}
-
-/* 焦点样式 */
-.link:focus {
-  outline: 2px solid var(--focus-outlineColor, #0969da);
-  outline-offset: 2px;
-}
-
-.link:focus:not(:focus-visible) {
-  outline: none;
-}
-</style>
+<style module src="./Link.module.css" />

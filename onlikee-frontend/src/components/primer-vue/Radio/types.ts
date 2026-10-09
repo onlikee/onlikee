@@ -11,7 +11,6 @@ export interface RadioOptions {
   required?: boolean
   className?: string
   ariaHidden?: boolean | 'true' | 'false'
-  /** Controlled selection state, matching Primer React. */
   checked?: boolean
   /** Initial selection in uncontrolled mode. */
   defaultChecked?: boolean
@@ -20,5 +19,6 @@ export interface RadioOptions {
 export type RadioProps = RadioOptions & Omit<InputHTMLAttributes, keyof RadioOptions>
 
 export interface RadioEmits {
+  'update:checked': [checked: boolean]
   change: [event: Event]
 }

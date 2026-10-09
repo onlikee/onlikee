@@ -12,55 +12,13 @@
 
       <ComponentDocsDemoBlock :code="serviceDemoCode">
         <div class="banner-demo-actions">
-          <button
-            class="demo-btn"
-            type="button"
-            @click="showInfoBanner"
-          >
-            Info
-          </button>
-          <button
-            class="demo-btn"
-            type="button"
-            @click="showSuccessBanner"
-          >
-            Success
-          </button>
-          <button
-            class="demo-btn"
-            type="button"
-            @click="showTimedBanner"
-          >
-            自动关闭
-          </button>
-          <button
-            class="demo-btn"
-            type="button"
-            @click="showWarningBanner"
-          >
-            Warning
-          </button>
-          <button
-            class="demo-btn"
-            type="button"
-            @click="showCriticalBanner"
-          >
-            Critical
-          </button>
-          <button
-            class="demo-btn"
-            type="button"
-            @click="showUpsellBanner"
-          >
-            Upsell
-          </button>
-          <button
-            class="demo-btn demo-btn--ghost"
-            type="button"
-            @click="closeBanner"
-          >
-            Close
-          </button>
+          <button class="demo-btn" type="button" @click="showInfoBanner">Info</button>
+          <button class="demo-btn" type="button" @click="showSuccessBanner">Success</button>
+          <button class="demo-btn" type="button" @click="showTimedBanner">自动关闭</button>
+          <button class="demo-btn" type="button" @click="showWarningBanner">Warning</button>
+          <button class="demo-btn" type="button" @click="showCriticalBanner">Critical</button>
+          <button class="demo-btn" type="button" @click="showUpsellBanner">Upsell</button>
+          <button class="demo-btn demo-btn--ghost" type="button" @click="closeBanner">Close</button>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -72,11 +30,7 @@
 
       <ComponentDocsDemoBlock :code="durationDemoCode">
         <div class="banner-demo-actions">
-          <button
-            class="demo-btn"
-            type="button"
-            @click="showTimedBanner"
-          >
+          <button class="demo-btn" type="button" @click="showTimedBanner">
             展示自动关闭 Banner
           </button>
         </div>
@@ -85,30 +39,19 @@
 
     <ComponentDocsSection title="不同状态与操作按钮">
       <template #description>
-        通过 <code>primaryAction</code>、<code>secondaryAction</code> 和 <code>actionsLayout</code> 配置按钮与布局。
+        通过 <code>primaryAction</code>、<code>secondaryAction</code> 和
+        <code>actionsLayout</code> 配置按钮与布局。
       </template>
 
       <ComponentDocsDemoBlock :code="actionsDemoCode">
         <div class="banner-demo-actions">
-          <button
-            class="demo-btn"
-            type="button"
-            @click="showDefaultActionsBanner"
-          >
+          <button class="demo-btn" type="button" @click="showDefaultActionsBanner">
             Default Actions
           </button>
-          <button
-            class="demo-btn"
-            type="button"
-            @click="showInlineActionsBanner"
-          >
+          <button class="demo-btn" type="button" @click="showInlineActionsBanner">
             Inline Actions
           </button>
-          <button
-            class="demo-btn"
-            type="button"
-            @click="showStackedActionsBanner"
-          >
+          <button class="demo-btn" type="button" @click="showStackedActionsBanner">
             Stacked Actions
           </button>
         </div>
@@ -117,25 +60,16 @@
 
     <ComponentDocsSection title="组件实例调用（ref）">
       <template #description>
-        直接挂载 <code>Banner.vue</code>，通过组件实例暴露的 <code>show()</code> / <code>close()</code> 方法控制展示。
+        直接挂载 <code>Banner.vue</code>，通过组件实例暴露的 <code>show()</code> /
+        <code>close()</code> 方法控制展示。
       </template>
 
       <ComponentDocsDemoBlock :code="instanceDemoCode">
         <div class="banner-demo-instance">
           <BannerView ref="bannerRef" />
           <div class="banner-demo-actions">
-            <button
-              class="demo-btn"
-              type="button"
-              @click="showBannerWithRef"
-            >
-              Call show()
-            </button>
-            <button
-              class="demo-btn demo-btn--ghost"
-              type="button"
-              @click="closeBannerWithRef"
-            >
+            <button class="demo-btn" type="button" @click="showBannerWithRef">Call show()</button>
+            <button class="demo-btn demo-btn--ghost" type="button" @click="closeBannerWithRef">
               Call close()
             </button>
           </div>
@@ -143,10 +77,7 @@
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="API"
-      variant="api"
-    >
+    <ComponentDocsSection title="API" variant="api">
       <h4>Banner 方法</h4>
       <Table
         :columns="methodTableColumns"
@@ -156,9 +87,7 @@
         :hoverable="false"
       />
 
-      <h4 style="margin-top: 24px;">
-        BannerOptions
-      </h4>
+      <h4 style="margin-top: 24px">BannerOptions</h4>
       <Table
         :columns="optionsTableColumns"
         :data="optionsTableRows"
@@ -167,9 +96,7 @@
         :hoverable="false"
       />
 
-      <h4 style="margin-top: 24px;">
-        BannerAction
-      </h4>
+      <h4 style="margin-top: 24px">BannerAction</h4>
       <Table
         :columns="actionTableColumns"
         :data="actionTableRows"
@@ -178,9 +105,7 @@
         :hoverable="false"
       />
 
-      <h4 style="margin-top: 24px;">
-        BannerExposed
-      </h4>
+      <h4 style="margin-top: 24px">BannerExposed</h4>
       <Table
         :columns="exposedTableColumns"
         :data="exposedTableRows"
@@ -237,13 +162,13 @@ const showDefaultActionsBanner = () => {
     title: '版本更新提醒',
     primaryAction: {
       label: '立即更新',
-      onClick: () => Banner.success('更新任务已加入队列。')
+      onClick: () => Banner.success('更新任务已加入队列。'),
     },
     secondaryAction: {
       label: '稍后提醒',
-      onClick: () => Banner.info('已记录你的提醒偏好。')
+      onClick: () => Banner.info('已记录你的提醒偏好。'),
     },
-    actionsLayout: 'default'
+    actionsLayout: 'default',
   })
 }
 
@@ -252,13 +177,13 @@ const showInlineActionsBanner = () => {
     title: '容量提醒',
     primaryAction: {
       label: '查看套餐',
-      href: 'https://github.com/UnderHear'
+      href: 'https://github.com/UnderHear',
     },
     secondaryAction: {
       label: '稍后处理',
-      onClick: () => Banner.info('你可以在设置页随时处理。')
+      onClick: () => Banner.info('你可以在设置页随时处理。'),
     },
-    actionsLayout: 'inline'
+    actionsLayout: 'inline',
   })
 }
 
@@ -267,13 +192,13 @@ const showStackedActionsBanner = () => {
     title: '部署失败',
     primaryAction: {
       label: '重试部署',
-      onClick: () => Banner.info('已发起重试部署。')
+      onClick: () => Banner.info('已发起重试部署。'),
     },
     secondaryAction: {
       label: '查看日志',
-      onClick: () => Banner.info('正在打开日志面板。')
+      onClick: () => Banner.info('正在打开日志面板。'),
     },
-    actionsLayout: 'stacked'
+    actionsLayout: 'stacked',
   })
 }
 
@@ -282,8 +207,8 @@ const showBannerWithRef = () => {
     title: 'Ref 调用成功',
     primaryAction: {
       label: '继续',
-      onClick: () => Banner.info('继续下一步。')
-    }
+      onClick: () => Banner.info('继续下一步。'),
+    },
   })
 }
 
@@ -461,86 +386,96 @@ const closeBannerWithRef = () => bannerRef.value?.close()
 const methodTableColumns: TableColumn[] = [
   { key: 'name', label: '方法', rowHeader: true, minWidth: '220px', wrap: true },
   { key: 'description', label: '说明', minWidth: '240px', wrap: true },
-  { key: 'signature', label: '签名', minWidth: '360px', wrap: true }
+  { key: 'signature', label: '签名', minWidth: '360px', wrap: true },
 ]
 
 const methodTableRows = [
   {
     name: 'Banner(message, type?, options?)',
     description: '按类型展示横幅提示，并返回 close 句柄。',
-    signature: '(message: string, type?: BannerType, options?: BannerOptions) => BannerResult'
+    signature: '(message: string, type?: BannerType, options?: BannerOptions) => BannerResult',
   },
   {
     name: 'Banner.info/success/warning/critical/upsell',
     description: '语义化快捷方法。',
-    signature: '(message: string, options?: BannerOptions) => BannerResult'
+    signature: '(message: string, options?: BannerOptions) => BannerResult',
   },
   {
     name: 'Banner.error',
     description: 'critical 的别名，等同 Banner.critical。',
-    signature: '(message: string, options?: BannerOptions) => BannerResult'
+    signature: '(message: string, options?: BannerOptions) => BannerResult',
   },
   {
     name: 'Banner.close',
     description: '关闭当前横幅。',
-    signature: '() => void'
-  }
+    signature: '() => void',
+  },
 ]
 
 const optionsTableColumns: TableColumn[] = [
   { key: 'name', label: '字段', rowHeader: true, minWidth: '170px' },
   { key: 'description', label: '说明', minWidth: '220px', wrap: true },
   { key: 'type', label: '类型', minWidth: '240px', wrap: true },
-  { key: 'default', label: '默认值', minWidth: '140px' }
+  { key: 'default', label: '默认值', minWidth: '140px' },
 ]
 
 const optionsTableRows = [
-  { name: 'title', description: '标题文本', type: 'string', default: "type 对应默认标题" },
+  { name: 'title', description: '标题文本', type: 'string', default: 'type 对应默认标题' },
   { name: 'description', description: '描述文本', type: 'string', default: 'message' },
   { name: 'ariaLabel', description: '无障碍标签', type: 'string', default: "'undefined'" },
   { name: 'hideTitle', description: '是否隐藏可见标题', type: 'boolean', default: 'false' },
   { name: 'dismissible', description: '是否显示关闭按钮', type: 'boolean', default: 'true' },
-  { name: 'primaryAction', description: '主操作按钮配置', type: 'BannerAction', default: "'undefined'" },
-  { name: 'secondaryAction', description: '次操作按钮配置', type: 'BannerAction', default: "'undefined'" },
+  {
+    name: 'primaryAction',
+    description: '主操作按钮配置',
+    type: 'BannerAction',
+    default: "'undefined'",
+  },
+  {
+    name: 'secondaryAction',
+    description: '次操作按钮配置',
+    type: 'BannerAction',
+    default: "'undefined'",
+  },
   {
     name: 'actionsLayout',
     description: '操作按钮布局',
     type: "'default' | 'inline' | 'stacked'",
-    default: "'default'"
+    default: "'default'",
   },
   { name: 'flush', description: '是否使用通栏样式', type: 'boolean', default: 'false' },
-  { name: 'duration', description: '自动关闭时长（毫秒）', type: 'number', default: "'undefined'" }
+  { name: 'duration', description: '自动关闭时长（毫秒）', type: 'number', default: "'undefined'" },
 ]
 
 const actionTableColumns: TableColumn[] = [
   { key: 'name', label: '字段', rowHeader: true, minWidth: '160px' },
   { key: 'description', label: '说明', minWidth: '260px', wrap: true },
-  { key: 'type', label: '类型', minWidth: '260px', wrap: true }
+  { key: 'type', label: '类型', minWidth: '260px', wrap: true },
 ]
 
 const actionTableRows = [
   { name: 'label', description: '按钮文本', type: 'string' },
   { name: 'href', description: '跳转链接（存在时渲染为 a 标签）', type: 'string | undefined' },
-  { name: 'onClick', description: '点击回调（无 href 时常用）', type: '(() => void) | undefined' }
+  { name: 'onClick', description: '点击回调（无 href 时常用）', type: '(() => void) | undefined' },
 ]
 
 const exposedTableColumns: TableColumn[] = [
   { key: 'name', label: '方法', rowHeader: true, minWidth: '220px', wrap: true },
   { key: 'description', label: '说明', minWidth: '220px', wrap: true },
-  { key: 'signature', label: '签名', minWidth: '360px', wrap: true }
+  { key: 'signature', label: '签名', minWidth: '360px', wrap: true },
 ]
 
 const exposedTableRows = [
   {
     name: 'show',
     description: '显示 Banner。',
-    signature: '(message: string, type?: BannerType, options?: BannerOptions) => BannerResult'
+    signature: '(message: string, type?: BannerType, options?: BannerOptions) => BannerResult',
   },
   {
     name: 'close',
     description: '关闭 Banner。',
-    signature: '() => void'
-  }
+    signature: '() => void',
+  },
 ]
 </script>
 

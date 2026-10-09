@@ -1,0 +1,5 @@
+export { default } from './Token.vue'
+export { default as Token } from './Token.vue'
+export { default as IssueLabelToken } from './IssueLabelToken.vue'
+export type { TokenBaseProps, TokenProps, IssueLabelTokenProps, TokenSizeKeys } from './types'
+export { tokenSizes, defaultTokenSize } from './types'

@@ -12,24 +12,27 @@ const request = axios.create({
   timeout: 15000,
 })
 
-request.interceptors.response.use((response) => {
-  response.data = unwrapApiResponse(response.data as ApiResponse<unknown>)
-  return response
-}, (error) => {
-  if (axios.isAxiosError(error)) {
-    if (isNetworkError(error)) {
-      Banner.error(NETWORK_ERROR_MESSAGE)
-      return Promise.reject(new Error(NETWORK_ERROR_MESSAGE))
-    }
+request.interceptors.response.use(
+  (response) => {
+    response.data = unwrapApiResponse(response.data as ApiResponse<unknown>)
+    return response
+  },
+  (error) => {
+    if (axios.isAxiosError(error)) {
+      if (isNetworkError(error)) {
+        Banner.error(NETWORK_ERROR_MESSAGE)
+        return Promise.reject(new Error(NETWORK_ERROR_MESSAGE))
+      }
 
-    const payload = error.response?.data
-    if (isApiResponse(payload) && payload.message) {
-      Banner.error(payload.message)
-      return Promise.reject(new Error(payload.message))
+      const payload = error.response?.data
+      if (isApiResponse(payload) && payload.message) {
+        Banner.error(payload.message)
+        return Promise.reject(new Error(payload.message))
+      }
     }
-  }
-  return Promise.reject(error)
-})
+    return Promise.reject(error)
+  },
+)
 
 const isApiResponse = (payload: unknown): payload is ApiResponse<unknown> => {
   if (!payload || typeof payload !== 'object') return false
@@ -38,7 +41,12 @@ const isApiResponse = (payload: unknown): payload is ApiResponse<unknown> => {
 }
 
 const isNetworkError = (error: unknown) => {
-  return axios.isAxiosError(error) && error.code !== 'ERR_CANCELED' && !error.response && Boolean(error.request)
+  return (
+    axios.isAxiosError(error) &&
+    error.code !== 'ERR_CANCELED' &&
+    !error.response &&
+    Boolean(error.request)
+  )
 }
 
 export const get = async <T>(url: string, config?: AxiosRequestConfig) => {

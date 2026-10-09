@@ -1,0 +1,9 @@
+.form-control__caption {
+  display: block;
+  font-size: var(--text-body-size-small, 12px);
+  color: var(--fgColor-muted, #59636e);
+
+  &:where([data-control-disabled]) {
+    color: var(--control-fgColor-disabled, #818b98);
+  }
+}

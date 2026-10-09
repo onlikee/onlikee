@@ -1,7 +1,8 @@
 import type { Component, InjectionKey, VNode } from 'vue'
 
 export type UnderlineNavBreakpoint = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge'
-export type UnderlineNavCurrent = 'page' | 'step' | 'location' | 'date' | 'time' | 'true' | 'false' | boolean
+export type UnderlineNavCurrent =
+  'page' | 'step' | 'location' | 'date' | 'time' | 'true' | 'false' | boolean
 
 export interface UnderlineNavEntry {
   id: string

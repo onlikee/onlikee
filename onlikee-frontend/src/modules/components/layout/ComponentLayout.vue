@@ -1,17 +1,8 @@
 <template>
   <div class="component-layout">
     <!-- 移动端菜单按钮 -->
-    <button
-      class="mobile-menu-btn"
-      aria-label="切换菜单"
-      @click="toggleSidebar"
-    >
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-      >
+    <button class="mobile-menu-btn" aria-label="切换菜单" @click="toggleSidebar">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
         <path
           d="M3 12h18M3 6h18M3 18h18"
           stroke="#d1d9e0"
@@ -22,24 +13,13 @@
     </button>
 
     <!-- 遮罩层 -->
-    <div
-      v-if="sidebarOpen"
-      class="sidebar-overlay"
-      @click="closeSidebar"
-    />
+    <div v-if="sidebarOpen" class="sidebar-overlay" @click="closeSidebar" />
 
     <!-- 左侧导航栏 -->
-    <aside
-      class="sidebar"
-      :class="{ open: sidebarOpen }"
-    >
+    <aside class="sidebar" :class="{ open: sidebarOpen }">
       <!-- 可滚动的导航内容区域 -->
       <div class="sidebar-content">
-        <div
-          v-for="section in navSections"
-          :key="section.title"
-          class="nav-section"
-        >
+        <div v-for="section in navSections" :key="section.title" class="nav-section">
           <div class="section-title">
             {{ section.title }}
           </div>
@@ -58,19 +38,14 @@
     </aside>
 
     <!-- 主内容区域 -->
-    <main
-      ref="mainContentRef"
-      class="main-content"
-    >
+    <main ref="mainContentRef" class="main-content">
       <router-view />
     </main>
 
     <!-- 右侧目录区 -->
     <aside class="toc-sidebar">
       <div class="toc-content">
-        <div class="toc-title">
-          目录
-        </div>
+        <div class="toc-title">目录</div>
         <nav class="toc-nav">
           <a
             v-for="item in tocItems"
@@ -120,7 +95,8 @@ const buildToc = () => {
   observer?.disconnect()
 
   const headings = Array.from(
-    mainContentRef.value?.querySelectorAll('h2:not(.demo-content *), h3:not(.demo-content *)') ?? []
+    mainContentRef.value?.querySelectorAll('h2:not(.demo-content *), h3:not(.demo-content *)') ??
+      [],
   ) as HTMLElement[]
 
   tocItems.value = headings.map((heading) => {
@@ -132,14 +108,12 @@ const buildToc = () => {
     return {
       id,
       content,
-      level: heading.tagName
+      level: heading.tagName,
     }
   })
 
-  const headerHeight = parseFloat(
-    getComputedStyle(document.documentElement)
-      .getPropertyValue('--header-height')
-  ) || 0
+  const headerHeight =
+    parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) || 0
 
   const topOffset = -(headerHeight + 20)
 
@@ -159,8 +133,8 @@ const buildToc = () => {
     {
       root: null,
       rootMargin: `${topOffset}px 0px -100% 0px`, // 提前触发
-      threshold: 0
-    }
+      threshold: 0,
+    },
   )
 
   headings.forEach((heading) => observer?.observe(heading))
@@ -177,7 +151,7 @@ watch(
     activeTocId.value = ''
     buildToc()
   },
-  { flush: 'post' }
+  { flush: 'post' },
 )
 
 onBeforeUnmount(() => {
@@ -192,24 +166,22 @@ const navSections = ref([
       { path: '/component/guide', label: 'Guide 指南' },
       { path: '/component/overview', label: 'Overview 组件总览' },
       { path: '/component/color', label: 'Color 颜色设计' },
-    ]
+    ],
   },
   {
     title: 'Icon 图标',
-    items: [{ path: '/component/octicons-vue3', label: 'Octicons-vue3 图标' }]
+    items: [{ path: '/component/octicons-vue3', label: 'Octicons-vue3 图标' }],
   },
   {
     title: 'Blocks 组合式组件',
-    items: [
-      { path: '/component/action-bar', label: 'ActionBar 操作栏' },
-      { path: '/component/action-panel', label: 'ActionPanel 操作面板' },
-      { path: '/component/user-menu', label: 'UserMenu 用户菜单' }
-    ]
+    items: [{ path: '/component/user-menu', label: 'UserMenu 用户菜单' }],
   },
   {
     title: 'Basic 基础组件',
     items: [
+      { path: '/component/action-bar', label: 'ActionBar 操作栏' },
       { path: '/component/action-list', label: 'ActionList 操作列表' },
+      { path: '/component/action-menu', label: 'ActionMenu 操作菜单' },
       { path: '/component/avatar', label: 'Avatar 头像' },
       { path: '/component/avatar-stack', label: 'AvatarStack 头像堆叠' },
       { path: '/component/button', label: 'Button 按钮' },
@@ -221,28 +193,32 @@ const navSections = ref([
       { path: '/component/link', label: 'Link 链接' },
       { path: '/component/truncate', label: 'Truncate 文本截断' },
       { path: '/component/text', label: 'Text 文本' },
-      { path: '/component/tag', label: 'Tag 标签' }
-    ]
+      { path: '/component/tag', label: 'Tag 标签' },
+    ],
   },
   {
     title: 'Form 表单组件',
     items: [
       { path: '/component/form-control', label: 'FormControl 表单控件' },
-      { path: '/component/input', label: 'Input 输入框' },
+      { path: '/component/text-input', label: 'TextInput 输入框' },
       { path: '/component/select', label: 'Select 选择器' },
+      { path: '/component/select-panel', label: 'SelectPanel 选择面板' },
+      { path: '/component/autocomplete', label: 'Autocomplete 自动补全' },
+      { path: '/component/text-input-with-tokens', label: 'TextInputWithTokens 标签输入' },
+      { path: '/component/checkbox', label: 'Checkbox 复选框与分组' },
       { path: '/component/radio', label: 'Radio 单选框' },
       { path: '/component/radio-group', label: 'RadioGroup 单选框组' },
       { path: '/component/textarea', label: 'Textarea 文本域' },
       { path: '/component/upload', label: 'Upload 上传' },
-      { path: '/component/image-upload', label: 'ImageUpload 图片上传' }
-    ]
+      { path: '/component/image-upload', label: 'ImageUpload 图片上传' },
+    ],
   },
   {
     title: 'Data 数据展示',
     items: [
       { path: '/component/table', label: 'Table 表格' },
-      { path: '/component/timeline', label: 'Timeline 时间线' }
-    ]
+      { path: '/component/timeline', label: 'Timeline 时间线' },
+    ],
   },
   {
     title: 'Navigation 导航',
@@ -250,8 +226,8 @@ const navSections = ref([
       { path: '/component/breadcrumbs', label: 'Breadcrumbs 面包屑' },
       { path: '/component/steps', label: 'Steps 步骤条' },
       { path: '/component/underline-nav', label: 'UnderlineNav 下划线导航' },
-      { path: '/component/underline-panels', label: 'UnderlinePanels 下划线选项卡' }
-    ]
+      { path: '/component/underline-panels', label: 'UnderlinePanels 下划线选项卡' },
+    ],
   },
   {
     title: 'Feedback 反馈组件',
@@ -262,9 +238,9 @@ const navSections = ref([
       { path: '/component/blankslate', label: 'Blankslate 空状态' },
       { path: '/component/dialog', label: 'Dialog 对话框' },
       { path: '/component/banner', label: 'Banner 横幅提示' },
-      { path: '/component/tooltip', label: 'Tooltip 文字提示' }
-    ]
-  }
+      { path: '/component/tooltip', label: 'Tooltip 文字提示' },
+    ],
+  },
 ])
 </script>
 

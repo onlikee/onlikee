@@ -2,46 +2,25 @@
   <div class="login-page">
     <div class="login-card">
       <div class="login-header">
-        <h1 class="login-title">
-          登录
-        </h1>
-        <p class="login-subtitle">
-          使用 第三方 账号登录
-        </p>
+        <h1 class="login-title">登录</h1>
+        <p class="login-subtitle">使用 第三方 账号登录</p>
       </div>
 
       <div class="login-actions">
-        <button
-          class="github-button"
-          :disabled="loading"
-          @click="startLogin('github')"
-        >
+        <button class="github-button" :disabled="loading" @click="startLogin('github')">
           <MarkGithubIcon size="20" />
           <span>{{ getButtonLabel('github') }}</span>
         </button>
-        <button
-          class="github-button"
-          :disabled="loading"
-          @click="startLogin('gitee')"
-        >
-          <LogoGiteeIcon
-            size="20"
-            color="#c71d23"
-          />
+        <button class="github-button" :disabled="loading" @click="startLogin('gitee')">
+          <LogoGiteeIcon size="20" color="#c71d23" />
           <span>{{ getButtonLabel('gitee') }}</span>
         </button>
 
         <p class="login-terms">
           登录即表示同意
-          <a
-            href="#"
-            class="login-link"
-          >服务条款</a>
+          <a href="#" class="login-link">服务条款</a>
           和
-          <a
-            href="#"
-            class="login-link"
-          >隐私政策</a>
+          <a href="#" class="login-link">隐私政策</a>
         </p>
       </div>
     </div>
@@ -55,11 +34,7 @@ import { useUserStore } from '@/stores/user'
 import { Banner } from '@/components/primer-vue/Banner'
 import { LogoGiteeIcon, MarkGithubIcon } from '@/components/octicons-vue3'
 import { getOAuthRenderUrl, loginWithOAuthCallback } from '../../api/login'
-import {
-  loginReturnToKey,
-  oauthProviderKey,
-  saveOAuthSignupContext
-} from '../../utils/session'
+import { loginReturnToKey, oauthProviderKey, saveOAuthSignupContext } from '../../utils/session'
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -68,7 +43,7 @@ const loading = ref(false)
 const currentProvider = ref<string | null>(null)
 // 从登录页 query 中读取登录成功后的回跳地址
 const getReturnTo = () => {
-  const returnTo = (route.query.return_to as string)
+  const returnTo = route.query.return_to as string
   if (route.query.return_to) {
     sessionStorage.setItem(loginReturnToKey, returnTo)
   }
@@ -190,7 +165,10 @@ onMounted(() => {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .github-button:hover {

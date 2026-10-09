@@ -1,0 +1,22 @@
+.spinner {
+  display: inline-flex;
+}
+
+.spinner__animation {
+  animation: spinner-rotate var(--base-duration-1000, 1s) var(--base-easing-linear, linear) infinite;
+}
+
+.spinner__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,2 @@
+.filtered-action-list__header { box-shadow: 0 1px 0 var(--borderColor-default, #d1d9e0); z-index: 1; }
+@media screen and (max-width: calc(768px - 0.02px)) { @supports (-webkit-touch-callout: none) { .filtered-action-list__header[data-full-screen-on-narrow='true'] [data-component='TextInput'] { font-size: var(--text-title-size-small, 16px); } } }

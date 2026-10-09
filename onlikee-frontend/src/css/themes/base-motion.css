@@ -1,0 +1,19 @@
+:root {
+  --base-duration-0: 0ms;
+  --base-duration-100: 100ms;
+  --base-duration-1000: 1000ms;
+  --base-duration-200: 200ms;
+  --base-duration-300: 300ms;
+  --base-duration-400: 400ms;
+  --base-duration-50: 50ms;
+  --base-duration-500: 500ms;
+  --base-duration-600: 600ms;
+  --base-duration-700: 700ms;
+  --base-duration-800: 800ms;
+  --base-duration-900: 900ms;
+  --base-easing-ease: cubic-bezier(0.25, 0.1, 0.25, 1); /** CSS default easing. Use for hover state changes and micro-interactions. */
+  --base-easing-easeIn: cubic-bezier(0.7, 0.1, 0.75, 0.9); /** Accelerating motion. Use for elements exiting the viewport (moving off-screen). */
+  --base-easing-easeInOut: cubic-bezier(0.6, 0, 0.2, 1); /** Smooth acceleration and deceleration. Use for elements moving or morphing within the viewport. */
+  --base-easing-easeOut: cubic-bezier(0.3, 0.8, 0.6, 1); /** Decelerating motion. Use for elements entering the viewport or appearing on screen. */
+  --base-easing-linear: cubic-bezier(0, 0, 1, 1); /** Constant motion with no acceleration. Use for continuous animations like progress bars or loaders. */
+}

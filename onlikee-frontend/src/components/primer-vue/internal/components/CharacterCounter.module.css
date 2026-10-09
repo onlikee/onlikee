@@ -1,0 +1,2 @@
+.character-counter { display: flex; align-items: center; gap: var(--control-xsmall-gap, 4px); color: var(--fgColor-muted, #59636e); }
+.character-counter-error { color: var(--fgColor-danger, #d1242f); }

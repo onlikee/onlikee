@@ -2,8 +2,7 @@
   <ComponentDocsPage>
     <ComponentDocsHeader title="Color 颜色设计">
       <template #description>
-        为了避免视觉传达差异，使用一套特定的调色板来规定颜色，为组件们提供一致的外观视觉感受。
-        感谢
+        为了避免视觉传达差异，使用一套特定的调色板来规定颜色，为组件们提供一致的外观视觉感受。 感谢
         <Link
           href="https://primer.style/brand/primitives/color/"
           link-text="primer style primitives"
@@ -16,90 +15,32 @@
     <ComponentDocsSection title="主题">
       <div class="themePickerGrid">
         <label class="themeCard">
-          <div
-            class="themePreview"
-            style="background-color: #FFFFFF;"
-          >
-            <div
-              class="colorDot"
-              style="background-color: #96A199;"
-            />
-            <div
-              class="colorDot"
-              style="background-color: #0377FF;"
-            />
-            <div
-              class="colorDot"
-              style="background-color: #0FBF3E;"
-            />
-            <div
-              class="colorDot"
-              style="background-color: #B85B06;"
-            />
-            <div
-              class="colorDot"
-              style="background-color: #CF2230;"
-            />
-            <div
-              class="colorDot"
-              style="background-color: #8534F3;"
-            />
-            <div
-              class="colorDot"
-              style="background-color: #EF2AA4;"
-            />
+          <div class="themePreview" style="background-color: #ffffff">
+            <div class="colorDot" style="background-color: #96a199" />
+            <div class="colorDot" style="background-color: #0377ff" />
+            <div class="colorDot" style="background-color: #0fbf3e" />
+            <div class="colorDot" style="background-color: #b85b06" />
+            <div class="colorDot" style="background-color: #cf2230" />
+            <div class="colorDot" style="background-color: #8534f3" />
+            <div class="colorDot" style="background-color: #ef2aa4" />
           </div>
           <div class="themeCardContent">
-            <input
-              v-model="selectedTheme"
-              type="radio"
-              name="color-theme"
-              :value="0"
-            >
+            <input v-model="selectedTheme" type="radio" name="color-theme" :value="0" />
             <span>Light</span>
           </div>
         </label>
         <label class="themeCard">
-          <div
-            class="themePreview"
-            style="background-color: #000000;"
-          >
-            <div
-              class="colorDot"
-              style="background-color: #353D37;"
-            />
-            <div
-              class="colorDot"
-              style="background-color: #0A50DB;"
-            />
-            <div
-              class="colorDot"
-              style="background-color: #08872B;"
-            />
-            <div
-              class="colorDot"
-              style="background-color: #B35101;"
-            />
-            <div
-              class="colorDot"
-              style="background-color: #D31231;"
-            />
-            <div
-              class="colorDot"
-              style="background-color: #6619E1;"
-            />
-            <div
-              class="colorDot"
-              style="background-color: #CA2186;"
-            />
+          <div class="themePreview" style="background-color: #000000">
+            <div class="colorDot" style="background-color: #353d37" />
+            <div class="colorDot" style="background-color: #0a50db" />
+            <div class="colorDot" style="background-color: #08872b" />
+            <div class="colorDot" style="background-color: #b35101" />
+            <div class="colorDot" style="background-color: #d31231" />
+            <div class="colorDot" style="background-color: #6619e1" />
+            <div class="colorDot" style="background-color: #ca2186" />
           </div>
           <div class="themeCardContent">
-            <input
-              v-model="selectedTheme"
-              type="radio"
-              name="color-theme"
-              :value="1"
-            >
+            <input v-model="selectedTheme" type="radio" name="color-theme" :value="1" />
             <span>Dark</span>
           </div>
         </label>
@@ -111,10 +52,7 @@
         class="scalesGrid"
         :style="{ backgroundColor: selectedTheme === 0 ? '#ffffff' : '#0D1117' }"
       >
-        <div
-          v-for="colorScale in ColorScales"
-          :key="colorScale.color"
-        >
+        <div v-for="colorScale in ColorScales" :key="colorScale.color">
           <div
             v-for="(color, index) in colorScale.scale"
             :key="index"
@@ -141,12 +79,8 @@
         class="baseColorsGrid"
         :style="{ backgroundColor: selectedTheme === 0 ? '#ffffff' : '#0D1117' }"
       >
-        <div class="colorSwatch baseColorBlack">
-          <span>black.0</span><span>#000000</span>
-        </div>
-        <div class="colorSwatch baseColorWhite">
-          <span>white.0</span><span>#FFFFFF</span>
-        </div>
+        <div class="colorSwatch baseColorBlack"><span>black.0</span><span>#000000</span></div>
+        <div class="colorSwatch baseColorWhite"><span>white.0</span><span>#FFFFFF</span></div>
       </div>
     </ComponentDocsSection>
   </ComponentDocsPage>
@@ -176,7 +110,7 @@ const ColorScales = [
       ['#58635B', '#191F1B'],
       ['#353D37', '#0F1511'],
       ['#191F1B', '#060907'],
-    ]
+    ],
   },
   {
     color: 'blue',
@@ -191,7 +125,7 @@ const ColorScales = [
       ['#0040A7', '#082A8F'],
       ['#002F7A', '#052063'],
       ['#001C4D', '#000839'],
-    ]
+    ],
   },
   {
     color: 'green',
@@ -206,7 +140,7 @@ const ColorScales = [
       ['#0D6731', '#0E422C'],
       ['#0E4A2E', '#0D3024'],
       ['#0D3024', '#0A241B'],
-    ]
+    ],
   },
   {
     color: 'yellow',
@@ -221,7 +155,7 @@ const ColorScales = [
       ['#824800', '#653200'],
       ['#653200', '#471F00'],
       ['#471F00', '#2A1000'],
-    ]
+    ],
   },
   {
     color: 'orange',
@@ -236,7 +170,7 @@ const ColorScales = [
       ['#703100', '#703100'],
       ['#5C2300', '#572400'],
       ['#471700', '#3D1800'],
-    ]
+    ],
   },
   {
     color: 'red',
@@ -251,7 +185,7 @@ const ColorScales = [
       ['#860620', '#860620'],
       ['#730019', '#5E0217'],
       ['#420011', '#33000D'],
-    ]
+    ],
   },
   {
     color: 'purple',
@@ -266,7 +200,7 @@ const ColorScales = [
       ['#43179E', '#26115F'],
       ['#26115F', '#160048'],
       ['#160048', '#0E022C'],
-    ]
+    ],
   },
   {
     color: 'pink',
@@ -281,7 +215,7 @@ const ColorScales = [
       ['#952866', '#741550'],
       ['#651643', '#520E39'],
       ['#3D0A28', '#30081F'],
-    ]
+    ],
   },
   {
     color: 'coral',
@@ -296,7 +230,7 @@ const ColorScales = [
       ['#A22710', '#801E0F'],
       ['#801E0F', '#500A00'],
       ['#500A00', '#3C0000'],
-    ]
+    ],
   },
   {
     color: 'lemon',
@@ -311,7 +245,7 @@ const ColorScales = [
       ['#614D01', '#654D02'],
       ['#413200', '#423101'],
       ['#322400', '#241900'],
-    ]
+    ],
   },
   {
     color: 'lime',
@@ -326,7 +260,7 @@ const ColorScales = [
       ['#425E13', '#22360B'],
       ['#2C440B', '#142A08'],
       ['#182C01', '#091D05'],
-    ]
+    ],
   },
   {
     color: 'teal',
@@ -341,7 +275,7 @@ const ColorScales = [
       ['#024B4D', '#047172'],
       ['#083D3D', '#024B4D'],
       ['#052B2C', '#052D2E'],
-    ]
+    ],
   },
   {
     color: 'indigo',
@@ -356,25 +290,26 @@ const ColorScales = [
       ['#262DAE', '#212183'],
       ['#212183', '#161962'],
       ['#12144F', '#0D103F'],
-    ]
-  }
+    ],
+  },
 ]
 
 function getReadableTextColor(backgroundColor: string) {
   const hex = backgroundColor.replace('#', '')
-  const normalized = hex.length === 3
-    ? hex.split('').map(char => char + char).join('')
-    : hex
+  const normalized =
+    hex.length === 3
+      ? hex
+          .split('')
+          .map((char) => char + char)
+          .join('')
+      : hex
 
   const r = Number.parseInt(normalized.slice(0, 2), 16) / 255
   const g = Number.parseInt(normalized.slice(2, 4), 16) / 255
   const b = Number.parseInt(normalized.slice(4, 6), 16) / 255
 
-  const linearize = (value: number) => (
-    value <= 0.03928
-      ? value / 12.92
-      : ((value + 0.055) / 1.055) ** 2.4
-  )
+  const linearize = (value: number) =>
+    value <= 0.03928 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
 
   const luminance = 0.2126 * linearize(r) + 0.7152 * linearize(g) + 0.0722 * linearize(b)
 
@@ -388,7 +323,7 @@ function getReadableTextColor(backgroundColor: string) {
   grid-template-columns: repeat(auto-fit, minmax(0, 286px));
   gap: 1rem;
   padding: 1rem;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
   border-radius: 0.5rem;
   background-color: #ffffff;
   margin-bottom: 0.5rem;
@@ -402,7 +337,9 @@ function getReadableTextColor(backgroundColor: string) {
 
 .colorScalesInfo {
   font-size: 14px;
-  font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
 }
 
 .baseColorsGrid {
@@ -410,7 +347,7 @@ function getReadableTextColor(backgroundColor: string) {
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
   padding: 1rem;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .1);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
   border-radius: 0.5rem;
   background-color: #ffffff;
   margin-bottom: 0.5rem;

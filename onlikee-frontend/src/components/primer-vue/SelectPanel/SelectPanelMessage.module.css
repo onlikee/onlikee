@@ -1,0 +1,7 @@
+.select-panel__message { display: flex; height: 100%; flex-direction: column; align-items: center; justify-content: center; flex-grow: 1; padding: var(--base-size-24, 24px); text-align: center; gap: var(--base-size-4, 4px); }
+.select-panel__message a { color: inherit; text-decoration: underline; }
+.select-panel__message-icon { margin-bottom: var(--base-size-8, 8px); color: var(--fgColor-attention, #9a6700); }
+.select-panel__message-icon[data-variant='error'] { color: var(--fgColor-danger, #d1242f); }
+.select-panel__message-title { font-size: var(--text-body-size-medium, 14px); font-weight: var(--base-text-weight-semibold, 600); }
+.select-panel__message-body { color: var(--fgColor-muted, #59636e); font-size: var(--text-body-size-small, 12px); align-items: center; gap: var(--stack-gap-condensed, 8px); }
+.select-panel__message-action { margin-block-start: var(--base-size-8, 8px); }

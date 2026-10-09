@@ -20,26 +20,17 @@
 
     <ComponentDocsSection title="不同变体">
       <template #description>
-        通过 <code>variant</code> 调整按钮的视觉强调层级，覆盖默认、主操作、危险操作、透明和链接样式。
+        通过
+        <code>variant</code> 调整按钮的视觉强调层级，覆盖默认、主操作、危险操作、透明和链接样式。
       </template>
 
       <ComponentDocsDemoBlock :code="variantDemoCode">
         <div class="button-row">
-          <Button variant="default">
-            Default
-          </Button>
-          <Button variant="primary">
-            Primary
-          </Button>
-          <Button variant="danger">
-            Danger
-          </Button>
-          <Button variant="invisible">
-            Invisible
-          </Button>
-          <Button variant="link">
-            Link
-          </Button>
+          <Button variant="default"> Default </Button>
+          <Button variant="primary"> Primary </Button>
+          <Button variant="danger"> Danger </Button>
+          <Button variant="invisible"> Invisible </Button>
+          <Button variant="link"> Link </Button>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -51,69 +42,42 @@
 
       <ComponentDocsDemoBlock :code="sizeDemoCode">
         <div class="button-row button-row--align-end">
-          <Button size="small">
-            Small
-          </Button>
-          <Button size="medium">
-            Medium
-          </Button>
-          <Button size="large">
-            Large
-          </Button>
+          <Button size="small"> Small </Button>
+          <Button size="medium"> Medium </Button>
+          <Button size="large"> Large </Button>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="状态">
       <template #description>
-        设置 <code>loading</code> 时会禁用交互、隐藏原内容并显示居中的 spinner；设置 <code>disabled</code> 时保留禁用态样式。
+        设置 <code>loading</code> 时会禁用交互、隐藏原内容并显示居中的 spinner；设置
+        <code>disabled</code> 时保留禁用态样式。
       </template>
 
       <ComponentDocsDemoBlock :code="stateDemoCode">
         <div class="button-row">
-          <Button loading>
-            Saving
-          </Button>
-          <Button
-            variant="primary"
-            loading
-          >
-            Publishing
-          </Button>
-          <Button disabled>
-            Disabled
-          </Button>
-          <Button
-            variant="danger"
-            disabled
-          >
-            Disabled Danger
-          </Button>
+          <Button loading> Saving </Button>
+          <Button variant="primary" loading> Publishing </Button>
+          <Button disabled> Disabled </Button>
+          <Button variant="danger" disabled> Disabled Danger </Button>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="前后视觉元素">
       <template #description>
-        通过 <code>leadingVisual</code> 和 <code>trailingVisual</code> 属性传入图标组件，在按钮文案前后显示。默认插槽承载文案；需要自定义图标参数时，可传入使用 <code>h()</code> 封装的函数式组件。
+        通过 <code>leadingVisual</code> 和
+        <code>trailingVisual</code>
+        属性传入图标组件，在按钮文案前后显示。默认插槽承载文案；需要自定义图标参数时，可传入使用
+        <code>h()</code> 封装的函数式组件。
       </template>
 
       <ComponentDocsDemoBlock :code="visualDemoCode">
         <div class="button-row">
-          <Button :leading-visual="BellIcon">
-            通知设置
-          </Button>
-          <Button
-            variant="primary"
-            :trailing-visual="ArrowUpRightIcon"
-          >
-            继续前往
-          </Button>
-          <Button
-            variant="invisible"
-            :leading-visual="SearchIcon"
-            :trailing-visual="CheckIcon"
-          >
+          <Button :leading-visual="BellIcon"> 通知设置 </Button>
+          <Button variant="primary" :trailing-visual="ArrowUpRightIcon"> 继续前往 </Button>
+          <Button variant="invisible" :leading-visual="SearchIcon" :trailing-visual="CheckIcon">
             搜索项目
           </Button>
         </div>
@@ -127,25 +91,13 @@
 
       <ComponentDocsDemoBlock :code="visualVariantDemoCode">
         <div class="button-row">
-          <Button
-            variant="default"
-            :leading-visual="BellIcon"
-            :trailing-visual="ArrowUpRightIcon"
-          >
+          <Button variant="default" :leading-visual="BellIcon" :trailing-visual="ArrowUpRightIcon">
             Default
           </Button>
-          <Button
-            variant="primary"
-            :leading-visual="BellIcon"
-            :trailing-visual="ArrowUpRightIcon"
-          >
+          <Button variant="primary" :leading-visual="BellIcon" :trailing-visual="ArrowUpRightIcon">
             Primary
           </Button>
-          <Button
-            variant="danger"
-            :leading-visual="BellIcon"
-            :trailing-visual="ArrowUpRightIcon"
-          >
+          <Button variant="danger" :leading-visual="BellIcon" :trailing-visual="ArrowUpRightIcon">
             Danger
           </Button>
           <Button
@@ -155,11 +107,7 @@
           >
             Invisible
           </Button>
-          <Button
-            variant="link"
-            :leading-visual="BellIcon"
-            :trailing-visual="ArrowUpRightIcon"
-          >
+          <Button variant="link" :leading-visual="BellIcon" :trailing-visual="ArrowUpRightIcon">
             Link
           </Button>
         </div>
@@ -269,33 +217,19 @@
       <ComponentDocsDemoBlock :code="typeDemoCode">
         <div class="button-type-demo">
           <div class="button-row">
-            <Button type="button">
-              普通操作
-            </Button>
-            <Button
-              type="submit"
-              variant="primary"
-            >
-              提交表单
-            </Button>
-            <Button
-              type="reset"
-              variant="invisible"
-            >
-              重置输入
-            </Button>
+            <Button type="button"> 普通操作 </Button>
+            <Button type="submit" variant="primary"> 提交表单 </Button>
+            <Button type="reset" variant="invisible"> 重置输入 </Button>
           </div>
           <p class="button-note">
-            默认值为 <code>button</code>，在表单上下文中可直接切换为 <code>submit</code> 或 <code>reset</code>。
+            默认值为 <code>button</code>，在表单上下文中可直接切换为 <code>submit</code> 或
+            <code>reset</code>。
           </p>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="API"
-      variant="api"
-    >
+    <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
       <Table
         :columns="apiTableColumns"
@@ -640,7 +574,7 @@ const apiTableColumns: TableColumn[] = [
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '200px', wrap: true },
   { key: 'options', label: '可选值', minWidth: '240px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '220px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '220px', wrap: true },
 ]
 
 const apiTableRows = [
@@ -649,62 +583,63 @@ const apiTableRows = [
     description: '透传原生 button 的 type。',
     type: "'button' | 'submit' | 'reset'",
     options: 'button / submit / reset',
-    default: "'button'"
+    default: "'button'",
   },
   {
     name: 'variant',
     description: '控制按钮的视觉变体。',
     type: "'default' | 'primary' | 'invisible' | 'danger' | 'link'",
     options: 'default / primary / invisible / danger / link',
-    default: "'default'"
+    default: "'default'",
   },
   {
     name: 'size',
     description: '控制按钮高度与内边距。',
     type: "'small' | 'medium' | 'large'",
     options: 'small / medium / large',
-    default: "'medium'"
+    default: "'medium'",
   },
   {
     name: 'loading',
     description: '进入加载状态后禁用交互，隐藏内容并显示居中的 spinner。',
     type: 'boolean',
     options: 'true / false',
-    default: 'false'
+    default: 'false',
   },
   {
     name: 'disabled',
     description: '禁用按钮交互并展示禁用态样式。',
     type: 'boolean',
     options: 'true / false',
-    default: 'false'
+    default: 'false',
   },
   {
     name: 'leadingVisual',
     description: '前置视觉组件，模板中使用 :leading-visual 传入；支持 Vue 单文件组件和函数式组件。',
     type: 'Component',
     options: 'Vue 组件',
-    default: 'undefined'
+    default: 'undefined',
   },
   {
     name: 'trailingVisual',
-    description: '后置视觉组件，模板中使用 :trailing-visual 传入；支持 Vue 单文件组件和函数式组件。',
+    description:
+      '后置视觉组件，模板中使用 :trailing-visual 传入；支持 Vue 单文件组件和函数式组件。',
     type: 'Component',
     options: 'Vue 组件',
-    default: 'undefined'
-  }
+    default: 'undefined',
+  },
 ]
 
 const contentTableColumns: TableColumn[] = [
   { key: 'name', label: '名称', rowHeader: true, minWidth: '180px' },
-  { key: 'description', label: '说明', minWidth: '320px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '320px', wrap: true },
 ]
 
 const contentTableRows = [
   {
     name: 'default',
-    description: '按钮的主文案内容。不包含有效内容时，按钮自动采用纯图标布局。'
-  }
+    description: '按钮的主文案内容。不包含有效内容时，按钮自动采用纯图标布局。',
+  },
 ]
 </script>
 

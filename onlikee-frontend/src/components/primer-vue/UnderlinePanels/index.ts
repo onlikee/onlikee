@@ -4,8 +4,12 @@ import UnderlinePanelsPanel from './UnderlinePanelsPanel.vue'
 
 export const UnderlinePanels = Object.assign(UnderlinePanelsRoot, {
   Tab: UnderlinePanelsTab,
-  Panel: UnderlinePanelsPanel
+  Panel: UnderlinePanelsPanel,
 })
 
 export { UnderlinePanelsTab, UnderlinePanelsPanel }
-export type { UnderlinePanelsProps, UnderlinePanelsTabProps, UnderlinePanelsPanelProps } from './types'
+export type {
+  UnderlinePanelsProps,
+  UnderlinePanelsTabProps,
+  UnderlinePanelsPanelProps,
+} from './types'

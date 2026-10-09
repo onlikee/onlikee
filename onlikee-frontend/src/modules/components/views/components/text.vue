@@ -3,7 +3,7 @@ import {
   Text,
   type TextSize,
   type TextWeight,
-  type TextWhiteSpace
+  type TextWhiteSpace,
 } from '@/components/primer-vue/Text'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '../../components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
@@ -40,57 +40,57 @@ const codes = {
   background-color: var(--bgColor-neutral-emphasis, #59636e);
   border-radius: 6px;
 }
-</style>`
+</style>`,
 }
 
 const columns: TableColumn[] = [
   { key: 'name', label: '名称', rowHeader: true },
   { key: 'type', label: '类型', wrap: true },
   { key: 'default', label: '默认值' },
-  { key: 'description', label: '说明', wrap: true }
+  { key: 'description', label: '说明', wrap: true },
 ]
 const rows = [
   {
     name: 'as',
     type: 'string | Component',
     default: 'span',
-    description: '渲染的元素或组件，支持对应属性与事件透传'
+    description: '渲染的元素或组件，支持对应属性与事件透传',
   },
   {
     name: 'size',
     type: "'small' | 'medium' | 'large'",
     default: '—',
-    description: '同时设置字号与行高；未设置时继承上下文'
+    description: '同时设置字号与行高；未设置时继承上下文',
   },
   {
     name: 'weight',
     type: "'light' | 'normal' | 'medium' | 'semibold'",
     default: '—',
-    description: '设置字重；未设置时保留元素的默认字重或继承上下文'
+    description: '设置字重；未设置时保留元素的默认字重或继承上下文',
   },
   {
     name: 'whiteSpace',
     type: "'pre' | 'normal' | 'nowrap' | 'pre-wrap' | 'pre-line'",
     default: '—',
-    description: '控制空格、换行符和自动换行；未设置时继承上下文'
+    description: '控制空格、换行符和自动换行；未设置时继承上下文',
   },
   {
     name: 'class / className',
     type: 'string',
     default: '—',
-    description: '添加自定义样式类，可覆盖字号、字重等样式'
-  }
+    description: '添加自定义样式类，可覆盖字号、字重等样式',
+  },
 ]
 const instanceRows = [
   {
     name: 'element',
     type: 'HTMLElement | SVGElement | ComponentPublicInstance | null',
     default: 'null',
-    description: '通过模板 ref 访问根元素；as 为组件时，返回该组件实例'
-  }
+    description: '通过模板 ref 访问根元素；as 为组件时，返回该组件实例',
+  },
 ]
 const slotRows = [
-  { name: 'default', type: '—', default: '—', description: '文本内容，可包含内联元素或其他组件' }
+  { name: 'default', type: '—', default: '—', description: '文本内容，可包含内联元素或其他组件' },
 ]
 </script>
 
@@ -102,49 +102,31 @@ const slotRows = [
     />
 
     <ComponentDocsSection title="基础用法">
-      <template #description>
-        默认渲染为 span，保留上下文中的字号、字重和颜色。
-      </template>
+      <template #description> 默认渲染为 span，保留上下文中的字号、字重和颜色。 </template>
       <ComponentDocsDemoBlock :code="codes.basic">
         <Text>用于展示文本内容。</Text>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="字号">
-      <template #description>
-        size 提供三种字号，并匹配相应的行高。
-      </template>
+      <template #description> size 提供三种字号，并匹配相应的行高。 </template>
       <ComponentDocsDemoBlock :code="codes.sizes">
         <div class="demo-column">
-          <div
-            v-for="size in sizes"
-            :key="size"
-            class="demo-row"
-          >
+          <div v-for="size in sizes" :key="size" class="demo-row">
             <span class="demo-label">{{ size }}</span>
-            <Text :size="size">
-              文本示例 · The quick brown fox
-            </Text>
+            <Text :size="size"> 文本示例 · The quick brown fox </Text>
           </div>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="字重">
-      <template #description>
-        weight 提供轻量、常规、中等和半粗四种字重。
-      </template>
+      <template #description> weight 提供轻量、常规、中等和半粗四种字重。 </template>
       <ComponentDocsDemoBlock :code="codes.weights">
         <div class="demo-column">
-          <div
-            v-for="weight in weights"
-            :key="weight"
-            class="demo-row"
-          >
+          <div v-for="weight in weights" :key="weight" class="demo-row">
             <span class="demo-label">{{ weight }}</span>
-            <Text :weight="weight">
-              文本示例 · The quick brown fox
-            </Text>
+            <Text :weight="weight"> 文本示例 · The quick brown fox </Text>
           </div>
         </div>
       </ComponentDocsDemoBlock>
@@ -156,21 +138,10 @@ const slotRows = [
       </template>
       <ComponentDocsDemoBlock :code="codes.elements">
         <div class="demo-column">
-          <Text as="p">
-            段落文本
-          </Text>
-          <Text as="em">
-            强调文本
-          </Text>
-          <Text as="strong">
-            重要文本
-          </Text>
-          <Text
-            as="a"
-            href="#属性"
-          >
-            查看属性
-          </Text>
+          <Text as="p"> 段落文本 </Text>
+          <Text as="em"> 强调文本 </Text>
+          <Text as="strong"> 重要文本 </Text>
+          <Text as="a" href="#属性"> 查看属性 </Text>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -181,11 +152,7 @@ const slotRows = [
       </template>
       <ComponentDocsDemoBlock :code="codes.whitespace">
         <div class="whitespace-grid">
-          <div
-            v-for="whiteSpace in whiteSpaces"
-            :key="whiteSpace"
-            class="whitespace-example"
-          >
+          <div v-for="whiteSpace in whiteSpaces" :key="whiteSpace" class="whitespace-example">
             <span class="demo-label">{{ whiteSpace }}</span>
             <div class="whitespace-preview">
               <Text :white-space="whiteSpace">
@@ -202,52 +169,20 @@ const slotRows = [
         使用 class 或 className 添加颜色、背景及其他样式，也可以通过 style 设置内联样式。
       </template>
       <ComponentDocsDemoBlock :code="codes.custom">
-        <Text
-          size="small"
-          class="highlight-text"
-        >
-          自定义颜色与背景
-        </Text>
+        <Text size="small" class="highlight-text"> 自定义颜色与背景 </Text>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="属性"
-      variant="api"
-    >
-      <Table
-        :columns="columns"
-        :data="rows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+    <ComponentDocsSection title="属性" variant="api">
+      <Table :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="组件实例"
-      variant="api"
-    >
-      <Table
-        :columns="columns"
-        :data="instanceRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+    <ComponentDocsSection title="组件实例" variant="api">
+      <Table :columns="columns" :data="instanceRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="插槽"
-      variant="api"
-    >
-      <Table
-        :columns="columns"
-        :data="slotRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+    <ComponentDocsSection title="插槽" variant="api">
+      <Table :columns="columns" :data="slotRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

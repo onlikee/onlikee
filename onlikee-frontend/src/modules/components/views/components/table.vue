@@ -1,49 +1,35 @@
 <template>
   <ComponentDocsPage>
-    <ComponentDocsHeader
-      title="Table 表格"
-      description="用于展示结构化数据的表格组件。"
-    />
+    <ComponentDocsHeader title="Table 表格" description="用于展示结构化数据的表格组件。" />
 
     <ComponentDocsSection title="基础用法">
       <template #description>
-        通过 <code>columns</code> 定义列，通过 <code>data</code> 提供数据。单元格默认不换行，必要时可在列配置中设置 <code>wrap</code> 允许换行。
+        通过 <code>columns</code> 定义列，通过
+        <code>data</code> 提供数据。单元格默认不换行，必要时可在列配置中设置
+        <code>wrap</code> 允许换行。
       </template>
 
       <ComponentDocsDemoBlock :code="basicDemoCode">
         <div class="table-demo">
-          <Table
-            caption="Repository metadata"
-            :columns="columns"
-            :data="repoRows"
-            row-key="id"
-          />
+          <Table caption="Repository metadata" :columns="columns" :data="repoRows" row-key="id" />
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="紧凑与无边框">
       <template #description>
-        通过 <code>compact</code> 与 <code>bordered</code> 调整表格密度和边框，可同时关闭 <code>hoverable</code>。
+        通过 <code>compact</code> 与 <code>bordered</code> 调整表格密度和边框，可同时关闭
+        <code>hoverable</code>。
       </template>
 
       <ComponentDocsDemoBlock :code="compactDemoCode">
         <div class="table-demo table-demo--split">
           <div class="table-demo__panel">
-            <div class="table-demo__label">
-              默认
-            </div>
-            <Table
-              caption="Default table"
-              :columns="columns"
-              :data="repoRows"
-              row-key="id"
-            />
+            <div class="table-demo__label">默认</div>
+            <Table caption="Default table" :columns="columns" :data="repoRows" row-key="id" />
           </div>
           <div class="table-demo__panel">
-            <div class="table-demo__label">
-              紧凑 / 无边框 / 关闭悬浮
-            </div>
+            <div class="table-demo__label">紧凑 / 无边框 / 关闭悬浮</div>
             <Table
               caption="Compact table"
               :columns="columns"
@@ -65,10 +51,7 @@
 
       <ComponentDocsDemoBlock :code="clickableDemoCode">
         <div class="table-demo">
-          <div
-            v-if="selectedName"
-            class="status-bar"
-          >
+          <div v-if="selectedName" class="status-bar">
             最近点击：<strong>{{ selectedName }}</strong>
           </div>
           <Table
@@ -85,15 +68,14 @@
 
     <ComponentDocsSection title="空状态与占位符">
       <template #description>
-        通过 <code>empty-text</code> 设置空数据提示，通过 <code>placeholder-text</code> 指定空值占位符。
+        通过 <code>empty-text</code> 设置空数据提示，通过
+        <code>placeholder-text</code> 指定空值占位符。
       </template>
 
       <ComponentDocsDemoBlock :code="emptyDemoCode">
         <div class="table-demo table-demo--split">
           <div class="table-demo__panel">
-            <div class="table-demo__label">
-              空状态
-            </div>
+            <div class="table-demo__label">空状态</div>
             <Table
               caption="Empty table"
               :columns="columns"
@@ -102,9 +84,7 @@
             />
           </div>
           <div class="table-demo__panel">
-            <div class="table-demo__label">
-              空值占位符
-            </div>
+            <div class="table-demo__label">空值占位符</div>
             <Table
               caption="Placeholder table"
               :columns="columns"
@@ -124,20 +104,12 @@
 
       <ComponentDocsDemoBlock :code="wrapDemoCode">
         <div class="table-demo">
-          <Table
-            caption="Wrapped content"
-            :columns="wrapColumns"
-            :data="wrapRows"
-            row-key="id"
-          />
+          <Table caption="Wrapped content" :columns="wrapColumns" :data="wrapRows" row-key="id" />
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="API"
-      variant="api"
-    >
+    <ComponentDocsSection title="API" variant="api">
       <Table
         :columns="apiTableColumns"
         :data="apiTableRows"
@@ -167,12 +139,54 @@ interface RepoRow {
 }
 
 const repoRows: RepoRow[] = [
-  { id: 1, name: 'onlikee-web', visibility: 'Public', updatedAt: '2026-01-20', stars: 128, owner: 'onlikee' },
-  { id: 2, name: 'audio-pipeline', visibility: 'Internal', updatedAt: '2026-01-18', stars: 76, owner: 'onlikee' },
-  { id: 3, name: 'sound-lab', visibility: 'Private', updatedAt: '2026-01-16', stars: 51, owner: 'Studio' },
-  { id: 4, name: 'waveforms', visibility: 'Public', updatedAt: '2026-01-12', stars: 214, owner: 'OpenAudio' },
-  { id: 5, name: 'mix-console', visibility: 'Internal', updatedAt: '2026-01-08', stars: 33, owner: 'onlikee' },
-  { id: 6, name: 'voice-notes', visibility: 'Public', updatedAt: '2026-01-04', stars: 89, owner: 'Community' }
+  {
+    id: 1,
+    name: 'onlikee-web',
+    visibility: 'Public',
+    updatedAt: '2026-01-20',
+    stars: 128,
+    owner: 'onlikee',
+  },
+  {
+    id: 2,
+    name: 'audio-pipeline',
+    visibility: 'Internal',
+    updatedAt: '2026-01-18',
+    stars: 76,
+    owner: 'onlikee',
+  },
+  {
+    id: 3,
+    name: 'sound-lab',
+    visibility: 'Private',
+    updatedAt: '2026-01-16',
+    stars: 51,
+    owner: 'Studio',
+  },
+  {
+    id: 4,
+    name: 'waveforms',
+    visibility: 'Public',
+    updatedAt: '2026-01-12',
+    stars: 214,
+    owner: 'OpenAudio',
+  },
+  {
+    id: 5,
+    name: 'mix-console',
+    visibility: 'Internal',
+    updatedAt: '2026-01-08',
+    stars: 33,
+    owner: 'onlikee',
+  },
+  {
+    id: 6,
+    name: 'voice-notes',
+    visibility: 'Public',
+    updatedAt: '2026-01-04',
+    stars: 89,
+    owner: 'Community',
+  },
 ]
 
 const emptyRows: RepoRow[] = []
@@ -180,7 +194,7 @@ const emptyRows: RepoRow[] = []
 const placeholderRows: RepoRow[] = repoRows.map((row, index) => ({
   ...row,
   updatedAt: index % 2 === 0 ? '' : row.updatedAt,
-  owner: index % 3 === 0 ? '' : row.owner
+  owner: index % 3 === 0 ? '' : row.owner,
 }))
 
 const columns: TableColumn[] = [
@@ -188,29 +202,29 @@ const columns: TableColumn[] = [
     key: 'name',
     label: 'Repository',
     rowHeader: true,
-    minWidth: '240px'
+    minWidth: '240px',
   },
   {
     key: 'visibility',
     label: 'Visibility',
-    width: '120px'
+    width: '120px',
   },
   {
     key: 'updatedAt',
     label: 'Updated',
-    width: '150px'
+    width: '150px',
   },
   {
     key: 'stars',
     label: 'Stars',
     align: 'right',
-    width: '110px'
+    width: '110px',
   },
   {
     key: 'owner',
     label: 'Owner',
-    minWidth: '140px'
-  }
+    minWidth: '140px',
+  },
 ]
 
 const wrapColumns: TableColumn[] = [
@@ -219,30 +233,30 @@ const wrapColumns: TableColumn[] = [
     label: 'Repository',
     rowHeader: true,
     minWidth: '240px',
-    wrap: true
+    wrap: true,
   },
   {
     key: 'visibility',
     label: 'Visibility',
-    width: '120px'
+    width: '120px',
   },
   {
     key: 'updatedAt',
     label: 'Updated',
-    width: '150px'
+    width: '150px',
   },
   {
     key: 'stars',
     label: 'Stars',
     align: 'right',
-    width: '110px'
+    width: '110px',
   },
   {
     key: 'owner',
     label: 'Owner',
     minWidth: '200px',
-    wrap: true
-  }
+    wrap: true,
+  },
 ]
 
 const wrapRows: RepoRow[] = [
@@ -252,7 +266,7 @@ const wrapRows: RepoRow[] = [
     visibility: 'Public',
     updatedAt: '2026-01-21',
     stars: 321,
-    owner: 'onlikee Research Team'
+    owner: 'onlikee Research Team',
   },
   {
     id: 102,
@@ -260,7 +274,7 @@ const wrapRows: RepoRow[] = [
     visibility: 'Internal',
     updatedAt: '2026-01-14',
     stars: 188,
-    owner: 'OpenAudio Collaboration Group'
+    owner: 'OpenAudio Collaboration Group',
   },
   {
     id: 103,
@@ -268,8 +282,8 @@ const wrapRows: RepoRow[] = [
     visibility: 'Public',
     updatedAt: '2026-01-09',
     stars: 97,
-    owner: 'Studio Tools Initiative'
-  }
+    owner: 'Studio Tools Initiative',
+  },
 ]
 
 const selectedName = ref('')
@@ -487,7 +501,7 @@ const apiTableColumns: TableColumn[] = [
   { key: 'default', label: '默认值', minWidth: '140px' },
   { key: 'type', label: '类型', minWidth: '200px', wrap: true },
   { key: 'options', label: '可选值', minWidth: '200px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '240px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '240px', wrap: true },
 ]
 
 const apiTableRows = [
@@ -496,64 +510,64 @@ const apiTableRows = [
     description: '列配置数组',
     type: 'TableColumn[]',
     options: '—',
-    default: '[]'
+    default: '[]',
   },
   {
     name: 'data',
     description: '表格数据源',
     type: 'RowData[]',
     options: '—',
-    default: '[]'
+    default: '[]',
   },
   {
     name: 'row-key',
     description: '行唯一键，支持字段名或函数',
     type: 'string | (row, index) => string | number',
     options: '—',
-    default: 'id'
+    default: 'id',
   },
   {
     name: 'caption / aria-label',
     description: '表格描述与无障碍标签',
     type: 'string',
     options: '—',
-    default: '空字符串 / Data table'
+    default: '空字符串 / Data table',
   },
   {
     name: 'hoverable',
     description: '行悬浮高亮',
     type: 'boolean',
     options: 'true / false',
-    default: 'true'
+    default: 'true',
   },
   {
     name: 'bordered',
     description: '是否显示外边框',
     type: 'boolean',
     options: 'true / false',
-    default: 'true'
+    default: 'true',
   },
   {
     name: 'compact',
     description: '是否使用紧凑密度',
     type: 'boolean',
     options: 'true / false',
-    default: 'false'
+    default: 'false',
   },
   {
     name: 'row-clickable',
     description: '是否启用行点击事件',
     type: 'boolean',
     options: 'true / false',
-    default: 'false'
+    default: 'false',
   },
   {
     name: 'empty-text / placeholder-text',
     description: '空状态文本与空值占位符',
     type: 'string',
     options: '—',
-    default: '暂无数据 / 空字符串'
-  }
+    default: '暂无数据 / 空字符串',
+  },
 ]
 </script>
 

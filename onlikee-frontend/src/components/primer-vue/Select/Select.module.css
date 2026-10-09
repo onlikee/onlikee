@@ -1,0 +1,59 @@
+.select-native {
+  width: 100%;
+  /* stylelint-disable-next-line primer/spacing */
+  margin-top: 1px;
+  /* stylelint-disable-next-line primer/spacing */
+  margin-bottom: 1px;
+  /* stylelint-disable-next-line primer/spacing */
+  margin-left: 1px;
+  font-size: inherit;
+  color: currentColor;
+
+  /* Firefox hacks:
+   * 1. Makes Firefox's native dropdown menu's background match the theme.
+   *    background-color should be 'transparent', but Firefox uses the background-color on
+   *    <select> to determine the background color used for the dropdown menu.
+   * 2. Adds 1px margins to the <select> so the background color doesn't hide the focus outline created with an inset box-shadow.
+   */
+  background-color: inherit;
+  border: 0;
+  border-radius: inherit;
+  outline: none;
+  appearance: none;
+
+  padding-block: 5px;
+  padding-right: 32px !important;
+}
+
+.select-native:disabled { background-color: transparent; }
+
+@media screen and (forced-colors: active) {
+  .select-native:disabled { background-color: -moz-combobox; }
+}
+
+.select-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+@media screen and (forced-colors: active) {
+  .select-wrapper svg {
+    /* stylelint-disable-next-line declaration-property-value-no-unknown */
+    fill: 'FieldText';
+  }
+}
+
+@media screen and (forced-colors: active) {
+  .select-disabled svg {
+    /* stylelint-disable-next-line declaration-property-value-no-unknown */
+    fill: 'GrayText';
+  }
+}
+
+.select-arrow {
+  position: absolute;
+  top: 50%;
+  right: var(--base-size-4, 4px);
+  pointer-events: none;
+  transform: translateY(-50%);
+}

@@ -1,0 +1,100 @@
+.dropdown {
+  display: inline-block;
+  width: 100%;
+}
+
+.dropdown-trigger {
+  cursor: pointer;
+}
+
+.dropdown-content {
+  position: fixed;
+  z-index: 9999;
+  --dropdown-enter-x: 0;
+  --dropdown-enter-y: 0;
+  --dropdown-available-width: calc(100vw - 16px);
+  box-sizing: border-box;
+  min-width: min(192px, var(--dropdown-available-width, calc(100vw - 16px)));
+  max-width: var(--dropdown-available-width, calc(100vw - 16px));
+  width: auto;
+  overflow: auto;
+  border-radius: 12px;
+  background: var(--overlay-bgColor, #ffffff);
+  box-shadow: var(--shadow-floating-small, 0px 0px 0px 1px #d1d9e080, 0px 6px 12px -3px #25292e0a, 0px 6px 18px 0px #25292e1f);
+}
+
+.dropdown-content[data-width='small'] {
+  width: min(256px, var(--dropdown-available-width, calc(100vw - 16px)));
+}
+
+.dropdown-content[data-width='medium'] {
+  width: min(320px, var(--dropdown-available-width, calc(100vw - 16px)));
+}
+
+.dropdown-content[data-width='large'] {
+  width: min(480px, var(--dropdown-available-width, calc(100vw - 16px)));
+}
+
+.dropdown-content[data-width='xlarge'] {
+  width: min(640px, var(--dropdown-available-width, calc(100vw - 16px)));
+}
+
+.dropdown-content[data-width='xxlarge'] {
+  width: min(960px, var(--dropdown-available-width, calc(100vw - 16px)));
+}
+
+.dropdown-content[data-side='outside-bottom'],
+.dropdown-content[data-side='inside-bottom'] {
+  --dropdown-enter-y: -8px;
+}
+
+.dropdown-content[data-side='outside-top'],
+.dropdown-content[data-side='inside-top'] {
+  --dropdown-enter-y: 8px;
+}
+
+.dropdown-content[data-side='outside-left'],
+.dropdown-content[data-side='inside-left'] {
+  --dropdown-enter-x: 8px;
+}
+
+.dropdown-content[data-side='outside-right'],
+.dropdown-content[data-side='inside-right'] {
+  --dropdown-enter-x: -8px;
+}
+
+:global(.dropdown-fade-enter-active) {
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+:global(.dropdown-fade-enter-from) {
+  opacity: 0;
+  transform: translate(var(--dropdown-enter-x, 0px), var(--dropdown-enter-y, 0px));
+}
+
+/* 弹出时自动给 trigger 内的 Button 添加激活样式 */
+.dropdown-trigger[data-open] :global(.button)[data-variant='default'] {
+  background-color: var(--button-default-bgColor-active, var(--control-bgColor-active, #e6eaef));
+  border-color: var(--button-default-borderColor-active, var(--button-default-borderColor-rest, #d1d9e0));
+}
+
+.dropdown-trigger[data-open] :global(.button)[data-variant='primary'] {
+  background-color: var(--button-primary-bgColor-active, #197935);
+  border-color: var(--button-primary-borderColor-active, var(--button-primary-borderColor-rest, #1f232826));
+  box-shadow: var(--button-primary-shadow-selected, var(--shadow-resting-small, 0 1px 0 0 #1f23280a));
+}
+
+.dropdown-trigger[data-open] :global(.button)[data-variant='danger'] {
+  background-color: var(--button-danger-bgColor-active, var(--bgColor-danger-emphasis, #cf222e));
+  border-color: var(--button-danger-borderColor-active, var(--button-danger-borderColor-hover, #1f232826));
+  box-shadow: var(--button-danger-shadow-selected, var(--shadow-resting-small, 0 1px 0 0 #1f23280a));
+  color: var(--button-danger-fgColor-active, #ffffff);
+}
+
+.dropdown-trigger[data-open] :global(.button)[data-variant='invisible'] {
+  background-color: var(--button-invisible-bgColor-active, var(--control-transparent-bgColor-active, #818b9826));
+}
+
+.dropdown-trigger[data-open] :global(.button)[data-variant='link'] {
+  text-decoration: underline;
+}

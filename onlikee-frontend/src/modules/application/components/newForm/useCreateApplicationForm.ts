@@ -1,9 +1,7 @@
 import { computed, ref } from 'vue'
 import type { UploadFile } from '@/components/primer-vue/Upload'
 
-import type {
-  CreateApplicationRequest
-} from '@/modules/application/api/create-new'
+import type { CreateApplicationRequest } from '@/modules/application/api/create-new'
 import { createFolderZip, createHtmlZip } from '@/modules/application/utils/zip-utils'
 
 export type FrameworkValue = 'html' | 'vue' | 'react'
@@ -43,12 +41,16 @@ export function useCreateApplicationForm() {
     }
 
     const rootDirectory = files.value[0].relativePath.split('/')[0]
-    const isSingleDirectory = rootDirectory && files.value.every(({ relativePath }) => {
-      const segments = relativePath.split('/')
-      return segments.length > 1
-        && segments[0] === rootDirectory
-        && segments.every(segment => segment !== '' && segment !== '.' && segment !== '..')
-    })
+    const isSingleDirectory =
+      rootDirectory &&
+      files.value.every(({ relativePath }) => {
+        const segments = relativePath.split('/')
+        return (
+          segments.length > 1 &&
+          segments[0] === rootDirectory &&
+          segments.every((segment) => segment !== '' && segment !== '.' && segment !== '..')
+        )
+      })
 
     return isSingleDirectory ? '' : '请只选择一个构建产物文件夹，不支持直接上传 ZIP 或散文件。'
   })
@@ -124,11 +126,13 @@ export function useCreateApplicationForm() {
   })
 
   const isFormValid = computed(() => {
-    return !frameworkError.value
-      && !uploadError.value
-      && !appNameError.value
-      && !appSubDomainError.value
-      && !appDescriptionError.value
+    return (
+      !frameworkError.value &&
+      !uploadError.value &&
+      !appNameError.value &&
+      !appSubDomainError.value &&
+      !appDescriptionError.value
+    )
   })
 
   function setFramework(value: FrameworkValue) {
@@ -182,11 +186,12 @@ export function useCreateApplicationForm() {
       appName: appName.value,
       appSubDomain: appSubDomain.value,
       visibility: visibility.value,
-      appDescription: appDescription.value
+      appDescription: appDescription.value,
     }
-    const appFile = framework === 'html'
-      ? await createHtmlZip(htmlSourceSnapshot)
-      : await createFolderZip(filesSnapshot)
+    const appFile =
+      framework === 'html'
+        ? await createHtmlZip(htmlSourceSnapshot)
+        : await createFolderZip(filesSnapshot)
 
     return {
       ...requestSnapshot,
@@ -222,6 +227,6 @@ export function useCreateApplicationForm() {
     setVisibility,
     setAppDescription,
     prepareSubmit,
-    buildRequest
+    buildRequest,
   }
 }

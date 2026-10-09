@@ -1,0 +1,8 @@
+@media (pointer: coarse) {
+  :root {
+    --control-minTarget-auto: 2.75rem; /** Minimum touch target size for coarse pointer devices (touch screens) */
+    --controlStack-large-gap-auto: 0.75rem; /** Gap between stacked controls in large density layouts for touch devices */
+    --controlStack-medium-gap-auto: 0.75rem; /** Gap between stacked controls in medium density layouts for touch devices */
+    --controlStack-small-gap-auto: 1rem; /** Gap between stacked controls in small density layouts for touch devices */
+  }
+}

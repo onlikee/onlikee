@@ -3,7 +3,7 @@ import BannerView, {
   type BannerExposed,
   type BannerOptions,
   type BannerResult,
-  type BannerType
+  type BannerType,
 } from './Banner.vue'
 
 type BannerFn = ((message: string, type?: BannerType, options?: BannerOptions) => BannerResult) & {

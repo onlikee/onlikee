@@ -1,63 +1,49 @@
 <template>
   <ComponentDocsPage>
-    <ComponentDocsHeader
-      title="UserMenu 用户菜单"
-      description="由多个组件组成的用户菜单。"
-    />
+    <ComponentDocsHeader title="UserMenu 用户菜单" description="由多个组件组成的用户菜单。" />
 
     <ComponentDocsSection title="基础用法">
       <template #description>
-        使用 <code>Dropdown</code>、<code>Avatar</code>、<code>ActionList</code> 和 <code>Octicons-vue3</code> 组合用户菜单。
+        使用 <code>Dropdown</code>、<code>Avatar</code>、<code>ActionList</code> 和
+        <code>Octicons-vue3</code> 组合用户菜单。
       </template>
       <ComponentDocsDemoBlock :code="demo1Code">
         <div class="user-menu">
           <Dropdown>
             <Dropdown.trigger>
-              <Avatar
-                src="https://avatars.githubusercontent.com/u/131276691?v=4"
-                :size="42"
-              />
+              <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" :size="42" />
             </Dropdown.trigger>
             <Dropdown.content>
               <div class="user-header">
-                <Avatar
-                  src="https://avatars.githubusercontent.com/u/131276691?v=4"
-                  :size="36"
-                />
+                <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" :size="36" />
                 <div class="user-info">
-                  <div class="user-name">
-                    onlikee Studio
-                  </div>
-                  <div class="user-email">
-                    hello@onlikee.audio
-                  </div>
+                  <div class="user-name">onlikee Studio</div>
+                  <div class="user-email">hello@onlikee.audio</div>
                 </div>
               </div>
-              <ActionList>
+              <ActionList role="menu" aria-label="用户菜单">
                 <ActionList.Divider />
-                <ActionList.Item>
+                <ActionList.Item role="menuitem">
                   <ActionList.LeadingVisual>
                     <PersonIcon />
                   </ActionList.LeadingVisual>
                   个人资料
                 </ActionList.Item>
-                <ActionList.LinkItem
-                  href="https://github.com/UnderHear"
-                >
+                <ActionList.LinkItem role="menuitem" href="https://github.com/UnderHear">
                   <ActionList.LeadingVisual>
                     <MarkGithubIcon />
                   </ActionList.LeadingVisual>
                   前往 GitHub
                 </ActionList.LinkItem>
                 <ActionList.Divider />
-                <ActionList.Item>
+                <ActionList.Item role="menuitem">
                   <ActionList.LeadingVisual>
                     <GearIcon />
                   </ActionList.LeadingVisual>
                   设置
                 </ActionList.Item>
                 <ActionList.Divider />
-                <ActionList.Item>
+                <ActionList.Item role="menuitem">
                   <ActionList.LeadingVisual>
                     <SignOutIcon />
                   </ActionList.LeadingVisual>
@@ -96,23 +82,23 @@ const demo1Code = `<template>
             <div class="user-email">hello@onlikee.audio</div>
           </div>
         </div>
-        <ActionList>
+        <ActionList role="menu" aria-label="用户菜单">
           <ActionList.Divider />
-          <ActionList.Item>
+          <ActionList.Item role="menuitem">
             <ActionList.LeadingVisual><PersonIcon /></ActionList.LeadingVisual>
             个人资料
           </ActionList.Item>
-          <ActionList.LinkItem href="https://github.com/UnderHear">
+          <ActionList.LinkItem role="menuitem" href="https://github.com/UnderHear">
             <ActionList.LeadingVisual><MarkGithubIcon /></ActionList.LeadingVisual>
             前往 GitHub
           </ActionList.LinkItem>
           <ActionList.Divider />
-          <ActionList.Item>
+          <ActionList.Item role="menuitem">
             <ActionList.LeadingVisual><GearIcon /></ActionList.LeadingVisual>
             设置
           </ActionList.Item>
           <ActionList.Divider />
-          <ActionList.Item>
+          <ActionList.Item role="menuitem">
             <ActionList.LeadingVisual><SignOutIcon /></ActionList.LeadingVisual>
             退出登录
           </ActionList.Item>

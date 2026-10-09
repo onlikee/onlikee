@@ -1,33 +1,21 @@
 <template>
   <div class="logout-page">
     <section class="logout-panel">
-      <h2 class="logout-title">
-        Select account to sign out
-      </h2>
+      <h2 class="logout-title">Select account to sign out</h2>
 
       <div class="account-card">
         <div class="account-meta">
-          <Avatar
-            :src="userStore.userInfo?.avatarUrl"
-            :size="32"
-          />
+          <Avatar :src="userStore.userInfo?.avatarUrl" :size="32" />
 
           <div>
-            <p class="account-label">
-              当前登录
-            </p>
+            <p class="account-label">当前登录</p>
             <p class="account-name">
               {{ userStore.userInfo?.nickname }}
             </p>
           </div>
         </div>
 
-        <button
-          type="button"
-          class="action-button"
-          :disabled="isSubmitting"
-          @click="handleLogout"
-        >
+        <button type="button" class="action-button" :disabled="isSubmitting" @click="handleLogout">
           退出登录
         </button>
       </div>

@@ -1,0 +1,12 @@
+.form-control--horizontal { display: flex; }
+.form-control--horizontal:where([data-has-leading-visual]) { align-items: center; }
+.form-control--vertical { display: flex; flex-direction: column; align-items: flex-start; }
+.form-control--vertical > *:not(label) + *,
+.form-control--vertical[data-has-label] > * + * { margin-top: var(--base-size-4, 4px); }
+.form-control__choice-inputs > input { margin-right: 0; margin-left: 0; }
+.form-control__label-container > * { padding-left: var(--stack-gap-condensed, 8px); }
+.form-control__label-container > label { font-weight: var(--base-text-weight-normal, 400); }
+.form-control__choice-leading { margin-left: var(--base-size-8, 8px); color: var(--fgColor-muted, #59636e); }
+.form-control__choice-leading:where([data-disabled]) { color: var(--control-fgColor-disabled, #818b98); }
+.form-control__choice-leading > * { min-width: var(--text-body-size-large, 16px); min-height: var(--text-body-size-large, 16px); fill: currentColor; }
+.form-control__choice-leading > *:where([data-has-caption]) { min-width: var(--base-size-24, 24px); min-height: var(--base-size-24, 24px); }

@@ -1,8 +1,6 @@
 import { computed, ref } from 'vue'
 
-import type {
-  CollectApplicationRequest
-} from '@/modules/application/api/create-collect'
+import type { CollectApplicationRequest } from '@/modules/application/api/create-collect'
 
 export function useCollectApplicationForm() {
   const collectName = ref('')
@@ -56,13 +54,13 @@ export function useCollectApplicationForm() {
   })
 
   const displayedCollectDescriptionError = computed(() => {
-    return submitAttempted.value || touchedCollectDescription.value ? collectDescriptionError.value : ''
+    return submitAttempted.value || touchedCollectDescription.value
+      ? collectDescriptionError.value
+      : ''
   })
 
   const isFormValid = computed(() => {
-    return !collectNameError.value
-      && !collectUrlError.value
-      && !collectDescriptionError.value
+    return !collectNameError.value && !collectUrlError.value && !collectDescriptionError.value
   })
 
   function setCollectName(value: string) {
@@ -89,7 +87,7 @@ export function useCollectApplicationForm() {
       appName: collectName.value,
       appUrl: collectUrl.value,
       visibility: collectVisibility.value,
-      appDescription: collectDescription.value
+      appDescription: collectDescription.value,
     }
   }
 
@@ -111,6 +109,6 @@ export function useCollectApplicationForm() {
     setCollectVisibility,
     setCollectDescription,
     prepareSubmit,
-    buildRequest
+    buildRequest,
   }
 }

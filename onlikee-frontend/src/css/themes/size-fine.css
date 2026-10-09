@@ -1,0 +1,8 @@
+@media (pointer: fine) {
+  :root {
+    --control-minTarget-auto: 1rem; /** Minimum target size for fine pointer devices (mouse) */
+    --controlStack-large-gap-auto: 0.5rem; /** Gap between stacked controls in large density layouts for mouse interfaces */
+    --controlStack-medium-gap-auto: 0.5rem; /** Gap between stacked controls in medium density layouts for mouse interfaces */
+    --controlStack-small-gap-auto: 0.5rem; /** Gap between stacked controls in small density layouts for mouse interfaces */
+  }
+}

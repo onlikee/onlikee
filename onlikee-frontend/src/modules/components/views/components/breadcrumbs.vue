@@ -9,7 +9,11 @@ import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
 
 const modes = [
-  { value: 'wrap', title: '自动换行', description: '默认 wrap 模式保留所有路径项，空间不足时换行。' },
+  {
+    value: 'wrap',
+    title: '自动换行',
+    description: '默认 wrap 模式保留所有路径项，空间不足时换行。',
+  },
   {
     value: 'menu',
     title: '折叠菜单',
@@ -76,7 +80,12 @@ const breadcrumbRows = [
     default: 'wrap',
     description: '换行、折叠前导路径、优先保留根节点；末项始终保留。',
   },
-  { name: 'variant', type: 'normal | spacious', default: 'normal', description: '标准链接或增加留白的外观。' },
+  {
+    name: 'variant',
+    type: 'normal | spacious',
+    default: 'normal',
+    description: '标准链接或增加留白的外观。',
+  },
   {
     name: 'aria-label',
     type: 'string',
@@ -115,28 +124,14 @@ const itemRows = [
     />
     <ComponentDocsSection title="基础用法">
       <template #description>
-        路径按层级从左到右排列，用 selected 标记当前页。示例链接阻止默认跳转，实际使用时替换为目标地址。
+        路径按层级从左到右排列，用 selected
+        标记当前页。示例链接阻止默认跳转，实际使用时替换为目标地址。
       </template>
       <ComponentDocsDemoBlock :code="basicCode">
         <Breadcrumbs>
-          <BreadcrumbsItem
-            href="#"
-            @click.prevent
-          >
-            Home
-          </BreadcrumbsItem>
-          <BreadcrumbsItem
-            href="#"
-            @click.prevent
-          >
-            Components
-          </BreadcrumbsItem>
-          <BreadcrumbsItem
-            as="span"
-            selected
-          >
-            Breadcrumbs
-          </BreadcrumbsItem>
+          <BreadcrumbsItem href="#" @click.prevent> Home </BreadcrumbsItem>
+          <BreadcrumbsItem href="#" @click.prevent> Components </BreadcrumbsItem>
+          <BreadcrumbsItem as="span" selected> Breadcrumbs </BreadcrumbsItem>
         </Breadcrumbs>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -146,35 +141,19 @@ const itemRows = [
       </template>
       <ComponentDocsDemoBlock :code="spaciousCode">
         <Breadcrumbs variant="spacious">
-          <BreadcrumbsItem
-            :as="RouterLink"
-            to="/component/guide"
-          >
-            Guide
-          </BreadcrumbsItem>
-          <BreadcrumbsItem
-            as="span"
-            selected
-          >
-            Breadcrumbs
-          </BreadcrumbsItem>
+          <BreadcrumbsItem :as="RouterLink" to="/component/guide"> Guide </BreadcrumbsItem>
+          <BreadcrumbsItem as="span" selected> Breadcrumbs </BreadcrumbsItem>
         </Breadcrumbs>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
-    <ComponentDocsSection
-      v-for="mode in modes"
-      :key="mode.value"
-      :title="mode.title"
-    >
+    <ComponentDocsSection v-for="mode in modes" :key="mode.value" :title="mode.title">
       <template #description>
-        {{ mode.description }} 调整滑杆观察布局；实际宽度不超过示例区域。复制代码使用初始的 320px 宽度。
+        {{ mode.description }} 调整滑杆观察布局；实际宽度不超过示例区域。复制代码使用初始的 320px
+        宽度。
       </template>
       <ComponentDocsDemoBlock :code="overflowCode(mode.value)">
         <div class="overflow-demo">
-          <label
-            class="width-control"
-            :for="`breadcrumbs-width-${mode.value}`"
-          >
+          <label class="width-control" :for="`breadcrumbs-width-${mode.value}`">
             <span>容器宽度</span>
             <input
               :id="`breadcrumbs-width-${mode.value}`"
@@ -183,13 +162,10 @@ const itemRows = [
               min="180"
               max="800"
               step="10"
-            >
+            />
             <output :for="`breadcrumbs-width-${mode.value}`">{{ widths[mode.value] }}px</output>
           </label>
-          <div
-            class="breadcrumb-preview"
-            :style="{ width: `${widths[mode.value]}px` }"
-          >
+          <div class="breadcrumb-preview" :style="{ width: `${widths[mode.value]}px` }">
             <Breadcrumbs :overflow="mode.value">
               <BreadcrumbsItem
                 v-for="(item, index) in items"
@@ -206,37 +182,20 @@ const itemRows = [
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
-    <ComponentDocsSection
-      title="Breadcrumbs API"
-      variant="api"
-    >
+    <ComponentDocsSection title="Breadcrumbs API" variant="api">
       <template #description>
         从 @/components/primer-vue/Breadcrumbs 导入 Breadcrumbs 和 BreadcrumbsItem，也支持
         Breadcrumbs.Item。默认插槽放置路径项；原生属性和事件透传到对应元素。
       </template>
-      <Table
-        :columns="columns"
-        :data="breadcrumbRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+      <Table :columns="columns" :data="breadcrumbRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
-    <ComponentDocsSection
-      title="BreadcrumbsItem API"
-      variant="api"
-    >
+    <ComponentDocsSection title="BreadcrumbsItem API" variant="api">
       <template #description>
-        默认插槽放置路径文本或图标。href、target、class、style、ARIA 属性与点击事件透传到指定元素。菜单打开后可用 Tab
-        访问链接，Escape 关闭并返回按钮，点击外部也会关闭。
+        默认插槽放置路径文本或图标。href、target、class、style、ARIA
+        属性与点击事件透传到指定元素。菜单打开后可用 Tab 访问链接，Escape
+        关闭并返回按钮，点击外部也会关闭。
       </template>
-      <Table
-        :columns="columns"
-        :data="itemRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+      <Table :columns="columns" :data="itemRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

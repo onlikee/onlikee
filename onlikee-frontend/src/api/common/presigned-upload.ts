@@ -9,7 +9,7 @@ export const uploadWithPresignedTicket = async (ticket: PresignedUploadTicket, f
     method: ticket.method,
     headers: ticket.headers,
     body: file,
-    credentials: 'omit'
+    credentials: 'omit',
   })
   if (!response.ok) {
     throw new Error(`上传失败（HTTP ${response.status}），请重试。`)

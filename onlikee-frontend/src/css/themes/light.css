@@ -1,3 +1,7 @@
+/**
+ * @spec See /DESIGN_TOKENS_SPEC.md for naming logic and semantic pairings.
+ * @rule Never use raw values (hex/px). Use semantic tokens ONLY.
+ */
 [data-color-mode="light"][data-light-theme="light"],
 [data-color-mode="auto"][data-light-theme="light"] {
   --bgColor-success-emphasis: #1f883d; /** Strong success background for prominent positive actions */
@@ -57,15 +61,15 @@
   --button-danger-bgColor-active: #a40e26;
   --button-danger-fgColor-disabled: #d1242f80;
   --button-danger-fgColor-rest: var(--fgColor-danger);
-  --button-danger-shadow-selected: inset 0px 1px 0px 0px #4c001433;
+  --button-danger-shadow-selected: inset 0 1px 0 0 #4c001433;
   --button-inactive-bgColor: #e6eaef;
   --button-inactive-fgColor: #59636e;
   --button-invisible-bgColor-disabled: #ffffff00;
   --button-invisible-borderColor-disabled: #ffffff00;
-  --button-outline-shadow-selected: inset 0px 1px 0px 0px #00215533;
+  --button-outline-shadow-selected: inset 0 1px 0 0 #00215533;
   --button-primary-bgColor-rest: var(--bgColor-success-emphasis);
   --button-primary-borderColor-disabled: var(--button-primary-bgColor-disabled);
-  --button-primary-shadow-selected: inset 0px 1px 0px 0px #002d114d;
+  --button-primary-shadow-selected: inset 0 1px 0 0 #002d114d;
   --button-star-iconColor: #eac54f;
   --buttonCounter-danger-fgColor-disabled: #d1242f80;
   --buttonCounter-outline-fgColor-rest: #0550ae;
@@ -636,14 +640,14 @@
   --reactionButton-selected-fgColor-hover: #0550ae;
   --selectMenu-bgColor-active: #b6e3ff;
   --selectMenu-borderColor: #ffffff00;
-  --shadow-floating-legacy: 0px 6px 12px -3px #25292e0a, 0px 6px 18px 0px #25292e1f;
-  --shadow-resting-medium: 0px 1px 1px 0px #25292e1a, 0px 3px 6px 0px #25292e1f;
+  --shadow-floating-legacy: 0 6px 12px -3px #25292e0a, 0 6px 18px 0 #25292e1f; /** Legacy floating shadow for backward compatibility */
+  --shadow-resting-medium: 0 1px 1px 0 #25292e1a, 0 3px 6px 0 #25292e1f; /** Medium resting shadow for cards and elevated surfaces */
   --skeletonLoader-bgColor: #818b981a;
   --topicTag-borderColor: #ffffff00;
   --treeViewItem-leadingVisual-iconColor-rest: #54aeff;
   --underlineNav-borderColor-active: #fd8c73;
   --avatar-bgColor: #ffffff;
-  --avatar-shadow: 0px 0px 0px 2px #ffffffcc;
+  --avatar-shadow: 0 0 0 2px #ffffffcc;
   --bgColor-black: #1f2328; /** Pure black background */
   --bgColor-closed-emphasis: var(--bgColor-danger-emphasis); /** Strong background for closed state badges and labels */
   --bgColor-closed-muted: var(--bgColor-danger-muted); /** Subtle background for closed state indicators (issues, PRs) */
@@ -680,13 +684,14 @@
   --borderColor-muted: #d1d9e0b3; /** Subtle border for secondary elements and light separators */
   --borderColor-open-emphasis: var(--borderColor-success-emphasis); /** Strong border for open state badges */
   --borderColor-open-muted: var(--borderColor-success-muted); /** Subtle border for open state indicators */
-  --borderColor-translucent: #1f232826; /** Semi-transparent border for overlays and layered elements */
+  --borderColor-translucent: #1f232826; /** Semi-transparent border for overlays and layered elements. Border-specific token — no bgColor-translucent counterpart exists by design. */
   --borderColor-upsell-emphasis: var(--borderColor-done-emphasis); /** Strong border for prominent upsell elements */
   --borderColor-upsell-muted: var(--borderColor-done-muted); /** Subtle border for upsell and promotional content */
   --button-danger-bgColor-hover: var(--bgColor-danger-emphasis);
   --button-danger-bgColor-rest: var(--control-bgColor-rest);
   --button-danger-fgColor-active: #ffffff;
   --button-danger-fgColor-hover: #ffffff;
+  --button-danger-iconColor-disabled: var(--button-danger-fgColor-disabled);
   --button-danger-iconColor-hover: #ffffff;
   --button-danger-iconColor-rest: var(--button-danger-fgColor-rest);
   --button-default-bgColor-active: var(--control-bgColor-active);
@@ -694,7 +699,7 @@
   --button-default-bgColor-rest: var(--control-bgColor-rest);
   --button-default-bgColor-selected: var(--control-bgColor-active);
   --button-default-fgColor-rest: var(--control-fgColor-rest);
-  --button-default-shadow-resting: 0px 1px 0px 0px #1f23280a;
+  --button-default-shadow-resting: 0 1px 0 0 #1f23280a;
   --button-invisible-bgColor-active: var(--control-transparent-bgColor-active);
   --button-invisible-bgColor-hover: var(--control-transparent-bgColor-hover);
   --button-invisible-bgColor-rest: var(--control-transparent-bgColor-rest);
@@ -802,9 +807,9 @@
   --progressBar-bgColor-sponsors: var(--bgColor-sponsors-emphasis);
   --progressBar-track-bgColor: var(--borderColor-default);
   --selection-bgColor: #0969da33; /** Background color for text selection highlights */
-  --shadow-inset: inset 0px 1px 0px 0px #1f23280a;
-  --shadow-resting-small: 0px 1px 1px 0px #1f23280f, 0px 1px 3px 0px #1f23280f;
-  --shadow-resting-xsmall: 0px 1px 1px 0px #1f23280f;
+  --shadow-inset: inset 0 1px 0 0 #1f23280a; /** Inset shadow for recessed elements */
+  --shadow-resting-small: 0 1px 1px 0 #1f23280a, 0 1px 2px 0 #1f232808; /** Small resting shadow for buttons and interactive elements */
+  --shadow-resting-xsmall: 0 1px 1px 0 #1f23280d; /** Extra small resting shadow for minimal elevation */
   --sideNav-bgColor-selected: #ffffff;
   --timelineBadge-bgColor: var(--bgColor-muted);
   --tooltip-bgColor: var(--bgColor-emphasis);
@@ -812,9 +817,11 @@
   --avatar-borderColor: var(--borderColor-translucent);
   --border-closed-emphasis: var(--border-danger-emphasis);
   --border-closed-muted: var(--border-danger-muted);
+  --border-draft-emphasis: 0.0625rem solid #59636e;
   --border-muted: 0.0625rem solid #d1d9e0b3;
   --border-open-emphasis: var(--border-success-emphasis);
   --border-open-muted: var(--border-success-muted);
+  --border-translucent: 0.0625rem solid #1f232826; /** Semi-transparent border shorthand for overlays and layered elements. Border-specific token — no bgColor-translucent counterpart exists by design. */
   --border-upsell-emphasis: 0.0625rem solid #8250df;
   --border-upsell-muted: 0.0625rem solid #c297ff66;
   --borderColor-neutral-muted: var(--borderColor-muted); /** Subtle neutral semantic border */
@@ -824,11 +831,13 @@
   --button-default-borderColor-active: var(--control-borderColor-rest);
   --button-default-borderColor-disabled: var(--control-borderColor-disabled);
   --button-default-borderColor-rest: var(--control-borderColor-rest);
+  --button-default-fgColor-disabled: var(--control-fgColor-disabled);
   --button-invisible-fgColor-disabled: var(--control-fgColor-disabled);
   --button-invisible-iconColor-disabled: var(--control-fgColor-disabled);
   --button-outline-bgColor-disabled: var(--control-bgColor-disabled);
   --button-primary-borderColor-rest: var(--borderColor-translucent);
   --button-primary-fgColor-rest: var(--fgColor-white);
+  --button-primary-iconColor-disabled: var(--button-primary-fgColor-disabled);
   --button-primary-iconColor-rest: #ffffffcc;
   --buttonKeybindingHint-danger-bgColor-disabled: var(--buttonKeybindingHint-default-bgColor-disabled);
   --buttonKeybindingHint-danger-borderColor-hover: var(--borderColor-translucent);
@@ -887,10 +896,11 @@
   --buttonKeybindingHint-danger-borderColor-disabled: var(--buttonKeybindingHint-default-borderColor-disabled);
   --buttonKeybindingHint-danger-borderColor-rest: var(--buttonKeybindingHint-default-borderColor-rest);
   --buttonKeybindingHint-danger-fgColor-disabled: var(--buttonKeybindingHint-default-fgColor-disabled);
-  --shadow-floating-large: 0px 0px 0px 1px #d1d9e0, 0px 40px 80px 0px #25292e3d; /** Large floating shadow for modals and dialogs */
-  --shadow-floating-medium: 0px 0px 0px 1px #d1d9e0, 0px 8px 16px -4px #25292e14, 0px 4px 32px -4px #25292e14, 0px 24px 48px -12px #25292e14, 0px 48px 96px -24px #25292e14;
-  --shadow-floating-small: 0px 0px 0px 1px #d1d9e080, 0px 6px 12px -3px #25292e0a, 0px 6px 18px 0px #25292e1f; /** Small floating shadow for dropdowns, tooltips, and small overlays */
-  --shadow-floating-xlarge: 0px 0px 0px 1px #d1d9e0, 0px 56px 112px 0px #25292e52;
+  --shadow-floating-large: 0 0 0 1px #d1d9e000, 0 40px 80px 0 #25292e3d; /** Large floating shadow for modals and dialogs */
+  --shadow-floating-medium: 0 0 0 1px #d1d9e000, 0 8px 16px -4px #25292e14, 0 4px 32px -4px #25292e14, 0 24px 48px -12px #25292e14, 0 48px 96px -24px #25292e14; /** Medium floating shadow for popovers and action menus */
+  --shadow-floating-small: 0 0 0 1px #d1d9e080, 0 6px 12px -3px #25292e0a, 0 6px 18px 0 #25292e1f; /** Small floating shadow for dropdowns, tooltips, and small overlays */
+  --shadow-floating-xlarge: 0 0 0 1px #d1d9e000, 0 56px 112px 0 #25292e52; /** Extra large floating shadow for full-screen overlays and sheets */
+  --border-draft-muted: 0.0625rem solid #d1d9e0b3;
   --button-danger-borderColor-active: var(--button-danger-borderColor-hover);
   --button-outline-borderColor-hover: var(--button-primary-borderColor-hover);
   --button-outline-borderColor-active: var(--button-outline-borderColor-hover);
@@ -954,15 +964,15 @@
     --button-danger-bgColor-active: #a40e26;
     --button-danger-fgColor-disabled: #d1242f80;
     --button-danger-fgColor-rest: var(--fgColor-danger);
-    --button-danger-shadow-selected: inset 0px 1px 0px 0px #4c001433;
+    --button-danger-shadow-selected: inset 0 1px 0 0 #4c001433;
     --button-inactive-bgColor: #e6eaef;
     --button-inactive-fgColor: #59636e;
     --button-invisible-bgColor-disabled: #ffffff00;
     --button-invisible-borderColor-disabled: #ffffff00;
-    --button-outline-shadow-selected: inset 0px 1px 0px 0px #00215533;
+    --button-outline-shadow-selected: inset 0 1px 0 0 #00215533;
     --button-primary-bgColor-rest: var(--bgColor-success-emphasis);
     --button-primary-borderColor-disabled: var(--button-primary-bgColor-disabled);
-    --button-primary-shadow-selected: inset 0px 1px 0px 0px #002d114d;
+    --button-primary-shadow-selected: inset 0 1px 0 0 #002d114d;
     --button-star-iconColor: #eac54f;
     --buttonCounter-danger-fgColor-disabled: #d1242f80;
     --buttonCounter-outline-fgColor-rest: #0550ae;
@@ -1533,14 +1543,14 @@
     --reactionButton-selected-fgColor-hover: #0550ae;
     --selectMenu-bgColor-active: #b6e3ff;
     --selectMenu-borderColor: #ffffff00;
-    --shadow-floating-legacy: 0px 6px 12px -3px #25292e0a, 0px 6px 18px 0px #25292e1f;
-    --shadow-resting-medium: 0px 1px 1px 0px #25292e1a, 0px 3px 6px 0px #25292e1f;
+    --shadow-floating-legacy: 0 6px 12px -3px #25292e0a, 0 6px 18px 0 #25292e1f; /** Legacy floating shadow for backward compatibility */
+    --shadow-resting-medium: 0 1px 1px 0 #25292e1a, 0 3px 6px 0 #25292e1f; /** Medium resting shadow for cards and elevated surfaces */
     --skeletonLoader-bgColor: #818b981a;
     --topicTag-borderColor: #ffffff00;
     --treeViewItem-leadingVisual-iconColor-rest: #54aeff;
     --underlineNav-borderColor-active: #fd8c73;
     --avatar-bgColor: #ffffff;
-    --avatar-shadow: 0px 0px 0px 2px #ffffffcc;
+    --avatar-shadow: 0 0 0 2px #ffffffcc;
     --bgColor-black: #1f2328; /** Pure black background */
     --bgColor-closed-emphasis: var(--bgColor-danger-emphasis); /** Strong background for closed state badges and labels */
     --bgColor-closed-muted: var(--bgColor-danger-muted); /** Subtle background for closed state indicators (issues, PRs) */
@@ -1577,13 +1587,14 @@
     --borderColor-muted: #d1d9e0b3; /** Subtle border for secondary elements and light separators */
     --borderColor-open-emphasis: var(--borderColor-success-emphasis); /** Strong border for open state badges */
     --borderColor-open-muted: var(--borderColor-success-muted); /** Subtle border for open state indicators */
-    --borderColor-translucent: #1f232826; /** Semi-transparent border for overlays and layered elements */
+    --borderColor-translucent: #1f232826; /** Semi-transparent border for overlays and layered elements. Border-specific token — no bgColor-translucent counterpart exists by design. */
     --borderColor-upsell-emphasis: var(--borderColor-done-emphasis); /** Strong border for prominent upsell elements */
     --borderColor-upsell-muted: var(--borderColor-done-muted); /** Subtle border for upsell and promotional content */
     --button-danger-bgColor-hover: var(--bgColor-danger-emphasis);
     --button-danger-bgColor-rest: var(--control-bgColor-rest);
     --button-danger-fgColor-active: #ffffff;
     --button-danger-fgColor-hover: #ffffff;
+    --button-danger-iconColor-disabled: var(--button-danger-fgColor-disabled);
     --button-danger-iconColor-hover: #ffffff;
     --button-danger-iconColor-rest: var(--button-danger-fgColor-rest);
     --button-default-bgColor-active: var(--control-bgColor-active);
@@ -1591,7 +1602,7 @@
     --button-default-bgColor-rest: var(--control-bgColor-rest);
     --button-default-bgColor-selected: var(--control-bgColor-active);
     --button-default-fgColor-rest: var(--control-fgColor-rest);
-    --button-default-shadow-resting: 0px 1px 0px 0px #1f23280a;
+    --button-default-shadow-resting: 0 1px 0 0 #1f23280a;
     --button-invisible-bgColor-active: var(--control-transparent-bgColor-active);
     --button-invisible-bgColor-hover: var(--control-transparent-bgColor-hover);
     --button-invisible-bgColor-rest: var(--control-transparent-bgColor-rest);
@@ -1699,9 +1710,9 @@
     --progressBar-bgColor-sponsors: var(--bgColor-sponsors-emphasis);
     --progressBar-track-bgColor: var(--borderColor-default);
     --selection-bgColor: #0969da33; /** Background color for text selection highlights */
-    --shadow-inset: inset 0px 1px 0px 0px #1f23280a;
-    --shadow-resting-small: 0px 1px 1px 0px #1f23280f, 0px 1px 3px 0px #1f23280f;
-    --shadow-resting-xsmall: 0px 1px 1px 0px #1f23280f;
+    --shadow-inset: inset 0 1px 0 0 #1f23280a; /** Inset shadow for recessed elements */
+    --shadow-resting-small: 0 1px 1px 0 #1f23280a, 0 1px 2px 0 #1f232808; /** Small resting shadow for buttons and interactive elements */
+    --shadow-resting-xsmall: 0 1px 1px 0 #1f23280d; /** Extra small resting shadow for minimal elevation */
     --sideNav-bgColor-selected: #ffffff;
     --timelineBadge-bgColor: var(--bgColor-muted);
     --tooltip-bgColor: var(--bgColor-emphasis);
@@ -1709,9 +1720,11 @@
     --avatar-borderColor: var(--borderColor-translucent);
     --border-closed-emphasis: var(--border-danger-emphasis);
     --border-closed-muted: var(--border-danger-muted);
+    --border-draft-emphasis: 0.0625rem solid #59636e;
     --border-muted: 0.0625rem solid #d1d9e0b3;
     --border-open-emphasis: var(--border-success-emphasis);
     --border-open-muted: var(--border-success-muted);
+    --border-translucent: 0.0625rem solid #1f232826; /** Semi-transparent border shorthand for overlays and layered elements. Border-specific token — no bgColor-translucent counterpart exists by design. */
     --border-upsell-emphasis: 0.0625rem solid #8250df;
     --border-upsell-muted: 0.0625rem solid #c297ff66;
     --borderColor-neutral-muted: var(--borderColor-muted); /** Subtle neutral semantic border */
@@ -1721,11 +1734,13 @@
     --button-default-borderColor-active: var(--control-borderColor-rest);
     --button-default-borderColor-disabled: var(--control-borderColor-disabled);
     --button-default-borderColor-rest: var(--control-borderColor-rest);
+    --button-default-fgColor-disabled: var(--control-fgColor-disabled);
     --button-invisible-fgColor-disabled: var(--control-fgColor-disabled);
     --button-invisible-iconColor-disabled: var(--control-fgColor-disabled);
     --button-outline-bgColor-disabled: var(--control-bgColor-disabled);
     --button-primary-borderColor-rest: var(--borderColor-translucent);
     --button-primary-fgColor-rest: var(--fgColor-white);
+    --button-primary-iconColor-disabled: var(--button-primary-fgColor-disabled);
     --button-primary-iconColor-rest: #ffffffcc;
     --buttonKeybindingHint-danger-bgColor-disabled: var(--buttonKeybindingHint-default-bgColor-disabled);
     --buttonKeybindingHint-danger-borderColor-hover: var(--borderColor-translucent);
@@ -1784,10 +1799,11 @@
     --buttonKeybindingHint-danger-borderColor-disabled: var(--buttonKeybindingHint-default-borderColor-disabled);
     --buttonKeybindingHint-danger-borderColor-rest: var(--buttonKeybindingHint-default-borderColor-rest);
     --buttonKeybindingHint-danger-fgColor-disabled: var(--buttonKeybindingHint-default-fgColor-disabled);
-    --shadow-floating-large: 0px 0px 0px 1px #d1d9e0, 0px 40px 80px 0px #25292e3d; /** Large floating shadow for modals and dialogs */
-    --shadow-floating-medium: 0px 0px 0px 1px #d1d9e0, 0px 8px 16px -4px #25292e14, 0px 4px 32px -4px #25292e14, 0px 24px 48px -12px #25292e14, 0px 48px 96px -24px #25292e14;
-    --shadow-floating-small: 0px 0px 0px 1px #d1d9e080, 0px 6px 12px -3px #25292e0a, 0px 6px 18px 0px #25292e1f; /** Small floating shadow for dropdowns, tooltips, and small overlays */
-    --shadow-floating-xlarge: 0px 0px 0px 1px #d1d9e0, 0px 56px 112px 0px #25292e52;
+    --shadow-floating-large: 0 0 0 1px #d1d9e000, 0 40px 80px 0 #25292e3d; /** Large floating shadow for modals and dialogs */
+    --shadow-floating-medium: 0 0 0 1px #d1d9e000, 0 8px 16px -4px #25292e14, 0 4px 32px -4px #25292e14, 0 24px 48px -12px #25292e14, 0 48px 96px -24px #25292e14; /** Medium floating shadow for popovers and action menus */
+    --shadow-floating-small: 0 0 0 1px #d1d9e080, 0 6px 12px -3px #25292e0a, 0 6px 18px 0 #25292e1f; /** Small floating shadow for dropdowns, tooltips, and small overlays */
+    --shadow-floating-xlarge: 0 0 0 1px #d1d9e000, 0 56px 112px 0 #25292e52; /** Extra large floating shadow for full-screen overlays and sheets */
+    --border-draft-muted: 0.0625rem solid #d1d9e0b3;
     --button-danger-borderColor-active: var(--button-danger-borderColor-hover);
     --button-outline-borderColor-hover: var(--button-primary-borderColor-hover);
     --button-outline-borderColor-active: var(--button-outline-borderColor-hover);

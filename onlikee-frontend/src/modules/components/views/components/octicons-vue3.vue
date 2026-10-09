@@ -3,11 +3,7 @@
     <ComponentDocsHeader title="Octicons Vue3 图标">
       <template #description>
         该图标库基于开源的
-        <Link
-          href="https://primer.style/octicons/"
-          link-text="Octicons"
-          variant="primary"
-        />
+        <Link href="https://primer.style/octicons/" link-text="Octicons" variant="primary" />
         图标库构建，为 Vue 项目提供可直接使用的图标组件。
       </template>
     </ComponentDocsHeader>
@@ -50,7 +46,8 @@
 
     <ComponentDocsSection title="图标展示">
       <template #description>
-        当前共 {{ iconEntries.length }} 个图标，展示预览尺寸为 {{ iconSize }}px。点击可直接复制SVG代码。
+        当前共 {{ iconEntries.length }} 个图标，展示预览尺寸为
+        {{ iconSize }}px。点击可直接复制SVG代码。
       </template>
 
       <div class="icon-search">
@@ -60,7 +57,7 @@
           class="icon-search-input"
           placeholder="Search icons..."
           aria-label="搜索图标名称"
-        >
+        />
       </div>
 
       <div class="icon-grid">
@@ -70,20 +67,13 @@
           class="icon-card"
           @click="copySVG(icon.name, $event)"
         >
-          <component
-            :is="icon.component"
-            :size="iconSize"
-            class="icon-svg"
-          />
+          <component :is="icon.component" :size="iconSize" class="icon-svg" />
           <span class="icon-name">{{ icon.name }}</span>
         </div>
       </div>
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="API"
-      variant="api"
-    >
+    <ComponentDocsSection title="API" variant="api">
       <Table
         :columns="apiTableColumns"
         :data="apiTableRows"
@@ -164,7 +154,7 @@ import { TelescopeFillIcon, MarkGithubIcon, HeartFillIcon } from '@/components/o
 const basicIconEntries: IconEntry[] = [
   { name: 'TelescopeFillIcon', component: octicons.TelescopeFillIcon as Component },
   { name: 'MarkGithubIcon', component: octicons.MarkGithubIcon as Component },
-  { name: 'HeartFillIcon', component: octicons.HeartFillIcon as Component }
+  { name: 'HeartFillIcon', component: octicons.HeartFillIcon as Component },
 ]
 
 const colorDemoEntries: ColorDemoEntry[] = [
@@ -172,27 +162,27 @@ const colorDemoEntries: ColorDemoEntry[] = [
     name: 'TelescopeFillIcon',
     component: octicons.TelescopeFillIcon as Component,
     size: 16,
-    color: '#656d76'
+    color: '#656d76',
   },
   {
     name: 'MarkGithubIcon',
     component: octicons.MarkGithubIcon as Component,
     size: 24,
-    color: '#0969da'
+    color: '#0969da',
   },
   {
     name: 'HeartFillIcon',
     component: octicons.HeartFillIcon as Component,
     size: 32,
-    color: '#d1242f'
-  }
+    color: '#d1242f',
+  },
 ]
 
 const iconEntries: IconEntry[] = Object.entries(octicons)
   .filter(([name]) => name !== 'default')
   .map(([name, component]) => ({
     name,
-    component: component as Component
+    component: component as Component,
   }))
   .sort((a, b) => a.name.localeCompare(b.name))
 
@@ -222,7 +212,7 @@ const apiTableColumns: TableColumn[] = [
   { key: 'default', label: '默认值', minWidth: '100px' },
   { key: 'type', label: '类型', minWidth: '160px', wrap: true },
   { key: 'options', label: '可选值', minWidth: '140px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
 ]
 
 const apiTableRows = [
@@ -231,15 +221,15 @@ const apiTableRows = [
     description: '图标尺寸',
     type: 'number | string',
     options: '—',
-    default: '16'
+    default: '16',
   },
   {
     name: 'color',
     description: '图标颜色',
     type: 'string',
     options: '—',
-    default: 'currentColor'
-  }
+    default: 'currentColor',
+  },
 ]
 </script>
 

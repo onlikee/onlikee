@@ -1,30 +1,18 @@
 <template>
-  <Container
-    max-width="768px"
-  >
+  <Container max-width="768px">
     <div class="ad-placeholder">
-      <img
-        src="@/modules/application/assets/ad.png"
-        class="ad-image"
-        alt="广告位图片"
-      >
+      <img src="@/modules/application/assets/ad.png" class="ad-image" alt="广告位图片" />
     </div>
     <div class="page-header">
-      <div class="page-title">
-        收录
-      </div>
-      <span class="page-description">
-        收录优质站点到应用广场
-      </span>
+      <div class="page-title">收录</div>
+      <span class="page-description"> 收录优质站点到应用广场 </span>
     </div>
 
     <Timeline clip-sidebar>
       <Timeline.Item>
         <Timeline.Badge>1</Timeline.Badge>
         <Timeline.Body>
-          <div class="creatForm-heading">
-            填写网站与基本信息
-          </div>
+          <div class="creatForm-heading">填写网站与基本信息</div>
           <FirstStep
             :collect-name="collectName"
             :collect-url="collectUrl"
@@ -80,7 +68,7 @@ const {
   setCollectVisibility,
   setCollectDescription,
   prepareSubmit,
-  buildRequest
+  buildRequest,
 } = useCollectApplicationForm()
 
 const isSubmitting = ref(false)
@@ -101,8 +89,8 @@ async function submit() {
       path: '/application/create/success',
       query: {
         method: 'collect',
-        appUrl: response.appUrl
-      }
+        appUrl: response.appUrl,
+      },
     })
   } finally {
     isSubmitting.value = false
@@ -136,7 +124,7 @@ async function submit() {
   line-height: 1;
   font-weight: 600;
   box-shadow: 0 8px 24px -12px color-mix(in srgb, var(--fgColor-default) 48%, transparent);
-  content: "展示广告位，联系2533643340@qq.com";
+  content: '展示广告位，联系2533643340@qq.com';
 }
 
 .page-header {

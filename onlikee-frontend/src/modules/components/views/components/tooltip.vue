@@ -12,9 +12,7 @@
       <ComponentDocsDemoBlock :code="demo1Code">
         <div class="demo-row">
           <Tooltip content="这是一条提示信息">
-            <button class="demo-btn">
-              悬停查看
-            </button>
+            <button class="demo-btn">悬停查看</button>
           </Tooltip>
         </div>
       </ComponentDocsDemoBlock>
@@ -22,73 +20,35 @@
 
     <ComponentDocsSection title="不同位置">
       <template #description>
-        通过 <code>placement</code> 设置提示出现的位置，支持 <code>top</code>、<code>bottom</code>、<code>left</code>、<code>right</code>、<code>left-top</code>、<code>left-bottom</code>、<code>right-top</code>、<code>right-bottom</code>。
+        通过 <code>placement</code> 设置提示出现的位置，支持
+        <code>top</code
+        >、<code>bottom</code>、<code>left</code>、<code>right</code>、<code>left-top</code>、<code>left-bottom</code>、<code>right-top</code>、<code>right-bottom</code>。
       </template>
       <ComponentDocsDemoBlock :code="demo2Code">
         <div class="demo-placement">
-          <Tooltip
-            content="Top 提示"
-            placement="top"
-          >
-            <button class="demo-btn">
-              Top
-            </button>
+          <Tooltip content="Top 提示" placement="top">
+            <button class="demo-btn">Top</button>
           </Tooltip>
-          <Tooltip
-            content="Left 提示"
-            placement="left"
-          >
-            <button class="demo-btn">
-              Left
-            </button>
+          <Tooltip content="Left 提示" placement="left">
+            <button class="demo-btn">Left</button>
           </Tooltip>
-          <Tooltip
-            content="Right 提示"
-            placement="right"
-          >
-            <button class="demo-btn">
-              Right
-            </button>
+          <Tooltip content="Right 提示" placement="right">
+            <button class="demo-btn">Right</button>
           </Tooltip>
-          <Tooltip
-            content="Bottom 提示"
-            placement="bottom"
-          >
-            <button class="demo-btn">
-              Bottom
-            </button>
+          <Tooltip content="Bottom 提示" placement="bottom">
+            <button class="demo-btn">Bottom</button>
           </Tooltip>
-          <Tooltip
-            content="Left Top 提示"
-            placement="left-top"
-          >
-            <button class="demo-btn">
-              Left Top
-            </button>
+          <Tooltip content="Left Top 提示" placement="left-top">
+            <button class="demo-btn">Left Top</button>
           </Tooltip>
-          <Tooltip
-            content="Left Bottom 提示"
-            placement="left-bottom"
-          >
-            <button class="demo-btn">
-              Left Bottom
-            </button>
+          <Tooltip content="Left Bottom 提示" placement="left-bottom">
+            <button class="demo-btn">Left Bottom</button>
           </Tooltip>
-          <Tooltip
-            content="Right Top 提示"
-            placement="right-top"
-          >
-            <button class="demo-btn">
-              Right Top
-            </button>
+          <Tooltip content="Right Top 提示" placement="right-top">
+            <button class="demo-btn">Right Top</button>
           </Tooltip>
-          <Tooltip
-            content="Right Bottom 提示"
-            placement="right-bottom"
-          >
-            <button class="demo-btn">
-              Right Bottom
-            </button>
+          <Tooltip content="Right Bottom 提示" placement="right-bottom">
+            <button class="demo-btn">Right Bottom</button>
           </Tooltip>
         </div>
       </ComponentDocsDemoBlock>
@@ -100,21 +60,11 @@
       </template>
       <ComponentDocsDemoBlock :code="demo3Code">
         <div class="demo-row">
-          <Tooltip
-            content="延迟 500ms 显示"
-            :show-delay="500"
-          >
-            <button class="demo-btn">
-              延迟显示
-            </button>
+          <Tooltip content="延迟 500ms 显示" :show-delay="500">
+            <button class="demo-btn">延迟显示</button>
           </Tooltip>
-          <Tooltip
-            content="延迟 300ms 隐藏"
-            :hide-delay="300"
-          >
-            <button class="demo-btn">
-              延迟隐藏
-            </button>
+          <Tooltip content="延迟 300ms 隐藏" :hide-delay="300">
+            <button class="demo-btn">延迟隐藏</button>
           </Tooltip>
         </div>
       </ComponentDocsDemoBlock>
@@ -126,38 +76,18 @@
       </template>
       <ComponentDocsDemoBlock :code="demo4Code">
         <div class="demo-row">
-          <Tooltip
-            content="你看不到我"
-            disabled
-          >
-            <button class="demo-btn">
-              禁用 Tooltip
-            </button>
+          <Tooltip content="你看不到我" disabled>
+            <button class="demo-btn">禁用 Tooltip</button>
           </Tooltip>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="API"
-      variant="api"
-    >
+    <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <Table
-        :columns="apiCols"
-        :data="apiRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+      <Table :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
       <h3>插槽</h3>
-      <Table
-        :columns="slotCols"
-        :data="slotRows"
-        row-key="name"
-        compact
-        :hoverable="false"
-      />
+      <Table :columns="slotCols" :data="slotRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
@@ -238,25 +168,28 @@ const apiCols: TableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'default', label: '默认值', minWidth: '100px' },
   { key: 'type', label: '类型', minWidth: '240px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
 ]
 
 const apiRows = [
   { name: 'content', description: 'Tooltip 显示的文字内容', type: 'string', default: '—' },
-  { name: 'placement', description: '弹出位置', type: "'top' | 'bottom' | 'left' | 'right' | 'left-top' | 'left-bottom' | 'right-top' | 'right-bottom'", default: "'top'" },
+  {
+    name: 'placement',
+    description: '弹出位置',
+    type: "'top' | 'bottom' | 'left' | 'right' | 'left-top' | 'left-bottom' | 'right-top' | 'right-bottom'",
+    default: "'top'",
+  },
   { name: 'showDelay', description: '延迟显示时间（毫秒）', type: 'number', default: '0' },
   { name: 'hideDelay', description: '延迟隐藏时间（毫秒）', type: 'number', default: '0' },
-  { name: 'disabled', description: '是否禁用', type: 'boolean', default: 'false' }
+  { name: 'disabled', description: '是否禁用', type: 'boolean', default: 'false' },
 ]
 
 const slotCols: TableColumn[] = [
   { key: 'name', label: '插槽名', rowHeader: true, minWidth: '140px' },
-  { key: 'description', label: '说明', minWidth: '300px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '300px', wrap: true },
 ]
 
-const slotRows = [
-  { name: 'default', description: '触发 Tooltip 的元素' }
-]
+const slotRows = [{ name: 'default', description: '触发 Tooltip 的元素' }]
 </script>
 
 <style scoped>

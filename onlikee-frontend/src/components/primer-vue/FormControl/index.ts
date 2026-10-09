@@ -8,7 +8,16 @@ export const FormControl = Object.assign(FormControlRoot, {
   Label: FormControlLabel,
   Validation: FormControlValidation,
   Caption: FormControlCaption,
-  LeadingVisual: FormControlLeadingVisual
+  LeadingVisual: FormControlLeadingVisual,
 })
 
 export { FormControlLabel, FormControlValidation, FormControlCaption, FormControlLeadingVisual }
+export { useFormControlForwardedProps } from './context'
+export type {
+  FormControlProps,
+  FormControlLabelProps,
+  FormControlValidationProps,
+  FormControlCaptionProps,
+} from './types'
+export type { FormControlForwardedProps } from './context'
+export default FormControl

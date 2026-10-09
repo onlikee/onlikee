@@ -1,30 +1,18 @@
 <template>
-  <Container
-    max-width="768px"
-  >
+  <Container max-width="768px">
     <div class="ad-placeholder">
-      <img
-        src="@/modules/application/assets/ad.png"
-        class="ad-image"
-        alt="广告位图片"
-      >
+      <img src="@/modules/application/assets/ad.png" class="ad-image" alt="广告位图片" />
     </div>
     <div class="page-header">
-      <div class="page-title">
-        创建一个新的应用
-      </div>
-      <span class="page-description">
-        请确保代码能够正确运行！
-      </span>
+      <div class="page-title">创建一个新的应用</div>
+      <span class="page-description"> 请确保代码能够正确运行！ </span>
     </div>
 
     <Timeline clip-sidebar>
       <Timeline.Item>
         <Timeline.Badge>1</Timeline.Badge>
         <Timeline.Body>
-          <div class="creatForm-heading">
-            点击选择你使用的前端框架
-          </div>
+          <div class="creatForm-heading">点击选择你使用的前端框架</div>
           <FirstStep
             :selected-framework="selectedFramework"
             :invalid="showFrameworkError"
@@ -36,9 +24,7 @@
       <Timeline.Item>
         <Timeline.Badge>2</Timeline.Badge>
         <Timeline.Body>
-          <div class="creatForm-heading">
-            上传应用 & 代码
-          </div>
+          <div class="creatForm-heading">上传应用 & 代码</div>
           <SecondStep
             :files="files"
             :html-source="htmlSource"
@@ -53,9 +39,7 @@
       <Timeline.Item>
         <Timeline.Badge>3</Timeline.Badge>
         <Timeline.Body>
-          <div class="creatForm-heading">
-            填写基本信息
-          </div>
+          <div class="creatForm-heading">填写基本信息</div>
           <ThirdStep
             :app-name="appName"
             :app-sub-domain="appSubDomain"
@@ -73,12 +57,7 @@
       </Timeline.Item>
     </Timeline>
     <div class="submit-actions">
-      <Button
-        :leading-visual="RocketIcon"
-        variant="primary"
-        :loading="isUploading"
-        @click="submit"
-      >
+      <Button :leading-visual="RocketIcon" variant="primary" :loading="isUploading" @click="submit">
         创建应用
       </Button>
     </div>
@@ -124,7 +103,7 @@ const {
   setVisibility,
   setAppDescription,
   prepareSubmit,
-  buildRequest
+  buildRequest,
 } = useCreateApplicationForm()
 
 const isUploading = ref(false)
@@ -152,8 +131,8 @@ async function submit() {
     await router.push({
       path: '/application/create/success',
       query: {
-        appUrl: response.appUrl
-      }
+        appUrl: response.appUrl,
+      },
     })
   } finally {
     isUploading.value = false
@@ -187,7 +166,7 @@ async function submit() {
   line-height: 1;
   font-weight: 600;
   box-shadow: 0 8px 24px -12px color-mix(in srgb, var(--fgColor-default) 48%, transparent);
-  content: "展示广告位，联系2533643340@qq.com";
+  content: '展示广告位，联系2533643340@qq.com';
 }
 
 .page-header {

@@ -34,7 +34,7 @@ const editorOptions = {
   lineNumbersMinChars: 3,
   minimap: { enabled: false },
   scrollBeyondLastLine: false,
-  tabSize: 2
+  tabSize: 2,
 }
 
 function updateEditorValue(value: string | undefined) {

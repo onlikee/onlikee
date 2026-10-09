@@ -1,32 +1,15 @@
 <template>
   <ComponentDocsPage>
-    <ComponentDocsHeader
-      title="Link 链接"
-      description="常用的文本超链接。"
-    />
+    <ComponentDocsHeader title="Link 链接" description="常用的文本超链接。" />
 
     <ComponentDocsSection title="基础用法">
-      <template #description>
-        使用 <code>variant</code> 来定义链接的样式。
-      </template>
+      <template #description> 使用 <code>variant</code> 来定义链接的样式。 </template>
 
       <ComponentDocsDemoBlock :code="demo1Code">
         <div class="link-row">
-          <Link
-            href="#"
-            link-text="Primary Link"
-            variant="primary"
-          />
-          <Link
-            href="#"
-            link-text="Secondary Link"
-            variant="secondary"
-          />
-          <Link
-            href="#"
-            link-text="Danger Link"
-            variant="danger"
-          />
+          <Link href="#" link-text="Primary Link" variant="primary" />
+          <Link href="#" link-text="Secondary Link" variant="secondary" />
+          <Link href="#" link-text="Danger Link" variant="danger" />
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -38,12 +21,7 @@
 
       <ComponentDocsDemoBlock :code="demo2Code">
         <div class="link-row">
-          <Link
-            href="https://github.com"
-            link-text="GitHub"
-            :external="true"
-            target="_blank"
-          />
+          <Link href="https://github.com" link-text="GitHub" :external="true" target="_blank" />
           <Link
             href="https://vuejs.org"
             link-text="Vue.js"
@@ -62,30 +40,14 @@
 
       <ComponentDocsDemoBlock :code="demo3Code">
         <div class="link-column">
-          <Link
-            href="/component"
-            link-text="组件文档"
-            prefix-text="查看"
-          />
-          <Link
-            href="/component"
-            link-text="组件文档"
-            suffix-text="了解更多"
-          />
-          <Link
-            href="/component"
-            link-text="组件文档"
-            prefix-text="前往"
-            suffix-text="查看详情"
-          />
+          <Link href="/component" link-text="组件文档" prefix-text="查看" />
+          <Link href="/component" link-text="组件文档" suffix-text="了解更多" />
+          <Link href="/component" link-text="组件文档" prefix-text="前往" suffix-text="查看详情" />
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="API"
-      variant="api"
-    >
+    <ComponentDocsSection title="API" variant="api">
       <Table
         :columns="apiTableColumns"
         :data="apiTableRows"
@@ -157,7 +119,7 @@ const apiTableColumns: TableColumn[] = [
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '160px', wrap: true },
   { key: 'options', label: '可选值', minWidth: '200px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
 ]
 
 const apiTableRows = [
@@ -166,50 +128,50 @@ const apiTableRows = [
     description: '链接地址',
     type: 'string',
     options: '—',
-    default: '—'
+    default: '—',
   },
   {
     name: 'link-text',
     description: '链接文本',
     type: 'string',
     options: '—',
-    default: '—'
+    default: '—',
   },
   {
     name: 'prefix-text',
     description: '前置文本',
     type: 'string',
     options: '—',
-    default: '—'
+    default: '—',
   },
   {
     name: 'suffix-text',
     description: '后置文本',
     type: 'string',
     options: '—',
-    default: '—'
+    default: '—',
   },
   {
     name: 'external',
     description: '是否为外部链接',
     type: 'boolean',
     options: 'true / false',
-    default: 'false'
+    default: 'false',
   },
   {
     name: 'target',
     description: '链接打开方式',
     type: 'string',
     options: '_blank / _self / _parent / _top',
-    default: '_self'
+    default: '_self',
   },
   {
     name: 'variant',
     description: '链接样式变体',
     type: 'string',
     options: 'primary / secondary / danger / default',
-    default: 'primary'
-  }
+    default: 'primary',
+  },
 ]
 </script>
 

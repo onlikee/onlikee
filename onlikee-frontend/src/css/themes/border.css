@@ -1,0 +1,11 @@
+:root {
+  --borderWidth-thick: 0.125rem; /** Thick 2px border for emphasis. Use for focus indicators, selected states, or to emphasize important boundaries */
+  --borderWidth-thicker: 0.25rem; /** Extra thick 4px border for maximum emphasis. Use sparingly for high-contrast focus indicators or critical visual separators */
+  --borderWidth-thin: 0.0625rem; /** Standard 1px border width. Use for most borders, dividers, and outlines throughout the interface */
+  --outline-focus-offset: -0.125rem; /** Focus outline offset (-2px). Negative value creates an inset outline for keyboard focus indicators, ensuring the focus ring stays within the element bounds */
+  --outline-focus-width: 0.125rem; /** Focus outline width (2px). Standard width for keyboard focus indicators to meet WCAG 2.4.7 accessibility requirements */
+  --borderWidth-default: var(--borderWidth-thin); /** Default border width for most UI elements. Alias of borderWidth.thin (1px) */
+  --boxShadow-thick: inset 0 0 0 var(--borderWidth-thick); /** Thick shadow (2px) used instead of a border for emphasis without layout shift */
+  --boxShadow-thicker: inset 0 0 0 var(--borderWidth-thicker); /** Thickest shadow (4px) used for high emphasis borders without layout shift. Use sparingly for maximum visual impact */
+  --boxShadow-thin: inset 0 0 0 var(--borderWidth-thin); /** Thin shadow used instead of a border to prevent layout shift */
+}

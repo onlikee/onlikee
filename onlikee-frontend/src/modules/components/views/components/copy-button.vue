@@ -20,7 +20,8 @@
 
     <ComponentDocsSection title="不同尺寸">
       <template #description>
-        通过 <code>size</code> 控制按钮的尺寸，small、medium、large 分别对应 28×28、32×32、40×40 像素。
+        通过 <code>size</code> 控制按钮的尺寸，small、medium、large 分别对应 28×28、32×32、40×40
+        像素。
       </template>
 
       <ComponentDocsDemoBlock :code="sizeDemoCode">
@@ -42,20 +43,14 @@
         <div class="code-block-demo">
           <div class="code-block-header">
             <span class="code-block-lang">TypeScript</span>
-            <CopyButton
-              size="small"
-              @click="copyText(sampleCode)"
-            />
+            <CopyButton size="small" @click="copyText(sampleCode)" />
           </div>
           <pre class="code-block-body"><code>{{ sampleCode }}</code></pre>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="API"
-      variant="api"
-    >
+    <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
       <Table
         :columns="apiTableColumns"
@@ -144,7 +139,7 @@ const apiTableColumns: TableColumn[] = [
   { key: 'default', label: '默认值', minWidth: '100px' },
   { key: 'type', label: '类型', minWidth: '220px', wrap: true },
   { key: 'options', label: '可选值', minWidth: '200px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '220px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '220px', wrap: true },
 ]
 
 const apiTableRows = [
@@ -153,22 +148,22 @@ const apiTableRows = [
     description: '控制按钮的尺寸，分别对应 28×28、32×32、40×40 像素。',
     type: "'small' | 'medium' | 'large'",
     options: 'small / medium / large',
-    default: "'medium'"
-  }
+    default: "'medium'",
+  },
 ]
 
 const eventTableColumns: TableColumn[] = [
   { key: 'name', label: '事件名', rowHeader: true, minWidth: '120px' },
   { key: 'params', label: '参数', minWidth: '160px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '280px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '280px', wrap: true },
 ]
 
 const eventTableRows = [
   {
     name: 'click',
     params: '(event: MouseEvent)',
-    description: '按钮被点击时触发。组件内部会自动切换图标状态，此事件用于执行实际的复制逻辑。'
-  }
+    description: '按钮被点击时触发。组件内部会自动切换图标状态，此事件用于执行实际的复制逻辑。',
+  },
 ]
 </script>
 
@@ -188,7 +183,14 @@ const eventTableRows = [
   border: 1px solid var(--borderColor-default, #d0d7de);
   border-radius: 6px;
   overflow: hidden;
-  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    SF Mono,
+    Menlo,
+    Consolas,
+    Liberation Mono,
+    monospace;
   font-size: 13px;
 }
 

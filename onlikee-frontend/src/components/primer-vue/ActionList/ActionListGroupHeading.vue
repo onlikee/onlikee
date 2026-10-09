@@ -1,127 +1,78 @@
-<template>
-  <div
-    class="action-list-group-heading-wrap"
-    :data-variant="variant"
-    :data-has-trailing-action="hasTrailingAction ? 'true' : undefined"
-  >
-    <h3 class="action-list-group-heading">
-      <RenderNodes :nodes="parsedChildren.label" />
-    </h3>
-    <span
-      v-if="hasTrailingAction"
-      class="action-list-group-heading-action"
-    >
-      <RenderNodes :nodes="parsedChildren.trailingAction" />
-    </span>
-  </div>
-</template>
-
-<script setup lang="ts">
-import { Comment, Fragment, Text, computed, useSlots, type VNode } from 'vue'
-
-defineOptions({ name: 'ActionListGroupHeading' })
-
-interface MarkerType {
-  name?: string
-  __name?: string
-}
-
-interface ParsedChildren {
-  label: VNode[]
-  trailingAction: VNode[]
-}
-
-const RenderNodes = (props: { nodes: VNode[] }) => props.nodes
-
-function getComponentName(type: VNode['type']) {
-  if (typeof type !== 'object' && typeof type !== 'function') return ''
-  const marker = type as MarkerType
-  return marker.name ?? marker.__name ?? ''
-}
-
-function readSlotChildren(node: VNode) {
-  if (typeof node.children === 'object' && node.children && 'default' in node.children) {
-    const slot = node.children.default
-    return typeof slot === 'function' ? slot() : []
-  }
-  return []
-}
-
-function isWhitespaceNode(node: VNode) {
-  return node.type === Text && typeof node.children === 'string' && node.children.trim() === ''
-}
-
-function flattenChildren(nodes: VNode[]): VNode[] {
-  return nodes.flatMap(node => {
-    if (node.type === Fragment && Array.isArray(node.children)) {
-      return flattenChildren(node.children as VNode[])
+<script lang="ts">
+import classes from './ActionList.module.css'
+import { defineComponent, h, type PropType } from 'vue'
+import { useContext, useGroupContext } from './context'
+import type { HeadingLevel } from './types'
+import TrailingAction from './ActionListGroupHeadingTrailingAction.vue'
+import { useFeatureFlag } from '../FeatureFlags/context'
+import { useSlots } from '../composables/useSlots'
+import { normalizeReactStyle } from '../internal/style'
+export default defineComponent({
+  name: 'ActionListGroupHeading',
+  __SLOT__: Symbol('ActionList.GroupHeading'),
+  inheritAttrs: false,
+  props: {
+    as: { type: String as PropType<HeadingLevel>, default: undefined },
+    variant: { type: String as PropType<'filled' | 'subtle'>, default: 'subtle' },
+    auxiliaryText: { type: String, default: undefined },
+    className: { type: String, default: undefined },
+    headingWrapElement: { type: String as PropType<'div' | 'li'>, default: 'div' },
+    internalBackwardCompatibleTitle: { type: String, default: undefined },
+  },
+  setup(props, { slots, attrs }) {
+    const context = useContext(),
+      group = useGroupContext()
+    const enabled = useFeatureFlag('primer_react_action_list_group_heading_trailing_action')
+    return () => {
+      const children = slots.default?.()
+      const [matched, rest] = useSlots(children, { trailingAction: TrailingAction })
+      const action = enabled.value ? matched.trailingAction : null
+      const listRole = context?.listRole.value
+      const semanticList = listRole === undefined || listRole === 'list'
+      if (action && !semanticList)
+        throw new Error(
+          `ActionList.GroupHeading.TrailingAction can not be used inside an ActionList with an ARIA role of "${listRole}". Trailing actions on group headings are only supported in lists with the default "list" role.`,
+        )
+      if (semanticList && children !== undefined && props.as === undefined)
+        throw new Error(
+          "You are setting a heading for a list, that requires a heading level. Please use 'as' prop to set a proper heading level.",
+        )
+      if (!semanticList && children !== undefined && props.as !== undefined)
+        throw new Error(
+          'Group headings for menu and listbox roles are representational and do not need a heading level.',
+        )
+      const headingChildren =
+        props.internalBackwardCompatibleTitle ?? (enabled.value ? rest : children)
+      const headingAttrs = { ...attrs, style: normalizeReactStyle(attrs.style) }
+      return h(
+        props.headingWrapElement,
+        {
+          class: [classes['action-list-group-heading-wrap']],
+          'data-variant': props.variant,
+          'data-component': 'GroupHeadingWrap',
+          ...(semanticList
+            ? { 'data-has-trailing-action': action ? '' : undefined }
+            : { role: 'presentation', 'aria-hidden': 'true', ...headingAttrs }),
+        },
+        [
+          h(
+            semanticList ? props.as || 'h3' : 'span',
+            {
+              id: group.groupHeadingId,
+              ...(semanticList ? headingAttrs : {}),
+              class: [classes['action-list-group-heading'], props.className, attrs.class],
+            },
+            headingChildren,
+          ),
+          props.auxiliaryText
+            ? h('div', { class: [classes['action-list-description']] }, props.auxiliaryText)
+            : null,
+          action && semanticList
+            ? h('span', { class: [classes['action-list-group-heading-action']] }, [action])
+            : null,
+        ],
+      )
     }
-    return [node]
-  })
-}
-
-function parseChildren(nodes: VNode[]): ParsedChildren {
-  const parsed: ParsedChildren = { label: [], trailingAction: [] }
-  for (const node of flattenChildren(nodes)) {
-    if (node.type === Comment || isWhitespaceNode(node)) continue
-    const componentName = getComponentName(node.type)
-    if (componentName === 'ActionListGroupHeadingTrailingAction') {
-      parsed.trailingAction.push(...readSlotChildren(node))
-      continue
-    }
-    parsed.label.push(node)
-  }
-  return parsed
-}
-
-withDefaults(
-  defineProps<{
-    variant?: 'subtle' | 'filled'
-  }>(),
-  {
-    variant: 'subtle'
-  }
-)
-
-const slots = useSlots()
-const parsedChildren = computed(() => parseChildren(slots.default?.() ?? []))
-const hasTrailingAction = computed(() => Boolean(parsedChildren.value.trailingAction.length))
+  },
+})
 </script>
-
-<style scoped>
-.action-list-group-heading-wrap {
-  display: flex;
-  flex-direction: column;
-  padding: 6px 8px;
-  color: var(--fgColor-muted, #59636e);
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 18px;
-}
-
-.action-list-group-heading-wrap[data-variant='filled'] {
-  margin-block: 7px 8px;
-  background: var(--bgColor-muted, #f6f8fa);
-  border-block: 1px solid var(--borderColor-muted, #d1d9e0b3);
-}
-
-.action-list-group-heading {
-  align-self: flex-start;
-  margin: 0;
-  color: inherit;
-  font: inherit;
-}
-
-.action-list-group-heading-wrap[data-has-trailing-action='true'] {
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.action-list-group-heading-action {
-  display: inline-flex;
-  align-items: center;
-  margin-inline-start: auto;
-}
-</style>

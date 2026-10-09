@@ -8,8 +8,14 @@ npm test                  # 监听模式，修改测试或相关源码后重跑
 npm run test:run          # 一次性运行所有测试
 npm run typecheck:test    # 严格检查测试及其导入的源码
 npm run lint
+npm run lint:fix          # 自动修复 ESLint 和 Prettier 问题
+npm run format:check      # 检查 Vue/TS/CSS/JSON/Markdown 等文件格式
+npm run format            # 按 Prettier 规则格式化文件
 npm run build
 ```
+
+ESLint 通过 `eslint-plugin-prettier/recommended` 启用 Prettier 格式检查并关闭冲突的格式规则，统一读取 `.prettierrc.json`。Prettier 命令还会覆盖 ESLint 未检查的 CSS、JSON 和 Markdown 等文件，忽略目录见 `.prettierignore`。
+现有文件可能不符合新增的格式规则；首次自动修复会产生较多格式变化，运行后应检查 Git diff。格式规则要求 LF 换行。
 
 运行单个文件或筛选用例：
 
@@ -24,3 +30,5 @@ npm run test:run -- -t "controlled"
 mock、环境变量和全局变量在每个用例后恢复；修改这些状态的用例不要并发运行。
 
 测试由独立的 `tsconfig.test.json` 检查，不参与应用构建。运行 Vitest 本身不会替代类型检查。
+
+实时播报的 DOM 测试使用 live-region 包的浏览器入口，由 `vitest.config.ts` 配置；Node SSR 测试不依赖 DOM 全局。`vitest.setup.ts` 为 jsdom 补充 adoptedStyleSheets，以支持 Popover polyfill。

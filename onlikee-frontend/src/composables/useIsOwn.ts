@@ -8,6 +8,10 @@ export const useIsOwn = (profile: UserProfileRef) => {
   const userStore = useUserStore()
 
   return computed(() => {
-    return Boolean(profile.value?.uuid && userStore.userInfo?.uuid && profile.value.uuid === userStore.userInfo.uuid)
+    return Boolean(
+      profile.value?.uuid &&
+      userStore.userInfo?.uuid &&
+      profile.value.uuid === userStore.userInfo.uuid,
+    )
   })
 }

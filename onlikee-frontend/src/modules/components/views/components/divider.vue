@@ -1,14 +1,9 @@
 <template>
   <ComponentDocsPage>
-    <ComponentDocsHeader
-      title="Divider 分割线"
-      description="用于分隔内容的水平或纵向分割线。"
-    />
+    <ComponentDocsHeader title="Divider 分割线" description="用于分隔内容的水平或纵向分割线。" />
 
     <ComponentDocsSection title="基础用法">
-      <template #description>
-        最简单的分割线。
-      </template>
+      <template #description> 最简单的分割线。 </template>
 
       <ComponentDocsDemoBlock :code="demo1Code">
         <div class="demo-container">
@@ -20,9 +15,7 @@
     </ComponentDocsSection>
 
     <ComponentDocsSection title="多内容分隔">
-      <template #description>
-        分割线可以用于分隔多个段落或区块。
-      </template>
+      <template #description> 分割线可以用于分隔多个段落或区块。 </template>
 
       <ComponentDocsDemoBlock :code="demo2Code">
         <div class="demo-container">
@@ -37,7 +30,8 @@
 
     <ComponentDocsSection title="纵向分割线">
       <template #description>
-        设置 <code>direction="vertical"</code> 渲染纵向分割线，可通过 <code>height</code> 自定义高度。
+        设置 <code>direction="vertical"</code> 渲染纵向分割线，可通过
+        <code>height</code> 自定义高度。
       </template>
 
       <ComponentDocsDemoBlock :code="demo3Code">
@@ -53,7 +47,8 @@
 
     <ComponentDocsSection title="自定义尺寸">
       <template #description>
-        水平模式下通过 <code>width</code> 自定义宽度，纵向模式下通过 <code>height</code> 自定义高度。
+        水平模式下通过 <code>width</code> 自定义宽度，纵向模式下通过
+        <code>height</code> 自定义高度。
       </template>
 
       <ComponentDocsDemoBlock :code="demo4Code">
@@ -62,24 +57,15 @@
           <Divider width="50%" />
           <p>下方内容</p>
         </div>
-        <div
-          class="demo-inline"
-          style="margin-top: 16px;"
-        >
+        <div class="demo-inline" style="margin-top: 16px">
           <span>左</span>
-          <Divider
-            direction="vertical"
-            height="2rem"
-          />
+          <Divider direction="vertical" height="2rem" />
           <span>右</span>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection
-      title="API"
-      variant="api"
-    >
+    <ComponentDocsSection title="API" variant="api">
       <Table
         :columns="apiTableColumns"
         :data="apiTableRows"
@@ -153,13 +139,18 @@ const apiTableColumns: TableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '160px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true }
+  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
 ]
 
 const apiTableRows = [
-  { name: 'direction', description: '分割线方向', type: "'horizontal' | 'vertical'", default: "'horizontal'" },
+  {
+    name: 'direction',
+    description: '分割线方向',
+    type: "'horizontal' | 'vertical'",
+    default: "'horizontal'",
+  },
   { name: 'width', description: '水平模式下自定义宽度', type: 'string', default: '—' },
-  { name: 'height', description: '纵向模式下自定义高度', type: 'string', default: "'1em'" }
+  { name: 'height', description: '纵向模式下自定义高度', type: 'string', default: "'1em'" },
 ]
 </script>
 

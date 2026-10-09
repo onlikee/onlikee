@@ -1,5 +1,5 @@
 <template>
-  <div class="profile-markdown" v-if="profileMarkdown !== undefined">
+  <div v-if="profileMarkdown !== undefined" class="profile-markdown">
     <div class="markdown-header">
       <div>{{ profile.nickname }} / README.md</div>
       <Button
@@ -18,10 +18,7 @@
         v-html="renderedProfileMarkdown"
       />
       <!-- eslint-enable vue/no-v-html -->
-      <Blankslate
-        v-else-if="profileMarkdown !== undefined"
-        narrow
-      >
+      <Blankslate v-else-if="profileMarkdown !== undefined" narrow>
         <Blankslate.Visual>
           <RepoTemplateIcon />
         </Blankslate.Visual>
@@ -31,10 +28,7 @@
         <Blankslate.Description>
           {{ isOwn ? '用 Markdown 介绍你自己、项目和正在做的事情。让所有人认识你。' : '空空如也' }}
         </Blankslate.Description>
-        <Blankslate.PrimaryAction
-          v-if="isOwn"
-          @click="openMarkdownDialog"
-        >
+        <Blankslate.PrimaryAction v-if="isOwn" @click="openMarkdownDialog">
           现在开始
         </Blankslate.PrimaryAction>
       </Blankslate>
@@ -63,25 +57,21 @@
           >
             预览
           </Button>
-          <span
-            class="markdown-editor__count"
-            :data-invalid="markdownDraft.length > 20000"
-          >
+          <span class="markdown-editor__count" :data-invalid="markdownDraft.length > 20000">
             {{ markdownDraft.length }} / 20000 字符
           </span>
         </div>
         <Textarea
           v-if="markdownMode === 'edit'"
-          v-model="markdownDraft"
+          v-model:value="markdownDraft"
           class="markdown-editor__textarea"
+          block
+          resize="vertical"
           :maxlength="20000"
           placeholder="用 Markdown 介绍你自己、项目和正在做的事情。"
           autofocus
         />
-        <div
-          v-else
-          class="markdown-editor__preview"
-        >
+        <div v-else class="markdown-editor__preview">
           <!-- eslint-disable vue/no-v-html -->
           <div
             v-if="markdownDraft"
@@ -89,21 +79,12 @@
             v-html="renderedDraftMarkdown"
           />
           <!-- eslint-enable vue/no-v-html -->
-          <div
-            v-else
-            class="markdown-editor__empty"
-          >
-            暂无可预览内容。
-          </div>
+          <div v-else class="markdown-editor__empty">暂无可预览内容。</div>
         </div>
       </div>
     </Dialog.Body>
     <Dialog.Footer>
-      <Button
-        @click="markdownDialogOpen = false"
-      >
-        取消
-      </Button>
+      <Button @click="markdownDialogOpen = false"> 取消 </Button>
       <Button
         :variant="'primary'"
         :loading="markdownSaving"
@@ -153,7 +134,7 @@ const renderMarkdown = (content: string) => {
   const html = marked.parse(content, {
     gfm: true,
     breaks: false,
-    async: false
+    async: false,
   })
   return DOMPurify.sanitize(html)
 }
@@ -256,8 +237,10 @@ onMounted(async () => {
 
 .markdown-editor__textarea {
   width: 100%;
+}
+
+.markdown-editor__textarea :deep(textarea) {
   height: 480px;
-  resize: vertical;
 }
 
 .markdown-editor__preview {

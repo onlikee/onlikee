@@ -1,58 +1,31 @@
-<template>
-  <span
-    ref="optionSourceRef"
-    class="select-option-source"
-  >
-    <slot />
-  </span>
-</template>
-
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, onUpdated, ref, watch } from 'vue'
-import { useSelectContext } from './context'
-
-const props = defineProps<{
-  value: string
-  label?: string
-}>()
-
-const selectContext = useSelectContext()
-const optionSourceRef = ref<HTMLSpanElement | null>(null)
-const slotLabel = ref('')
-const optionId = Symbol('SelectOption')
-
-const option = computed(() => ({
-  value: props.value,
-  label: props.label ?? slotLabel.value
-}))
-
-onMounted(() => {
-  syncSlotLabel()
-  selectContext?.registerOption(optionId, option.value)
-})
-
-onUpdated(syncOption)
-
-onBeforeUnmount(() => {
-  selectContext?.unregisterOption(optionId)
-})
-
-watch(() => [props.value, props.label] as const, () => {
-  selectContext?.updateOption(optionId, option.value)
-})
-
-function syncOption() {
-  syncSlotLabel()
-  selectContext?.updateOption(optionId, option.value)
-}
-
-function syncSlotLabel() {
-  slotLabel.value = optionSourceRef.value?.textContent?.trim() ?? ''
+import { inject, useAttrs, type OptionHTMLAttributes } from 'vue'
+import { selectValueKey } from './context'
+import { normalizeReactStyle } from '../internal/style'
+defineOptions({ inheritAttrs: false })
+const props = defineProps<{ value: string }>()
+const attrs = useAttrs()
+const selectedValue = inject(selectValueKey, undefined)
+// Only initialize the native default. The select's value controls later changes.
+const initiallySelected = selectedValue?.value === props.value
+const hasInitialValue = selectedValue?.value !== undefined
+function nativeAttrs() {
+  const { style: _style, ...native } = attrs
+  return native
 }
 </script>
-
-<style scoped>
-.select-option-source {
-  display: none;
-}
-</style>
+<template>
+  <option
+    v-bind="nativeAttrs()"
+    :value="value"
+    :selected="
+      hasInitialValue
+        ? initiallySelected || undefined
+        : ($attrs.selected as OptionHTMLAttributes['selected'])
+    "
+    :style="normalizeReactStyle($attrs.style)"
+    data-component="Select.Option"
+  >
+    <slot />
+  </option>
+</template>

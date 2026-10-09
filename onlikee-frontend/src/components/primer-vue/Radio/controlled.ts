@@ -11,7 +11,7 @@ export function restoreRadioGroup(input: HTMLInputElement) {
   const group =
     input.name && 'querySelectorAll' in root
       ? Array.from(root.querySelectorAll<HTMLInputElement>('input[type="radio"]')).filter(
-          (other) => other.name === input.name && other.form === input.form
+          (other) => other.name === input.name && other.form === input.form,
         )
       : [input]
   if (!group.includes(input)) group.push(input)

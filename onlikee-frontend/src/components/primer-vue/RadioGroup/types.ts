@@ -5,6 +5,7 @@ export interface RadioGroupProps {
   id?: string
   className?: string
   'aria-labelledby'?: string
+  'data-component'?: string
 }
 export interface RadioGroupLabelProps {
   className?: string

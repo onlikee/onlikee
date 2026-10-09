@@ -1,9 +1,6 @@
 <template>
   <div class="first-step">
-    <div
-      class="options-grid"
-      :class="{ 'options-grid--invalid': invalid }"
-    >
+    <div class="options-grid" :class="{ 'options-grid--invalid': invalid }">
       <button
         type="button"
         class="option-card"
@@ -12,18 +9,14 @@
         @click="selectFramework('html')"
       >
         <div class="option-header">
-          <div class="option-title">
-            HTML<Tag>推荐</Tag>
-          </div>
-          <p class="option-desc">
-            从一段HTML代码开始！
-          </p>
+          <div class="option-title">HTML<Tag>推荐</Tag></div>
+          <p class="option-desc">从一段HTML代码开始！</p>
         </div>
         <img
           class="create-image"
           src="@/modules/application/assets/new-html.svg"
           alt="Create Collect"
-        >
+        />
       </button>
 
       <button
@@ -34,18 +27,10 @@
         @click="selectFramework('vue')"
       >
         <div class="option-header">
-          <div class="option-title">
-            Vue
-          </div>
-          <p class="option-desc">
-            从一个Vue项目开始！
-          </p>
+          <div class="option-title">Vue</div>
+          <p class="option-desc">从一个Vue项目开始！</p>
         </div>
-        <img
-          class="create-image"
-          src="@/modules/application/assets/new-vue.svg"
-          alt="Create New"
-        >
+        <img class="create-image" src="@/modules/application/assets/new-vue.svg" alt="Create New" />
       </button>
 
       <button
@@ -56,23 +41,17 @@
         @click="selectFramework('react')"
       >
         <div class="option-header">
-          <div class="option-title">
-            React
-          </div>
-          <p class="option-desc">
-            从一个React项目开始！
-          </p>
+          <div class="option-title">React</div>
+          <p class="option-desc">从一个React项目开始！</p>
         </div>
         <img
           class="create-image"
           src="@/modules/application/assets/new-react.svg"
           alt="Create Website"
-        >
+        />
       </button>
     </div>
-    <p
-      v-if="invalid && validation"
-    >
+    <p v-if="invalid && validation">
       <FormControlValidation variant="error">
         {{ validation }}
       </FormControlValidation>
@@ -93,7 +72,7 @@ interface Props {
 
 withDefaults(defineProps<Props>(), {
   invalid: false,
-  validation: ''
+  validation: '',
 })
 
 const emit = defineEmits<{
@@ -136,7 +115,8 @@ function selectFramework(framework: FrameworkValue) {
 .option-card--active {
   outline: 2px solid var(--borderColor-accent-emphasis);
   outline-offset: -1px;
-  box-shadow: 0 4px 14px -4px color-mix(in srgb, var(--fgColor-default) 8%, var(--bgColor-transparent));
+  box-shadow: 0 4px 14px -4px
+    color-mix(in srgb, var(--fgColor-default) 8%, var(--bgColor-transparent));
 }
 
 .option-title {

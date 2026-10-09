@@ -1,28 +1,17 @@
 <template>
   <Container>
     <div class="components-header">
-      <h1 class="title">
-        Primer-Vue
-      </h1>
-      <p class="subtitle">
-        这里展示本站自研的 UI 组件库，提供现代化、美观且易用的组件。
-      </p>
-      <p class="subtitle">
-        所有组件都经过精心设计，支持 TypeScript 并遵循最佳实践。
-      </p>
+      <h1 class="title">Primer-Vue</h1>
+      <p class="subtitle">这里展示本站自研的 UI 组件库，提供现代化、美观且易用的组件。</p>
+      <p class="subtitle">所有组件都经过精心设计，支持 TypeScript 并遵循最佳实践。</p>
       <div class="actions">
-        <RouterLink
-          to="/component/overview"
-          class="link"
-        >
-          探索一下
-        </RouterLink>
+        <RouterLink to="/component/overview" class="link"> 探索一下 </RouterLink>
       </div>
       <img
         src="@/modules/components/assets/components.svg"
         alt="Components Preview"
         class="components-preview"
-      >
+      />
     </div>
   </Container>
 </template>
@@ -84,6 +73,5 @@ import { Container } from '@/components/primer-vue/Container'
   .subtitle {
     font-size: 1rem;
   }
-
 }
 </style>

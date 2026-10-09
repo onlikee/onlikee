@@ -1,0 +1,38 @@
+.text-input-action {
+  margin-right: var(--base-size-4, 4px);
+  margin-left: var(--base-size-4, 4px);
+  /* stylelint-disable-next-line primer/typography */
+  line-height: 0;
+}
+
+.text-input-action-invisible {
+  position: relative;
+  padding-top: var(--base-size-2, 2px);
+  padding-right: var(--base-size-4, 4px);
+  padding-bottom: var(--base-size-2, 2px);
+  padding-left: var(--base-size-4, 4px);
+  color: var(--fgColor-muted, #59636e);
+  background-color: transparent;
+}
+.text-input-action-invisible:hover,
+.text-input-action-invisible:focus {
+  color: var(--fgColor-default, #1f2328);
+}
+.text-input-action-invisible[data-component='IconButton'] {
+  width: var(--inner-action-size, 24px);
+  height: var(--inner-action-size, 24px);
+}
+@media (pointer: coarse) {
+  .text-input-action-invisible ::after {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    left: 0;
+    min-height: 44px;
+    content: '';
+    transform: translateY(-50%);
+  }
+}
+.text-input-action-conditional-tooltip {
+  display: inline-block;
+}
