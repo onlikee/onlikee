@@ -33,6 +33,7 @@ defineExpose(exposeElement(element))
       ref="button"
       :as="props.as"
       :href="href ?? null"
+      type="button"
       :icon="icon"
       :aria-label="icon ? label : undefined"
       variant="invisible"
@@ -46,6 +47,7 @@ defineExpose(exposeElement(element))
           Object.entries(attrs).filter(([key]) => key !== 'class' && key !== 'style'),
         )
       "
+      :unsafe-disable-tooltip="!icon"
       >{{ icon ? undefined : label }}</Button
     >
   </span>

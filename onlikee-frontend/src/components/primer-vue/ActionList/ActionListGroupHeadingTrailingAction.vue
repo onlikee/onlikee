@@ -26,6 +26,7 @@ defineExpose(exposeElement(element))
     ref="button"
     :as="props.as"
     :href="props.href ?? null"
+    type="button"
     :icon="icon"
     :loading="loading"
     :aria-label="label"

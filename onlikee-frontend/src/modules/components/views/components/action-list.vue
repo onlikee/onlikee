@@ -894,7 +894,7 @@ const actionListItemPropsRows = [
     description: '已弃用，对 Item 不生效；使用 LinkItem 的 as 实现自定义链接',
   },
   {
-    name: 'privateItemWrapper / privateTooltipText',
+    name: 'privateItemWrapper / _PrivateItemWrapper / privateTooltipText / _PrivateTooltipText',
     type: '函数 / string',
     default: 'undefined',
     description: '对应源 _PrivateItemWrapper / _PrivateTooltipText 的内部适配接口',
@@ -926,7 +926,12 @@ const actionListLinkItemPropsRows = [
     default: 'undefined',
     description: '非活动链接渲染 span 并移除链接交互',
   },
-  { name: 'privateTooltipText', type: 'string', default: 'undefined', description: '链接提示内容' },
+  {
+    name: 'privateTooltipText / _PrivateTooltipText',
+    type: 'string',
+    default: 'undefined',
+    description: '链接提示内容',
+  },
   {
     name: 'className / 原生属性',
     type: 'HTMLAttributes',

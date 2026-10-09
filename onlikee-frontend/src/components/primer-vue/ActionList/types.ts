@@ -45,6 +45,9 @@ export interface ActionListItemProps extends Omit<HTMLAttributes, 'onSelect'> {
   /** Vue names for the source's private wrapper and tooltip APIs. */
   privateItemWrapper?: (props: Record<string, unknown>, children: VNodeChild[]) => VNode
   privateTooltipText?: string
+  /** React source-compatible private prop aliases. */
+  _PrivateItemWrapper?: (props: Record<string, unknown>, children: VNodeChild[]) => VNode
+  _PrivateTooltipText?: string
 }
 export interface ActionListLinkItemProps extends /* @vue-ignore */ AnchorHTMLAttributes {
   as?: string | Component
@@ -54,6 +57,7 @@ export interface ActionListLinkItemProps extends /* @vue-ignore */ AnchorHTMLAtt
   size?: ActionListItemSize
   className?: string
   privateTooltipText?: string
+  _PrivateTooltipText?: string
 }
 export interface ActionListGroupProps extends /* @vue-ignore */ HTMLAttributes {
   variant?: 'filled' | 'subtle'

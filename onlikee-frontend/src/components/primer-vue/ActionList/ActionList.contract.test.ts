@@ -353,16 +353,38 @@ describe('ActionList complete source contracts', () => {
     const action = wrapper.get('[data-component="ActionList.TrailingAction"]')
     expect(action.element.parentElement?.tagName).toBe('LI')
     expect(action.get('button').text()).toBe('Edit')
+    expect(action.get('button').attributes('type')).toBe('button')
+    expect(action.get('button').attributes('data-component')).toBe('Button')
     click(action.get('button').element)
     expect(onClick).toHaveBeenCalledTimes(1)
     expect(onSelect).not.toHaveBeenCalled()
-    expect(
-      wrapper
-        .findAll('[data-component="ActionList.TrailingAction"]')[1]
-        .find('[data-icon]')
-        .exists(),
-    ).toBe(true)
+    const iconAction = wrapper.findAll('[data-component="ActionList.TrailingAction"]')[1]
+    expect(iconAction.find('[data-icon]').exists()).toBe(true)
+    expect(iconAction.get('[data-component="IconButton"]').attributes('aria-label')).toBe(undefined)
     expect(wrapper.get('a').attributes('href')).toBe('#test')
+    expect(wrapper.get('a').attributes('type')).toBe('button')
+    expect(wrapper.get('a').attributes('disabled')).toBeUndefined()
+  })
+  it('keeps text actions tooltip-free and maps Link props to data attributes', () => {
+    const wrapper = render([
+      item({}, [
+        'Label',
+        h(ActionList.TrailingAction, {
+          label: 'Edit',
+          'aria-label': 'Edit action',
+          description: 'Should not create a text-action tooltip',
+        }),
+      ]),
+      h(
+        ActionList.LinkItem,
+        { href: '#link', inline: true, muted: true },
+        { default: () => 'Link' },
+      ),
+    ])
+    const textAction = wrapper.get('[data-component="ActionList.TrailingAction"]')
+    expect(textAction.find('[data-component="Tooltip"]').exists()).toBe(false)
+    expect(wrapper.get('a').attributes('data-inline')).toBe('true')
+    expect(wrapper.get('a').attributes('data-muted')).toBe('true')
   })
   it('hides actions on inactive/loading items and rejects menu container actions', () => {
     const action = () => h(ActionList.TrailingAction, { label: 'Edit' })
@@ -422,6 +444,30 @@ describe('ActionList complete source contracts', () => {
     expect(
       on.get('[class*="action-list-group-heading-action_"] button').attributes('data-size'),
     ).toBe('small')
+  })
+  it('keeps the React Button type when a group heading action is rendered as a link', () => {
+    const wrapper = render([
+      group({}, [
+        h(
+          ActionList.GroupHeading,
+          { as: 'h3' },
+          {
+            default: () => [
+              'Group',
+              h(ActionList.GroupHeading.TrailingAction, {
+                as: 'a',
+                href: '#edit',
+                icon: Icon,
+                label: 'Edit',
+              }),
+            ],
+          },
+        ),
+      ]),
+    ])
+    expect(
+      wrapper.get('[data-component="ActionList.GroupHeading.TrailingAction"]').attributes('type'),
+    ).toBe('button')
   })
   it('rejects enabled group actions in semantic menus and applies the NavList gap flag only in that container', () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {})

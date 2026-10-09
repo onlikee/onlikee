@@ -1,4 +1,5 @@
 <script lang="ts">
+/* eslint-disable vue/prop-name-casing -- Keep React source-compatible private prop aliases. */
 import classes from './ActionList.module.css'
 import { defineComponent, h, ref, type Component, type PropType } from 'vue'
 import Item from './ActionListItemBase.vue'
@@ -18,9 +19,11 @@ export default defineComponent({
     size: { type: String as PropType<ActionListItemSize>, default: 'medium' },
     className: { type: String, default: undefined },
     privateTooltipText: { type: String, default: undefined },
+    _PrivateTooltipText: { type: String, default: undefined },
   },
   setup(props, { attrs, slots, expose }) {
     const element = ref<HTMLElement | null>(null)
+    const privateTooltipText = () => props.privateTooltipText ?? props._PrivateTooltipText
     const setElement = (node: unknown) => {
       const instance = node as { element?: HTMLElement; $el?: HTMLElement } | null
       element.value =
@@ -44,16 +47,18 @@ export default defineComponent({
           ) => {
             const { onClick, ...rest } = bindings
             if (props.inactiveText) return h('span', rest, children)
-            const { class: _class, ...linkAttrs } = attrs
+            const { class: _class, style, inline, muted, ...linkAttrs } = attrs
             const link = h(
               props.as,
               {
                 'data-component': 'Link',
+                'data-inline': inline,
+                'data-muted': muted,
                 ...rest,
                 ...linkAttrs,
                 ref: setElement,
                 class: [rest.class, classes['action-list-link']],
-                style: normalizeReactStyle(attrs.style),
+                style: normalizeReactStyle(style),
                 onClick: (event: MouseEvent) => {
                   ;(onClick as ((event: MouseEvent) => void) | undefined)?.(event)
                   const handlers = attrs.onClick
@@ -63,10 +68,11 @@ export default defineComponent({
               },
               typeof props.as === 'string' ? children : { default: () => children },
             )
-            return props.privateTooltipText
+            const tooltipText = privateTooltipText()
+            return tooltipText
               ? h(
                   Tooltip,
-                  { text: props.privateTooltipText, direction: 'e', delay: 'medium' },
+                  { text: tooltipText, direction: 'e', delay: 'medium' },
                   { default: () => link },
                 )
               : link

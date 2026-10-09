@@ -31,7 +31,7 @@ export default defineComponent({
       const semanticList = listRole === undefined || listRole === 'list'
       if (action && !semanticList)
         throw new Error(
-          'ActionList.GroupHeading.TrailingAction is only supported in lists with the default list role.',
+          `ActionList.GroupHeading.TrailingAction can not be used inside an ActionList with an ARIA role of "${listRole}". Trailing actions on group headings are only supported in lists with the default "list" role.`,
         )
       if (semanticList && children !== undefined && props.as === undefined)
         throw new Error(

@@ -1,4 +1,5 @@
 <script lang="ts">
+/* eslint-disable vue/prop-name-casing -- Keep React source-compatible private prop aliases. */
 import classes from './ActionList.module.css'
 /* eslint-disable vue/one-component-per-file -- Internal provider resets tooltips within each item. */
 import {
@@ -72,6 +73,11 @@ export default defineComponent({
       default: undefined,
     },
     privateTooltipText: { type: String, default: undefined },
+    _PrivateItemWrapper: {
+      type: Function as PropType<NonNullable<ActionListItemProps['_PrivateItemWrapper']>>,
+      default: undefined,
+    },
+    _PrivateTooltipText: { type: String, default: undefined },
   },
   emits: { select: (_event: SelectEvent) => true },
   setup(props, { slots, attrs, emit, expose }) {
@@ -85,6 +91,8 @@ export default defineComponent({
     const blockDescriptionId = computed(() => itemId.value + '--block-description')
     const trailingVisualId = computed(() => itemId.value + '--trailing-visual')
     const listRole = computed(() => list?.listRole.value)
+    const itemWrapper = computed(() => props.privateItemWrapper ?? props._PrivateItemWrapper)
+    const privateTooltipText = computed(() => props.privateTooltipText ?? props._PrivateTooltipText)
     // Item and Selection intentionally use the source's different false-override rules.
     const selectionVariant = computed(() => group.selectionVariant || list?.selectionVariant.value)
     const visualSelectionVariant = computed(() =>
@@ -117,7 +125,7 @@ export default defineComponent({
           ),
         ),
     )
-    const buttonSemantics = computed(() => !listSemantics.value && !props.privateItemWrapper)
+    const buttonSemantics = computed(() => !listSemantics.value && !itemWrapper.value)
     const truncatedText = ref<string>()
     provide(actionListItemContextKey, {
       variant: computed(() => props.variant),
@@ -167,7 +175,7 @@ export default defineComponent({
       )
       if (matched.trailingAction && menuContext)
         throw new Error(
-          'ActionList.TrailingAction can not be used within a menu or listbox container.',
+          'ActionList.TrailingAction can not be used within a list with an ARIA role of "menu" or "listbox".',
         )
       const showInactiveIndicator =
         inactive.value &&
@@ -216,12 +224,12 @@ export default defineComponent({
       }
       const { class: classAttr, style, ...restAttrs } = attrs
       const nativeAttrs = { ...restAttrs, style: normalizeReactStyle(style) }
-      const containerProps = props.privateItemWrapper
+      const containerProps = itemWrapper.value
         ? { role: itemRole.value ? 'none' : undefined, ...nativeAttrs }
         : listSemantics.value
           ? { ...menuItemProps, ...nativeAttrs }
           : {}
-      const wrapperProps = props.privateItemWrapper
+      const wrapperProps = itemWrapper.value
         ? menuItemProps
         : !listSemantics.value
           ? { ...menuItemProps, ...nativeAttrs }
@@ -342,8 +350,8 @@ export default defineComponent({
         element.value =
           node instanceof HTMLElement ? node : (instance?.element ?? instance?.$el ?? null)
       }
-      let wrapper: VNode = props.privateItemWrapper
-        ? props.privateItemWrapper(
+      let wrapper: VNode = itemWrapper.value
+        ? itemWrapper.value(
             { ...wrapperBindings, ref: listSemantics.value ? undefined : setElement },
             [child],
           )
@@ -356,7 +364,7 @@ export default defineComponent({
             },
             [child],
           )
-      const tooltipText = props.privateTooltipText ?? truncatedText.value
+      const tooltipText = privateTooltipText.value ?? truncatedText.value
       if (buttonSemantics.value && tooltipText) {
         const trigger = wrapper
         wrapper = h(

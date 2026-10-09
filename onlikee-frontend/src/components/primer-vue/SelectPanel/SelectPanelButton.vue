@@ -258,7 +258,7 @@ defineExpose({ element, focus: () => element.value?.focus() })
         { [$style['select-panel-button__icon-button']]: icon },
       ]"
       :type="effectiveType"
-      :disabled="disabled"
+      :disabled="disabled ? true : undefined"
       :data-block="block ? 'block' : undefined"
       :data-inactive="inactive ? true : undefined"
       :data-loading="!!loading"
