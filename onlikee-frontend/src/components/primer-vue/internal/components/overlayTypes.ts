@@ -1,5 +1,5 @@
 import type { AnchorAlignment, AnchorPosition, AnchorSide } from '@primer/behaviors'
-import type { Component, HTMLAttributes, Ref, StyleValue, VNodeChild } from 'vue'
+import type { Component, HTMLAttributes, Ref, StyleValue } from 'vue'
 import type { FocusZoneHookSettings } from '../../composables/useFocusZone'
 export type OverlayWidth = 'auto' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge'
 export type OverlayHeight =
@@ -58,35 +58,4 @@ export interface OverlayProps extends /* @vue-ignore */ HTMLAttributes {
   responsiveVariant?: 'fullscreen'
   role?: string
   cssAnchorPositioningSettings?: CSSAnchorPositioningSettings
-}
-export interface AnchorRenderProps extends HTMLAttributes {
-  ref: (element: unknown) => void
-  children?: VNodeChild
-}
-export interface AnchoredOverlayProps {
-  open: boolean
-  anchorId?: string
-  anchorRef?: Ref<HTMLElement | null>
-  renderAnchor?: ((props: AnchorRenderProps) => VNodeChild) | null
-  overlayProps?: OverlayProps
-  align?: AnchorAlignment
-  side?: AnchorSide
-  anchorOffset?: number
-  alignmentOffset?: number
-  width?: OverlayWidth
-  height?: OverlayHeight
-  variant?:
-    | 'anchored'
-    | 'fullscreen'
-    | { narrow?: 'anchored' | 'fullscreen'; regular?: 'anchored' | 'fullscreen' }
-  displayInViewport?: boolean
-  pinPosition?: boolean
-  preventOverflow?: boolean
-  className?: string
-  displayCloseButton?: boolean
-  closeButtonProps?: HTMLAttributes
-  cssAnchorPositioningSettings?: CSSAnchorPositioningSettings
-  focusTrapSettings?: FocusTrapSettings
-  focusZoneSettings?: FocusZoneHookSettings
-  onPositionChange?: (event: { position: AnchorPosition }) => void
 }

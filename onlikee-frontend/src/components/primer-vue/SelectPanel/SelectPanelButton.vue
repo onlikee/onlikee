@@ -24,6 +24,7 @@ import CounterLabel from '../CounterLabel/CounterLabel.vue'
 import { useTooltipController } from '../TooltipV2/useTooltip'
 import TooltipElement from '../TooltipV2/TooltipElement.vue'
 import { TOOLTIP_CONTEXT_KEY, type TooltipContextValue } from '../TooltipV2/TooltipContext'
+import { TOOLTIP_CONTEXT_KEY as TOOLTIP_V1_CONTEXT_KEY } from '../Tooltip/TooltipContext'
 import type { TooltipDirection, TooltipType } from '../TooltipV2/types'
 
 defineOptions({ name: 'SelectPanelButton', inheritAttrs: false })
@@ -93,7 +94,10 @@ const loadingAnnouncementId = `${uuid}-loading-announcement`
 const tooltipId = useId()
 
 const tooltipContext = inject(TOOLTIP_CONTEXT_KEY, undefined)
-const hasExternalTooltip = computed(() => Boolean(tooltipContext?.tooltipId))
+const tooltipContextV1 = inject(TOOLTIP_V1_CONTEXT_KEY, undefined)
+const hasExternalTooltip = computed(() =>
+  Boolean(tooltipContext?.tooltipId || tooltipContextV1?.tooltipId),
+)
 const ariaLabel = computed(() => attrs['aria-label'] as string | undefined)
 const withoutTooltip = computed(
   () =>

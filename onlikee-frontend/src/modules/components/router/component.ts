@@ -39,6 +39,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
       },
       // Basic
       {
+        path: 'anchored-overlay',
+        name: 'AnchoredOverlay',
+        component: () => import('../views/components/anchored-overlay.vue'),
+      },
+      {
         path: 'action-menu',
         name: 'ActionMenu',
         component: () => import('../views/components/action-menu.vue'),

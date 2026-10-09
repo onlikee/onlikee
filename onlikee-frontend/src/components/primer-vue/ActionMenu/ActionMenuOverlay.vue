@@ -12,7 +12,7 @@ import {
   watch,
 } from 'vue'
 import { iterateFocusableElements } from '@primer/behaviors/utils'
-import AnchoredOverlay from '../internal/components/AnchoredOverlay.vue'
+import { AnchoredOverlay } from '../AnchoredOverlay'
 import { ActionListContainerContext } from '../ActionList'
 import { dialogContextKey } from '../Dialog/context'
 import { useMenuContext } from './context'

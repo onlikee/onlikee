@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import {
   computed,
+  Teleport,
   h,
+  nextTick,
   onBeforeUnmount,
   onMounted,
   shallowRef,
@@ -57,14 +59,17 @@ function setElement(value: unknown) {
 const anchor = computed(() => props.anchor)
 const cssAnchorEnabled = useFeatureFlag('primer_react_css_anchor_positioning')
 const disablePortal = computed(() => Boolean(props._PrivateDisablePortal && cssAnchorEnabled.value))
-const PortalHost = (_props: unknown, { slots }: SetupContext) =>
-  disablePortal.value
-    ? slots.default?.()
-    : h(
-        'div',
-        { 'data-component': 'Portal', style: { position: 'relative', zIndex: 1 } },
-        slots.default?.(),
-      )
+const PortalHost = (_props: unknown, { slots }: SetupContext) => {
+  if (disablePortal.value) return slots.default?.()
+  if (!mounted.value || !portalRoot.value) return null
+  return h(Teleport, { to: portalRoot.value }, [
+    h(
+      'div',
+      { 'data-component': 'Portal', style: { position: 'relative', zIndex: 1 } },
+      slots.default?.(),
+    ),
+  ])
+}
 const supportsCssAnchorPositioning =
   typeof document !== 'undefined' &&
   'anchorName' in document.documentElement.style &&
@@ -72,6 +77,7 @@ const supportsCssAnchorPositioning =
   'positionVisibility' in document.documentElement.style
 const cssAnchor = computed(
   () =>
+    Boolean(props.anchor) &&
     cssAnchorEnabled.value &&
     supportsCssAnchorPositioning &&
     !props.portalContainerName &&
@@ -88,7 +94,7 @@ const { position } = useAnchoredPosition(() => ({
   displayInViewport: props.displayInViewport,
   pinPosition: props.pinPosition,
   onPositionChange: props.onPositionChange,
-  enabled: props.open && !cssAnchor.value,
+  enabled: props.open && Boolean(props.anchor) && !cssAnchor.value,
 }))
 const overlayVisibility = computed(
   () =>
@@ -119,6 +125,7 @@ const overlayStyle = computed(() =>
 )
 
 let previousFocus: HTMLElement | null = null
+let outsideClicked = false
 
 watch(
   [element, () => props.height],
@@ -136,26 +143,66 @@ const trapArmed = computed(
     props.focusTrapSettings?.disabled !== true &&
     overlayVisibility.value !== 'hidden',
 )
+const trapContainer = computed(() => props.focusTrapSettings?.containerRef?.value ?? element.value)
+let trapController: AbortController | undefined
 watch(
-  [element, trapArmed],
-  ([overlay, armed], _previous, onCleanup) => {
+  [trapContainer, trapArmed, () => props.focusTrapSettings?.initialFocusRef?.value],
+  async ([overlay, armed], _previous, onCleanup) => {
     if (!overlay || !armed) return
+    let cancelled = false
+    let controller: AbortController | undefined
+    onCleanup(() => {
+      cancelled = true
+      controller?.abort()
+      trapController = undefined
+    })
+    // Anchored surfaces wait for visibility; ActionMenu owns its initial-focus ordering.
+    if (dataComponent.value === 'AnchoredOverlay') await nextTick()
+    if (cancelled) return
     const initialFocus = toValue(props.focusTrapSettings?.initialFocusRef)
-    const controller = focusTrap(overlay, initialFocus ?? undefined)
-    onCleanup(() => controller?.abort())
+    outsideClicked = false
+    controller = focusTrap(overlay, initialFocus ?? undefined)
+    trapController = controller
   },
   { flush: 'post' },
 )
 
 watch(
-  [element, () => props.preventFocusOnOpen],
-  ([overlay], _previous, onCleanup) => {
+  [
+    element,
+    () => props.preventFocusOnOpen,
+    () => props.initialFocusRef,
+    () => props.returnFocusRef,
+  ],
+  async ([overlay], _previous, onCleanup) => {
     if (!overlay || !props.open) return
     previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    let cancelled = false
+    const openingReturnFocus = toValue(props.returnFocusRef)
     const menuReturnFocus =
       dataComponent.value === 'ActionMenu.Overlay' ? toValue(props.returnFocusRef) : undefined
-    if (!props.preventFocusOnOpen) {
-      const initialFocus = toValue(props.initialFocusRef)
+    onCleanup(() => {
+      cancelled = true
+      if (outsideClicked && props.focusTrapSettings?.allowOutsideClick) return
+      const returnTo =
+        toValue(props.focusTrapSettings?.returnFocusRef) ??
+        (dataComponent.value === 'ActionMenu.Overlay'
+          ? menuReturnFocus
+          : (openingReturnFocus ?? previousFocus))
+      if (returnTo?.isConnected) {
+        // Vue tears nested teleports down before post-flush trap cleanup completes.
+        nextTick(() => {
+          if (returnTo.isConnected) returnTo.focus()
+        })
+      }
+    })
+    // Vue attaches Teleport refs before the parent finishes positioning the surface.
+    // Wait for that commit so Overlay's initial focus precedes the independent trap.
+    await nextTick()
+    if (cancelled) return
+    if (!props.preventFocusOnOpen && overlayVisibility.value !== 'hidden') {
+      const initialFocus =
+        toValue(props.focusTrapSettings?.initialFocusRef) ?? toValue(props.initialFocusRef)
       if (initialFocus) {
         initialFocus.focus()
       } else {
@@ -163,13 +210,6 @@ watch(
         firstItem?.focus()
       }
     }
-    onCleanup(() => {
-      const returnTo =
-        dataComponent.value === 'ActionMenu.Overlay'
-          ? menuReturnFocus
-          : (toValue(props.returnFocusRef) ?? previousFocus)
-      if (returnTo?.isConnected) returnTo.focus()
-    })
   },
   { flush: 'post' },
 )
@@ -191,6 +231,8 @@ watch(
       // don't call handler if the click happened inside of the container
       if (overlay.contains(target)) return true
       if (props.ignoreClickRefs?.some((ref) => toValue(ref)?.contains(target))) return true
+      outsideClicked = true
+      if (props.focusTrapSettings?.allowOutsideClick) trapController?.abort()
       props.onClickOutside?.(event)
       emit('close', event, 'click-outside')
       return undefined
@@ -232,7 +274,8 @@ watchEffect(
     const overlay = element.value
     const old = anchorElement.style.getPropertyValue('anchor-name')
     const isMenu = dataComponent.value === 'ActionMenu.Overlay'
-    const name = isMenu && old ? old : cssAnchorName
+    const isAnchored = isMenu || dataComponent.value === 'AnchoredOverlay'
+    const name = isAnchored && old ? old : cssAnchorName
     anchorElement.style.setProperty('anchor-name', name)
     overlay.style.setProperty('position-anchor', name)
     const fallback = props.cssAnchorPositioningSettings?.fallbackStrategy ?? 'default'
@@ -261,7 +304,7 @@ watchEffect(
         '--primer-overlay-inline-offset',
         `${Math.max(0, rect.left + width - window.innerWidth + 8)}px`,
       )
-      if (isMenu) {
+      if (isAnchored) {
         if (
           (overlayRect.right > window.innerWidth || overlayRect.left < 0) &&
           (overlayRect.bottom > window.innerHeight || overlayRect.top < 0)
@@ -293,7 +336,7 @@ watchEffect(
       }
     }
     const frame = requestAnimationFrame(updateAlignment)
-    if (!isMenu) window.addEventListener('resize', updateAlignment)
+    if (!isAnchored) window.addEventListener('resize', updateAlignment)
     onCleanup(() => {
       cancelAnimationFrame(frame)
       window.removeEventListener('resize', updateAlignment)
@@ -304,6 +347,10 @@ watchEffect(
 )
 
 function resolvePortalRoot() {
+  if (disablePortal.value) {
+    portalRoot.value = document.body
+    return
+  }
   if (props.portalContainerName) {
     const container = getPortalRoot(props.portalContainerName)
     if (!container)
@@ -330,7 +377,7 @@ onMounted(() => {
   if (props.open || !props.portalContainerName) resolvePortalRoot()
   mounted.value = true
 })
-watch([() => props.open, () => props.portalContainerName], ([open]) => {
+watch([() => props.open, () => props.portalContainerName, disablePortal], ([open]) => {
   if (mounted.value && open) resolvePortalRoot()
 })
 onBeforeUnmount(() => {
@@ -345,32 +392,32 @@ defineExpose({
 })
 </script>
 <template>
-  <Teleport v-if="mounted && open && portalRoot" :to="portalRoot!" :disabled="disablePortal">
-    <PortalHost>
-      <component
-        :is="as"
-        :ref="setElement"
-        v-bind="$attrs"
-        :class="[$style['primer-overlay'], 'primer-overlay', className]"
-        :style="overlayStyle"
-        :data-width="width"
-        :data-height="height"
-        :data-max-height="maxHeight"
-        :data-max-width="maxWidth"
-        :overflow="overflow"
-        :[`data-overflow-${overflow}`]="overflow ? '' : undefined"
-        :data-css-anchor="cssAnchor || undefined"
-        :data-side="cssAnchor ? side : position?.anchorSide"
-        :data-anchor-position="anchor ? (cssAnchor ? 'true' : 'false') : undefined"
-        :data-responsive="responsiveVariant"
-        :data-visibility="overlayVisibility"
-        :data-reflow-container="preventOverflow === false ? 'true' : undefined"
-        :role="role"
-        :data-component="dataComponent"
-      >
-        <slot />
-      </component>
-    </PortalHost>
-  </Teleport>
+  <PortalHost v-if="open">
+    <component
+      :is="as"
+      :ref="setElement"
+      v-bind="$attrs"
+      :class="[$style['primer-overlay'], 'primer-overlay', className]"
+      :style="overlayStyle"
+      :[`data-width-${width}`]="''"
+      :[`data-height-${height}`]="''"
+      :[`data-max-height-${maxHeight}`]="maxHeight ? '' : undefined"
+      :[`data-max-width-${maxWidth}`]="maxWidth ? '' : undefined"
+      :overflow="overflow"
+      :[`data-overflow-${overflow}`]="overflow ? '' : undefined"
+      :data-css-anchor="cssAnchor || undefined"
+      :data-side="anchor ? (cssAnchor ? side : position?.anchorSide) : $attrs['data-side']"
+      :data-anchor-position="
+        anchor ? (cssAnchor ? 'true' : 'false') : $attrs['data-anchor-position']
+      "
+      :data-responsive="responsiveVariant"
+      :[`data-visibility-${overlayVisibility}`]="''"
+      :data-reflow-container="preventOverflow === false ? 'true' : undefined"
+      :role="role"
+      :data-component="dataComponent"
+    >
+      <slot />
+    </component>
+  </PortalHost>
 </template>
 <style module src="./Overlay.module.css"></style>

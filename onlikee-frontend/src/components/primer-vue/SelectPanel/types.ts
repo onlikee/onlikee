@@ -1,11 +1,7 @@
 import type { VNodeChild } from 'vue'
 import type { NodeProp } from '../internal/renderNode'
 import type { FilteredActionListProps, ItemInput, Visual } from '../FilteredActionList/types'
-import type {
-  AnchorRenderProps,
-  AnchoredOverlayProps,
-  OverlayProps,
-} from '../internal/components/overlayTypes'
+import type { AnchorRenderProps, AnchoredOverlayProps, OverlayProps } from '../AnchoredOverlay'
 export type SelectPanelGesture =
   'anchor-click' | 'anchor-key-press' | 'click-outside' | 'escape' | 'selection' | 'cancel'
 export type InitialLoadingType = 'spinner' | 'skeleton'

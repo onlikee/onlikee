@@ -31,6 +31,10 @@ export function useAnchoredPosition(settings: MaybeRefOrGetter<AnchoredPositionH
   const anchorElementRef = first.anchorElementRef ?? shallowRef<HTMLElement | null>(null)
   const position = shallowRef<AnchorPosition>()
   let prevHeight: number | undefined
+  let scrollAncestorsCache: { anchor: Element | null; scrollables: Array<Element | Window> } = {
+    anchor: null,
+    scrollables: [],
+  }
 
   function resolve() {
     const current = toValue(settings)
@@ -136,7 +140,14 @@ export function useAnchoredPosition(settings: MaybeRefOrGetter<AnchoredPositionH
         if (floating instanceof Element) addFallback(floating)
       }
 
-      const scrollables = anchorEl instanceof Element ? getScrollableAncestors(anchorEl) : []
+      // Match the source cache: a mounted anchor keeps a stable parent chain.
+      if (anchorEl !== scrollAncestorsCache.anchor) {
+        scrollAncestorsCache = {
+          anchor: anchorEl,
+          scrollables: anchorEl instanceof Element ? getScrollableAncestors(anchorEl) : [],
+        }
+      }
+      const scrollables = scrollAncestorsCache.scrollables
       for (const scrollable of scrollables) {
         scrollable.addEventListener('scroll', schedule)
       }

@@ -20,10 +20,10 @@ import { useFormControlContext } from '../FormControl/context'
 import { useFeatureFlag } from '../FeatureFlags'
 import FilteredActionList from '../FilteredActionList/FilteredActionList.vue'
 import { FilteredActionListLoadingTypes, type ItemInput } from '../FilteredActionList/types'
-import AnchoredOverlay from '../internal/components/AnchoredOverlay.vue'
+import { AnchoredOverlay } from '../AnchoredOverlay'
 import Message from './SelectPanelMessage.vue'
 import type { SelectPanelComponentProps, SelectPanelGesture } from './types'
-import type { AnchorRenderProps } from '../internal/components/overlayTypes'
+import type { AnchorRenderProps } from '../AnchoredOverlay'
 import { renderNode } from '../internal/renderNode'
 import TriangleDownIcon from '../../octicons-vue3/icons/triangle-down.vue'
 import SearchIcon from '../../octicons-vue3/icons/search.vue'
@@ -280,6 +280,7 @@ const selectedValue = computed(() =>
     : props.placeholder,
 )
 const RenderAnchor = (anchorProps: AnchorRenderProps): VNodeChild => {
+  if (slots.anchor && props.renderAnchor === undefined) return slots.anchor({ anchorProps })
   const children = autoLabel.value
     ? h('span', { id: `${id.value}-selected-value` }, selectedValue.value)
     : selectedValue.value
@@ -522,13 +523,7 @@ defineExpose({
     ref="overlay"
     :class-name="$style['select-panel__overlay']"
     :open="open"
-    :render-anchor="
-      renderAnchor === null
-        ? null
-        : $slots.anchor && renderAnchor === undefined
-          ? undefined
-          : RenderAnchor
-    "
+    :render-anchor="renderAnchor === null ? null : RenderAnchor"
     :anchor-id="id"
     v-bind="anchorSettings"
     :align="align"
@@ -549,9 +544,6 @@ defineExpose({
     @open="(gesture) => openChange(true, gesture)"
     @close="requestClose"
   >
-    <template v-if="$slots.anchor && renderAnchor === undefined" #anchor="slotProps">
-      <slot name="anchor" v-bind="slotProps" />
-    </template>
     <div :class="$style['select-panel']" :data-variant="variant" data-component="SelectPanel">
       <div
         :class="$style['select-panel__header']"

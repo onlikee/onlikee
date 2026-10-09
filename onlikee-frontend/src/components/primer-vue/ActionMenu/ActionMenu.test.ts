@@ -78,9 +78,23 @@ beforeEach(() => {
   vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue(
     new DOMRect(0, 0, 320, 32),
   )
+  vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(100)
+  vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(30)
+  vi.spyOn(HTMLElement.prototype, 'offsetParent', 'get').mockReturnValue(document.body)
   vi.spyOn(HTMLElement.prototype, 'getClientRects').mockReturnValue([
     new DOMRect(0, 0, 320, 32),
   ] as unknown as DOMRectList)
+})
+beforeEach(() => {
+  // jsdom has no layout; focusTrap's strict tabbability check needs visible rectangles.
+  vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(100)
+  vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(30)
+  vi.spyOn(HTMLElement.prototype, 'offsetParent', 'get').mockReturnValue(document.body)
+  vi.spyOn(HTMLElement.prototype, 'getClientRects').mockImplementation(function (
+    this: HTMLElement,
+  ) {
+    return [this.getBoundingClientRect()] as unknown as DOMRectList
+  })
 })
 afterEach(() => {
   wrappers.splice(0).forEach((wrapper) => wrapper.unmount())
@@ -116,8 +130,10 @@ describe('ActionMenu public behavior', () => {
     expect(menus()).toHaveLength(1)
     expect(menus()[0]!.getAttribute('aria-labelledby')).toBe('menu-trigger')
     expect(
-      document.querySelector('[data-component="ActionMenu.Overlay"]')?.getAttribute('data-width'),
-    ).toBe('medium')
+      document
+        .querySelector('[data-component="ActionMenu.Overlay"]')
+        ?.hasAttribute('data-width-medium'),
+    ).toBe(true)
     expect(document.activeElement).toBe(items()[0])
     click(anchor)
     await settle()

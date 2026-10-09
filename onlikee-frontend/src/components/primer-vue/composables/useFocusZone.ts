@@ -20,7 +20,7 @@ export function useFocusZone(settings: MaybeRefOrGetter<FocusZoneHookSettings> =
   watch(
     () => {
       const current = toValue(settings)
-      const container = current.containerRef?.value ?? containerRef.value
+      const container = (current.containerRef ?? containerRef).value
       const active =
         typeof current.activeDescendantFocus === 'object'
           ? current.activeDescendantFocus.value

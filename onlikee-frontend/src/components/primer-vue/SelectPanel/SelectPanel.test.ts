@@ -42,6 +42,17 @@ beforeEach(() => {
     })),
   )
 })
+beforeEach(() => {
+  // jsdom has no layout; focusTrap's strict tabbability check needs visible rectangles.
+  vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(100)
+  vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(30)
+  vi.spyOn(HTMLElement.prototype, 'offsetParent', 'get').mockReturnValue(document.body)
+  vi.spyOn(HTMLElement.prototype, 'getClientRects').mockImplementation(function (
+    this: HTMLElement,
+  ) {
+    return [this.getBoundingClientRect()] as unknown as DOMRectList
+  })
+})
 afterEach(() => {
   wrappers.forEach((wrapper) => wrapper.unmount())
   wrappers.length = 0
@@ -164,8 +175,8 @@ describe('SelectPanel behavior', () => {
     const wrapper = render(SelectPanel, { props: { open: true, selected: items[0], items } })
     await settle()
     expect(
-      document.querySelector('[data-component="AnchoredOverlay"]')?.getAttribute('data-width'),
-    ).toBe('auto')
+      document.querySelector('[data-component="AnchoredOverlay"]')?.hasAttribute('data-width-auto'),
+    ).toBe(true)
     expect(wrapper.find('[data-octicon="triangle-down"]').exists()).toBe(true)
     expect(
       document.querySelector('[data-component="TextInput.LeadingVisual"] [data-octicon="search"]'),
@@ -206,10 +217,10 @@ describe('SelectPanel behavior', () => {
     })
     await settle()
     const overlay = document.querySelector<HTMLElement>('[data-component="AnchoredOverlay"]')!
-    expect(overlay.dataset.width).toBe('small')
-    expect(overlay.dataset.height).toBe('small')
-    expect(overlay.dataset.maxHeight).toBe('xsmall')
-    expect(overlay.dataset.maxWidth).toBe('medium')
+    expect(overlay.hasAttribute('data-width-small')).toBe(true)
+    expect(overlay.hasAttribute('data-height-small')).toBe(true)
+    expect(overlay.hasAttribute('data-max-height-xsmall')).toBe(true)
+    expect(overlay.hasAttribute('data-max-width-medium')).toBe(true)
     expect(overlay.dataset.side).toBe('outside-bottom')
     expect(overlay.style.getPropertyValue('--top')).toBe('100px')
     expect(overlay.style.getPropertyValue('--left')).toBe('50px')

@@ -4,7 +4,12 @@
     <slot />
 
     <!-- Tooltip 内容 -->
-    <div v-if="visible" :class="[$style['tooltip'], $style[`tooltip--${placement}`]]">
+    <div
+      v-if="visible"
+      :id="tooltipId"
+      role="tooltip"
+      :class="[$style['tooltip'], $style[`tooltip--${placement}`]]"
+    >
       <div>
         {{ content }}
       </div>
@@ -13,7 +18,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { provide, ref, useId } from 'vue'
+import { TOOLTIP_CONTEXT_KEY } from './TooltipContext'
 
 interface Props {
   /** Tooltip 显示的内容 */
@@ -36,6 +42,8 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
 })
 
+const tooltipId = useId()
+provide(TOOLTIP_CONTEXT_KEY, { tooltipId })
 const visible = ref(false)
 let showTimer: number | undefined
 let hideTimer: number | undefined
