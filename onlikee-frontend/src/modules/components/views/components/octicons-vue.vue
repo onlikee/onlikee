@@ -10,7 +10,8 @@
 
     <ComponentDocsSection title="基础用法">
       <template #description>
-        通过具名导入图标组件并在模板中直接使用，可用 <code>size</code> 控制图标大小。
+        先运行 <code>npm install @onlikee/octicons-vue</code> 安装（需要 Vue 3.3+），
+        再通过具名导入图标组件并在模板中直接使用，可用 <code>size</code> 控制图标大小。
       </template>
 
       <ComponentDocsDemoBlock :code="demo1Code">
@@ -28,7 +29,9 @@
 
     <ComponentDocsSection title="尺寸与颜色">
       <template #description>
-        <code>size</code> 支持数字或字符串，<code>color</code> 可直接设置颜色值。
+        <code>size</code> 支持数字或 <code>small</code>、<code>medium</code>、
+        <code>large</code>（16、32、64）。尺寸表示显示高度，宽度按比例缩放，并自动选择可用绘图。
+        <code>fill</code> 可直接设置填充颜色，默认跟随 CSS <code>color</code>。
       </template>
 
       <ComponentDocsDemoBlock :code="demo2Code">
@@ -38,7 +41,7 @@
             v-for="icon in colorDemoEntries"
             :key="icon.name"
             :size="icon.size"
-            :color="icon.color"
+            :fill="icon.fill"
           />
         </div>
       </ComponentDocsDemoBlock>
@@ -88,7 +91,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { Component } from 'vue'
-import * as octicons from '@/components/octicons-vue/index.ts'
+import * as octicons from '@onlikee/octicons-vue'
 import { Link } from '@/components/primer-vue/Link'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
@@ -104,13 +107,13 @@ type IconEntry = {
 
 type ColorDemoEntry = IconEntry & {
   size: number
-  color: string
+  fill: string
 }
 
 const iconSize = 24
 
 const demo1Code = `<script setup lang="ts">
-import { TelescopeFillIcon, MarkGithubIcon, HeartFillIcon } from '@/components/octicons-vue/index.ts'
+import { TelescopeFillIcon, MarkGithubIcon, HeartFillIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
@@ -131,14 +134,14 @@ import { TelescopeFillIcon, MarkGithubIcon, HeartFillIcon } from '@/components/o
 </style>`
 
 const demo2Code = `<script setup lang="ts">
-import { TelescopeFillIcon, MarkGithubIcon, HeartFillIcon } from '@/components/octicons-vue/index.ts'
+import { TelescopeFillIcon, MarkGithubIcon, HeartFillIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
   <div class="icon-demo-row">
-    <TelescopeFillIcon :size="16" color="#656d76" />
-    <MarkGithubIcon :size="24" color="#0969da" />
-    <HeartFillIcon :size="32" color="#d1242f" />
+    <TelescopeFillIcon :size="16" fill="#656d76" />
+    <MarkGithubIcon :size="24" fill="#0969da" />
+    <HeartFillIcon :size="32" fill="#d1242f" />
   </div>
 </template>
 
@@ -162,19 +165,19 @@ const colorDemoEntries: ColorDemoEntry[] = [
     name: 'TelescopeFillIcon',
     component: octicons.TelescopeFillIcon as Component,
     size: 16,
-    color: '#656d76',
+    fill: '#656d76',
   },
   {
     name: 'MarkGithubIcon',
     component: octicons.MarkGithubIcon as Component,
     size: 24,
-    color: '#0969da',
+    fill: '#0969da',
   },
   {
     name: 'HeartFillIcon',
     component: octicons.HeartFillIcon as Component,
     size: 32,
-    color: '#d1242f',
+    fill: '#d1242f',
   },
 ]
 
@@ -218,17 +221,31 @@ const apiTableColumns: TableColumn[] = [
 const apiTableRows = [
   {
     name: 'size',
-    description: '图标尺寸',
-    type: 'number | string',
+    description: '显示高度；宽度按比例缩放',
+    type: "number | 'small' | 'medium' | 'large'",
     options: '—',
     default: '16',
   },
   {
-    name: 'color',
-    description: '图标颜色',
+    name: 'fill',
+    description: '图标填充颜色',
     type: 'string',
     options: '—',
     default: 'currentColor',
+  },
+  {
+    name: 'title',
+    description: '添加 SVG title 元素；可访问名称通过 aria-label 或 aria-labelledby 设置',
+    type: 'string',
+    options: '—',
+    default: '—',
+  },
+  {
+    name: 'verticalAlign',
+    description: '垂直对齐方式，可由 style 覆盖',
+    type: "CSSProperties['verticalAlign']",
+    options: 'CSS vertical-align',
+    default: 'text-bottom',
   },
 ]
 </script>

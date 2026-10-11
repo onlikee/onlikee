@@ -1,7 +1,7 @@
 <script lang="ts">
 import classes from './ActionList.module.css'
 import { defineComponent, h } from 'vue'
-import { AlertIcon } from '@/components/octicons-vue'
+import { AlertIcon } from '@onlikee/octicons-vue'
 import Spinner from '../Spinner/Spinner.vue'
 import Tooltip from '../TooltipV2/Tooltip.vue'
 import LeadingVisual from './ActionListLeadingVisual.vue'
@@ -50,7 +50,6 @@ export default defineComponent({
                           default: () =>
                             h(AlertIcon, {
                               'data-component': 'Octicon',
-                              'data-octicon': undefined,
                               display: 'inline-block',
                               overflow: 'visible',
                               style: { overflow: 'visible', verticalAlign: 'text-bottom' },

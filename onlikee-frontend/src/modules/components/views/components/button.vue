@@ -379,7 +379,7 @@
 <script setup lang="ts">
 import { h, ref } from 'vue'
 import { Button, IconButton, LinkButton, ButtonBase } from '@/components/primer-vue/Button'
-import { BellIcon, ArrowUpRightIcon, SearchIcon, CheckIcon } from '@/components/octicons-vue'
+import { BellIcon, ArrowUpRightIcon, SearchIcon, CheckIcon } from '@onlikee/octicons-vue'
 import { KeybindingHint } from '@/components/primer-vue/KeybindingHint'
 import { Tooltip } from '@/components/primer-vue/TooltipV2'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
@@ -466,7 +466,7 @@ import { Button } from '@/components/primer-vue/Button'
 
 const visualDemoCode = `<script setup lang="ts">
 import { Button } from '@/components/primer-vue/Button'
-import { BellIcon, ArrowUpRightIcon, SearchIcon, CheckIcon } from '@/components/octicons-vue'
+import { BellIcon, ArrowUpRightIcon, SearchIcon, CheckIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
@@ -503,7 +503,7 @@ import { BellIcon, ArrowUpRightIcon, SearchIcon, CheckIcon } from '@/components/
 
 const visualVariantDemoCode = `<script setup lang="ts">
 import { Button } from '@/components/primer-vue/Button'
-import { BellIcon, ArrowUpRightIcon } from '@/components/octicons-vue'
+import { BellIcon, ArrowUpRightIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
@@ -557,7 +557,7 @@ import { BellIcon, ArrowUpRightIcon } from '@/components/octicons-vue'
 
 const visualStateDemoCode = `<script setup lang="ts">
 import { Button } from '@/components/primer-vue/Button'
-import { BellIcon, ArrowUpRightIcon } from '@/components/octicons-vue'
+import { BellIcon, ArrowUpRightIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
@@ -702,7 +702,7 @@ import { Button } from '@/components/primer-vue/Button'
 
 const layoutDemoCode = `<script setup lang="ts">
 import { Button } from '@/components/primer-vue/Button'
-import { BellIcon, ArrowUpRightIcon } from '@/components/octicons-vue'
+import { BellIcon, ArrowUpRightIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
@@ -715,7 +715,7 @@ import { BellIcon, ArrowUpRightIcon } from '@/components/octicons-vue'
 
 const notificationDemoCode = `<script setup lang="ts">
 import { Button, IconButton } from '@/components/primer-vue/Button'
-import { BellIcon } from '@/components/octicons-vue'
+import { BellIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
@@ -726,7 +726,7 @@ import { BellIcon } from '@/components/octicons-vue'
 
 const iconDemoCode = `<script setup lang="ts">
 import { IconButton } from '@/components/primer-vue/Button'
-import { SearchIcon, BellIcon, CheckIcon } from '@/components/octicons-vue'
+import { SearchIcon, BellIcon, CheckIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
@@ -742,7 +742,7 @@ import { h } from 'vue'
 import { Button, IconButton } from '@/components/primer-vue/Button'
 import { KeybindingHint } from '@/components/primer-vue/KeybindingHint'
 import { Tooltip } from '@/components/primer-vue/TooltipV2'
-import { BellIcon, SearchIcon } from '@/components/octicons-vue'
+import { BellIcon, SearchIcon } from '@onlikee/octicons-vue'
 
 const saveKeybinding = h(KeybindingHint, { keys: 'Mod+S' })
 <\\/script>
@@ -782,7 +782,7 @@ const isSaving = ref(false)
 
 const linkDemoCode = `<script setup lang="ts">
 import { LinkButton, ButtonBase } from '@/components/primer-vue/Button'
-import { ArrowUpRightIcon, CheckIcon } from '@/components/octicons-vue'
+import { ArrowUpRightIcon, CheckIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>

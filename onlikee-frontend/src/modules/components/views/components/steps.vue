@@ -57,7 +57,7 @@
 import { ref } from 'vue'
 import { Steps, type StepItem } from '@/components/primer-vue/Steps'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
-import { PersonIcon, PackageIcon, CreditCardIcon, RocketIcon } from '@/components/octicons-vue'
+import { PersonIcon, PackageIcon, CreditCardIcon, RocketIcon } from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -105,7 +105,7 @@ const steps: StepItem[] = [
 const demo3Code = `<script setup lang="ts">
 import { ref } from 'vue'
 import { Steps, type StepItem } from '@/components/primer-vue/Steps'
-import { PersonIcon, PackageIcon, CreditCardIcon, RocketIcon } from '@/components/octicons-vue'
+import { PersonIcon, PackageIcon, CreditCardIcon, RocketIcon } from '@onlikee/octicons-vue'
 
 const active = ref(1)
 const steps: StepItem[] = [

@@ -8,7 +8,7 @@
 
       <div class="login-actions">
         <button class="github-button" :disabled="loading" @click="startLogin('github')">
-          <MarkGithubIcon size="20" />
+          <MarkGithubIcon :size="20" />
           <span>{{ getButtonLabel('github') }}</span>
         </button>
         <button class="github-button" :disabled="loading" @click="startLogin('gitee')">
@@ -32,7 +32,8 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { Banner } from '@/components/primer-vue/Banner'
-import { LogoGiteeIcon, MarkGithubIcon } from '@/components/octicons-vue'
+import { MarkGithubIcon } from '@onlikee/octicons-vue'
+import LogoGiteeIcon from '@/components/icons/LogoGiteeIcon.vue'
 import { getOAuthRenderUrl, loginWithOAuthCallback } from '../../api/login'
 import { loginReturnToKey, oauthProviderKey, saveOAuthSignupContext } from '../../utils/session'
 

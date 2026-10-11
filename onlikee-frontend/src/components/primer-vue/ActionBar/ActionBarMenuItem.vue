@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, shallowRef } from 'vue'
-import { ChevronRightIcon } from '@/components/octicons-vue'
+import { ChevronRightIcon } from '@onlikee/octicons-vue'
 import { ActionList } from '../ActionList'
 import type { SelectEvent } from '../ActionList/types'
 import MenuOverlay from './ActionBarMenuOverlay.vue'

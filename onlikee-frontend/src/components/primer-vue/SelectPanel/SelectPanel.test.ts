@@ -177,11 +177,11 @@ describe('SelectPanel behavior', () => {
     expect(
       document.querySelector('[data-component="AnchoredOverlay"]')?.hasAttribute('data-width-auto'),
     ).toBe(true)
-    expect(wrapper.find('[data-octicon="triangle-down"]').exists()).toBe(true)
+    expect(wrapper.find('svg.octicon-triangle-down').exists()).toBe(true)
     expect(
-      document.querySelector('[data-component="TextInput.LeadingVisual"] [data-octicon="search"]'),
+      document.querySelector('[data-component="TextInput.LeadingVisual"] svg.octicon-search'),
     ).not.toBeNull()
-    expect(option().querySelector('[data-octicon="check"]')).not.toBeNull()
+    expect(option().querySelector('svg.octicon-check')).not.toBeNull()
     expect(
       document.querySelector('[data-component="SelectPanel.Header"]')?.textContent,
     ).not.toContain('×')
@@ -190,7 +190,7 @@ describe('SelectPanel behavior', () => {
     expect(option().querySelector('input[type="radio"]')?.hasAttribute('aria-hidden')).toBe(false)
     expect(option().querySelector('input[type="radio"]')?.getAttribute('tabindex')).toBe('-1')
     expect(
-      document.querySelector('[data-component="SelectPanel.CloseButton"] [data-octicon="x"]'),
+      document.querySelector('[data-component="SelectPanel.CloseButton"] svg.octicon-x'),
     ).not.toBeNull()
   })
   it('textInputProps and overlayProps override defaults and preserve placement options', async () => {
@@ -228,7 +228,7 @@ describe('SelectPanel behavior', () => {
     expect(overlay.getAttribute('overflow')).toBe('hidden')
     expect(overlay.hasAttribute('data-overflow-hidden')).toBe(true)
     expect(overlay.style.overflow).toBe('')
-    expect(document.querySelector('[data-octicon="search"]')).toBeNull()
+    expect(document.querySelector('svg.octicon-search')).toBeNull()
     expect(document.querySelector('[role="combobox"]')?.getAttribute('aria-label')).toBe(
       'Custom filter',
     )

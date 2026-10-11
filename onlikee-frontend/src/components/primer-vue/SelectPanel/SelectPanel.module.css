@@ -4,7 +4,7 @@
 :global(.primer-overlay).select-panel__overlay[data-css-anchor] {
   z-index: 100;
 }
-.select-panel svg[data-octicon] {
+.select-panel svg[data-component='Octicon'] {
   overflow: visible;
   display: inline-block;
   vertical-align: text-bottom;
@@ -418,4 +418,4 @@
 }
 
 .select-panel__title { margin-block: 0; font-weight: var(--base-text-weight-semibold, 600); }
-.select-panel svg[data-octicon] { display: inline-block; vertical-align: text-bottom; }
+.select-panel svg[data-component='Octicon'] { display: inline-block; vertical-align: text-bottom; }

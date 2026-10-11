@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, shallowRef, useAttrs } from 'vue'
-import { TriangleDownIcon } from '@/components/octicons-vue'
+import { TriangleDownIcon } from '@onlikee/octicons-vue'
 import { Button } from '../Button'
 import Anchor from './ActionMenuAnchor.vue'
 import type { ActionMenuButtonProps } from './types'

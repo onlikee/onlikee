@@ -18,7 +18,7 @@ import {
   ListOrderedIcon,
   TasklistIcon,
   KebabHorizontalIcon,
-} from '@/components/octicons-vue'
+} from '@onlikee/octicons-vue'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
@@ -83,7 +83,7 @@ const imports = (icons: string) =>
   [
     '<script setup lang="ts">',
     "import { ActionBar } from '@/components/primer-vue/ActionBar'",
-    'import { ' + icons + " } from '@/components/octicons-vue'",
+    'import { ' + icons + " } from '@onlikee/octicons-vue'",
     '<\/script>',
     '',
   ].join('\n')
@@ -133,7 +133,7 @@ const menuCode = [
   '<script setup lang="ts">',
   "import { shallowRef } from 'vue'",
   "import { ActionBar, type ActionBarMenuItemProps } from '@/components/primer-vue/ActionBar'",
-  "import { KebabHorizontalIcon } from '@/components/octicons-vue'",
+  "import { KebabHorizontalIcon } from '@onlikee/octicons-vue'",
   '',
   'const editor = shallowRef<HTMLInputElement | null>(null)',
   "const selected = shallowRef('')",

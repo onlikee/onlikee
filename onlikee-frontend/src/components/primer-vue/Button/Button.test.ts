@@ -13,7 +13,7 @@ import {
   type Component,
 } from 'vue'
 import { Button, ButtonBase, IconButton, LinkButton } from './index'
-import { BellIcon } from '@/components/octicons-vue'
+import { BellIcon } from '@onlikee/octicons-vue'
 import Tooltip from '../TooltipV2/Tooltip.vue'
 import { TOOLTIP_CONTEXT_KEY as V1_TOOLTIP_CONTEXT } from '../Tooltip/TooltipContext'
 import { registerEscapeHandler } from '../internal/documentRegistries'

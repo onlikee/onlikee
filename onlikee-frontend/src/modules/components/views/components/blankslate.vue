@@ -160,7 +160,7 @@ import {
   CodeOfConductIcon,
   InboxIcon,
   RepoIcon,
-} from '@/components/octicons-vue'
+} from '@onlikee/octicons-vue'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
@@ -169,7 +169,7 @@ import ComponentDocsSection from '@/modules/components/components/ComponentDocsP
 
 const basicDemoCode = `<script setup lang="ts">
 import { Blankslate } from '@/components/primer-vue/Blankslate'
-import { BookIcon } from '@/components/octicons-vue'
+import { BookIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
@@ -187,7 +187,7 @@ import { BookIcon } from '@/components/octicons-vue'
 
 const secondaryDemoCode = `<script setup lang="ts">
 import { Blankslate } from '@/components/primer-vue/Blankslate'
-import { RepoIcon } from '@/components/octicons-vue'
+import { RepoIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
@@ -208,7 +208,7 @@ import { RepoIcon } from '@/components/octicons-vue'
 
 const narrowDemoCode = `<script setup lang="ts">
 import { Blankslate } from '@/components/primer-vue/Blankslate'
-import { ChecklistIcon } from '@/components/octicons-vue'
+import { ChecklistIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
@@ -236,7 +236,7 @@ import { ChecklistIcon } from '@/components/octicons-vue'
 
 const spaciousDemoCode = `<script setup lang="ts">
 import { Blankslate } from '@/components/primer-vue/Blankslate'
-import { CodeOfConductIcon } from '@/components/octicons-vue'
+import { CodeOfConductIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
@@ -254,7 +254,7 @@ import { CodeOfConductIcon } from '@/components/octicons-vue'
 
 const borderDemoCode = `<script setup lang="ts">
 import { Blankslate } from '@/components/primer-vue/Blankslate'
-import { InboxIcon } from '@/components/octicons-vue'
+import { InboxIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>

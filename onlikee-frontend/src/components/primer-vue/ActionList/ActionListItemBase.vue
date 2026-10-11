@@ -14,7 +14,7 @@ import {
   type VNode,
   type VNodeChild,
 } from 'vue'
-import { CheckIcon } from '@/components/octicons-vue'
+import { CheckIcon } from '@onlikee/octicons-vue'
 import Radio from '../Radio/Radio.vue'
 import Tooltip from '../TooltipV2/Tooltip.vue'
 import { TOOLTIP_CONTEXT_KEY } from '../TooltipV2/TooltipContext'
@@ -258,7 +258,6 @@ export default defineComponent({
                 : visualVariant === 'single' || listRole.value === 'menu'
                   ? h(CheckIcon, {
                       'data-component': 'Octicon',
-                      'data-octicon': undefined,
                       display: 'inline-block',
                       overflow: 'visible',
                       class: classes['action-list-checkmark'],

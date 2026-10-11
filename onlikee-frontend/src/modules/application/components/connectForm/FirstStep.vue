@@ -93,9 +93,9 @@ import { Textarea } from '@/components/primer-vue/Textarea'
 import { Button } from '@/components/primer-vue/Button'
 import { Dropdown } from '@/components/primer-vue/Dropdown'
 import { ActionList } from '@/components/primer-vue/ActionList'
-import RepoIcon from '@/components/octicons-vue/icons/repo.vue'
-import TriangleDownIcon from '@/components/octicons-vue/icons/triangle-down.vue'
-import LockIcon from '@/components/octicons-vue/icons/lock.vue'
+import RepoIcon from '@onlikee/octicons-vue/icons/repo'
+import TriangleDownIcon from '@onlikee/octicons-vue/icons/triangle-down'
+import LockIcon from '@onlikee/octicons-vue/icons/lock'
 
 interface Props {
   appName: string

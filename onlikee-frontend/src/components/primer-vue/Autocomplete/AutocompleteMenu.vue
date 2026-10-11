@@ -21,8 +21,8 @@ import { renderNode, type NodeProp } from '../internal/renderNode'
 import { normalizeReactStyle } from '../internal/style'
 import { useAutocompleteContext } from './context'
 import type { AutocompleteMenuItem } from './types'
-import PlusIcon from '../../octicons-vue/icons/plus.vue'
-import CheckIcon from '../../octicons-vue/icons/check.vue'
+import PlusIcon from '@onlikee/octicons-vue/icons/plus'
+import CheckIcon from '@onlikee/octicons-vue/icons/check'
 
 type AddNewItem = AutocompleteMenuItem & {
   handleAddItem: (item: Omit<AutocompleteMenuItem, 'onAction' | 'leadingVisual'>) => void

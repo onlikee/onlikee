@@ -2,7 +2,7 @@
 import { shallowRef } from 'vue'
 import { UnderlinePanels } from '@/components/primer-vue/UnderlinePanels'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
-import { CodeIcon, IssueOpenedIcon } from '@/components/octicons-vue'
+import { CodeIcon, IssueOpenedIcon } from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -13,7 +13,7 @@ const selected = shallowRef('code')
 const basicCode = `<script setup lang="ts">
 import { shallowRef } from 'vue'
 import { UnderlinePanels } from '@/components/primer-vue/UnderlinePanels'
-import { CodeIcon, IssueOpenedIcon } from '@/components/octicons-vue'
+import { CodeIcon, IssueOpenedIcon } from '@onlikee/octicons-vue'
 
 const selected = shallowRef('code')
 <\/script>

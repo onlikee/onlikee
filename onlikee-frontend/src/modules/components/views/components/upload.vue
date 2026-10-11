@@ -85,7 +85,7 @@ import { ref } from 'vue'
 import { Upload } from '@/components/primer-vue/Upload'
 import type { UploadFile } from '@/components/primer-vue/Upload'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
-import { UploadIcon } from '@/components/octicons-vue'
+import { UploadIcon } from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -168,7 +168,7 @@ const demo5Code = `<template>
 import { ref } from 'vue'
 import { Upload } from '@/components/primer-vue/Upload'
 import type { UploadFile } from '@/components/primer-vue/Upload'
-import { UploadIcon } from '@/components/octicons-vue'
+import { UploadIcon } from '@onlikee/octicons-vue'
 
 const files = ref<UploadFile[]>([])
 <\/script>`

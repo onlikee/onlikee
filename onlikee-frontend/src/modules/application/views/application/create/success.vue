@@ -16,7 +16,7 @@
 import confetti from 'canvas-confetti'
 import { computed, ref, onMounted } from 'vue'
 import { Container } from '@/components/primer-vue/Container'
-import { CheckCircleIcon } from '@/components/octicons-vue'
+import { CheckCircleIcon } from '@onlikee/octicons-vue'
 import { Link } from '@/components/primer-vue/Link'
 import { useRoute } from 'vue-router'
 

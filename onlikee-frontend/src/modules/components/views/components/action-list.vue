@@ -516,7 +516,7 @@ import {
   TrashIcon,
   TriangleDownIcon,
   ZapIcon,
-} from '@/components/octicons-vue'
+} from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -565,7 +565,7 @@ const demo1Code = `<template>
 
 <script setup lang="ts">
 import { ActionList } from '@/components/primer-vue/ActionList'
-import { ChevronRightIcon, FileIcon, LinkExternalIcon, MarkGithubIcon, RepoIcon } from '@/components/octicons-vue'
+import { ChevronRightIcon, FileIcon, LinkExternalIcon, MarkGithubIcon, RepoIcon } from '@onlikee/octicons-vue'
 <\/script>`
 
 const demo2Code = `<template>
@@ -616,7 +616,7 @@ const demo3Code = `<template>
 
 <script setup lang="ts">
 import { ActionList } from '@/components/primer-vue/ActionList'
-import { ArchiveIcon, FileCodeIcon, LinkExternalIcon, RepoIcon } from '@/components/octicons-vue'
+import { ArchiveIcon, FileCodeIcon, LinkExternalIcon, RepoIcon } from '@onlikee/octicons-vue'
 <\/script>`
 
 const demo4Code = `<template>
@@ -648,7 +648,7 @@ const demo4Code = `<template>
 <script setup lang="ts">
 import { ref } from 'vue'
 import { ActionList } from '@/components/primer-vue/ActionList'
-import { EyeClosedIcon, EyeIcon } from '@/components/octicons-vue'
+import { EyeClosedIcon, EyeIcon } from '@onlikee/octicons-vue'
 
 const visibilityOptions = [
   { label: '公开的', description: '所有人都能在应用广场看见它。', icon: EyeIcon },
@@ -686,7 +686,7 @@ const demo5Code = `<template>
 
 <script setup lang="ts">
 import { ActionList } from '@/components/primer-vue/ActionList'
-import { LockIcon, ProjectIcon, TrashIcon } from '@/components/octicons-vue'
+import { LockIcon, ProjectIcon, TrashIcon } from '@onlikee/octicons-vue'
 <\/script>`
 
 const demo6Code = `<template>
@@ -734,7 +734,7 @@ const demo6Code = `<template>
 <script setup lang="ts">
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { FeatureFlags } from '@/components/primer-vue/FeatureFlags'
-import { CodeIcon, GitBranchIcon, PencilIcon, PeopleIcon, ShieldLockIcon, SignOutIcon } from '@/components/octicons-vue'
+import { CodeIcon, GitBranchIcon, PencilIcon, PeopleIcon, ShieldLockIcon, SignOutIcon } from '@onlikee/octicons-vue'
 <\/script>`
 
 const demo7Code = `<template>
@@ -757,7 +757,7 @@ const demo7Code = `<template>
 
 <script setup lang="ts">
 import { ActionList } from '@/components/primer-vue/ActionList'
-import { BookIcon, LinkExternalIcon, MarkGithubIcon, ZapIcon } from '@/components/octicons-vue'
+import { BookIcon, LinkExternalIcon, MarkGithubIcon, ZapIcon } from '@onlikee/octicons-vue'
 <\/script>`
 
 const demo8Code = `<template>
@@ -791,7 +791,7 @@ const demo8Code = `<template>
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { Button } from '@/components/primer-vue/Button'
 import { Dropdown } from '@/components/primer-vue/Dropdown'
-import { CopyIcon, PencilIcon, TrashIcon, TriangleDownIcon } from '@/components/octicons-vue'
+import { CopyIcon, PencilIcon, TrashIcon, TriangleDownIcon } from '@onlikee/octicons-vue'
 <\/script>`
 
 const apiTableColumns: TableColumn[] = [
@@ -1095,7 +1095,7 @@ const advancedCode = `<template>
 
 <script setup lang="ts">
 import { ActionList } from '@/components/primer-vue/ActionList'
-import { PencilIcon } from '@/components/octicons-vue'
+import { PencilIcon } from '@onlikee/octicons-vue'
 <\/script>`
 
 const eventsTableColumns: TableColumn[] = [

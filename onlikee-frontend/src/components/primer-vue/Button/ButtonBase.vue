@@ -59,22 +59,8 @@ function setElement(node: Element | ComponentPublicInstance | null) {
 }
 
 function renderVisual(visual: ButtonVisual) {
-  const component = isVNode(visual) ? visual.type : visual
-  const isOcticon =
-    typeof component === 'object' &&
-    component !== null &&
-    '__file' in component &&
-    typeof component.__file === 'string' &&
-    component.__file.replace(/\\/g, '/').includes('/components/octicons-vue/icons/')
-  if (isVNode(visual)) {
-    return cloneVNode(
-      visual,
-      isOcticon ? { 'data-component': visual.props?.['data-component'] ?? 'Octicon' } : undefined,
-    )
-  }
-  return visual
-    ? h(toRaw(visual) as Component, isOcticon ? { 'data-component': 'Octicon' } : undefined)
-    : null
+  if (isVNode(visual)) return cloneVNode(visual)
+  return visual ? h(toRaw(visual) as Component) : null
 }
 
 function moduleVisual(visual: ButtonVisual, loading: boolean, name: string, counterLabel = false) {

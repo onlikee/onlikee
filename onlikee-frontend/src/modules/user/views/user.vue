@@ -57,7 +57,7 @@
             </FormControl>
             <div>
               <div class="profile-icon-input">
-                <LocationIcon size="16" color="#5a5a5a" class="input-icon" />
+                <LocationIcon :size="16" fill="#5a5a5a" class="input-icon" />
                 <TextInput
                   v-model:value="profileEditDraft.location"
                   block
@@ -67,7 +67,7 @@
                 />
               </div>
               <div class="profile-icon-input">
-                <MailIcon size="16" color="#5a5a5a" class="input-icon" />
+                <MailIcon :size="16" fill="#5a5a5a" class="input-icon" />
                 <TextInput
                   v-model:value="profileEditDraft.email"
                   block
@@ -81,7 +81,7 @@
             <div>
               <div class="social-header">社交账号</div>
               <div class="profile-icon-input">
-                <LinkIcon size="16" color="#5a5a5a" class="input-icon" />
+                <LinkIcon :size="16" fill="#5a5a5a" class="input-icon" />
                 <TextInput
                   v-model:value="profileEditDraft.socialAccount0"
                   block
@@ -91,7 +91,7 @@
                 />
               </div>
               <div class="profile-icon-input">
-                <LinkIcon size="16" color="#5a5a5a" class="input-icon" />
+                <LinkIcon :size="16" fill="#5a5a5a" class="input-icon" />
                 <TextInput
                   v-model:value="profileEditDraft.socialAccount1"
                   block
@@ -101,7 +101,7 @@
                 />
               </div>
               <div class="profile-icon-input">
-                <LinkIcon size="16" color="#5a5a5a" class="input-icon" />
+                <LinkIcon :size="16" fill="#5a5a5a" class="input-icon" />
                 <TextInput
                   v-model:value="profileEditDraft.socialAccount2"
                   block
@@ -128,23 +128,23 @@
             <div class="links">
               <ul>
                 <li v-if="profile?.location">
-                  <LocationIcon size="16" color="#5a5a5a" />
+                  <LocationIcon :size="16" fill="#5a5a5a" />
                   <span>{{ profile?.location }}</span>
                 </li>
                 <li v-if="profile?.email">
-                  <MailIcon size="16" color="#5a5a5a" />
+                  <MailIcon :size="16" fill="#5a5a5a" />
                   <span>{{ profile?.email }}</span>
                 </li>
                 <li v-if="profile?.socialAccount0">
-                  <LinkIcon size="16" color="#5a5a5a" />
+                  <LinkIcon :size="16" fill="#5a5a5a" />
                   <span>{{ profile?.socialAccount0 }}</span>
                 </li>
                 <li v-if="profile?.socialAccount1">
-                  <LinkIcon size="16" color="#5a5a5a" />
+                  <LinkIcon :size="16" fill="#5a5a5a" />
                   <span>{{ profile?.socialAccount1 }}</span>
                 </li>
                 <li v-if="profile?.socialAccount2">
-                  <LinkIcon size="16" color="#5a5a5a" />
+                  <LinkIcon :size="16" fill="#5a5a5a" />
                   <span>{{ profile?.socialAccount2 }}</span>
                 </li>
               </ul>
@@ -172,7 +172,7 @@ import { Container } from '@/components/primer-vue/Container'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { TextInput } from '@/components/primer-vue/TextInput'
 import { Textarea } from '@/components/primer-vue/Textarea'
-import { LocationIcon, MailIcon, LinkIcon } from '@/components/octicons-vue'
+import { LocationIcon, MailIcon, LinkIcon } from '@onlikee/octicons-vue'
 import { useUserStore } from '@/stores/user'
 import {
   getPublicUserProfile,

@@ -66,7 +66,7 @@ import ComponentDocsSection from '@/modules/components/components/ComponentDocsP
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { Avatar } from '@/components/primer-vue/Avatar'
 import { Dropdown } from '@/components/primer-vue/Dropdown'
-import { GearIcon, MarkGithubIcon, PersonIcon, SignOutIcon } from '@/components/octicons-vue'
+import { GearIcon, MarkGithubIcon, PersonIcon, SignOutIcon } from '@onlikee/octicons-vue'
 
 const demo1Code = `<template>
   <div class="user-menu">
@@ -112,7 +112,7 @@ const demo1Code = `<template>
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { Avatar } from '@/components/primer-vue/Avatar'
 import { Dropdown } from '@/components/primer-vue/Dropdown'
-import { GearIcon, MarkGithubIcon, PersonIcon, SignOutIcon } from '@/components/octicons-vue'
+import { GearIcon, MarkGithubIcon, PersonIcon, SignOutIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <style scoped>

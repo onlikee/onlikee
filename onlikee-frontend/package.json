@@ -18,6 +18,7 @@
   "dependencies": {
     "@guolao/vue-monaco-editor": "^1.6.0",
     "@oddbird/popover-polyfill": "^0.5.2",
+    "@onlikee/octicons-vue": "^3.0.0",
     "@primer/behaviors": "1.10.3",
     "@primer/live-region-element": "0.8.0",
     "@tailwindcss/vite": "^4.1.12",

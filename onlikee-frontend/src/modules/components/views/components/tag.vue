@@ -120,7 +120,7 @@
 <script setup lang="ts">
 import { Tag } from '@/components/primer-vue/Tag'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
-import { StarIcon, CheckIcon, AlertIcon } from '@/components/octicons-vue'
+import { StarIcon, CheckIcon, AlertIcon } from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -176,7 +176,7 @@ const demo3Code = `<template>
 
 const demo4Code = `<script setup lang="ts">
 import { Tag } from '@/components/primer-vue/Tag'
-import { StarIcon, CheckIcon, AlertIcon } from '@/components/octicons-vue'
+import { StarIcon, CheckIcon, AlertIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
@@ -206,7 +206,7 @@ import { StarIcon, CheckIcon, AlertIcon } from '@/components/octicons-vue'
 
 const demo5Code = `<script setup lang="ts">
 import { Tag } from '@/components/primer-vue/Tag'
-import { StarIcon, CheckIcon } from '@/components/octicons-vue'
+import { StarIcon, CheckIcon } from '@onlikee/octicons-vue'
 
 const handleRemove = (label: string) => {
   console.log(label, 'removed')
