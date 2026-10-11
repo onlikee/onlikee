@@ -30,12 +30,12 @@ const accessibleHintString = computed(() =>
 </script>
 <template>
   <span
-    v-bind="$attrs"
     :id="hasAriaLabel || keybindingHints.length === 0 ? tooltipId : undefined"
     :ref="setElement"
-    :class="[$style['primer-tooltip'], className]"
+    :class="[className, $style['primer-tooltip']]"
     :data-direction="calculatedDirection"
     data-component="Tooltip"
+    v-bind="$attrs"
     :role="type === 'description' ? 'tooltip' : undefined"
     aria-hidden="true"
     @mouseenter="$emit('mouseenter')"

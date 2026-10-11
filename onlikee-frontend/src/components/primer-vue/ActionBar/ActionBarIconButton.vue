@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import Button from '../SelectPanel/SelectPanelButton.vue'
+import { IconButton as Button } from '../Button'
 import { useActionBarItem } from './context'
 import type { ActionBarIconButtonProps } from './types'
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<ActionBarIconButtonProps>(), {
+  type: 'button',
   loading: undefined,
   inactive: undefined,
   labelWrap: undefined,

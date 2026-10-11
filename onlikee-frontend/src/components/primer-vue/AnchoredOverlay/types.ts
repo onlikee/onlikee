@@ -1,12 +1,6 @@
 import type { AnchorAlignment, AnchorPosition, AnchorSide } from '@primer/behaviors'
-import type {
-  AnchorHTMLAttributes,
-  ButtonHTMLAttributes,
-  HTMLAttributes,
-  Ref,
-  VNodeChild,
-} from 'vue'
-import type Button from '../SelectPanel/SelectPanelButton.vue'
+import type { HTMLAttributes, Ref, VNodeChild } from 'vue'
+import type { IconButtonProps } from '../Button'
 import type { FocusZoneHookSettings } from '../composables/useFocusZone'
 import type {
   CSSAnchorPositioningSettings,
@@ -50,30 +44,7 @@ export type OverlayProps = Pick<
     'data-test-id'?: unknown
     ref?: Ref<HTMLElement | null> | ((element: HTMLElement | null) => void) | null
   }
-type CloseButtonProps = Partial<
-  Pick<
-    InstanceType<typeof Button>['$props'],
-    | 'as'
-    | 'type'
-    | 'variant'
-    | 'size'
-    | 'disabled'
-    | 'block'
-    | 'loading'
-    | 'loadingAnnouncement'
-    | 'inactive'
-    | 'labelWrap'
-    | 'icon'
-    | 'className'
-    | 'description'
-    | 'tooltipDirection'
-    | 'unsafeDisableTooltip'
-    | 'keyshortcuts'
-    | 'keybindingHint'
-  >
-> &
-  ButtonHTMLAttributes &
-  AnchorHTMLAttributes & { notificationIndicator?: 'button' | 'icon' }
+type CloseButtonProps = Partial<IconButtonProps>
 
 export type AnchoredOverlayOpenGesture = 'anchor-click' | 'anchor-key-press'
 export type AnchoredOverlayCloseGesture = 'anchor-click' | 'click-outside' | 'escape' | 'close'

@@ -58,8 +58,6 @@ onMounted(() => {
     subtree: true,
     childList: true,
     characterData: true,
-    attributes: true,
-    attributeFilter: ['aria-label'],
   })
 })
 watch(

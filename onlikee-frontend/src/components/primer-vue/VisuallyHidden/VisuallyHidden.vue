@@ -3,6 +3,6 @@ defineOptions({ name: 'VisuallyHidden' })
 withDefaults(defineProps<{ className?: string }>(), { className: undefined })
 </script>
 <template>
-  <span :class="[$style['visually-hidden'], className]"><slot /></span>
+  <span :class="[className, $style['visually-hidden']]"><slot /></span>
 </template>
 <style module src="./VisuallyHidden.module.css" />

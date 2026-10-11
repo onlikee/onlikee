@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, useAttrs } from 'vue'
-import Button from './SelectPanelButton.vue'
+import { LinkButton as Button } from '../Button'
 defineOptions({ name: 'SelectPanelSecondaryActionLink', inheritAttrs: false })
 const attrs = useAttrs()
 const resolvedAs = computed(() => (attrs.as as string | undefined) ?? 'a')

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, shallowRef, watch } from 'vue'
-import Button from '../SelectPanel/SelectPanelButton.vue'
+import { IconButton as Button } from '../Button'
 import MenuOverlay from './ActionBarMenuOverlay.vue'
 import { useActionBarItem } from './context'
 import type { ActionBarMenuProps } from './types'

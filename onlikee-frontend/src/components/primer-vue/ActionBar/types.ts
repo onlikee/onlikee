@@ -27,17 +27,22 @@ export interface ActionBarButtonProps extends /* @vue-ignore */ ButtonHTMLAttrib
   trailingVisual?: Component
   trailingAction?: Component
   count?: number | string
-  notificationIndicator?: 'button' | 'leadingVisual' | 'icon'
+  notificationIndicator?: 'button' | 'leadingVisual'
+  className?: string
+}
+export interface ActionBarIconButtonProps extends Omit<
+  ActionBarButtonProps,
+  'notificationIndicator' | 'aria-labelledby'
+> {
+  notificationIndicator?: 'button' | 'icon'
+  icon: Component
+  'aria-label': string
+  'aria-labelledby'?: never
   description?: string
   tooltipDirection?: TooltipDirection
   unsafeDisableTooltip?: boolean
   keyshortcuts?: string
   keybindingHint?: string | string[]
-  className?: string
-}
-export interface ActionBarIconButtonProps extends ActionBarButtonProps {
-  icon: Component
-  'aria-label': string
 }
 export type ActionBarMenuItemProps =
   | {

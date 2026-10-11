@@ -5,6 +5,8 @@ import {
   Text as TextVNode,
   cloneVNode,
   computed,
+  h,
+  inject,
   provide,
   reactive,
   shallowRef,
@@ -45,11 +47,20 @@ const props = withDefaults(
 const attrs = useAttrs()
 const slots = useSlots()
 
-const tooltipId = props.id ?? useId()
-const tooltipContextValue = reactive<TooltipContextValue>({ tooltipId })
+const generatedTooltipId = useId()
+const tooltipId = computed(() => props.id || generatedTooltipId)
+const parentTooltipContext = inject(TOOLTIP_CONTEXT_KEY, undefined)
+const tooltipContextValue = reactive<TooltipContextValue>({})
 provide(TOOLTIP_CONTEXT_KEY, tooltipContextValue)
 
-const triggerEl = shallowRef<HTMLElement | null>(null)
+const triggerTarget = shallowRef<Element | ComponentPublicInstance | null>(null)
+const triggerEl = computed<HTMLElement | null>(() => {
+  const node = triggerTarget.value
+  if (node instanceof HTMLElement) return node
+  const instance = node as { element?: unknown; $el?: unknown } | null
+  const resolved = instance?.element instanceof HTMLElement ? instance.element : instance?.$el
+  return resolved instanceof HTMLElement ? resolved : null
+})
 const tooltipEl = shallowRef<HTMLElement | null>(null)
 const { calculatedDirection, openTooltip, closeTooltip, makeTriggerHandlers } =
   useTooltipController({
@@ -65,48 +76,45 @@ const { calculatedDirection, openTooltip, closeTooltip, makeTriggerHandlers } =
 const keybindingHints = computed(() =>
   Array.isArray(props.keybindingHint) ? props.keybindingHint : [props.keybindingHint],
 )
-const hasAriaLabel = computed(() => 'aria-label' in attrs)
 function setTooltipEl(element: Element | ComponentPublicInstance | null) {
   tooltipEl.value = element instanceof HTMLElement ? element : null
 }
 function setTriggerEl(node: Element | ComponentPublicInstance | null) {
-  if (node instanceof HTMLElement) {
-    triggerEl.value = node
-    return
-  }
-  const instance = node as { element?: unknown; $el?: unknown } | null
-  const resolved = instance?.element instanceof HTMLElement ? instance.element : instance?.$el
-  triggerEl.value = resolved instanceof HTMLElement ? resolved : null
+  triggerTarget.value = node
 }
 
-const RenderTrigger = (): VNode | VNode[] => {
+const Render = (): VNode | VNode[] => {
+  const hasAriaLabel = 'aria-label' in attrs
   const nodes = slots.default?.() ?? []
-  const candidates = nodes.filter((node) => node.type !== Comment)
-  const trigger = candidates[0]
-  if (
-    candidates.length !== 1 ||
-    !trigger ||
-    trigger.type === Fragment ||
-    trigger.type === TextVNode
-  ) {
+  if (nodes.length !== 1) {
+    tooltipContextValue.tooltipId = parentTooltipContext?.tooltipId
+    throw new Error('React.Children.only expected to receive a single React element child.')
+  }
+  const trigger = nodes[0]!
+  if (trigger.type === Fragment) {
+    tooltipContextValue.tooltipId = parentTooltipContext?.tooltipId
     if (import.meta.env.DEV) {
       console.warn(
-        'The `Tooltip` component expects a single interactive element as its trigger. Pass a single element instead of a fragment or multiple nodes.',
+        'The `Tooltip` component does not support a React Fragment as its trigger. Pass a single interactive element instead.',
       )
     }
-    return nodes
+    return trigger
   }
+  if (trigger.type === Comment || trigger.type === TextVNode) {
+    tooltipContextValue.tooltipId = parentTooltipContext?.tooltipId
+    throw new Error('React.Children.only expected to receive a single React element child.')
+  }
+  tooltipContextValue.tooltipId = tooltipId.value
   const originalProps = (trigger.props ?? {}) as Record<string, unknown>
   const handler = <T,>(key: string) =>
     originalProps[key] as unknown as ((event: T) => void) | undefined
   const injected: Record<string, unknown> = { ref: setTriggerEl }
   if (props.type === 'description') {
     const existing = originalProps['aria-describedby'] as string | undefined
-    injected['aria-describedby'] = existing ? `${existing} ${tooltipId}` : tooltipId
+    injected['aria-describedby'] = existing ? `${existing} ${tooltipId.value}` : tooltipId.value
   }
   if (props.type === 'label') {
-    const existing = originalProps['aria-labelledby'] as string | undefined
-    injected['aria-labelledby'] = existing ? `${existing} ${tooltipId}` : tooltipId
+    injected['aria-labelledby'] = tooltipId.value
   }
   const handlers = makeTriggerHandlers({
     onBlur: handler<FocusEvent>('onBlur'),
@@ -118,22 +126,22 @@ const RenderTrigger = (): VNode | VNode[] => {
   const cloned = cloneVNode(trigger, injected, true)
   // 向唯一的交互子节点注入提示属性和引用，并组合其原有事件处理器。
   cloned.props = { ...cloned.props, ...handlers }
-  return cloned
+  return [
+    cloned,
+    h(TooltipElement, {
+      ...attrs,
+      tooltipId: tooltipId.value,
+      text: props.text,
+      type: props.type,
+      keybindingHints: keybindingHints.value,
+      hasAriaLabel,
+      calculatedDirection: calculatedDirection.value,
+      className: props.className,
+      setElement: setTooltipEl,
+      onMouseenter: openTooltip,
+      onMouseleave: closeTooltip,
+    }),
+  ]
 }
 </script>
-<template>
-  <RenderTrigger />
-  <TooltipElement
-    v-bind="attrs"
-    :tooltip-id="tooltipId"
-    :text="text"
-    :type="type"
-    :keybinding-hints="keybindingHints"
-    :has-aria-label="hasAriaLabel"
-    :calculated-direction="calculatedDirection"
-    :class-name="className"
-    :set-element="setTooltipEl"
-    @mouseenter="openTooltip"
-    @mouseleave="closeTooltip"
-  />
-</template>
+<template><Render /></template>

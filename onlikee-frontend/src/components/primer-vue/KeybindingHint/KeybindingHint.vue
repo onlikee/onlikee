@@ -18,7 +18,7 @@ withDefaults(
 <template>
   <Text
     as="kbd"
-    :class="[$style['keybinding-hint'], className]"
+    :class="[className, $style['keybinding-hint']]"
     data-testid="keybinding-hint"
     data-component="KeybindingHint"
   >

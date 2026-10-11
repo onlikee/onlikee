@@ -1,0 +1,618 @@
+.ButtonBase {
+  align-items: center;
+  appearance: none;
+  background-color: transparent;
+  border: var(--borderWidth-thin) solid;
+  border-color: var(--button-default-borderColor-rest);
+  border-radius: var(--borderRadius-medium);
+  color: var(--button-default-fgColor-rest);
+  cursor: pointer;
+  display: flex;
+  font-family: inherit;
+  font-size: var(--text-body-size-medium);
+  font-weight: var(--base-text-weight-medium);
+  gap: var(--base-size-8);
+  height: var(--control-medium-size);
+  justify-content: space-between;
+  min-width: max-content;
+  padding: 0 var(--control-medium-paddingInline-normal);
+  text-align: center;
+
+  text-decoration: none;
+  transition: 80ms cubic-bezier(0.65, 0, 0.35, 1);
+  transition-property: color, fill, background-color, border-color;
+
+  user-select: none;
+}
+.ButtonBase:has([data-kbd-chord]) {
+  padding-inline-end: var(--base-size-6);
+}
+.ButtonBase:hover {
+  transition-duration: 80ms;
+}
+.ButtonBase:focus-visible {
+  box-shadow: none;
+  outline: 2px solid var(--focus-outline-color, var(--focus-outlineColor));
+  outline-offset: -2px;
+}
+.ButtonBase:active {
+  transition: none;
+}
+.ButtonBase:where(
+  [data-notification-indicator='button'],
+  [data-notification-indicator='icon'].IconButton
+) {
+  position: relative;
+}
+.ButtonBase:where([data-notification-indicator='leadingVisual']) .LeadingVisual {
+  position: relative;
+}
+.ButtonBase:where([data-notification-indicator='button']):before,
+.ButtonBase:where([data-notification-indicator='icon'].IconButton):before,
+.ButtonBase:where([data-notification-indicator='leadingVisual']) .LeadingVisual:before {
+  background-color: var(--fgColor-accent);
+  border-radius: var(--borderRadius-full);
+  box-shadow: 0 0 0 calc(var(--base-size-4) / 2) var(--bgColor-inset);
+  content: '';
+  display: block;
+  height: var(--base-size-8);
+  position: absolute;
+  width: var(--base-size-8);
+}
+.ButtonBase:where([data-notification-indicator='button']):before {
+  right: calc(var(--base-size-4) / -2);
+  top: calc(var(--base-size-4) / -2);
+}
+.ButtonBase:where([data-notification-indicator='icon'].IconButton):before {
+  right: calc(50% - var(--base-size-12));
+  top: calc(50% - var(--base-size-12));
+}
+.ButtonBase:where([data-notification-indicator='leadingVisual']) .LeadingVisual:before {
+  right: calc(var(--base-size-4) * -1);
+  top: calc(var(--base-size-4) * -1);
+}
+.ButtonBase:disabled,
+.ButtonBase[aria-disabled='true']:not([data-loading='true']) {
+  box-shadow: none;
+  cursor: not-allowed;
+}
+:is(.ButtonBase:disabled, .ButtonBase[aria-disabled='true']:not([data-loading='true']))
+  .CounterLabel,
+:is(.ButtonBase:disabled, .ButtonBase[aria-disabled='true']:not([data-loading='true'])) .Visual {
+  color: inherit;
+}
+@media (forced-colors: active) {
+  .ButtonBase:focus {
+    outline: solid 1px transparent;
+  }
+}
+.ButtonBase :where(.Visual) {
+  color: var(--fgColor-muted);
+  display: flex;
+  pointer-events: none;
+}
+.ButtonBase :where(.VisualWrap) {
+  display: flex;
+  pointer-events: none;
+}
+.ButtonBase:where(.IconButton) {
+  display: inline-grid;
+  flex-shrink: 0;
+  min-width: unset;
+  padding: unset;
+  place-content: center;
+  width: var(--control-medium-size);
+}
+.ButtonBase:where(.IconButton):where([data-size='small']) {
+  width: var(--control-small-size);
+}
+.ButtonBase:where(.IconButton):where([data-size='large']) {
+  width: var(--control-large-size);
+}
+.ButtonBase:where([href]) {
+  display: inline-flex;
+}
+.ButtonBase:where([href]):hover {
+  text-decoration: none;
+}
+.ButtonBase :where(.ButtonContent) {
+  align-content: center;
+  align-items: center;
+  display: grid;
+  flex: 1 0 auto;
+  grid-template-areas: 'leadingVisual text trailingVisual';
+  grid-template-columns: min-content minmax(0, auto) min-content;
+}
+.ButtonBase :where(.ButtonContent) > :not(:last-child) {
+  margin-right: var(--base-size-8);
+}
+.ButtonBase :where(.ButtonContent):where([data-align='center']) {
+  justify-content: center;
+}
+.ButtonBase :where(.ButtonContent):where([data-align='start']) {
+  justify-content: flex-start;
+}
+.ButtonBase :where([data-component='leadingVisual']) {
+  grid-area: leadingVisual;
+}
+.ButtonBase :where(.Label) {
+  grid-area: text;
+  line-height: var(--text-body-lineHeight-medium);
+  white-space: nowrap;
+}
+.ButtonBase :where([data-component='trailingVisual']) {
+  grid-area: trailingVisual;
+}
+.ButtonBase :where([data-component='trailingAction']) {
+  margin-right: calc(var(--base-size-4) * -1);
+}
+.ButtonBase:where([data-size='small']) {
+  font-size: var(--text-body-size-small);
+  gap: var(--control-small-gap);
+  height: var(--control-small-size);
+  padding: 0 var(--control-small-paddingInline-condensed);
+}
+.ButtonBase:where([data-size='small']) .ButtonContent > :not(:last-child) {
+  margin-right: var(--control-small-gap);
+}
+.ButtonBase:where([data-size='small']) .Label {
+  line-height: var(--text-body-lineHeight-small);
+}
+.ButtonBase:where([data-size='large']) {
+  gap: var(--control-large-gap);
+  height: var(--control-large-size);
+  padding: 0 var(--control-large-paddingInline-spacious);
+}
+.ButtonBase:where([data-size='large']) .ButtonContent > :not(:last-child) {
+  margin-right: var(--control-large-gap);
+}
+.ButtonBase:where([data-size='large']):has([data-kbd-chord]) {
+  padding-inline-end: var(--base-size-8);
+}
+.ButtonBase:where([data-block='block']) {
+  width: 100%;
+}
+.ButtonBase:where([data-label-wrap='true']) {
+  height: unset;
+  min-height: var(--control-medium-size);
+
+  min-width: fit-content;
+}
+.ButtonBase:where([data-label-wrap='true']) .ButtonContent {
+  align-self: stretch;
+  flex: 1 1 auto;
+  padding-block: calc(var(--control-medium-paddingBlock) - var(--base-size-2));
+}
+.ButtonBase:where([data-label-wrap='true']) .Label {
+  white-space: unset;
+  word-break: break-word;
+}
+.ButtonBase:where([data-label-wrap='true']):where([data-size='small']) {
+  height: unset;
+  min-height: var(--control-small-size);
+}
+.ButtonBase:where([data-label-wrap='true']):where([data-size='small']) .ButtonContent {
+  padding-block: calc(var(--control-small-paddingBlock) - var(--base-size-2));
+}
+.ButtonBase:where([data-label-wrap='true']):where([data-size='large']) {
+  height: unset;
+  min-height: var(--control-large-size);
+  padding-inline: var(--control-large-paddingInline-spacious);
+}
+.ButtonBase:where([data-label-wrap='true']):where([data-size='large']) .ButtonContent {
+  padding-block: calc(var(--control-large-paddingBlock) - var(--base-size-2));
+}
+.ButtonBase:where([data-loading='true'])
+  .LoadingSpinner:not(
+    [data-component='leadingVisual'],
+    [data-component='trailingVisual'],
+    [data-component='trailingAction']
+  ) {
+  grid-area: text;
+  margin-right: 0 !important;
+  place-self: center;
+}
+.ButtonBase:where([data-loading='true'])
+  .LoadingSpinner:not(
+    [data-component='leadingVisual'],
+    [data-component='trailingVisual'],
+    [data-component='trailingAction']
+  )
+  + .Label {
+  visibility: hidden;
+}
+.ButtonBase .LoadingSpinner {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+.ButtonBase:where([data-variant='default']) {
+  background-color: var(--button-default-bgColor-rest);
+  box-shadow: var(--button-default-shadow-resting);
+  color: var(--button-default-fgColor-rest);
+}
+.ButtonBase[aria-expanded='true']:where([data-variant='default']) {
+  background-color: var(--button-default-bgColor-active);
+  border-color: var(--button-default-borderColor-active);
+}
+.ButtonBase:where([data-variant='default']):hover {
+  background-color: var(--button-default-bgColor-hover);
+  border-color: var(--button-default-borderColor-hover);
+}
+.ButtonBase:where([data-variant='default']):active {
+  background-color: var(--button-default-bgColor-active);
+  border-color: var(--button-default-borderColor-active);
+}
+.ButtonBase:where([data-variant='default']):disabled,
+.ButtonBase[aria-disabled='true']:where([data-variant='default']):not([data-loading='true']) {
+  background-color: var(--button-default-bgColor-disabled);
+  border-color: var(--button-default-borderColor-disabled);
+  box-shadow: none;
+  color: var(--control-fgColor-disabled);
+}
+:is(
+    .ButtonBase:where([data-variant='default']):disabled,
+    .ButtonBase[aria-disabled='true']:where([data-variant='default']):not([data-loading='true'])
+  )
+  [data-kbd-chord] {
+  background: var(--buttonKeybindingHint-default-bgColor-disabled);
+  border-color: var(--buttonKeybindingHint-default-borderColor-disabled);
+  color: var(--buttonKeybindingHint-default-fgColor-disabled);
+}
+.ButtonBase:where([data-variant='default']) .CounterLabel {
+  background-color: var(--buttonCounter-default-bgColor-rest) !important;
+}
+.ButtonBase:where([data-variant='default']) [data-kbd-chord] {
+  background: var(--buttonKeybindingHint-default-bgColor-rest);
+  border-color: var(--buttonKeybindingHint-default-borderColor-rest);
+  color: var(--buttonKeybindingHint-default-fgColor-rest);
+}
+.ButtonBase:where([data-variant='default']):where(.IconButton) {
+  color: var(--fgColor-muted);
+}
+.ButtonBase:where([data-variant='primary']) {
+  background-color: var(--button-primary-bgColor-rest);
+  border-color: var(--button-primary-borderColor-rest);
+  box-shadow: var(--shadow-resting-small);
+  color: var(--button-primary-fgColor-rest);
+}
+.ButtonBase[aria-expanded='true']:where([data-variant='primary']) {
+  background-color: var(--button-primary-bgColor-active);
+  box-shadow: var(--button-primary-shadow-selected);
+}
+.ButtonBase:where([data-variant='primary']):hover {
+  background-color: var(--button-primary-bgColor-hover);
+  border-color: var(--button-primary-borderColor-hover);
+}
+.ButtonBase:where([data-variant='primary']):focus-visible {
+  box-shadow: inset 0 0 0 3px var(--fgColor-onEmphasis);
+  outline: 2px solid var(--focus-outline-color, var(--focus-outlineColor));
+  outline-offset: -2px;
+}
+.ButtonBase:where([data-variant='primary']):active {
+  background-color: var(--button-primary-bgColor-active);
+  box-shadow: var(--button-primary-shadow-selected);
+}
+.ButtonBase:where([data-variant='primary']):disabled,
+.ButtonBase[aria-disabled='true']:where([data-variant='primary']):not([data-loading='true']) {
+  background-color: var(--button-primary-bgColor-disabled);
+  border-color: var(--button-primary-borderColor-disabled);
+  box-shadow: none;
+  color: var(--button-primary-fgColor-disabled);
+}
+:is(
+    .ButtonBase:where([data-variant='primary']):disabled,
+    .ButtonBase[aria-disabled='true']:where([data-variant='primary']):not([data-loading='true'])
+  )
+  [data-kbd-chord] {
+  background: var(--buttonKeybindingHint-primary-bgColor-disabled);
+  border-color: var(--buttonKeybindingHint-primary-borderColor-disabled);
+  color: var(--buttonKeybindingHint-primary-fgColor-disabled);
+}
+.ButtonBase:where([data-variant='primary']) .CounterLabel {
+  background-color: var(--buttonCounter-primary-bgColor-rest) !important;
+  color: var(--button-primary-fgColor-rest) !important;
+}
+.ButtonBase:where([data-variant='primary']) [data-kbd-chord] {
+  background: var(--buttonKeybindingHint-primary-bgColor-rest);
+  border-color: var(--buttonKeybindingHint-primary-borderColor-rest);
+  color: var(--buttonKeybindingHint-primary-fgColor-rest);
+}
+.ButtonBase:where([data-variant='primary']) .Visual {
+  color: var(--button-primary-fgColor-rest);
+}
+.ButtonBase:where([data-variant='danger']) {
+  background-color: var(--button-danger-bgColor-rest);
+  box-shadow: var(--button-default-shadow-resting);
+  color: var(--button-danger-fgColor-rest);
+}
+.ButtonBase[aria-expanded='true']:where([data-variant='danger']) {
+  background-color: var(--button-danger-bgColor-active);
+  border-color: var(--button-danger-borderColor-active);
+  box-shadow: var(--button-danger-shadow-selected);
+  color: var(--button-danger-fgColor-active);
+}
+.ButtonBase[aria-expanded='true']:where([data-variant='danger']) .Visual {
+  color: var(--button-danger-iconColor-hover);
+}
+.ButtonBase:where([data-variant='danger']):hover {
+  background-color: var(--button-danger-bgColor-hover);
+  border-color: var(--button-danger-borderColor-hover);
+  box-shadow: var(--shadow-resting-small);
+  color: var(--button-danger-fgColor-hover);
+}
+.ButtonBase:where([data-variant='danger']):hover .CounterLabel {
+  background-color: var(--buttonCounter-danger-bgColor-hover) !important;
+  color: var(--buttonCounter-danger-fgColor-hover) !important;
+}
+.ButtonBase:where([data-variant='danger']):hover [data-kbd-chord] {
+  background: var(--buttonKeybindingHint-danger-bgColor-hover);
+  border-color: var(--buttonKeybindingHint-danger-borderColor-hover);
+  color: var(--buttonKeybindingHint-danger-fgColor-hover);
+  transition: 80ms ease-out;
+}
+.ButtonBase:where([data-variant='danger']):hover .Visual {
+  color: var(--button-danger-iconColor-hover);
+}
+.ButtonBase:where([data-variant='danger']):active {
+  background-color: var(--button-danger-bgColor-active);
+  border-color: var(--button-danger-borderColor-active);
+  box-shadow: var(--button-danger-shadow-selected);
+  color: var(--button-danger-fgColor-active);
+}
+.ButtonBase:where([data-variant='danger']):active .CounterLabel {
+  background-color: var(--buttonCounter-danger-bgColor-hover) !important;
+  color: var(--buttonCounter-danger-fgColor-hover) !important;
+}
+.ButtonBase:where([data-variant='danger']):active [data-kbd-chord] {
+  background: var(--buttonKeybindingHint-danger-bgColor-active);
+  border-color: var(--buttonKeybindingHint-danger-borderColor-active);
+  color: var(--buttonKeybindingHint-danger-fgColor-active);
+  transition: 80ms ease-out;
+}
+.ButtonBase:where([data-variant='danger']):active .Visual {
+  color: var(--button-danger-iconColor-hover);
+}
+.ButtonBase:where([data-variant='danger']):disabled,
+.ButtonBase[aria-disabled='true']:where([data-variant='danger']):not([data-loading='true']) {
+  background-color: var(--button-danger-bgColor-disabled);
+  border-color: var(--button-default-borderColor-disabled);
+  box-shadow: none;
+  color: var(--button-danger-fgColor-disabled);
+}
+:is(
+    .ButtonBase:where([data-variant='danger']):disabled,
+    .ButtonBase[aria-disabled='true']:where([data-variant='danger']):not([data-loading='true'])
+  )
+  .CounterLabel {
+  background-color: var(--buttonCounter-danger-bgColor-disabled) !important;
+  color: var(--buttonCounter-danger-fgColor-disabled) !important;
+}
+:is(
+    .ButtonBase:where([data-variant='danger']):disabled,
+    .ButtonBase[aria-disabled='true']:where([data-variant='danger']):not([data-loading='true'])
+  )
+  [data-kbd-chord] {
+  background: var(--buttonKeybindingHint-danger-bgColor-disabled);
+  border-color: var(--buttonKeybindingHint-danger-borderColor-disabled);
+  color: var(--buttonKeybindingHint-danger-fgColor-disabled);
+}
+.ButtonBase:where([data-variant='danger']) .CounterLabel {
+  background-color: var(--buttonCounter-danger-bgColor-rest) !important;
+  color: var(--buttonCounter-danger-fgColor-rest) !important;
+}
+.ButtonBase:where([data-variant='danger']) [data-kbd-chord] {
+  background: var(--buttonKeybindingHint-danger-bgColor-rest);
+  border-color: var(--buttonKeybindingHint-danger-borderColor-rest);
+  color: var(--buttonKeybindingHint-danger-fgColor-rest);
+}
+.ButtonBase:where([data-variant='danger']) .Visual {
+  color: var(--button-danger-iconColor-rest);
+}
+.ButtonBase:where([data-variant='invisible']) {
+  border-color: var(--button-invisible-borderColor-rest);
+  box-shadow: none;
+  color: var(--button-default-fgColor-rest);
+}
+.ButtonBase[aria-expanded='true']:where([data-variant='invisible']) {
+  background-color: var(--button-invisible-bgColor-active);
+}
+.ButtonBase:where([data-variant='invisible']):hover {
+  background-color: var(--button-invisible-bgColor-hover);
+  border-color: var(--button-invisible-borderColor-hover);
+}
+.ButtonBase:where([data-variant='invisible']):hover .Visual {
+  color: var(--button-invisible-iconColor-hover);
+}
+.ButtonBase:where([data-variant='invisible']):hover [data-kbd-chord] {
+  background: var(--buttonKeybindingHint-invisible-bgColor-hover);
+  transition: 80ms ease-out;
+}
+.ButtonBase:where([data-variant='invisible']):active {
+  background-color: var(--button-invisible-bgColor-active);
+}
+.ButtonBase:where([data-variant='invisible']):active .Visual {
+  color: var(--button-invisible-iconColor-hover);
+}
+.ButtonBase:where([data-variant='invisible']):active [data-kbd-chord] {
+  background: var(--buttonKeybindingHint-invisible-bgColor-active);
+  transition: 80ms ease-out;
+}
+.ButtonBase:where([data-variant='invisible']):disabled,
+.ButtonBase[aria-disabled='true']:where([data-variant='invisible']):not([data-loading='true']) {
+  background-color: var(--button-invisible-bgColor-disabled);
+  border-color: var(--button-invisible-borderColor-disabled);
+  box-shadow: none;
+  color: var(--button-invisible-fgColor-disabled);
+}
+:is(
+    .ButtonBase:where([data-variant='invisible']):disabled,
+    .ButtonBase[aria-disabled='true']:where([data-variant='invisible']):not([data-loading='true'])
+  )
+  [data-kbd-chord] {
+  background: var(--buttonKeybindingHint-invisible-bgColor-disabled);
+  border-color: var(--buttonKeybindingHint-invisible-borderColor-disabled);
+  color: var(--buttonKeybindingHint-invisible-fgColor-disabled);
+}
+.ButtonBase:where([data-variant='invisible']) .Visual {
+  color: var(--button-invisible-iconColor-rest);
+}
+.ButtonBase:where([data-variant='invisible']) .CounterLabel {
+  background-color: var(--buttonCounter-invisible-bgColor-rest) !important;
+}
+.ButtonBase:where([data-variant='invisible']) [data-kbd-chord] {
+  background: var(--buttonKeybindingHint-invisible-bgColor-rest);
+  border-color: var(--buttonKeybindingHint-invisible-borderColor-rest);
+  color: var(--buttonKeybindingHint-invisible-fgColor-rest);
+}
+.ButtonBase:where([data-variant='invisible']):where(.IconButton) {
+  color: var(--button-invisible-iconColor-rest);
+}
+.ButtonBase:where([data-variant='link']) {
+  border: unset;
+  border-radius: 0;
+  color: var(--fgColor-link);
+  display: inline-flex;
+  font-size: inherit;
+  height: unset;
+
+  min-width: fit-content;
+  padding: 0;
+  text-align: left;
+}
+.ButtonBase:where([data-variant='link']):where(
+    [data-no-visuals]:hover:not(:disabled, [aria-disabled='true'], [data-inactive])
+  ) {
+  text-decoration: underline;
+}
+.ButtonBase:where([data-variant='link']):where(
+    :not([data-no-visuals]):hover:not(:disabled, [aria-disabled='true'], [data-inactive])
+  )
+  .Label {
+  text-decoration: underline;
+}
+.ButtonBase:where([data-variant='link']):focus,
+.ButtonBase:where([data-variant='link']):focus-visible {
+  outline-offset: 2px;
+}
+.ButtonBase:where([data-variant='link']):disabled,
+.ButtonBase[aria-disabled='true']:where([data-variant='link']):not([data-loading='true']) {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--control-fgColor-disabled);
+}
+.ButtonBase:where([data-variant='link']) .Label {
+  white-space: unset;
+}
+.ButtonBase:where([data-variant='link']):not([data-no-visuals]) .Label {
+  text-underline-offset: 0.125rem;
+}
+.ButtonBase:where([data-variant='link']):where([data-inactive]) {
+  background: transparent !important;
+  color: var(--button-inactive-fgColor);
+}
+.ButtonBase:where([data-variant='link']) .Visual {
+  color: var(--fgColor-link);
+}
+[data-a11y-link-underlines='true'] .ButtonBase[data-no-visuals]:where([data-variant='link']) {
+  text-decoration: underline;
+}
+[data-a11y-link-underlines='true']
+  .ButtonBase[data-no-visuals]:where([data-variant='link']):where(
+    :hover:not([aria-disabled='true'], [data-inactive], :disabled)
+  ) {
+  text-decoration: none;
+}
+[data-a11y-link-underlines='true']
+  .ButtonBase:where([data-variant='link']):not([data-no-visuals])
+  .Label {
+  text-decoration: underline;
+}
+[data-a11y-link-underlines='true']
+  .ButtonBase:where([data-variant='link']):not([data-no-visuals]):where(
+    :hover:not([aria-disabled='true'], [data-inactive], :disabled)
+  )
+  .Label {
+  text-decoration: none;
+}
+[data-a11y-link-underlines='false'] .ButtonBase[data-no-visuals]:where([data-variant='link']) {
+  background-image: none;
+
+  text-decoration: none;
+}
+[data-a11y-link-underlines='false']
+  .ButtonBase[data-no-visuals]:where([data-variant='link']):where(
+    :hover:not([aria-disabled='true'], [data-inactive], :disabled)
+  ) {
+  text-decoration: underline;
+}
+[data-a11y-link-underlines='false']
+  .ButtonBase:where([data-variant='link']):not([data-no-visuals]) {
+  background-image: none;
+}
+[data-a11y-link-underlines='false']
+  .ButtonBase:where([data-variant='link']):not([data-no-visuals])
+  .Label {
+  text-decoration: none;
+}
+[data-a11y-link-underlines='false']
+  .ButtonBase:where([data-variant='link']):not([data-no-visuals]):where(
+    :hover:not([aria-disabled='true'], [data-inactive], :disabled)
+  )
+  .Label {
+  text-decoration: underline;
+}
+.ButtonBase:where([data-inactive]),
+.ButtonBase:where([data-inactive]):active,
+.ButtonBase:where([data-inactive]):hover {
+  background-color: var(--button-inactive-bgColor);
+  border-color: var(--button-inactive-bgColor);
+  box-shadow: none;
+  color: var(--button-inactive-fgColor);
+  cursor: auto;
+}
+:is(
+    .ButtonBase:where([data-inactive]),
+    .ButtonBase:where([data-inactive]):hover,
+    .ButtonBase:where([data-inactive]):active
+  )
+  .Visual {
+  color: inherit !important;
+}
+:is(
+    .ButtonBase:where([data-inactive]),
+    .ButtonBase:where([data-inactive]):hover,
+    .ButtonBase:where([data-inactive]):active
+  )
+  .CounterLabel {
+  color: inherit !important;
+}
+:is(
+    .ButtonBase:where([data-inactive]),
+    .ButtonBase:where([data-inactive]):hover,
+    .ButtonBase:where([data-inactive]):active
+  )
+  [data-kbd-chord] {
+  background: var(--buttonKeybindingHint-inactive-bgColor);
+  border-color: var(--buttonKeybindingHint-inactive-borderColor);
+  color: var(--buttonKeybindingHint-inactive-fgColor);
+}
+.ButtonBase:where([data-icon-only-counter]) {
+  padding-inline: var(--control-medium-paddingInline-condensed);
+}
+.ButtonBase:where([data-icon-only-counter]):where([data-size='small']) {
+  padding-inline: var(--control-xsmall-paddingInline-condensed);
+}
+.ButtonBase:where([data-icon-only-counter]):where([data-size='large']) {
+  padding-inline: var(--control-large-paddingInline-normal);
+}
+.ConditionalWrapper {
+  display: block;
+}
+.ConditionalWrapperLink {
+  display: inline-flex;
+}
+[data-kbd-chord] {
+  transition: 80ms ease-in;
+  transition-property: color, background-color, border-color;
+}

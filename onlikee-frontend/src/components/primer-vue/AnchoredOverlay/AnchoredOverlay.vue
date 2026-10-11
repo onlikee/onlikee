@@ -2,7 +2,8 @@
 import { computed, shallowRef, useAttrs, useId, watch, useCssModule, toRaw, type VNode } from 'vue'
 import type { AnchorPosition } from '@primer/behaviors'
 import Overlay from '../internal/components/Overlay.vue'
-import Button from '../SelectPanel/SelectPanelButton.vue'
+import { IconButton as Button } from '../Button'
+import type { ButtonA11yProps } from '../Button/types'
 import XIcon from '../../octicons-vue3/icons/x.vue'
 import { assignElementRef } from '../internal/assignElementRef'
 import { useAnchoredPosition } from '../composables/useAnchoredPosition'
@@ -118,13 +119,20 @@ const showCloseButton = computed(
   () => Boolean(props.onClose) && narrowVariant.value === 'fullscreen' && displayCloseButton,
 )
 const closeButtonBindings = computed(() => {
-  const { onClick: _onClick, className, ...rest } = props.closeButtonProps ?? {}
-  const labelledBy = rest['aria-labelledby']
+  const {
+    onClick: _onClick,
+    className,
+    'aria-labelledby': labelledBy,
+    'aria-label': ariaLabel,
+    ...rest
+  } = props.closeButtonProps ?? {}
+  const nameProps: ButtonA11yProps = labelledBy
+    ? { 'aria-labelledby': labelledBy }
+    : { 'aria-label': ariaLabel ?? 'Close' }
   return {
     ...rest,
     className,
-    'aria-labelledby': labelledBy || undefined,
-    'aria-label': labelledBy ? undefined : (rest['aria-label'] ?? 'Close'),
+    ...nameProps,
   }
 })
 const side = computed(() => props.side ?? (props.overlayProps?.anchorSide || 'outside-bottom'))

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, useAttrs } from 'vue'
-import Button from '../SelectPanel/SelectPanelButton.vue'
+import { computed, h, ref, useAttrs } from 'vue'
+import { IconButton as Button } from '../Button'
 import { exposeElement } from './context'
 import { normalizeReactStyle } from '../internal/style'
 import type { ActionListGroupHeadingTrailingActionProps } from './types'
@@ -19,23 +19,27 @@ const props = withDefaults(defineProps<ActionListGroupHeadingTrailingActionProps
 const attrs = useAttrs()
 const button = ref<InstanceType<typeof Button> | null>(null)
 const element = computed(() => button.value?.element ?? null)
+const RenderButton = () => {
+  const sharedProps = {
+    ref: button,
+    type: 'button' as const,
+    icon: props.icon,
+    loading: props.loading,
+    'aria-label': props.label,
+    variant: 'invisible' as const,
+    size: 'small' as const,
+    tooltipDirection: props.tooltipDirection,
+    'data-component': 'ActionList.GroupHeading.TrailingAction',
+    ...attrs,
+    class: [props.className, attrs.class],
+    style: normalizeReactStyle(props.style ?? attrs.style),
+  }
+  return props.as === 'a'
+    ? h(Button, { ...sharedProps, as: 'a', href: props.href })
+    : h(Button, { ...sharedProps, as: 'button' })
+}
 defineExpose(exposeElement(element))
 </script>
 <template>
-  <Button
-    ref="button"
-    :as="props.as"
-    :href="props.href ?? null"
-    type="button"
-    :icon="icon"
-    :loading="loading"
-    :aria-label="label"
-    variant="invisible"
-    size="small"
-    :tooltip-direction="tooltipDirection"
-    data-component="ActionList.GroupHeading.TrailingAction"
-    :class="[className, attrs.class]"
-    v-bind="attrs"
-    :style="normalizeReactStyle(style ?? attrs.style)"
-  />
+  <RenderButton />
 </template>

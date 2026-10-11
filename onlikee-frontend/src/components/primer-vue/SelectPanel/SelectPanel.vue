@@ -15,7 +15,7 @@ import {
   type ComponentPublicInstance,
   type VNodeChild,
 } from 'vue'
-import Button from './SelectPanelButton.vue'
+import { Button, IconButton } from '../Button'
 import { useFormControlContext } from '../FormControl/context'
 import { useFeatureFlag } from '../FeatureFlags'
 import FilteredActionList from '../FilteredActionList/FilteredActionList.vue'
@@ -573,7 +573,7 @@ defineExpose({
             </slot>
           </div>
         </div>
-        <Button
+        <IconButton
           v-if="variant === 'modal' && !narrow"
           :class="$style['select-panel__close']"
           variant="invisible"

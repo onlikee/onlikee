@@ -606,7 +606,7 @@ const compoundTableRows = [
   },
   {
     name: 'SelectPanel.SecondaryActionButton',
-    description: '页脚块级按钮，属性透传 SelectPanelButton（loading、count、onClick 等）。',
+    description: '页脚块级按钮，属性透传 Button（loading、count、onClick 等）。',
   },
   {
     name: 'SelectPanel.SecondaryActionLink',

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, shallowRef, useAttrs, useId, watch } from 'vue'
+import VisuallyHidden from '../VisuallyHidden/VisuallyHidden.vue'
 
 defineOptions({ inheritAttrs: false })
 
@@ -59,7 +60,7 @@ onMounted(() => {
 onUnmounted(() => motionQuery?.removeEventListener('change', updateMotionPreference))
 
 function computeSyncDelay(): number {
-  return -(performance.now() % ANIMATION_DURATION_MS)
+  return typeof performance === 'undefined' ? 0 : -(performance.now() % ANIMATION_DURATION_MS)
 }
 </script>
 
@@ -93,9 +94,7 @@ function computeSyncDelay(): number {
         vector-effect="non-scaling-stroke"
       />
     </svg>
-    <span v-if="hasHiddenLabel()" :id="labelId" :class="$style['spinner__sr-only']">{{
-      srText
-    }}</span>
+    <VisuallyHidden v-if="hasHiddenLabel()" :id="labelId">{{ srText }}</VisuallyHidden>
   </span>
 </template>
 <style module src="./Spinner.module.css" />

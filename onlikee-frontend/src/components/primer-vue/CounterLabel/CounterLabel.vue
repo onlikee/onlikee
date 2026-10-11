@@ -21,7 +21,7 @@ const inferredVariant = computed(() => props.variant || props.scheme || 'seconda
     :data-variant="inferredVariant"
     v-bind="$attrs"
     :data-component="dataComponent ?? 'CounterLabel'"
-    :class="[$style['counter-label'], className]"
+    :class="[className, $style['counter-label']]"
     ><slot
   /></span>
   <VisuallyHidden>&nbsp;(<slot />)</VisuallyHidden>

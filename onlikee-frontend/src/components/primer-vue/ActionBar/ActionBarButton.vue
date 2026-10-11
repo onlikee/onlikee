@@ -1,17 +1,34 @@
 <script setup lang="ts">
-import { useSlots } from 'vue'
-import Button from '../SelectPanel/SelectPanelButton.vue'
+import { useAttrs, useSlots } from 'vue'
+import { Button } from '../Button'
 import { useActionBarItem } from './context'
 import type { ActionBarButtonProps } from './types'
 
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<ActionBarButtonProps>(), {
+  type: 'button',
   loading: undefined,
   inactive: undefined,
   labelWrap: undefined,
 })
 const emit = defineEmits<{ click: [event: MouseEvent | KeyboardEvent] }>()
 const slots = useSlots()
+const attrs = useAttrs()
+const iconButtonOnlyProps = new Set([
+  'description',
+  'tooltipDirection',
+  'tooltip-direction',
+  'unsafeDisableTooltip',
+  'unsafe-disable-tooltip',
+  'keyshortcuts',
+  'keybindingHint',
+  'keybinding-hint',
+])
+function buttonAttrs() {
+  return Object.fromEntries(
+    Object.entries(attrs).filter(([name]) => !iconButtonOnlyProps.has(name)),
+  )
+}
 function click(event: MouseEvent | KeyboardEvent) {
   if (props.disabled || props.loading) {
     event.preventDefault()
@@ -30,7 +47,7 @@ defineExpose({ element, focus: (options?: FocusOptions) => element.value?.focus(
 
 <template>
   <Button
-    v-bind="{ ...$attrs, ...props }"
+    v-bind="{ ...buttonAttrs(), ...props }"
     :ref="setElement"
     :disabled="false"
     :aria-disabled="disabled || undefined"

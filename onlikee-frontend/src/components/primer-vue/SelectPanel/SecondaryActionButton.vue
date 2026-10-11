@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Button from './SelectPanelButton.vue'
+import { Button } from '../Button'
 defineOptions({ name: 'SelectPanelSecondaryActionButton', inheritAttrs: false })
 </script>
 <template>

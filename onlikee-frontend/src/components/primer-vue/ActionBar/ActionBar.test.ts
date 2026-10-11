@@ -103,6 +103,33 @@ afterEach(() => {
 })
 
 describe('ActionBar behavior', () => {
+  it('does not leak icon-only tooltip props from a text button', async () => {
+    const wrapper = render(() => [
+      text('Save', {
+        description: 'Save changes',
+        tooltipDirection: 'n',
+        unsafeDisableTooltip: true,
+        keyshortcuts: 'Ctrl+S',
+        keybindingHint: 'Ctrl+S',
+      }),
+    ])
+    await settle()
+    const button = wrapper.get('[data-component="Button"]').element
+    for (const attr of [
+      'description',
+      'tooltipdirection',
+      'tooltip-direction',
+      'unsafedisabletooltip',
+      'unsafe-disable-tooltip',
+      'keyshortcuts',
+      'keybindinghint',
+      'keybinding-hint',
+      'aria-keyshortcuts',
+    ]) {
+      expect(button.hasAttribute(attr)).toBe(false)
+    }
+  })
+
   it('observes the native element when a tooltip button mounts with a fragment root', async () => {
     const wrapper = render(() => [
       h(ActionBar.IconButton, { icon: Icon, 'aria-label': 'Tooltip button' }),
@@ -111,6 +138,7 @@ describe('ActionBar behavior', () => {
     expect(observers[0]!.elements.has(wrapper.get('[data-component=IconButton]').element)).toBe(
       true,
     )
+    expect(wrapper.get('[data-component=IconButton]').attributes('type')).toBe('button')
     await overflow(wrapper)
     const menu = document.querySelector('[role=menu]')!
     expect(menu.getAttribute('aria-labelledby')).toBe(

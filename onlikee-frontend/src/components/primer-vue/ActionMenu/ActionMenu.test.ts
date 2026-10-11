@@ -5,7 +5,7 @@ import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import { defineComponent, h, nextTick, provide, shallowRef, type VNode } from 'vue'
 import { ActionMenu } from './index'
 import { ActionList } from '../ActionList'
-import Button from '../SelectPanel/SelectPanelButton.vue'
+import { Button } from '../Button'
 import Tooltip from '../TooltipV2/Tooltip.vue'
 import { FeatureFlags } from '../FeatureFlags'
 import { getAnchoredPosition } from '@primer/behaviors'
@@ -103,6 +103,31 @@ afterEach(() => {
 })
 
 describe('ActionMenu public behavior', () => {
+  it('does not leak icon-only tooltip props from the text menu button', async () => {
+    const wrapper = basic(undefined, {
+      description: 'Open menu',
+      tooltipDirection: 'n',
+      unsafeDisableTooltip: true,
+      keyshortcuts: 'Ctrl+O',
+      keybindingHint: 'Ctrl+O',
+    })
+    await settle()
+    const button = wrapper.get('button').element
+    for (const attr of [
+      'description',
+      'tooltipdirection',
+      'tooltip-direction',
+      'unsafedisabletooltip',
+      'unsafe-disable-tooltip',
+      'keyshortcuts',
+      'keybindinghint',
+      'keybinding-hint',
+      'aria-keyshortcuts',
+    ]) {
+      expect(button.hasAttribute(attr)).toBe(false)
+    }
+  })
+
   it('renders the extracted anchor at the Overlay slot position', async () => {
     const wrapper = render(() => [
       h(ActionMenu.Button, null, { default: () => 'Trigger' }),
@@ -122,6 +147,7 @@ describe('ActionMenu public behavior', () => {
   it('opens by mouse, labels the menu, traps focus and toggles closed', async () => {
     const wrapper = basic()
     const anchor = wrapper.get('button').element as HTMLElement
+    expect(anchor.getAttribute('type')).toBe('button')
     expect(anchor.getAttribute('aria-haspopup')).toBe('true')
     expect(anchor.getAttribute('aria-expanded')).toBe('false')
     expect(anchor.querySelector('[data-component="trailingAction"]')).not.toBeNull()

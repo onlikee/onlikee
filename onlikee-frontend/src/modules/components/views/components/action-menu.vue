@@ -2,7 +2,7 @@
 import { ref, shallowRef } from 'vue'
 import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { ActionList } from '@/components/primer-vue/ActionList'
-import { Button } from '@/components/primer-vue/Button'
+import { IconButton } from '@/components/primer-vue/Button'
 import Tooltip from '@/components/primer-vue/TooltipV2/Tooltip.vue'
 import { CopyIcon, PencilIcon, TrashIcon, KebabHorizontalIcon } from '@/components/octicons-vue3'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
@@ -203,7 +203,7 @@ const modes = ['Fast forward', 'Recursive', 'Squash']
 </template>`
 const anchorCode = `<script setup lang="ts">
 ${imports}
-import { Button } from '@/components/primer-vue/Button'
+import { IconButton } from '@/components/primer-vue/Button'
 import Tooltip from '@/components/primer-vue/TooltipV2/Tooltip.vue'
 import { KebabHorizontalIcon } from '@/components/octicons-vue3'
 <\/script>
@@ -212,7 +212,7 @@ import { KebabHorizontalIcon } from '@/components/octicons-vue3'
   <ActionMenu>
     <ActionMenu.Anchor>
       <Tooltip text="更多操作" type="label">
-        <Button :leading-visual="KebabHorizontalIcon" variant="invisible" />
+        <IconButton :icon="KebabHorizontalIcon" aria-label="Open menu" variant="invisible" />
       </Tooltip>
     </ActionMenu.Anchor>
     <ActionMenu.Overlay>
@@ -602,7 +602,11 @@ const overlayRows = [
           <ActionMenu>
             <ActionMenu.Anchor>
               <Tooltip text="更多操作" type="label">
-                <Button :leading-visual="KebabHorizontalIcon" variant="invisible" />
+                <IconButton
+                  :icon="KebabHorizontalIcon"
+                  aria-label="Open menu"
+                  variant="invisible"
+                />
               </Tooltip>
             </ActionMenu.Anchor>
             <ActionMenu.Overlay>

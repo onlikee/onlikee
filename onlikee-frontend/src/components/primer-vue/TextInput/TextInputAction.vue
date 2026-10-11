@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, useAttrs, useSlots, type Component, useCssModule } from 'vue'
-import Button from '../Button/Button.vue'
-import SelectPanelButton from '../SelectPanel/SelectPanelButton.vue'
+import { Button, IconButton } from '../Button'
+import type { ButtonA11yProps } from '../Button/types'
 import Tooltip from '../TooltipV2/Tooltip.vue'
 import type { TextInputActionOptions } from './types'
 
@@ -19,7 +19,7 @@ const buttonRef = ref<{ element?: HTMLElement | null } | null>(null)
 
 const ariaLabel = computed(() => attrs['aria-label'] as string | undefined)
 const hasChildren = computed(() => Boolean(slots.default))
-const iconComponent = computed(() => props.icon as Component | undefined)
+const iconComponent = computed(() => props.icon as Component)
 const useIconButton = computed(() =>
   Boolean(iconComponent.value && !hasChildren.value && ariaLabel.value),
 )
@@ -28,9 +28,9 @@ const restAttrs = computed(() => {
   const { 'aria-label': _label, 'aria-labelledby': _labelledBy, ...rest } = attrs
   return rest
 })
-const accessibleLabel = computed<Record<string, unknown>>(() => {
+const accessibleLabel = computed<ButtonA11yProps>(() => {
   if (ariaLabel.value) return { 'aria-label': ariaLabel.value }
-  if (attrs['aria-labelledby']) return { 'aria-labelledby': attrs['aria-labelledby'] }
+  if (attrs['aria-labelledby']) return { 'aria-labelledby': attrs['aria-labelledby'] as string }
   return { 'aria-label': '' }
 })
 const buttonBindings = computed(() => ({ ...restAttrs.value, ...accessibleLabel.value }))
@@ -71,7 +71,7 @@ defineExpose({
     :class="['TextInput-action', $style['text-input-action']]"
     data-component="TextInput.Action"
   >
-    <SelectPanelButton
+    <IconButton
       v-if="useIconButton"
       ref="buttonRef"
       :icon="iconComponent"

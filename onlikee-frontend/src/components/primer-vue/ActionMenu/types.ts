@@ -1,7 +1,6 @@
 import type { ButtonHTMLAttributes, Component, HTMLAttributes, Ref } from 'vue'
 import type { AnchorPosition } from '@primer/behaviors'
 import type { OverlayProps } from '../internal/components/overlayTypes'
-import type { TooltipDirection } from '../TooltipV2/types'
 
 export type MenuCloseGesture =
   'anchor-click' | 'click-outside' | 'escape' | 'tab' | 'item-select' | 'arrow-left' | 'close'
@@ -31,13 +30,8 @@ export interface ActionMenuButtonProps extends /* @vue-ignore */ ButtonHTMLAttri
   trailingVisual?: Component
   trailingAction?: Component
   count?: number | string
-  notificationIndicator?: 'button' | 'leadingVisual' | 'icon'
+  notificationIndicator?: 'button' | 'leadingVisual'
   className?: string
-  description?: string
-  tooltipDirection?: TooltipDirection
-  unsafeDisableTooltip?: boolean
-  keyshortcuts?: string
-  keybindingHint?: string | string[]
 }
 export type ActionMenuVariant = {
   regular?: 'anchored'
