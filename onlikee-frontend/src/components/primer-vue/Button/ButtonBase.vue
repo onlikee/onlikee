@@ -65,7 +65,7 @@ function renderVisual(visual: ButtonVisual) {
     component !== null &&
     '__file' in component &&
     typeof component.__file === 'string' &&
-    component.__file.replace(/\\/g, '/').includes('/components/octicons-vue3/icons/')
+    component.__file.replace(/\\/g, '/').includes('/components/octicons-vue/icons/')
   if (isVNode(visual)) {
     return cloneVNode(
       visual,

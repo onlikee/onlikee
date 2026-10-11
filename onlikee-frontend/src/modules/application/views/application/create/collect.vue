@@ -51,7 +51,7 @@ import { Timeline } from '@/components/primer-vue/Timeline'
 import { applicationCreateCollect } from '@/modules/application/api/create-collect'
 import FirstStep from '@/modules/application/components/collectForm/FirstStep.vue'
 import { useCollectApplicationForm } from '@/modules/application/components/collectForm/useCollectApplicationForm'
-import RocketIcon from '@/components/octicons-vue3/icons/rocket.vue'
+import RocketIcon from '@/components/octicons-vue/icons/rocket.vue'
 
 const router = useRouter()
 

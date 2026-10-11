@@ -1,6 +1,6 @@
 <template>
   <ComponentDocsPage>
-    <ComponentDocsHeader title="Octicons Vue3 图标">
+    <ComponentDocsHeader title="Octicons Vue 图标">
       <template #description>
         该图标库基于开源的
         <Link href="https://primer.style/octicons/" link-text="Octicons" variant="primary" />
@@ -88,7 +88,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { Component } from 'vue'
-import * as octicons from '@/components/octicons-vue3/index.ts'
+import * as octicons from '@/components/octicons-vue/index.ts'
 import { Link } from '@/components/primer-vue/Link'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
@@ -110,7 +110,7 @@ type ColorDemoEntry = IconEntry & {
 const iconSize = 24
 
 const demo1Code = `<script setup lang="ts">
-import { TelescopeFillIcon, MarkGithubIcon, HeartFillIcon } from '@/components/octicons-vue3/index.ts'
+import { TelescopeFillIcon, MarkGithubIcon, HeartFillIcon } from '@/components/octicons-vue/index.ts'
 <\/script>
 
 <template>
@@ -131,7 +131,7 @@ import { TelescopeFillIcon, MarkGithubIcon, HeartFillIcon } from '@/components/o
 </style>`
 
 const demo2Code = `<script setup lang="ts">
-import { TelescopeFillIcon, MarkGithubIcon, HeartFillIcon } from '@/components/octicons-vue3/index.ts'
+import { TelescopeFillIcon, MarkGithubIcon, HeartFillIcon } from '@/components/octicons-vue/index.ts'
 <\/script>
 
 <template>

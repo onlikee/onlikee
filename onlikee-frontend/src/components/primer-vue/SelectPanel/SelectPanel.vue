@@ -25,12 +25,12 @@ import Message from './SelectPanelMessage.vue'
 import type { SelectPanelComponentProps, SelectPanelGesture } from './types'
 import type { AnchorRenderProps } from '../AnchoredOverlay'
 import { renderNode } from '../internal/renderNode'
-import TriangleDownIcon from '../../octicons-vue3/icons/triangle-down.vue'
-import SearchIcon from '../../octicons-vue3/icons/search.vue'
-import XIcon from '../../octicons-vue3/icons/x.vue'
-import InfoIcon from '../../octicons-vue3/icons/info.vue'
-import AlertIcon from '../../octicons-vue3/icons/alert.vue'
-import StopIcon from '../../octicons-vue3/icons/stop.vue'
+import TriangleDownIcon from '../../octicons-vue/icons/triangle-down.vue'
+import SearchIcon from '../../octicons-vue/icons/search.vue'
+import XIcon from '../../octicons-vue/icons/x.vue'
+import InfoIcon from '../../octicons-vue/icons/info.vue'
+import AlertIcon from '../../octicons-vue/icons/alert.vue'
+import StopIcon from '../../octicons-vue/icons/stop.vue'
 defineOptions({ name: 'SelectPanel', inheritAttrs: false, __SLOT__: Symbol('SelectPanel') })
 const props = withDefaults(defineProps<SelectPanelComponentProps>(), {
   selected: undefined,

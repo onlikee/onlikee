@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { HtmlMonacoEditor } from '@/components/monaco-editor'
-import LightBulbIcon from '@/components/octicons-vue3/icons/light-bulb.vue'
+import LightBulbIcon from '@/components/octicons-vue/icons/light-bulb.vue'
 import { Upload } from '@/components/primer-vue/Upload'
 import type { UploadFile } from '@/components/primer-vue/Upload'
 import type { FrameworkValue } from './useCreateApplicationForm'

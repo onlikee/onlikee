@@ -107,7 +107,7 @@ import { Banner } from '@/components/primer-vue/Banner'
 import { Button } from '@/components/primer-vue/Button'
 import { Dialog } from '@/components/primer-vue/Dialog'
 import { Textarea } from '@/components/primer-vue/Textarea'
-import { RepoTemplateIcon } from '@/components/octicons-vue3'
+import { RepoTemplateIcon } from '@/components/octicons-vue'
 import { getPublicUserMarkdown, saveCurrentUserMarkdown, type UserProfile } from '../api/user'
 
 const props = defineProps<{

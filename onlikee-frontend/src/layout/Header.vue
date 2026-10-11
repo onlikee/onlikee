@@ -68,7 +68,7 @@ import { useUserStore } from '@/stores/user'
 import { Dropdown } from '@/components/primer-vue/Dropdown'
 import { Avatar } from '@/components/primer-vue/Avatar'
 import { ActionList } from '@/components/primer-vue/ActionList'
-import { PersonIcon, AppsIcon, SignOutIcon, LogoOnlikeeIcon } from '@/components/octicons-vue3'
+import { PersonIcon, AppsIcon, SignOutIcon, LogoOnlikeeIcon } from '@/components/octicons-vue'
 
 interface NavigationItem {
   name: string

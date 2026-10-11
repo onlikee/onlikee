@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { UnderlineNav } from '@/components/primer-vue/UnderlineNav'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
-import { CodeIcon, IssueOpenedIcon } from '@/components/octicons-vue3'
+import { CodeIcon, IssueOpenedIcon } from '@/components/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -32,7 +32,7 @@ const featuresCode = `<template>
 
 <script setup lang="ts">
 import { UnderlineNav } from '@/components/primer-vue/UnderlineNav'
-import { CodeIcon, IssueOpenedIcon } from '@/components/octicons-vue3'
+import { CodeIcon, IssueOpenedIcon } from '@/components/octicons-vue'
 <\/script>`
 
 const columns: TableColumn[] = [

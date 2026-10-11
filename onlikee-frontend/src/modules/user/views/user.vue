@@ -172,7 +172,7 @@ import { Container } from '@/components/primer-vue/Container'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { TextInput } from '@/components/primer-vue/TextInput'
 import { Textarea } from '@/components/primer-vue/Textarea'
-import { LocationIcon, MailIcon, LinkIcon } from '@/components/octicons-vue3'
+import { LocationIcon, MailIcon, LinkIcon } from '@/components/octicons-vue'
 import { useUserStore } from '@/stores/user'
 import {
   getPublicUserProfile,

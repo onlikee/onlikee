@@ -51,7 +51,7 @@ import { Timeline } from '@/components/primer-vue/Timeline'
 import { applicationCreateConnect } from '@/modules/application/api/create-connect'
 import FirstStep from '@/modules/application/components/connectForm/FirstStep.vue'
 import { useConnectApplicationForm } from '@/modules/application/components/connectForm/useConnectApplicationForm'
-import RocketIcon from '@/components/octicons-vue3/icons/rocket.vue'
+import RocketIcon from '@/components/octicons-vue/icons/rocket.vue'
 
 const router = useRouter()
 

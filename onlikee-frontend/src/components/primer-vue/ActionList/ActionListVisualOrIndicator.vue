@@ -1,7 +1,7 @@
 <script lang="ts">
 import classes from './ActionList.module.css'
 import { defineComponent, h } from 'vue'
-import { AlertIcon } from '@/components/octicons-vue3'
+import { AlertIcon } from '@/components/octicons-vue'
 import Spinner from '../Spinner/Spinner.vue'
 import Tooltip from '../TooltipV2/Tooltip.vue'
 import LeadingVisual from './ActionListLeadingVisual.vue'

@@ -170,7 +170,7 @@ const navSections = ref([
   },
   {
     title: 'Icon 图标',
-    items: [{ path: '/component/octicons-vue3', label: 'Octicons-vue3 图标' }],
+    items: [{ path: '/component/octicons-vue', label: 'Octicons Vue 图标' }],
   },
   {
     title: 'Blocks 组合式组件',

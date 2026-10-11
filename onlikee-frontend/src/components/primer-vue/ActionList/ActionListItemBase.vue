@@ -14,7 +14,7 @@ import {
   type VNode,
   type VNodeChild,
 } from 'vue'
-import { CheckIcon } from '@/components/octicons-vue3'
+import { CheckIcon } from '@/components/octicons-vue'
 import Radio from '../Radio/Radio.vue'
 import Tooltip from '../TooltipV2/Tooltip.vue'
 import { TOOLTIP_CONTEXT_KEY } from '../TooltipV2/TooltipContext'

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import classes from './ActionBar.module.css'
 import { computed, onBeforeUnmount, onMounted, provide, shallowRef, useAttrs, watch } from 'vue'
-import { KebabHorizontalIcon } from '@/components/octicons-vue3'
+import { KebabHorizontalIcon } from '@/components/octicons-vue'
 import { IconButton as Button } from '../Button'
 import { FocusKeys, useFocusZone } from '../composables/useFocusZone'
 import MenuOverlay from './ActionBarMenuOverlay.vue'

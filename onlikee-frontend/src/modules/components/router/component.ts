@@ -27,9 +27,9 @@ export const componentRoutes: Array<RouteRecordRaw> = [
       },
       // Icon
       {
-        path: 'octicons-vue3',
-        name: 'OcticonsVue3',
-        component: () => import('../views/components/octicons-vue3.vue'),
+        path: 'octicons-vue',
+        name: 'OcticonsVue',
+        component: () => import('../views/components/octicons-vue.vue'),
       },
       // Blocks
       {

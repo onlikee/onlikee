@@ -5,7 +5,7 @@
     <ComponentDocsSection title="基础用法">
       <template #description>
         使用 <code>Dropdown</code>、<code>Avatar</code>、<code>ActionList</code> 和
-        <code>Octicons-vue3</code> 组合用户菜单。
+        <code>Octicons Vue</code> 组合用户菜单。
       </template>
       <ComponentDocsDemoBlock :code="demo1Code">
         <div class="user-menu">
@@ -66,7 +66,7 @@ import ComponentDocsSection from '@/modules/components/components/ComponentDocsP
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { Avatar } from '@/components/primer-vue/Avatar'
 import { Dropdown } from '@/components/primer-vue/Dropdown'
-import { GearIcon, MarkGithubIcon, PersonIcon, SignOutIcon } from '@/components/octicons-vue3'
+import { GearIcon, MarkGithubIcon, PersonIcon, SignOutIcon } from '@/components/octicons-vue'
 
 const demo1Code = `<template>
   <div class="user-menu">
@@ -112,7 +112,7 @@ const demo1Code = `<template>
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { Avatar } from '@/components/primer-vue/Avatar'
 import { Dropdown } from '@/components/primer-vue/Dropdown'
-import { GearIcon, MarkGithubIcon, PersonIcon, SignOutIcon } from '@/components/octicons-vue3'
+import { GearIcon, MarkGithubIcon, PersonIcon, SignOutIcon } from '@/components/octicons-vue'
 <\/script>
 
 <style scoped>

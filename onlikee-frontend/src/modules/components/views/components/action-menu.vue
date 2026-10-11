@@ -4,7 +4,7 @@ import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { IconButton } from '@/components/primer-vue/Button'
 import Tooltip from '@/components/primer-vue/TooltipV2/Tooltip.vue'
-import { CopyIcon, PencilIcon, TrashIcon, KebabHorizontalIcon } from '@/components/octicons-vue3'
+import { CopyIcon, PencilIcon, TrashIcon, KebabHorizontalIcon } from '@/components/octicons-vue'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
@@ -149,7 +149,7 @@ const open = ref<Record<string, boolean>>({})
 </template>`
 const basicCode = `<script setup lang="ts">
 ${imports}
-import { CopyIcon, TrashIcon } from '@/components/octicons-vue3'
+import { CopyIcon, TrashIcon } from '@/components/octicons-vue'
 const copy = () => console.log('Copy link')
 <\/script>
 
@@ -205,7 +205,7 @@ const anchorCode = `<script setup lang="ts">
 ${imports}
 import { IconButton } from '@/components/primer-vue/Button'
 import Tooltip from '@/components/primer-vue/TooltipV2/Tooltip.vue'
-import { KebabHorizontalIcon } from '@/components/octicons-vue3'
+import { KebabHorizontalIcon } from '@/components/octicons-vue'
 <\/script>
 
 <template>

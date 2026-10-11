@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { renderNode } from '../internal/renderNode'
 import { useCssModule } from 'vue'
-import AlertIcon from '../../octicons-vue3/icons/alert.vue'
+import AlertIcon from '../../octicons-vue/icons/alert.vue'
 import type { SelectPanelMessageProps } from './types'
 defineOptions({ name: 'SelectPanelMessage' })
 const styles = useCssModule()

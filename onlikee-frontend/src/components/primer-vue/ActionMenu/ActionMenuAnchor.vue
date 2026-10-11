@@ -12,7 +12,7 @@ import {
   watch,
   type VNode,
 } from 'vue'
-import { ChevronRightIcon } from '@/components/octicons-vue3'
+import { ChevronRightIcon } from '@/components/octicons-vue'
 import { ActionList, ActionListContainerContext } from '../ActionList'
 import { useContainerContext } from '../ActionList/context'
 import { isSlot } from '../composables/useSlots'
