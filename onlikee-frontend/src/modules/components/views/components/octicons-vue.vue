@@ -3,7 +3,7 @@
     <ComponentDocsHeader title="Octicons Vue 图标">
       <template #description>
         该图标库基于开源的
-        <Link href="https://primer.style/octicons/" link-text="Octicons" variant="primary" />
+        <Link href="https://primer.style/octicons/">Octicons</Link>
         图标库构建，为 Vue 项目提供可直接使用的图标组件。
       </template>
     </ComponentDocsHeader>

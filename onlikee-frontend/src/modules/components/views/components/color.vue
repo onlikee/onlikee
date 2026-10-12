@@ -3,11 +3,7 @@
     <ComponentDocsHeader title="Color 颜色设计">
       <template #description>
         为了避免视觉传达差异，使用一套特定的调色板来规定颜色，为组件们提供一致的外观视觉感受。 感谢
-        <Link
-          href="https://primer.style/brand/primitives/color/"
-          link-text="primer style primitives"
-          variant="primary"
-        />
+        <Link href="https://primer.style/brand/primitives/color/">primer style primitives</Link>
         设计师们提供的宝贵资源。
       </template>
     </ComponentDocsHeader>

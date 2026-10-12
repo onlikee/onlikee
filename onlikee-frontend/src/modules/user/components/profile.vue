@@ -20,7 +20,7 @@
       <!-- eslint-enable vue/no-v-html -->
       <Blankslate v-else-if="profileMarkdown !== undefined" narrow>
         <Blankslate.Visual>
-          <RepoTemplateIcon />
+          <RepoTemplateIcon aria-hidden="true" />
         </Blankslate.Visual>
         <Blankslate.Heading>
           {{ isOwn ? '编写你的 README' : '' }}

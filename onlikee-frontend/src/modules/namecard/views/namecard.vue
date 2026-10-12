@@ -5,12 +5,9 @@
       <p class="subtitle">这里展示本站创作者 / 贡献者的个人名片。点击进入详情页面了解更多。</p>
       <p class="subtitle">
         你也想加入？前往
-        <Link
-          href="https://github.com/onlikee/onlikee"
-          link-text="本项目的GitHub"
-          target="_blank"
-          :external="true"
-        />页！
+        <Link href="https://github.com/onlikee/onlikee" target="_blank" rel="noopener noreferrer"
+          >本项目的GitHub</Link
+        >页！
       </p>
     </div>
 

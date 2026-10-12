@@ -1,68 +1,42 @@
-.link-wrapper {
-  display: inline;
-}
-
-.link-prefix,
-.link-suffix {
-  color: inherit;
-}
-
-.link {
-  color: var(--fgColor-link, #0969da);
+:where(.prc-Link-Link) {
+  color: var(--fgColor-accent);
   text-decoration: none;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  border-radius: 3px;
-  padding: 0 2px;
-}
+  text-underline-offset: 0.05rem;
 
-.link:hover {
-  color: var(--fgColor-link, #0969da);
-  text-decoration: underline;
-}
+  /* Reset for button tags */
+  &:is(button) {
+    display: inline-block;
+    padding: 0;
+    font-size: inherit;
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    background-color: transparent;
+    border: 0;
+    appearance: none;
+  }
 
-.link:active {
-  color: var(--fgColor-link, #0969da);
-}
+  &:hover {
+    text-decoration: underline;
+  }
 
-/* 变体样式 */
-.link-primary {
-  color: var(--fgColor-link, #0969da);
-}
+  /*
+    Inline links (inside a text block) should have underline based on accessibility setting set in data-attribute
+  */
+  [data-a11y-link-underlines='true'] &:where([data-inline='true']) {
+    text-decoration: underline;
 
-.link-primary:hover {
-  color: var(--fgColor-link, #0969da);
-}
+    &:hover {
+      text-decoration: none;
+    }
+  }
 
-.link-secondary {
-  color: var(--fgColor-muted, #59636e);
-}
+  &:where([data-muted='true']) {
+    color: var(--fgColor-muted);
 
-.link-secondary:hover {
-  color: var(--fgColor-default, #1f2328);
-}
-
-.link-danger {
-  color: var(--fgColor-danger, #d1242f);
-}
-
-.link-danger:hover {
-  color: var(--fgColor-danger, #d1242f);
-}
-
-/* 外部链接样式 */
-.link-external::after {
-  content: '↗';
-  font-size: 0.8em;
-  margin-left: 2px;
-}
-
-/* 焦点样式 */
-.link:focus {
-  outline: 2px solid var(--focus-outlineColor, #0969da);
-  outline-offset: 2px;
-}
-
-.link:focus:not(:focus-visible) {
-  outline: none;
+    &:hover {
+      color: var(--fgColor-accent);
+      text-decoration: none;
+    }
+  }
 }

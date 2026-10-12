@@ -1,53 +1,123 @@
+<script setup lang="ts">
+import { RouterLink } from 'vue-router'
+import { Link } from '@/components/primer-vue/Link'
+import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
+import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
+import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
+import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const basicCode = `<Link href="#">Link</Link>
+<Link href="#" muted>Muted link</Link>`
+const inlineCode = `<p data-a11y-link-underlines="true">
+  查看 <Link href="/component" inline>组件文档</Link>，了解更多。
+</p>`
+const buttonCode = `<Link as="button" type="button">Action</Link>
+<Link :as="RouterLink" to="/component">组件文档</Link>`
+const contentCode = `<Link href="https://github.com" target="_blank" rel="noopener noreferrer">
+  <strong>GitHub</strong>
+</Link>`
+
+const apiTableColumns: TableColumn[] = [
+  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
+  { key: 'default', label: '默认值', minWidth: '120px' },
+  { key: 'type', label: '类型', minWidth: '160px', wrap: true },
+  { key: 'description', label: '说明', minWidth: '240px', wrap: true },
+]
+const apiTableRows = [
+  {
+    name: 'as',
+    type: 'string | Component',
+    default: 'a',
+    description: '根元素或自定义组件；应最终渲染为 a 或 button',
+  },
+  {
+    name: 'muted',
+    type: 'boolean',
+    default: 'undefined',
+    description: '使用弱化颜色，悬停时恢复强调色并移除下划线',
+  },
+  {
+    name: 'inline',
+    type: 'boolean',
+    default: 'undefined',
+    description:
+      '文本块中的链接；祖先 data-a11y-link-underlines="true" 时默认显示下划线，悬停时移除',
+  },
+  {
+    name: 'className',
+    type: 'string',
+    default: '—',
+    description: '合并到根元素的类名，也可使用 Vue 的 class 属性',
+  },
+  {
+    name: 'hoverColor',
+    type: 'string',
+    default: '—',
+    description: '已弃用且不产生样式；使用 CSS Modules 设置悬停颜色',
+  },
+]
+</script>
+
 <template>
   <ComponentDocsPage>
-    <ComponentDocsHeader title="Link 链接" description="常用的文本超链接。" />
+    <ComponentDocsHeader
+      title="Link 链接"
+      description="文本链接，支持弱化颜色、行内下划线和自定义根元素。"
+    />
 
     <ComponentDocsSection title="基础用法">
-      <template #description> 使用 <code>variant</code> 来定义链接的样式。 </template>
-
-      <ComponentDocsDemoBlock :code="demo1Code">
+      <template #description>通过默认插槽提供内容，使用 <code>muted</code> 弱化链接颜色。</template>
+      <ComponentDocsDemoBlock :code="basicCode">
         <div class="link-row">
-          <Link href="#" link-text="Primary Link" variant="primary" />
-          <Link href="#" link-text="Secondary Link" variant="secondary" />
-          <Link href="#" link-text="Danger Link" variant="danger" />
+          <Link href="#">Link</Link>
+          <Link href="#" muted>Muted link</Link>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection title="外部链接">
+    <ComponentDocsSection title="行内链接">
       <template #description>
-        设置 <code>external</code> 属性可以在链接后显示外部链接图标。
+        <code>inline</code> 配合祖先的
+        <code>data-a11y-link-underlines="true"</code> 控制文本中的下划线。
       </template>
+      <ComponentDocsDemoBlock :code="inlineCode">
+        <p data-a11y-link-underlines="true">
+          查看 <Link href="/component" inline>组件文档</Link>，了解更多。
+        </p>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
 
-      <ComponentDocsDemoBlock :code="demo2Code">
+    <ComponentDocsSection title="自定义根元素">
+      <template #description>
+        使用 <code>as</code> 渲染按钮或路由组件。按钮的
+        <code>type</code> 由调用方指定；开发环境会检查最终元素是否为链接或按钮。
+      </template>
+      <ComponentDocsDemoBlock :code="buttonCode">
         <div class="link-row">
-          <Link href="https://github.com" link-text="GitHub" :external="true" target="_blank" />
-          <Link
-            href="https://vuejs.org"
-            link-text="Vue.js"
-            :external="true"
-            target="_blank"
-            variant="secondary"
-          />
+          <Link as="button" type="button">Action</Link>
+          <Link :as="RouterLink" to="/component">组件文档</Link>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection title="前后缀文本">
+    <ComponentDocsSection title="内容与原生属性">
       <template #description>
-        使用 <code>prefix-text</code> 和 <code>suffix-text</code> 在链接前后添加文本。
+        默认插槽支持文本和其他节点。<code>href</code>、<code>target</code>、<code>rel</code>、ARIA
+        属性及事件传给实际根元素；新窗口链接的属性由调用方指定。
       </template>
-
-      <ComponentDocsDemoBlock :code="demo3Code">
-        <div class="link-column">
-          <Link href="/component" link-text="组件文档" prefix-text="查看" />
-          <Link href="/component" link-text="组件文档" suffix-text="了解更多" />
-          <Link href="/component" link-text="组件文档" prefix-text="前往" suffix-text="查看详情" />
-        </div>
+      <ComponentDocsDemoBlock :code="contentCode">
+        <Link href="https://github.com" target="_blank" rel="noopener noreferrer">
+          <strong>GitHub</strong>
+        </Link>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="API" variant="api">
+      <template #description>
+        <code>LinkProps</code> 根据 <code>as</code> 接受对应元素或组件的属性。组件 ref 的
+        <code>element</code> 指向实际根元素，可调用其原生 <code>focus()</code>；卸载后为 null。
+      </template>
       <Table
         :columns="apiTableColumns"
         :data="apiTableRows"
@@ -59,145 +129,11 @@
   </ComponentDocsPage>
 </template>
 
-<script setup lang="ts">
-import { Link } from '@/components/primer-vue/Link'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
-import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
-import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
-import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
-import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
-
-const demo1Code = `<template>
-  <div style="max-width: 600px">
-    <Link href="#" link-text="Primary Link" variant="primary" />
-    <Link href="#" link-text="Secondary Link" variant="secondary" />
-    <Link href="#" link-text="Danger Link" variant="danger" />
-  </div>
-</template>
-
-<style scoped>
-.link-row {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-}
-</style>`
-
-const demo2Code = `<template>
-  <div style="max-width: 600px">
-    <Link href="https://github.com" link-text="GitHub" :external="true" target="_blank" />
-    <Link href="https://vuejs.org" link-text="Vue.js" :external="true" target="_blank" variant="secondary" />
-  </div>
-</template>
-
-<style scoped>
-.link-row {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-}
-</style>`
-
-const demo3Code = `<template>
-  <div style="max-width: 600px">
-    <Link href="/component" link-text="组件文档" prefix-text="查看" />
-    <Link href="/component" link-text="组件文档" suffix-text="了解更多" />
-    <Link href="/component" link-text="组件文档" prefix-text="前往" suffix-text="查看详情" />
-  </div>
-</template>
-
-<style scoped>
-.link-column {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-</style>`
-
-const apiTableColumns: TableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'type', label: '类型', minWidth: '160px', wrap: true },
-  { key: 'options', label: '可选值', minWidth: '200px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
-]
-
-const apiTableRows = [
-  {
-    name: 'href',
-    description: '链接地址',
-    type: 'string',
-    options: '—',
-    default: '—',
-  },
-  {
-    name: 'link-text',
-    description: '链接文本',
-    type: 'string',
-    options: '—',
-    default: '—',
-  },
-  {
-    name: 'prefix-text',
-    description: '前置文本',
-    type: 'string',
-    options: '—',
-    default: '—',
-  },
-  {
-    name: 'suffix-text',
-    description: '后置文本',
-    type: 'string',
-    options: '—',
-    default: '—',
-  },
-  {
-    name: 'external',
-    description: '是否为外部链接',
-    type: 'boolean',
-    options: 'true / false',
-    default: 'false',
-  },
-  {
-    name: 'target',
-    description: '链接打开方式',
-    type: 'string',
-    options: '_blank / _self / _parent / _top',
-    default: '_self',
-  },
-  {
-    name: 'variant',
-    description: '链接样式变体',
-    type: 'string',
-    options: 'primary / secondary / danger / default',
-    default: 'primary',
-  },
-]
-</script>
-
 <style scoped>
 .link-row {
   display: flex;
   gap: 1.5rem;
   align-items: center;
   flex-wrap: wrap;
-}
-
-.link-column {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-@media (max-width: 768px) {
-  .link-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .link-column {
-    gap: 0.75rem;
-  }
 }
 </style>

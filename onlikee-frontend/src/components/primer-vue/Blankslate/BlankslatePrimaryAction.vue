@@ -1,45 +1,30 @@
 <script setup lang="ts">
-const props = withDefaults(
-  defineProps<{
-    href?: string
-    newTab?: boolean
-    type?: 'button' | 'submit' | 'reset'
-    disabled?: boolean
-  }>(),
-  {
-    href: '',
-    newTab: false,
-    type: 'button',
-    disabled: false,
-  },
-)
+import { h, useAttrs, useSlots } from 'vue'
+import { Button } from '../Button'
+import { useBlankslate } from './context'
 
-const emit = defineEmits<{ click: [] }>()
-
-const handleClick = (event: MouseEvent) => {
-  if (props.disabled) {
-    event.preventDefault()
-    return
+defineOptions({ name: 'BlankslatePrimaryAction', inheritAttrs: false })
+const props = defineProps<{ href?: string }>()
+defineSlots<{ default?: () => unknown }>()
+const attrs = useAttrs()
+const slots = useSlots()
+const { size } = useBlankslate()
+const Render = () => {
+  const bindings: Record<string, unknown> = {
+    ...attrs,
+    as: props.href ? 'a' : 'button',
+    href: props.href,
+    variant: 'primary',
+    size: size.value === 'small' ? 'small' : undefined,
   }
-
-  emit('click')
+  return h(Button, bindings, slots.default ? { default: slots.default } : undefined)
 }
 </script>
 
 <template>
-  <component
-    :is="href ? 'a' : 'button'"
-    :class="$style['blankslate-primary-action']"
-    :href="href && !disabled ? href : undefined"
-    :target="href ? (newTab ? '_blank' : '_self') : undefined"
-    :rel="href && newTab ? 'noopener noreferrer' : undefined"
-    :type="href ? undefined : type"
-    :disabled="href ? undefined : disabled"
-    :aria-disabled="disabled ? 'true' : undefined"
-    @click="handleClick"
-  >
-    <slot />
-  </component>
+  <div :class="['Blankslate-Action', $style.Action]" data-component="Blankslate.PrimaryAction">
+    <Render />
+  </div>
 </template>
 
-<style module src="./BlankslatePrimaryAction.module.css"></style>
+<style module src="./Blankslate.module.css" />

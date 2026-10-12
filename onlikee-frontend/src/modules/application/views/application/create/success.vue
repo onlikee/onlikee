@@ -7,7 +7,7 @@
           {{ successTitle }}
         </h2>
       </div>
-      <Link :href="appUrl" :link-text="appUrl" target="_blank" />
+      <Link :href="appUrl" target="_blank" rel="noopener noreferrer">{{ appUrl }}</Link>
     </div>
   </Container>
 </template>

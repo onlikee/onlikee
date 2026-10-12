@@ -1,9 +1,21 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useAttrs } from 'vue'
+import type { BlankslateElementComponentProps } from './types'
+
+defineOptions({ name: 'BlankslateVisual', inheritAttrs: false })
+defineProps<BlankslateElementComponentProps>()
+defineSlots<{ default?: () => unknown }>()
+const attrs = useAttrs()
+</script>
 
 <template>
-  <div :class="$style['blankslate-visual']" aria-hidden="true">
+  <span
+    v-bind="attrs"
+    :class="['Blankslate-Visual', $style.Visual, className]"
+    data-component="Blankslate.Visual"
+  >
     <slot />
-  </div>
+  </span>
 </template>
 
-<style module src="./BlankslateVisual.module.css"></style>
+<style module src="./Blankslate.module.css" />

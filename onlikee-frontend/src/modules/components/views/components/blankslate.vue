@@ -13,16 +13,18 @@
       </template>
 
       <ComponentDocsDemoBlock :code="basicDemoCode">
-        <Blankslate>
-          <Blankslate.Visual>
-            <BookIcon />
-          </Blankslate.Visual>
-          <Blankslate.Heading> 欢迎来到知识库 </Blankslate.Heading>
-          <Blankslate.Description>
-            知识库可以帮助团队沉淀路线图、项目状态和协作文档。
-          </Blankslate.Description>
-          <Blankslate.PrimaryAction> 创建第一页 </Blankslate.PrimaryAction>
-        </Blankslate>
+        <div class="blankslate-demo">
+          <Blankslate>
+            <Blankslate.Visual>
+              <BookIcon aria-hidden="true" />
+            </Blankslate.Visual>
+            <Blankslate.Heading> 欢迎来到知识库 </Blankslate.Heading>
+            <Blankslate.Description>
+              知识库可以帮助团队沉淀路线图、项目状态和协作文档。
+            </Blankslate.Description>
+            <Blankslate.PrimaryAction> 创建第一页 </Blankslate.PrimaryAction>
+          </Blankslate>
+        </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
@@ -30,32 +32,35 @@
       <template #description> 次要操作以文本链接呈现，适合放置文档、指南或更多说明。 </template>
 
       <ComponentDocsDemoBlock :code="secondaryDemoCode">
-        <Blankslate>
-          <Blankslate.Visual>
-            <RepoIcon />
-          </Blankslate.Visual>
-          <Blankslate.Heading> 还没有仓库内容 </Blankslate.Heading>
-          <Blankslate.Description>
-            创建第一个文件后，团队成员就可以开始提交和协作。
-          </Blankslate.Description>
-          <Blankslate.PrimaryAction> 新建文件 </Blankslate.PrimaryAction>
-          <Blankslate.SecondaryAction href="https://docs.github.com">
-            了解仓库协作
-          </Blankslate.SecondaryAction>
-        </Blankslate>
+        <div class="blankslate-demo">
+          <Blankslate>
+            <Blankslate.Visual>
+              <RepoIcon aria-hidden="true" />
+            </Blankslate.Visual>
+            <Blankslate.Heading> 还没有仓库内容 </Blankslate.Heading>
+            <Blankslate.Description>
+              创建第一个文件后，团队成员就可以开始提交和协作。
+            </Blankslate.Description>
+            <Blankslate.PrimaryAction> 新建文件 </Blankslate.PrimaryAction>
+            <Blankslate.SecondaryAction href="https://docs.github.com">
+              了解仓库协作
+            </Blankslate.SecondaryAction>
+          </Blankslate>
+        </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="窄版">
       <template #description>
-        设置 <code>narrow</code> 后会收窄最大宽度，并降低间距和字号，适合侧栏、弹层或较窄容器。
+        设置 <code>narrow</code> 后将最大宽度限制为 485px。容器宽度不超过 34rem
+        时，字号、间距和留白由容器查询调整。
       </template>
 
       <ComponentDocsDemoBlock :code="narrowDemoCode">
         <div class="blankslate-narrow-demo">
           <Blankslate narrow>
             <Blankslate.Visual>
-              <ChecklistIcon />
+              <ChecklistIcon aria-hidden="true" />
             </Blankslate.Visual>
             <Blankslate.Heading as="h3"> 暂无任务 </Blankslate.Heading>
             <Blankslate.Description> 新任务会显示在这里，方便你快速跟进。 </Blankslate.Description>
@@ -71,16 +76,18 @@
       </template>
 
       <ComponentDocsDemoBlock :code="spaciousDemoCode">
-        <Blankslate spacious>
-          <Blankslate.Visual>
-            <CodeOfConductIcon />
-          </Blankslate.Visual>
-          <Blankslate.Heading> 创建社区准则 </Blankslate.Heading>
-          <Blankslate.Description>
-            社区准则可以帮助参与者理解协作边界，并建立更清晰的贡献预期。
-          </Blankslate.Description>
-          <Blankslate.PrimaryAction> 添加准则 </Blankslate.PrimaryAction>
-        </Blankslate>
+        <div class="blankslate-demo">
+          <Blankslate spacious>
+            <Blankslate.Visual>
+              <CodeOfConductIcon aria-hidden="true" />
+            </Blankslate.Visual>
+            <Blankslate.Heading> 创建社区准则 </Blankslate.Heading>
+            <Blankslate.Description>
+              社区准则可以帮助参与者理解协作边界，并建立更清晰的贡献预期。
+            </Blankslate.Description>
+            <Blankslate.PrimaryAction> 添加准则 </Blankslate.PrimaryAction>
+          </Blankslate>
+        </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
@@ -90,16 +97,54 @@
       </template>
 
       <ComponentDocsDemoBlock :code="borderDemoCode">
-        <Blankslate border>
-          <Blankslate.Visual>
-            <InboxIcon />
-          </Blankslate.Visual>
-          <Blankslate.Heading> 暂无消息 </Blankslate.Heading>
-          <Blankslate.Description>
-            有新的系统通知或协作消息时，会优先显示在这里。
-          </Blankslate.Description>
-          <Blankslate.PrimaryAction> 刷新消息 </Blankslate.PrimaryAction>
-        </Blankslate>
+        <div class="blankslate-demo">
+          <Blankslate border>
+            <Blankslate.Visual>
+              <InboxIcon aria-hidden="true" />
+            </Blankslate.Visual>
+            <Blankslate.Heading> 暂无消息 </Blankslate.Heading>
+            <Blankslate.Description>
+              有新的系统通知或协作消息时，会优先显示在这里。
+            </Blankslate.Description>
+            <Blankslate.PrimaryAction> 刷新消息 </Blankslate.PrimaryAction>
+          </Blankslate>
+        </div>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
+    <ComponentDocsSection title="尺寸">
+      <template #description>
+        <code>size</code> 支持 small、medium 和 large；small
+        的主操作使用小按钮，其余使用默认按钮尺寸。
+      </template>
+      <ComponentDocsDemoBlock :code="sizeDemoCode">
+        <div class="blankslate-demo blankslate-sizes">
+          <Blankslate v-for="size in sizes" :key="size" :size="size" border>
+            <Blankslate.Visual><BookIcon aria-hidden="true" /></Blankslate.Visual>
+            <Blankslate.Heading>{{ size }} 空状态</Blankslate.Heading>
+            <Blankslate.Description>尺寸控制留白、排版与操作间距。</Blankslate.Description>
+            <Blankslate.PrimaryAction>创建内容</Blankslate.PrimaryAction>
+          </Blankslate>
+        </div>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
+    <ComponentDocsSection title="主操作链接与按钮">
+      <template #description>
+        主操作接受 href 时使用链接；按钮模式支持原生按钮属性和携带原生事件的 click
+        监听。次要操作仅接受必填 href 和插槽内容。
+      </template>
+      <ComponentDocsDemoBlock :code="actionDemoCode">
+        <div class="blankslate-demo">
+          <Blankslate>
+            <Blankslate.Heading>开始创建</Blankslate.Heading>
+            <Blankslate.Description>打开文档或使用按钮执行页面操作。</Blankslate.Description>
+            <Blankslate.PrimaryAction href="/component">查看组件文档</Blankslate.PrimaryAction>
+            <Blankslate.SecondaryAction href="/component/guide"
+              >阅读指南</Blankslate.SecondaryAction
+            >
+          </Blankslate>
+        </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
@@ -122,14 +167,27 @@
         :hoverable="false"
       />
 
-      <h3>Action Props</h3>
+      <h3>Blankslate.PrimaryAction Props</h3>
       <Table
         :columns="apiTableColumns"
-        :data="actionPropsRows"
+        :data="primaryActionPropsRows"
         row-key="name"
         compact
         :hoverable="false"
       />
+
+      <h3>Blankslate.SecondaryAction Props</h3>
+      <Table
+        :columns="apiTableColumns"
+        :data="secondaryActionPropsRows"
+        row-key="name"
+        compact
+        :hoverable="false"
+      />
+      <p>
+        容器的原生属性、style 和事件传给外层 div；className 与 Vue class 合并到内层。Visual、Heading
+        和 Description 的原生属性及类名传给各自根元素。
+      </p>
 
       <h3>插槽</h3>
       <Table
@@ -173,17 +231,25 @@ import { BookIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
-  <Blankslate>
-    <Blankslate.Visual>
-      <BookIcon />
-    </Blankslate.Visual>
-    <Blankslate.Heading>欢迎来到知识库</Blankslate.Heading>
-    <Blankslate.Description>
-      知识库可以帮助团队沉淀路线图、项目状态和协作文档。
-    </Blankslate.Description>
-    <Blankslate.PrimaryAction>创建第一页</Blankslate.PrimaryAction>
-  </Blankslate>
-</template>`
+  <div class="blankslate-demo">
+    <Blankslate>
+      <Blankslate.Visual>
+        <BookIcon aria-hidden="true" />
+      </Blankslate.Visual>
+      <Blankslate.Heading>欢迎来到知识库</Blankslate.Heading>
+      <Blankslate.Description>
+        知识库可以帮助团队沉淀路线图、项目状态和协作文档。
+      </Blankslate.Description>
+      <Blankslate.PrimaryAction>创建第一页</Blankslate.PrimaryAction>
+    </Blankslate>
+  </div>
+</template>
+
+<style scoped>
+.blankslate-demo {
+  width: 100%;
+}
+</style>`
 
 const secondaryDemoCode = `<script setup lang="ts">
 import { Blankslate } from '@/components/primer-vue/Blankslate'
@@ -191,20 +257,28 @@ import { RepoIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
-  <Blankslate>
-    <Blankslate.Visual>
-      <RepoIcon />
-    </Blankslate.Visual>
-    <Blankslate.Heading>还没有仓库内容</Blankslate.Heading>
-    <Blankslate.Description>
-      创建第一个文件后，团队成员就可以开始提交和协作。
-    </Blankslate.Description>
-    <Blankslate.PrimaryAction>新建文件</Blankslate.PrimaryAction>
-    <Blankslate.SecondaryAction href="https://docs.github.com">
-      了解仓库协作
-    </Blankslate.SecondaryAction>
-  </Blankslate>
-</template>`
+  <div class="blankslate-demo">
+    <Blankslate>
+      <Blankslate.Visual>
+        <RepoIcon aria-hidden="true" />
+      </Blankslate.Visual>
+      <Blankslate.Heading>还没有仓库内容</Blankslate.Heading>
+      <Blankslate.Description>
+        创建第一个文件后，团队成员就可以开始提交和协作。
+      </Blankslate.Description>
+      <Blankslate.PrimaryAction>新建文件</Blankslate.PrimaryAction>
+      <Blankslate.SecondaryAction href="https://docs.github.com">
+        了解仓库协作
+      </Blankslate.SecondaryAction>
+    </Blankslate>
+  </div>
+</template>
+
+<style scoped>
+.blankslate-demo {
+  width: 100%;
+}
+</style>`
 
 const narrowDemoCode = `<script setup lang="ts">
 import { Blankslate } from '@/components/primer-vue/Blankslate'
@@ -215,7 +289,7 @@ import { ChecklistIcon } from '@onlikee/octicons-vue'
   <div class="blankslate-narrow-demo">
     <Blankslate narrow>
       <Blankslate.Visual>
-        <ChecklistIcon />
+        <ChecklistIcon aria-hidden="true" />
       </Blankslate.Visual>
       <Blankslate.Heading as="h3">暂无任务</Blankslate.Heading>
       <Blankslate.Description>
@@ -240,17 +314,25 @@ import { CodeOfConductIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
-  <Blankslate spacious>
-    <Blankslate.Visual>
-      <CodeOfConductIcon />
-    </Blankslate.Visual>
-    <Blankslate.Heading>创建社区准则</Blankslate.Heading>
-    <Blankslate.Description>
-      社区准则可以帮助参与者理解协作边界，并建立更清晰的贡献预期。
-    </Blankslate.Description>
-    <Blankslate.PrimaryAction>添加准则</Blankslate.PrimaryAction>
-  </Blankslate>
-</template>`
+  <div class="blankslate-demo">
+    <Blankslate spacious>
+      <Blankslate.Visual>
+        <CodeOfConductIcon aria-hidden="true" />
+      </Blankslate.Visual>
+      <Blankslate.Heading>创建社区准则</Blankslate.Heading>
+      <Blankslate.Description>
+        社区准则可以帮助参与者理解协作边界，并建立更清晰的贡献预期。
+      </Blankslate.Description>
+      <Blankslate.PrimaryAction>添加准则</Blankslate.PrimaryAction>
+    </Blankslate>
+  </div>
+</template>
+
+<style scoped>
+.blankslate-demo {
+  width: 100%;
+}
+</style>`
 
 const borderDemoCode = `<script setup lang="ts">
 import { Blankslate } from '@/components/primer-vue/Blankslate'
@@ -258,17 +340,59 @@ import { InboxIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <template>
-  <Blankslate border>
-    <Blankslate.Visual>
-      <InboxIcon />
-    </Blankslate.Visual>
-    <Blankslate.Heading>暂无消息</Blankslate.Heading>
-    <Blankslate.Description>
-      有新的系统通知或协作消息时，会优先显示在这里。
-    </Blankslate.Description>
-    <Blankslate.PrimaryAction>刷新消息</Blankslate.PrimaryAction>
-  </Blankslate>
-</template>`
+  <div class="blankslate-demo">
+    <Blankslate border>
+      <Blankslate.Visual>
+        <InboxIcon aria-hidden="true" />
+      </Blankslate.Visual>
+      <Blankslate.Heading>暂无消息</Blankslate.Heading>
+      <Blankslate.Description>
+        有新的系统通知或协作消息时，会优先显示在这里。
+      </Blankslate.Description>
+      <Blankslate.PrimaryAction>刷新消息</Blankslate.PrimaryAction>
+    </Blankslate>
+  </div>
+</template>
+
+<style scoped>
+.blankslate-demo {
+  width: 100%;
+}
+</style>`
+
+const sizes = ['small', 'medium', 'large'] as const
+const sizeDemoCode = `<template>
+  <div class="blankslate-demo">
+    <Blankslate size="small" border>
+      <Blankslate.Heading>小尺寸空状态</Blankslate.Heading>
+      <Blankslate.Description>使用紧凑留白和小按钮。</Blankslate.Description>
+      <Blankslate.PrimaryAction>创建内容</Blankslate.PrimaryAction>
+    </Blankslate>
+  </div>
+  <!-- size="medium" 为默认尺寸，也支持 size="large" -->
+</template>
+
+<style scoped>
+.blankslate-demo {
+  width: 100%;
+}
+</style>`
+const actionDemoCode = `<template>
+  <div class="blankslate-demo">
+    <Blankslate>
+      <Blankslate.Heading>开始创建</Blankslate.Heading>
+      <Blankslate.PrimaryAction href="/component">查看组件文档</Blankslate.PrimaryAction>
+      <Blankslate.SecondaryAction href="/component/guide">阅读指南</Blankslate.SecondaryAction>
+    </Blankslate>
+  </div>
+  <!-- 按钮模式：<Blankslate.PrimaryAction type="button" @click="handleClick">创建</Blankslate.PrimaryAction> -->
+</template>
+
+<style scoped>
+.blankslate-demo {
+  width: 100%;
+}
+</style>`
 
 const apiTableColumns: TableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '150px' },
@@ -288,7 +412,7 @@ const rootPropsRows = [
     name: 'narrow',
     default: 'false',
     type: 'boolean',
-    description: '是否使用窄版布局。',
+    description: '将最大宽度限制为 485px，不改变 size。',
   },
   {
     name: 'spacious',
@@ -300,7 +424,7 @@ const rootPropsRows = [
     name: 'size',
     default: "'medium'",
     type: "'small' | 'medium' | 'large'",
-    description: '控制整体尺寸、最大宽度、间距和字号。',
+    description: '控制留白、排版与操作间距，窄容器使用响应式规则。',
   },
 ]
 
@@ -313,30 +437,32 @@ const headingPropsRows = [
   },
 ]
 
-const actionPropsRows = [
+const primaryActionPropsRows = [
   {
     name: 'href',
-    default: "''",
+    default: '—',
     type: 'string',
-    description: '设置后渲染为链接，否则渲染为按钮。',
-  },
-  {
-    name: 'newTab',
-    default: 'false',
-    type: 'boolean',
-    description: '链接是否在新标签页打开。',
+    description: '可选；非空地址渲染为链接。链接模式的公开属性仅含 href。',
   },
   {
     name: 'type',
     default: "'button'",
     type: "'button' | 'submit' | 'reset'",
-    description: '无 href 时透传给原生按钮。',
+    description: '按钮模式的原生按钮类型，默认值来自 Button。',
   },
   {
     name: 'disabled',
-    default: 'false',
+    default: '—',
     type: 'boolean',
-    description: '是否禁用操作。',
+    description: '按钮模式支持禁用及其他原生按钮属性。',
+  },
+]
+const secondaryActionPropsRows = [
+  {
+    name: 'href',
+    default: '必填',
+    type: 'string',
+    description: '次要操作始终为链接，仅接受 href 和默认插槽。',
   },
 ]
 
@@ -365,15 +491,25 @@ const eventTableColumns: TableColumn[] = [
 const eventTableRows = [
   {
     name: 'click',
-    description: 'PrimaryAction 和 SecondaryAction 在无 href 且未禁用时触发。',
+    description:
+      'PrimaryAction 按钮模式透传原生 MouseEvent；禁用按钮不激活。SecondaryAction 不提供 click 接口。',
   },
 ]
 </script>
 
 <style scoped>
+.blankslate-demo {
+  width: 100%;
+}
+
 .blankslate-narrow-demo {
   margin-inline: auto;
   max-width: 360px;
   width: 100%;
+}
+
+.blankslate-sizes {
+  display: grid;
+  gap: 1rem;
 }
 </style>

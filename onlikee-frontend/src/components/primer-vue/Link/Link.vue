@@ -1,50 +1,65 @@
-<template>
-  <span :class="$style['link-wrapper']">
-    <span v-if="prefixText" :class="$style['link-prefix']">{{ prefixText }}</span>
-    <a
-      :href="href"
-      :target="target"
-      :rel="external || target === '_blank' ? 'noopener noreferrer' : undefined"
-      :class="[
-        $style['link'],
-        {
-          [$style['link-external']]: external,
-          [$style['link-primary']]: variant === 'primary',
-          [$style['link-secondary']]: variant === 'secondary',
-          [$style['link-danger']]: variant === 'danger',
-        },
-      ]"
-    >
-      {{ linkText }}
-    </a>
-    <span v-if="suffixText" :class="$style['link-suffix']">{{ suffixText }}</span>
-  </span>
-</template>
+<script setup lang="ts" generic="As extends keyof NativeElements | Component = 'a'">
+import { onMounted, shallowRef, useAttrs, useCssModule } from 'vue'
+import type { Component, ComponentPublicInstance, NativeElements } from 'vue'
+import type { LinkComponentProps } from './types'
 
-<script setup lang="ts">
-interface Props {
-  /** 链接地址 */
-  href: string
-  /** 链接文本 */
-  linkText: string
-  /** 前置文本 */
-  prefixText?: string
-  /** 后置文本 */
-  suffixText?: string
-  /** 是否为外部链接 */
-  external?: boolean
-  /** 链接打开方式 */
-  target?: '_blank' | '_self' | '_parent' | '_top'
-  /** 链接样式变体 */
-  variant?: 'primary' | 'secondary' | 'danger' | 'default'
+// eslint-disable-next-line vue/no-reserved-component-names -- Keep the public component name.
+defineOptions({ name: 'Link', inheritAttrs: false })
+
+const props = withDefaults(defineProps<LinkComponentProps<As>>(), {
+  muted: undefined,
+  inline: undefined,
+})
+defineSlots<{ default?: () => unknown }>()
+const attrs = useAttrs()
+const styles = useCssModule()
+const element = shallowRef<HTMLElement | SVGElement | null>(null)
+
+function setElement(node: Element | ComponentPublicInstance | null) {
+  const instance = node as {
+    element?: HTMLElement | SVGElement
+    $el?: HTMLElement | SVGElement
+  } | null
+  element.value =
+    node instanceof HTMLElement || node instanceof SVGElement
+      ? node
+      : (instance?.element ?? instance?.$el ?? null)
 }
 
-withDefaults(defineProps<Props>(), {
-  external: false,
-  prefixText: '',
-  suffixText: '',
-  target: '_self',
-  variant: 'primary',
-})
+function getRootAttrs() {
+  const { class: classValue, ...rest } = attrs
+  return {
+    class: [props.className, classValue, styles['prc-Link-Link']],
+    'data-component': 'Link',
+    'data-muted': props.muted,
+    'data-inline': props.inline,
+    ...rest,
+  }
+}
+
+if (import.meta.env.DEV) {
+  onMounted(() => {
+    if (
+      element.value &&
+      !(element.value instanceof HTMLButtonElement) &&
+      !(element.value instanceof HTMLAnchorElement)
+    ) {
+      console.error(
+        'Error: Found `Link` component that renders an inaccessible element',
+        element.value,
+        'Please ensure `Link` always renders as <a> or <button>',
+      )
+    }
+  })
+}
+
+defineExpose({ element })
 </script>
+
+<template>
+  <component :is="as ?? 'a'" :ref="setElement" v-bind="getRootAttrs()">
+    <slot />
+  </component>
+</template>
+
 <style module src="./Link.module.css" />

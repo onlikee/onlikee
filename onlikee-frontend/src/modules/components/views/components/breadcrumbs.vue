@@ -22,7 +22,7 @@ const modes = [
   {
     value: 'menu-with-root',
     title: '保留根节点',
-    description: 'menu-with-root 模式优先保留根节点；空间不足时根节点也会收进菜单，末项始终保留。',
+    description: 'menu-with-root 模式优先保留根节点；空间不足时根节点也会收进菜单。',
   },
 ] as const
 const widths = reactive({ wrap: 320, menu: 320, 'menu-with-root': 320 })
@@ -78,7 +78,7 @@ const breadcrumbRows = [
     name: 'overflow',
     type: 'wrap | menu | menu-with-root',
     default: 'wrap',
-    description: '换行、折叠前导路径、优先保留根节点；末项始终保留。',
+    description: '换行、折叠前导路径、优先保留根节点。折叠数量根据容器宽度和路径项宽度计算。',
   },
   {
     name: 'variant',
@@ -87,10 +87,16 @@ const breadcrumbRows = [
     description: '标准链接或增加留白的外观。',
   },
   {
-    name: 'aria-label',
+    name: 'className',
     type: 'string',
-    default: 'Breadcrumbs',
-    description: '导航区域的无障碍名称，可按页面语言覆盖。',
+    default: '—',
+    description: '导航容器的附加类名，也可使用 Vue 的 class 属性。',
+  },
+  {
+    name: 'style',
+    type: 'CSSProperties',
+    default: '—',
+    description: '导航容器的内联样式，支持 CSS 自定义属性。',
   },
 ]
 const itemRows = [
@@ -110,8 +116,14 @@ const itemRows = [
   {
     name: 'selected',
     type: 'boolean',
-    default: 'false',
+    default: '—',
     description: '标记当前页并设置 aria-current="page"，不会自动禁用链接。',
+  },
+  {
+    name: 'className',
+    type: 'string',
+    default: '—',
+    description: '路径项的附加类名，也可使用 Vue 的 class 属性。',
   },
 ]
 </script>
@@ -185,7 +197,7 @@ const itemRows = [
     <ComponentDocsSection title="Breadcrumbs API" variant="api">
       <template #description>
         从 @/components/primer-vue/Breadcrumbs 导入 Breadcrumbs 和 BreadcrumbsItem，也支持
-        Breadcrumbs.Item。默认插槽放置路径项；原生属性和事件透传到对应元素。
+        Breadcrumbs.Item。默认插槽放置路径项，导航区域的无障碍名称为 Breadcrumbs。
       </template>
       <Table :columns="columns" :data="breadcrumbRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
@@ -193,7 +205,9 @@ const itemRows = [
       <template #description>
         默认插槽放置路径文本或图标。href、target、class、style、ARIA
         属性与点击事件透传到指定元素。菜单打开后可用 Tab 访问链接，Escape
-        关闭并返回按钮，点击外部也会关闭。
+        关闭并返回按钮，按下菜单外部也会关闭。溢出项使用 ActionList.LinkItem，触发器使用
+        IconButton，菜单使用原生 Details；折叠后不会保留重复的隐藏路径项。 BreadcrumbsItem 的组件
+        ref 通过 element 暴露实际 DOM 元素。Breadcrumb 与对应旧类型是已弃用别名。
       </template>
       <Table :columns="columns" :data="itemRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>

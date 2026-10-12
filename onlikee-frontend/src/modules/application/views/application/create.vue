@@ -3,7 +3,7 @@
     <div class="publish-method-header">
       <h1 class="title">选择发布方式</h1>
       <p class="subtitle">进入发布页面前，请先选择发布来源</p>
-      <p class="subtitle">返回列表：<Link href="/application" link-text="应用广场" /></p>
+      <p class="subtitle">返回列表：<Link href="/application">应用广场</Link></p>
     </div>
 
     <div class="options-grid">

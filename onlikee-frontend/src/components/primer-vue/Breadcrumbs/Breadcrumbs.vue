@@ -1,195 +1,236 @@
-<script setup lang="ts">
+<script lang="ts">
 import {
   Comment,
   Fragment,
   Text,
-  cloneVNode,
+  defineComponent,
+  getCurrentInstance,
   h,
-  mergeProps,
   onBeforeUnmount,
   onMounted,
   onUpdated,
-  ref,
-  useCssModule,
-  useAttrs,
-  useSlots,
+  shallowRef,
+  watch,
+  type PropType,
   type VNode,
 } from 'vue'
+import BreadcrumbsMenuItem from './BreadcrumbsMenuItem.vue'
+import BreadcrumbsItem from './BreadcrumbsItem.vue'
+import BreadcrumbsSeparator from './BreadcrumbsSeparator.vue'
+import classes from './Breadcrumbs.module.css'
+import { normalizeReactStyle } from '../internal/style'
 import type { BreadcrumbsProps } from './types'
 
-defineOptions({ inheritAttrs: false })
-const props = withDefaults(defineProps<BreadcrumbsProps>(), { overflow: 'wrap', variant: 'normal' })
-const attrs = useAttrs()
-const slots = useSlots()
-const classes = useCssModule()
-const container = ref<HTMLElement>()
-const menu = ref<HTMLElement>()
-const trigger = ref<HTMLButtonElement>()
-const open = ref(false)
-const widths = ref<number[]>([])
-const availableWidth = ref(0)
-let observer: ResizeObserver | undefined
+const MENU_BUTTON_FALLBACK_WIDTH = 32
+const CONTAINER_FALLBACK_WIDTH = 800
 
-function flatten(nodes: VNode[]): VNode[] {
+function calculateOverflow({
+  availableWidth,
+  itemCount,
+  childArrayWidths,
+  menuButtonWidth,
+  overflow,
+  hideRoot,
+}: {
+  availableWidth: number
+  itemCount: number
+  childArrayWidths: number[]
+  menuButtonWidth: number
+  overflow: NonNullable<BreadcrumbsProps['overflow']>
+  hideRoot: boolean
+}) {
+  let effectiveHideRoot = hideRoot
+  const rootItemWidth = childArrayWidths[0] ?? 0
+  const isNarrow = availableWidth < 544
+  let minVisibleItems = 4
+  if (!effectiveHideRoot) minVisibleItems = 3
+  else if (isNarrow && itemCount > 2) minVisibleItems = 1
+
+  const calculateVisibleItemsWidth = (widths: number[]) => {
+    const total = widths.reduce((sum, width) => sum + width + 16, 0)
+    return !effectiveHideRoot ? rootItemWidth + total : total
+  }
+  let visibleWidths = [...childArrayWidths]
+  let menuItemCount = 0
+  if (availableWidth > 0 && visibleWidths.length > 0) {
+    let total = calculateVisibleItemsWidth(visibleWidths)
+    while (
+      (overflow === 'menu' || overflow === 'menu-with-root') &&
+      (total > availableWidth || visibleWidths.length > minVisibleItems)
+    ) {
+      menuItemCount += 1
+      visibleWidths = visibleWidths.slice(1)
+      total = calculateVisibleItemsWidth(visibleWidths) + menuButtonWidth
+      if (visibleWidths.length === 1 && total > availableWidth) {
+        effectiveHideRoot = true
+        break
+      } else {
+        effectiveHideRoot = hideRoot
+      }
+    }
+  }
+  return { menuItemCount, effectiveHideRoot }
+}
+
+// Vue uses structural Fragments for template groups and v-for.
+function flattenChildren(nodes: VNode[]): VNode[] {
   return nodes.flatMap((node) => {
-    if (node.type === Fragment && Array.isArray(node.children))
-      return flatten(node.children as VNode[])
-    return node.type === Comment || node.type === Text ? [] : [node]
+    if (node.type === Fragment && node.patchFlag !== 0 && Array.isArray(node.children))
+      return flattenChildren(node.children as VNode[])
+    return node.type === Comment ? [] : [node]
   })
 }
 
-function measure() {
-  if (!container.value || props.overflow === 'wrap') return
-  availableWidth.value = container.value.clientWidth
-  const items = container.value.querySelectorAll<HTMLElement>('[data-measure-item]')
-  const next = Array.from(items, (item) => item.offsetWidth)
-  if (
-    next.length !== widths.value.length ||
-    next.some((width, index) => width !== widths.value[index])
-  )
-    widths.value = next
-  observer?.observe(container.value)
-  items.forEach((item) => observer?.observe(item))
-}
-
-function outside(event: MouseEvent) {
-  if (!menu.value?.contains(event.target as Node)) open.value = false
-}
-
-function escape(event: KeyboardEvent) {
-  if (event.key === 'Escape' && open.value) {
-    event.preventDefault()
-    open.value = false
-    trigger.value?.focus()
-  }
-}
-
-function separator() {
-  return h(
-    'svg',
-    {
-      class: classes['breadcrumbs-separator'],
-      width: 16,
-      height: 16,
-      viewBox: '0 0 16 16',
-      'aria-hidden': 'true',
-    },
-    [
-      h('path', {
-        d: 'M10.956 1.27994L6.06418 14.7201L5 14.7201L9.89181 1.27994L10.956 1.27994Z',
-        fill: 'currentColor',
-      }),
-    ],
-  )
-}
-
-onMounted(() => {
-  observer = new ResizeObserver(measure)
-  measure()
-  document.addEventListener('click', outside)
-  document.addEventListener('keydown', escape)
-})
-onUpdated(measure)
-onBeforeUnmount(() => {
-  observer?.disconnect()
-  document.removeEventListener('click', outside)
-  document.removeEventListener('keydown', escape)
-})
-
-function RenderBreadcrumbs() {
-  const children = flatten(slots.default?.() ?? [])
-  let count = 0
-  let keepRoot = props.overflow === 'menu-with-root'
-  if (
-    props.overflow !== 'wrap' &&
-    widths.value.length === children.length &&
-    availableWidth.value > 0
-  ) {
-    const limit = keepRoot ? 3 : availableWidth.value < 544 && children.length > 2 ? 1 : 4
-    const total = (start: number) =>
-      widths.value.slice(start).reduce((sum, width) => sum + width, 0) +
-      (start > 0 ? 44 : 0) +
-      (keepRoot && start > 0 ? (widths.value[0] ?? 0) : 0)
-    while (
-      count < children.length - 1 &&
-      (children.length - count > limit || total(count) > availableWidth.value)
-    )
-      count++
-    if (keepRoot && count > 0 && total(count) > availableWidth.value) keepRoot = false
-  }
-  const hidden = children.map((_, index) => index < count && !(index === 0 && keepRoot))
-  const menuItems = children.filter((_, index) => hidden[index])
-  const nodes = children.map((child, index) =>
-    h(
-      'li',
-      {
-        key: child.key ?? index,
-        class: classes['breadcrumbs-item'],
-        'data-measure-item': '',
-        'data-collapsed': hidden[index] ? '' : undefined,
-        'aria-hidden': hidden[index] ? true : undefined,
-        inert: hidden[index] ? true : undefined,
+export default Object.assign(
+  defineComponent({
+    name: 'Breadcrumbs',
+    inheritAttrs: false,
+    props: {
+      className: { type: String, default: undefined },
+      style: {
+        type: [Object, String, Array] as PropType<BreadcrumbsProps['style']>,
+        default: undefined,
       },
-      [child, props.overflow !== 'wrap' && index < children.length - 1 ? separator() : null],
-    ),
-  )
-  if (menuItems.length) {
-    nodes.splice(
-      keepRoot ? 1 : 0,
-      0,
-      h(
-        'li',
-        {
-          class: [classes['breadcrumbs-item'], classes['breadcrumbs-menu']],
-          key: 'overflow',
-          ref: menu,
-        },
-        [
-          h(
-            'button',
-            {
-              ref: trigger,
-              type: 'button',
-              class: classes['breadcrumbs-trigger'],
-              'aria-label': `${menuItems.length} more breadcrumb items`,
-              'aria-expanded': open.value,
-              onClick: () => {
-                open.value = !open.value
-              },
-            },
+      overflow: { type: String as PropType<BreadcrumbsProps['overflow']>, default: 'wrap' },
+      variant: { type: String as PropType<BreadcrumbsProps['variant']>, default: 'normal' },
+    },
+    setup(props, { attrs, slots }) {
+      const instance = getCurrentInstance()!
+      const container = shallowRef<HTMLElement | null>(null)
+      const childArrayWidths = shallowRef<number[]>([])
+      const containerWidth = shallowRef<number | null>(null)
+      const menuButtonWidth = shallowRef(MENU_BUTTON_FALLBACK_WIDTH)
+      let childArray: VNode[] = []
+      let previousParentVNode: VNode | undefined
+      let previousOverflow: BreadcrumbsProps['overflow']
+      let needsMeasurement = true
+      let stopObserving: (() => void) | undefined
+
+      function measureItems() {
+        if (!needsMeasurement) return
+        needsMeasurement = false
+        if (props.overflow === 'wrap' || !container.value) return
+        containerWidth.value = container.value.offsetWidth
+        const list = container.value.querySelector('ol')
+        if (list && list.children.length > 0 && list.children.length === childArray.length)
+          childArrayWidths.value = Array.from(
+            list.children,
+            (child) => (child as HTMLElement).offsetWidth,
+          )
+      }
+
+      function observeContainer() {
+        stopObserving?.()
+        stopObserving = undefined
+        const target = container.value
+        if (props.overflow === 'wrap' || !target) return
+        if (typeof ResizeObserver === 'function') {
+          const observer = new ResizeObserver((entries) => {
+            if (entries[0]) containerWidth.value = Math.round(entries[0].contentRect.width)
+          })
+          observer.observe(target)
+          stopObserving = () => observer.disconnect()
+        } else {
+          let previousRect: DOMRect | undefined
+          const saveDimensions = () => {
+            const rect = target.getBoundingClientRect()
+            if (rect.width !== previousRect?.width || rect.height !== previousRect?.height)
+              containerWidth.value = Math.round(rect.width)
+            previousRect = rect
+          }
+          window.addEventListener('resize', saveDimensions)
+          stopObserving = () => window.removeEventListener('resize', saveDimensions)
+        }
+      }
+
+      function measureMenuButton(element: HTMLDetailsElement | null) {
+        // Match the source selector and its fallback when IconButton renders as summary.
+        const button = element?.querySelector<HTMLElement>('button[data-component="IconButton"]')
+        if (button) menuButtonWidth.value = button.offsetWidth
+      }
+
+      onMounted(() => {
+        measureItems()
+        observeContainer()
+      })
+      onUpdated(measureItems)
+      watch(() => props.overflow, observeContainer, { flush: 'post' })
+      onBeforeUnmount(() => stopObserving?.())
+
+      return () => {
+        const children = flattenChildren(slots.default?.() ?? [])
+        childArray = children.filter((child) => child.type !== Text)
+        if (previousParentVNode !== instance.vnode || previousOverflow !== props.overflow) {
+          needsMeasurement = true
+          previousParentVNode = instance.vnode
+          previousOverflow = props.overflow
+        }
+        const hideRoot = props.overflow !== 'menu-with-root'
+        const { menuItemCount, effectiveHideRoot } =
+          props.overflow === 'wrap' || childArrayWidths.value.length !== childArray.length
+            ? { menuItemCount: 0, effectiveHideRoot: hideRoot }
+            : calculateOverflow({
+                availableWidth: containerWidth.value ?? CONTAINER_FALLBACK_WIDTH,
+                itemCount: childArray.length,
+                childArrayWidths: childArrayWidths.value,
+                menuButtonWidth: menuButtonWidth.value,
+                overflow: props.overflow,
+                hideRoot,
+              })
+
+        let finalChildren: VNode[]
+        if (props.overflow === 'wrap' || menuItemCount === 0) {
+          finalChildren = children.map((child, index) =>
+            h('li', { class: classes.ItemWrapper, key: child.key ?? index }, [child]),
+          )
+        } else {
+          const menuItems = childArray.slice(0, menuItemCount)
+          const effectiveMenuItems = effectiveHideRoot ? menuItems : menuItems.slice(1)
+          const menuElement = h(
+            'li',
+            { class: classes.BreadcrumbsItem, 'data-overflow-menu': '', key: 'breadcrumbs-menu' },
             [
-              h('svg', { width: 16, height: 16, viewBox: '0 0 16 16', 'aria-hidden': 'true' }, [
-                ...[2, 8, 14].map((cx) => h('circle', { cx, cy: 8, r: 1.5, fill: 'currentColor' })),
-              ]),
+              h(BreadcrumbsMenuItem, {
+                items: effectiveMenuItems,
+                'aria-label': `${effectiveMenuItems.length} more breadcrumb items`,
+                onElement: measureMenuButton,
+              }),
+              h(BreadcrumbsSeparator),
             ],
-          ),
-          separator(),
-          open.value
-            ? h(
-                'ul',
-                { class: classes['breadcrumbs-overlay'] },
-                menuItems.map((child, index) => h('li', { key: index }, [cloneVNode(child)])),
-              )
-            : null,
-        ],
-      ),
-    )
-  }
-  return h(
-    'nav',
-    mergeProps({ class: classes['breadcrumbs'], 'aria-label': 'Breadcrumbs' }, attrs, {
-      ref: container,
-      'data-component': 'Breadcrumbs',
-      'data-overflow': props.overflow,
-      'data-variant': props.variant,
-    }),
-    [h('ol', { class: classes['breadcrumbs-list'] }, nodes)],
-  )
-}
+          )
+          const visibleElements = childArray
+            .slice(menuItemCount)
+            .map((child, index) =>
+              h('li', { class: classes.BreadcrumbsItem, key: `visible + ${index}` }, [
+                child,
+                h(BreadcrumbsSeparator),
+              ]),
+            )
+          const rootElement = h('li', { class: classes.BreadcrumbsItem, key: 'rootElement' }, [
+            childArray[0],
+            h(BreadcrumbsSeparator),
+          ])
+          finalChildren = effectiveHideRoot
+            ? [menuElement, ...visibleElements]
+            : [rootElement, menuElement, ...visibleElements]
+        }
+
+        return h(
+          'nav',
+          {
+            class: [props.className, attrs.class, classes.BreadcrumbsBase],
+            'aria-label': 'Breadcrumbs',
+            style: normalizeReactStyle(props.style),
+            ref: container,
+            'data-overflow': props.overflow,
+            'data-variant': props.variant,
+            'data-component': 'Breadcrumbs',
+          },
+          [h('ol', { class: classes.BreadcrumbsList }, finalChildren)],
+        )
+      }
+    },
+  }),
+  { Item: BreadcrumbsItem },
+)
 </script>
-
-<template>
-  <RenderBreadcrumbs />
-</template>
-
-<style module src="./Breadcrumbs.module.css"></style>

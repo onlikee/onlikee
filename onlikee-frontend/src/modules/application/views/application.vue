@@ -4,10 +4,7 @@
       <h1 class="application-title">Web应用</h1>
       <p class="application-subtitle">从一个小创意开始🐱。</p>
       <p class="application-subtitle">
-        想上传自己的Web应用吗？请<Link
-          href="/application/create"
-          link-text="点击这里！"
-        />欢迎大家上传！
+        想上传自己的Web应用吗？请<Link href="/application/create">点击这里！</Link>欢迎大家上传！
       </p>
       <p class="application-subtitle">希望这些应用能够帮到你。</p>
     </div>

@@ -1,36 +1,32 @@
 <script setup lang="ts">
-withDefaults(
-  defineProps<{
-    border?: boolean
-    narrow?: boolean
-    spacious?: boolean
-    size?: 'small' | 'medium' | 'large'
-  }>(),
-  {
-    border: false,
-    narrow: false,
-    spacious: false,
-    size: 'medium',
-  },
-)
+import { computed, provide, useAttrs } from 'vue'
+import { blankslateContextKey } from './context'
+import type { BlankslateComponentProps } from './types'
+
+defineOptions({ name: 'Blankslate', inheritAttrs: false })
+const props = withDefaults(defineProps<BlankslateComponentProps>(), { size: 'medium' })
+defineSlots<{ default?: () => unknown }>()
+const attrs = useAttrs()
+provide(blankslateContextKey, { size: computed(() => props.size) })
+function outerAttrs() {
+  const { class: _class, ...rest } = attrs
+  return rest
+}
 </script>
 
 <template>
-  <section :class="$style['blankslate-container']">
+  <div v-bind="outerAttrs()" :class="$style.Container">
     <div
-      :class="[
-        $style['blankslate'],
-        {
-          [$style['blankslate--border']]: border,
-          [$style['blankslate--narrow']]: narrow,
-          [$style['blankslate--spacious']]: spacious,
-        },
-      ]"
+      :class="[$style.Blankslate, className, attrs.class]"
+      data-component="Blankslate"
+      :data-border="border ? '' : undefined"
+      :data-narrow="narrow ? '' : undefined"
+      :data-spacious="spacious ? '' : undefined"
       :data-size="size"
     >
       <slot />
     </div>
-  </section>
+  </div>
 </template>
 
-<style module src="./Blankslate.module.css"></style>
+<style module src="./Blankslate.module.css" />
