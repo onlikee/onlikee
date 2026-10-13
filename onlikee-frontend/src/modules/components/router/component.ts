@@ -114,6 +114,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/avatar-stack.vue'),
       },
       {
+        path: 'circle-badge',
+        name: 'CircleBadge',
+        component: () => import('../views/components/circle-badge.vue'),
+      },
+      {
         path: 'dropdown',
         name: 'Dropdown',
         component: () => import('../views/components/dropdown.vue'),
@@ -194,6 +199,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/image-upload.vue'),
       },
       // Data
+      {
+        path: 'card',
+        name: 'Card',
+        component: () => import('../views/components/card.vue'),
+      },
       {
         path: 'table',
         name: 'Table',

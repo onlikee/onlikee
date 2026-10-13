@@ -1,6 +1,8 @@
-import { inject, provide, type InjectionKey } from 'vue'
+import { inject, provide, type InjectionKey, type Ref } from 'vue'
 export interface CheckboxGroupContextValue {
-  onChange: (event: Event) => void
+  disabled?: Readonly<Ref<boolean | undefined>>
+  renderVersion?: Readonly<Ref<number>>
+  onChange?: (event: Event) => void
 }
 const key: InjectionKey<CheckboxGroupContextValue> = Symbol('CheckboxGroup')
 export function provideCheckboxGroupContext(value: CheckboxGroupContextValue) {

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h } from 'vue'
+import { defineComponent, getCurrentInstance, h, shallowRef, toRef } from 'vue'
 import { elementChildren, isSlot, slotChildren } from '../composables/useSlots'
 import FormControl from '../FormControl/FormControl.vue'
 import Checkbox from '../Checkbox/Checkbox.vue'
@@ -17,27 +17,42 @@ export default defineComponent({
   },
   emits: { change: (_selected: string[], _event?: Event) => true },
   setup(props, { slots, attrs, emit }) {
-    let selected: string[] | undefined
+    const instance = getCurrentInstance()!
+    const selected = shallowRef<string[]>()
+    const renderVersion = shallowRef(0)
+    let renderCount = 0
+    function handleGroupChange(event: Event) {
+      const input = event.currentTarget as HTMLInputElement
+      selected.value = input.checked
+        ? [...(selected.value ?? []), input.value]
+        : (selected.value ?? []).filter((value) => value !== input.value)
+      emit('change', selected.value, event)
+    }
     provideCheckboxGroupContext({
-      onChange(event) {
-        const input = event.currentTarget as HTMLInputElement
-        selected = input.checked
-          ? [...(selected ?? []), input.value]
-          : (selected ?? []).filter((value) => value !== input.value)
-        emit('change', selected, event)
+      disabled: toRef(props, 'disabled'),
+      renderVersion,
+      get onChange() {
+        return instance.vnode.props?.onChange || instance.vnode.props?.onChangeOnce
+          ? handleGroupChange
+          : undefined
       },
     })
     return () => {
+      // React creates a new context value on each group render, refreshing Checkbox effects.
+      renderVersion.value = ++renderCount
       const children = slots.default?.() ?? []
-      if (!selected) {
-        selected = elementChildren(children)
+      if (!selected.value) {
+        selected.value = elementChildren(children)
           .filter((child) => child.type === FormControl || isSlot(child, FormControl))
           .flatMap((child) => elementChildren(slotChildren(child)))
           .filter(
             (child) =>
               (child.type === Checkbox || isSlot(child, Checkbox)) &&
-              (child.props?.checked ||
+              (child.props?.checked === '' ||
+                child.props?.checked ||
+                child.props?.defaultChecked === '' ||
                 child.props?.defaultChecked ||
+                child.props?.['default-checked'] === '' ||
                 child.props?.['default-checked']),
           )
           .map((child) => child.props?.value as string)

@@ -7,42 +7,31 @@ import {
   nextTick,
   onMounted,
   onUpdated,
-  ref,
+  shallowRef,
   ssrContextKey,
   useAttrs,
-  useCssModule,
+  watch,
 } from 'vue'
 import { useCheckboxGroupContext } from '../CheckboxGroup/context'
-import type { CheckboxEmits } from './types'
+import type { CheckboxEmits, CheckboxOptions } from './types'
+import classes from './Checkbox.module.css'
+import sharedClasses from './shared.module.css'
 import { normalizeReactStyle } from '../internal/style'
 defineOptions({ name: 'Checkbox', __SLOT__: Symbol('Checkbox'), inheritAttrs: false })
-const props = withDefaults(
-  defineProps<{
-    checked?: boolean
-    defaultChecked?: boolean
-    indeterminate?: boolean
-    disabled?: boolean
-    required?: boolean
-    validationStatus?: 'error' | 'success'
-    value?: string
-    className?: string
-  }>(),
-  {
-    checked: undefined,
-    defaultChecked: undefined,
-    indeterminate: false,
-    disabled: undefined,
-    required: undefined,
-    validationStatus: undefined,
-    value: undefined,
-    className: undefined,
-  },
-)
+const props = withDefaults(defineProps<CheckboxOptions>(), {
+  checked: undefined,
+  defaultChecked: undefined,
+  indeterminate: false,
+  disabled: undefined,
+  required: undefined,
+  validationStatus: undefined,
+  value: undefined,
+  className: undefined,
+})
 const emit = defineEmits<CheckboxEmits>()
 const attrs = useAttrs()
-const classes = useCssModule()
 const serverRendering = inject(ssrContextKey, null) !== null
-const input = ref<HTMLInputElement | null>(null)
+const input = shallowRef<HTMLInputElement | null>(null)
 const group = useCheckboxGroupContext()
 function getInputAttrs() {
   return {
@@ -63,22 +52,19 @@ function getInputAttrs() {
         }),
     'aria-required': props.required ? ('true' as const) : ('false' as const),
     'aria-invalid': props.validationStatus === 'error' ? ('true' as const) : ('false' as const),
-    ...(serverRendering
-      ? {}
-      : {
-          'aria-checked': props.indeterminate
-            ? ('mixed' as const)
-            : props.checked
-              ? ('true' as const)
-              : ('false' as const),
-        }),
     value: props.value,
     name: props.value,
     ...attrs,
     style: normalizeReactStyle(attrs.style),
-    class: [attrs.class, props.className, classes['checkbox-input']],
+    class: [attrs.class, props.className, sharedClasses.Input, classes.Checkbox],
     'data-component': attrs['data-component'] ?? 'Checkbox',
   }
+}
+function synchronizeAriaChecked() {
+  input.value?.setAttribute(
+    'aria-checked',
+    props.indeterminate ? 'mixed' : String(input.value.checked),
+  )
 }
 function synchronize() {
   const node = input.value
@@ -86,20 +72,24 @@ function synchronize() {
   node.indeterminate = props.indeterminate
   if (props.indeterminate) node.checked = false
   else if (props.checked !== undefined) node.checked = props.checked
-  node.setAttribute('aria-checked', props.indeterminate ? 'mixed' : String(node.checked))
+  synchronizeAriaChecked()
 }
 onMounted(synchronize)
 onUpdated(synchronize)
+if (group?.renderVersion) watch(group.renderVersion, synchronizeAriaChecked, { flush: 'post' })
 function onChange(event: Event) {
   const node = event.currentTarget as HTMLInputElement
-  group?.onChange(event)
+  const groupOnChange = group?.onChange
+  groupOnChange?.(event)
   emit('change', event)
   emit('update:checked', node.checked)
   if (props.indeterminate) {
     node.indeterminate = true
     node.setAttribute('aria-checked', 'mixed')
   }
-  void nextTick(synchronize)
+  // React restores controlled inputs after dispatch; uncontrolled ARIA updates on render.
+  if (props.indeterminate || props.checked !== undefined || groupOnChange)
+    void nextTick(synchronize)
 }
 defineExpose({
   input,
@@ -108,4 +98,3 @@ defineExpose({
   blur: () => input.value?.blur(),
 })
 </script>
-<style module src="./Checkbox.module.css"></style>

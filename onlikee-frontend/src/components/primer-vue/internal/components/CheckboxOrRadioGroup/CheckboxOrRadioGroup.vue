@@ -7,7 +7,6 @@ import Caption from '../../../RadioGroup/RadioGroupCaption.vue'
 import Validation from '../../../RadioGroup/RadioGroupValidation.vue'
 import ValidationAnimationContainer from '../ValidationAnimationContainer.vue'
 import classes from '../../../RadioGroup/RadioGroup.module.css'
-import { normalizeReactStyle } from '../../style'
 
 export default defineComponent({
   name: 'CheckboxOrRadioGroup',
@@ -49,7 +48,8 @@ export default defineComponent({
         console.warn(
           'A choice group must be labelled using a `CheckboxOrRadioGroup.Label` child, or by passing `aria-labelledby` to the CheckboxOrRadioGroup component.',
         )
-      const visuallyHidden = label?.props?.visuallyHidden ?? label?.props?.['visually-hidden']
+      const hiddenProp = label?.props?.visuallyHidden ?? label?.props?.['visually-hidden']
+      const visuallyHidden = hiddenProp === '' || Boolean(hiddenProp)
       const validationContent = validation ? slotChildren(validation) : []
       const heading = label
         ? h(
@@ -87,10 +87,8 @@ export default defineComponent({
         h(
           label ? 'fieldset' : 'div',
           {
-            ...attrs,
             ref: element,
             class: [attrs.class, props.className, classes['radio-group__fieldset']],
-            style: normalizeReactStyle(attrs.style),
             'data-component': props.dataComponent,
             'data-validation': validation ? '' : undefined,
             ...(label ? { disabled: props.disabled } : {}),

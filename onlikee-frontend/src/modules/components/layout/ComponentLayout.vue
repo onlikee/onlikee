@@ -185,6 +185,7 @@ const navSections = ref([
       { path: '/component/anchored-overlay', label: 'AnchoredOverlay 锚定浮层' },
       { path: '/component/avatar', label: 'Avatar 头像' },
       { path: '/component/avatar-stack', label: 'AvatarStack 头像堆叠' },
+      { path: '/component/circle-badge', label: 'CircleBadge 圆形徽章' },
       { path: '/component/branch-name', label: 'BranchName 分支名' },
       { path: '/component/button', label: 'Button 按钮' },
       { path: '/component/button-group', label: 'ButtonGroup 按钮组' },
@@ -219,6 +220,7 @@ const navSections = ref([
   {
     title: 'Data 数据展示',
     items: [
+      { path: '/component/card', label: 'Card 卡片' },
       { path: '/component/table', label: 'Table 表格' },
       { path: '/component/timeline', label: 'Timeline 时间线' },
     ],

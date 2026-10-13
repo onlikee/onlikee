@@ -13,7 +13,11 @@
 import { useChoiceGroupContext } from '../internal/components/CheckboxOrRadioGroup/context'
 import InputValidation from '../internal/components/InputValidation.vue'
 import type { RadioGroupValidationProps } from './types'
-defineOptions({ name: 'RadioGroupValidation', __SLOT__: Symbol('RadioGroupValidation') })
+defineOptions({
+  name: 'RadioGroupValidation',
+  __SLOT__: Symbol('RadioGroupValidation'),
+  inheritAttrs: false,
+})
 defineProps<RadioGroupValidationProps>()
 const context = useChoiceGroupContext()
 </script>

@@ -8,6 +8,12 @@ export {
   Caption as CheckboxGroupCaption,
   Validation as CheckboxGroupValidation,
 }
-export type { CheckboxGroupProps, CheckboxGroupEmits } from './types'
+export type {
+  CheckboxGroupProps,
+  CheckboxGroupEmits,
+  CheckboxGroupLabelProps,
+  CheckboxGroupCaptionProps,
+  CheckboxGroupValidationProps,
+} from './types'
 export { useCheckboxGroupContext } from './context'
 export default CheckboxGroup

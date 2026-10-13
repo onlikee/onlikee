@@ -4,6 +4,7 @@ import {
   Comment,
   Fragment,
   createSSRApp,
+  createVNode,
   defineComponent,
   h,
   ref,
@@ -11,7 +12,7 @@ import {
   type VNodeChild,
 } from 'vue'
 import { renderToString } from '@vue/server-renderer'
-import { useSlots, asSlot, isSlot, slotChildren } from './useSlots'
+import { useSlots, asSlot, isSlot, slotChildren, elementChildren } from './useSlots'
 import { FormControl } from '../FormControl'
 import { RadioGroup } from '../RadioGroup'
 import { Radio } from '../Radio'
@@ -74,7 +75,10 @@ test('flattens Vue template/v-for Fragments and arrays without traversing DOM or
   const wrapper = defineComponent({ name: 'Wrapper', render: () => h(Caption) })
   const nestedComponent = h(wrapper)
   const [slots, rest] = useSlots(
-    [h(Fragment, [nestedDOM, h(Fragment, [label])]), [nestedComponent]],
+    [
+      createVNode(Fragment, null, [nestedDOM, createVNode(Fragment, null, [label], 128)], 64),
+      [nestedComponent],
+    ],
     {
       label: Label,
       caption: Caption,
@@ -83,6 +87,14 @@ test('flattens Vue template/v-for Fragments and arrays without traversing DOM or
   expect(slots.label).toBe(label)
   expect(slots.caption).toBe(undefined)
   expect(rest).toStrictEqual([nestedDOM, nestedComponent])
+})
+
+test('preserves explicit Fragments as renderable children without extracting their nested slots', () => {
+  const fragment = h(Fragment, [h(Label)])
+  const [slots, rest] = useSlots([fragment], { label: Label })
+  expect(slots.label).toBe(undefined)
+  expect(rest).toStrictEqual([fragment])
+  expect(elementChildren([fragment, h(Comment)])).toStrictEqual([fragment])
 })
 
 test('supports multiple prop predicates for the same component and leaves rejected variants in rest', () => {
@@ -187,7 +199,7 @@ test('reads default slot functions, array children and string children for valid
   expect(slotChildren()).toStrictEqual([])
 })
 
-test('FormControl recognizes a marked label wrapper inside Fragments and forwards radio accessibility attributes', async () => {
+test('FormControl recognizes a marked label wrapper inside template Fragments and forwards radio accessibility attributes', async () => {
   const wrapper = asSlot(
     defineComponent({
       name: 'WrappedLabel',
@@ -198,11 +210,16 @@ test('FormControl recognizes a marked label wrapper inside Fragments and forward
     FormControl.Label,
   )
   const html = await render(FormControl, { id: 'choice' }, [
-    h(Fragment, [
-      h(Radio, { name: 'choice', value: 'one' }),
-      h(wrapper, null, () => 'Option one'),
-      h(FormControl.Caption, null, () => 'Caption'),
-    ]),
+    createVNode(
+      Fragment,
+      null,
+      [
+        h(Radio, { name: 'choice', value: 'one' }),
+        h(wrapper, null, () => 'Option one'),
+        h(FormControl.Caption, null, () => 'Caption'),
+      ],
+      64,
+    ),
   ])
   expect(html).toMatch(/<input(?=[^>]*id="choice")(?=[^>]*aria-describedby="choice-caption")[^>]*>/)
   expect(html).toMatch(/<label(?=[^>]*id="choice-label")(?=[^>]*for="choice")[^>]*>/)
@@ -211,11 +228,16 @@ test('FormControl recognizes a marked label wrapper inside Fragments and forward
 
 test('RadioGroup uses extracted slots for its legend and accessible validation text', async () => {
   const html = await render(RadioGroup, { id: 'group', name: 'group' }, [
-    h(Fragment, [
-      h(RadioGroup.Label, null, () => 'Choose one'),
-      h(RadioGroup.Caption, null, () => 'Help text'),
-      h(RadioGroup.Validation, { variant: 'error' }, () => 'Pick an option'),
-    ]),
+    createVNode(
+      Fragment,
+      null,
+      [
+        h(RadioGroup.Label, null, () => 'Choose one'),
+        h(RadioGroup.Caption, null, () => 'Help text'),
+        h(RadioGroup.Validation, { variant: 'error' }, () => 'Pick an option'),
+      ],
+      64,
+    ),
     h(FormControl, { id: 'option' }, () => [
       h(Radio, { value: 'one' }),
       h(FormControl.Label, null, () => 'Option'),

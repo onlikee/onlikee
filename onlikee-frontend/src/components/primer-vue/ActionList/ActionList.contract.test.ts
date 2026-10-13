@@ -2,7 +2,7 @@
 /* eslint-disable vue/one-component-per-file -- Test fixtures exercise wrapper and provider contracts. */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount, type VueWrapper } from '@vue/test-utils'
-import { defineComponent, Fragment, h, nextTick, reactive, shallowReactive } from 'vue'
+import { createVNode, defineComponent, Fragment, h, nextTick, reactive, shallowReactive } from 'vue'
 import { ActionList, type ActionListContainerContextValue } from './index'
 import { FeatureFlags } from '../FeatureFlags'
 import { asSlot } from '../composables/useSlots'
@@ -560,16 +560,18 @@ describe('ActionList complete source contracts', () => {
     expect(block.get('[class*="action-list-description_"]').element.tagName).toBe('SPAN')
     expect(block.find('[data-component=Tooltip]').exists()).toBe(false)
   })
-  it('preserves slot marker wrappers and flattens Vue fragments', () => {
+  it('preserves slot marker wrappers, flattening template Fragments while retaining explicit ones', () => {
     const Visual = asSlot(
       defineComponent({
         setup: () => () => h(ActionList.LeadingVisual, { class: 'wrapped' }, { default: Icon }),
       }),
       ActionList.LeadingVisual,
     )
-    const wrapper = render([item({}, [h(Fragment, null, [h(Visual)]), 'Label'])])
+    const wrapper = render([item({}, [createVNode(Fragment, null, [h(Visual)], 64), 'Label'])])
     expect(wrapper.get('[class*="action-list-leading-visual_"]').classes()).toContain('wrapped')
     expect(wrapper.get('[class*="action-list-label_"]').find('svg').exists()).toBe(false)
+    const explicit = render([item({}, [h(Fragment, null, [h(Visual)]), 'Label'])])
+    expect(explicit.get('[class*="action-list-label_"]').find('svg').exists()).toBe(true)
   })
   it('ignores deprecated Item as and consumes legacy integration props', () => {
     const wrapper = render([

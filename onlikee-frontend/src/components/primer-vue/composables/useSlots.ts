@@ -97,15 +97,15 @@ function warnMissingMarker(child: VNode, keys: string[], entries: SlotConfig[str
 function forEachChild(children: VNodeChild, visit: (child: VNodeChild) => void): void {
   if (Array.isArray(children)) {
     for (const child of children) forEachChild(child, visit)
-  } else if (isVNode(children) && children.type === Fragment) {
-    // Vue emits Fragments for template/v-for groups. Do not descend into elements or components.
+  } else if (isVNode(children) && children.type === Fragment && children.patchFlag !== 0) {
+    // Flatten compiler-generated template/v-for groups, preserving explicit Fragments.
     forEachChild(children.children as VNodeChild, visit)
   } else {
     visit(children)
   }
 }
 
-/* 匹配具名插槽并返回剩余子节点；包装组件通过 __SLOT__ 标记匹配。每次渲染读取当前插槽内容，并展开 Fragment。 */
+/* 匹配具名插槽并返回剩余子节点；包装组件通过 __SLOT__ 标记匹配。仅展开模板生成的结构性 Fragment。 */
 export function useSlots<Config extends SlotConfig>(
   children: VNodeChild,
   config: Config,
@@ -159,11 +159,12 @@ export function useSlots<Config extends SlotConfig>(
   return [slots, rest]
 }
 
-/* 只保留元素和组件节点，过滤文本及注释节点。 */
+/* 保留元素、组件和显式 Fragment 节点，过滤文本及注释节点。 */
 export function elementChildren(children: VNodeChild): VNode[] {
   const elements: VNode[] = []
   forEachChild(children, (child) => {
-    if (isVNode(child) && typeof child.type !== 'symbol') elements.push(child)
+    if (isVNode(child) && (child.type === Fragment || typeof child.type !== 'symbol'))
+      elements.push(child)
   })
   return elements
 }

@@ -36,9 +36,20 @@ test('native checkbox submits its value, initializes default state and resets wi
   await nextTick()
   expect(input.checked).toBe(false)
   expect(change).toHaveBeenCalledTimes(1)
-  expect(input.getAttribute('aria-checked')).toBe('false')
+  expect(input.getAttribute('aria-checked')).toBe('true')
   wrapper.get<HTMLFormElement>('form').element.reset()
   expect(input.checked).toBe(true)
+})
+test('uncontrolled aria-checked synchronizes after a render rather than a native change alone', async () => {
+  const wrapper = mount(Checkbox, { attachTo: host, props: { defaultChecked: true } })
+  wrappers.push(wrapper)
+  const input = wrapper.element as HTMLInputElement
+  input.click()
+  await nextTick()
+  expect(input.checked).toBe(false)
+  expect(input.getAttribute('aria-checked')).toBe('true')
+  await wrapper.setProps({ className: 'updated' })
+  expect(input.getAttribute('aria-checked')).toBe('false')
 })
 test('controlled rejected checkbox changes restore the native checked state', async () => {
   const wrapper = mount(Checkbox, { attachTo: host, props: { checked: false } })
@@ -178,6 +189,27 @@ test('controlled SSR emits native checked and omits client-only defaultChecked',
   )
   expect(html.match(/<input[^>]*\schecked(?:\s|>)/g)).toHaveLength(2)
   expect(html).not.toContain('defaultchecked')
+})
+
+test('hydrates default and indeterminate state without an ARIA mismatch', async () => {
+  const render = () =>
+    h('form', [
+      h(Checkbox, { value: 'default', defaultChecked: true }),
+      h(Checkbox, { value: 'mixed', checked: true, indeterminate: true }),
+    ])
+  host.innerHTML = await renderToString(createSSRApp({ render }))
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+  const app = createSSRApp({ render })
+  app.mount(host)
+  await nextTick()
+  const inputs = host.querySelectorAll<HTMLInputElement>('input')
+  expect(inputs[0]!.checked).toBe(true)
+  expect(inputs[0]!.getAttribute('aria-checked')).toBe('true')
+  expect(inputs[1]!.checked).toBe(false)
+  expect(inputs[1]!.indeterminate).toBe(true)
+  expect(inputs[1]!.getAttribute('aria-checked')).toBe('mixed')
+  expect(warn).not.toHaveBeenCalled()
+  app.unmount()
 })
 
 test('choice groups preserve custom component markers without leaking radio name to the root', () => {

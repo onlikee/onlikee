@@ -2,6 +2,7 @@
   <span
     :class="[
       className,
+      attrs.class,
       classes['radio-group__label'],
       { [classes['radio-group__visually-hidden']]: visuallyHidden },
     ]"
@@ -19,11 +20,13 @@
 
 <script setup lang="ts">
 import classes from './RadioGroup.module.css'
+import { useAttrs } from 'vue'
 import { Stack } from '../Stack'
 import { useChoiceGroupContext } from '../internal/components/CheckboxOrRadioGroup/context'
 import type { RadioGroupLabelProps } from './types'
 
-defineOptions({ name: 'RadioGroupLabel', __SLOT__: Symbol('RadioGroupLabel') })
+defineOptions({ name: 'RadioGroupLabel', __SLOT__: Symbol('RadioGroupLabel'), inheritAttrs: false })
 withDefaults(defineProps<RadioGroupLabelProps>(), { className: undefined, visuallyHidden: false })
 const context = useChoiceGroupContext()
+const attrs = useAttrs()
 </script>

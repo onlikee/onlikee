@@ -9,3 +9,13 @@ export interface CheckboxGroupProps {
 export interface CheckboxGroupEmits {
   change: [selected: string[], event?: Event]
 }
+export interface CheckboxGroupLabelProps {
+  className?: string
+  visuallyHidden?: boolean
+}
+export interface CheckboxGroupCaptionProps {
+  className?: string
+}
+export interface CheckboxGroupValidationProps {
+  variant: 'success' | 'error'
+}
