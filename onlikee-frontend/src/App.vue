@@ -27,4 +27,9 @@ const shouldHideHeader = computed(() => {
   background-color: var(--bgColor-default);
   min-height: 100vh;
 }
+
+/* 页面 Header 位于默认 Portal 容器下方，Portal 内部仍保持 z-index: 1。 */
+:global(#__primerVuePortalRoot__) {
+  z-index: 10000;
+}
 </style>

@@ -1,0 +1,14 @@
+.BaseStyles {
+  font-family: var(--BaseStyles-fontFamily, var(--fontStack-system));
+  line-height: var(--BaseStyles-lineHeight, 1.5);
+  color: var(--BaseStyles-fgColor, var(--fgColor-default));
+
+  :where(a:not([class*='prc-']):not([class*='PRC-']):not([class*='Primer_Brand__'])) {
+    color: var(--fgColor-accent, var(--color-accent-fg));
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

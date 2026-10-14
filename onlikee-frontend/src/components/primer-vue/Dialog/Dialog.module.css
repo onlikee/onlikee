@@ -1,142 +1,392 @@
-:global(html[data-dialog-scroll-locked='true']) {
-  overflow: hidden;
-  overscroll-behavior: contain;
+/* The --prc-dialog-scrollgutter property is used only on the body element to
+ * simulate scrollbar-gutter:stable. This property is not and should not
+ * be used elsewhere in the DOM. There is a performance penalty to
+ * setting inherited properties which can cause a large style recalc to
+ * occur, so it benefits us to prevent inheritance for this property.
+ * See https://web.dev/blog/at-property-performance
+ */
+@property --prc-dialog-scrollgutter {
+  initial-value: 0;
+  inherits: false;
+  syntax: '<length>';
 }
 
-.dialog-layer {
-  align-items: center;
-  background: var(--overlay-backdrop-bgColor, #c8d1da66);
-  display: flex;
-  inset: 0;
-  justify-content: center;
+@keyframes dialog-backdrop-appear {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes Overlay--motion-scaleFade {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes Overlay--motion-slideUp {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes Overlay--motion-slideInRight {
+  from {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes Overlay--motion-slideInLeft {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+/* Used to determine whether there should be a border between the body and footer */
+@keyframes detect-scroll {
+  from,
+  to {
+    --can-scroll: 1;
+  }
+}
+
+.Backdrop {
   position: fixed;
-  z-index: 10000;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  background-color: var(--overlay-backdrop-bgColor);
+  animation: dialog-backdrop-appear 200ms cubic-bezier(0.33, 1, 0.68, 1);
+  align-items: center;
+  justify-content: center;
+
+  &[data-position-regular='center'] {
+    align-items: center;
+    justify-content: center;
+  }
+
+  &[data-position-regular='left'] {
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  &[data-position-regular='right'] {
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  /* align only applies when regular position is center (or absent).
+   * :where() zeroes out the :not() specificity so narrow-position rules (coming later)
+   * always win when data-position-narrow is bottom or fullscreen. */
+  &:where(:not([data-position-regular='left']):not([data-position-regular='right'])) {
+    &[data-align='top'] {
+      align-items: flex-start;
+    }
+
+    &[data-align='center'] {
+      align-items: center;
+    }
+
+    &[data-align='bottom'] {
+      align-items: flex-end;
+    }
+  }
+
+  @media (max-width: 767px) {
+    &[data-position-narrow='center'] {
+      align-items: center;
+      justify-content: center;
+
+      /* align still applies when narrow position is center */
+      &[data-align='top'] {
+        align-items: flex-start;
+      }
+
+      &[data-align='center'] {
+        align-items: center;
+      }
+
+      &[data-align='bottom'] {
+        align-items: flex-end;
+      }
+    }
+
+    &[data-position-narrow='bottom'] {
+      align-items: end;
+      justify-content: center;
+    }
+  }
 }
 
-.dialog {
-  background: var(--overlay-bgColor, var(--bgColor-default, #ffffff));
-  border-radius: var(--borderRadius-large, 0.75rem);
-  box-shadow: var(--shadow-floating-small, 0 0 0 1px #d1d9e080,0 6px 12px -3px #25292e0a,0 6px 18px 0 #25292e1f);
-  color: var(--fgColor-default, #1f2328);
+.Dialog {
   display: flex;
-  flex-direction: column;
-  height: auto;
-  max-height: calc(100dvh - 64px);
-  min-height: 0;
-  outline: none;
-  overflow: hidden;
-  transform-origin: center;
+  /* stylelint-disable-next-line primer/responsive-widths */
   width: var(--dialog-width, 640px);
   min-width: 296px;
   max-width: calc(100dvw - 64px);
-}
+  height: auto;
+  max-height: calc(100dvh - 64px);
+  flex-direction: column;
+  background-color: var(--overlay-bgColor);
+  border-radius: var(--borderRadius-large);
+  border-radius: var(--borderRadius-large, var(--borderRadius-large));
+  box-shadow: var(--shadow-floating-small);
+  opacity: 1;
 
-.dialog:where([data-width='small']) {
-  width: 296px;
-}
+  &:where([data-width='small']) {
+    width: 296px;
+  }
 
-.dialog:where([data-width='medium']) {
-  width: 320px;
-}
+  &:where([data-width='medium']) {
+    width: 320px;
+  }
 
-.dialog:where([data-width='large']) {
-  width: 480px;
-}
+  &:where([data-width='large']) {
+    /* stylelint-disable-next-line primer/responsive-widths */
+    width: 480px;
+  }
 
-.dialog:where([data-height='small']) {
-  height: 480px;
-}
+  &:where([data-height='small']) {
+    height: 480px;
+  }
 
-.dialog:where([data-height='large']) {
-  height: 640px;
-}
+  &:where([data-height='large']) {
+    height: 640px;
+  }
 
-@media (max-width: 767px) and (max-height: 280px) {
-  .dialog {
-    max-height: calc(100dvh - 12px);
-    max-width: calc(100dvw - 12px);
+  @media screen and (prefers-reduced-motion: no-preference) {
+    animation: Overlay--motion-scaleFade 0.2s cubic-bezier(0.33, 1, 0.68, 1) 1ms 1 normal none
+      running;
+  }
+
+  &[data-position-regular='center'] {
+    border-radius: var(--borderRadius-large, var(--borderRadius-large));
+
+    @media screen and (prefers-reduced-motion: no-preference) {
+      animation: Overlay--motion-scaleFade 0.2s cubic-bezier(0.33, 1, 0.68, 1) 1ms 1 normal none
+        running;
+    }
+
+    /* align margins only apply when regular position is center */
+    &[data-align='top'] {
+      margin-top: var(--base-size-64);
+    }
+
+    &[data-align='bottom'] {
+      margin-bottom: var(--base-size-64);
+    }
+  }
+
+  &[data-position-regular='left'] {
+    height: 100dvh;
+    max-height: unset;
+    border-radius: var(--borderRadius-large, var(--borderRadius-large));
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+
+    @media screen and (prefers-reduced-motion: no-preference) {
+      animation: Overlay--motion-slideInRight 0.25s cubic-bezier(0.33, 1, 0.68, 1) 1ms 1 normal none
+        running;
+    }
+  }
+
+  &[data-position-regular='right'] {
+    height: 100dvh;
+    max-height: unset;
+    border-radius: var(--borderRadius-large, var(--borderRadius-large));
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+
+    @media screen and (prefers-reduced-motion: no-preference) {
+      animation: Overlay--motion-slideInLeft 0.25s cubic-bezier(0.33, 1, 0.68, 1) 0s 1 normal none
+        running;
+    }
+  }
+
+  @media (max-width: 767px) {
+    &[data-position-narrow='center'] {
+      /* stylelint-disable-next-line primer/responsive-widths */
+      width: var(--dialog-width, 640px);
+      height: auto;
+      border-radius: var(--borderRadius-large, var(--borderRadius-large));
+
+      &:where([data-width='small']) {
+        width: 296px;
+      }
+
+      &:where([data-width='medium']) {
+        width: 320px;
+      }
+
+      &:where([data-width='large']) {
+        /* stylelint-disable-next-line primer/responsive-widths */
+        width: 480px;
+      }
+
+      &:where([data-height='small']) {
+        height: 480px;
+      }
+
+      &:where([data-height='large']) {
+        height: 640px;
+      }
+    }
+
+    @media (max-height: 280px) {
+      max-height: calc(100dvh - 12px);
+      max-width: calc(100dvw - 12px);
+    }
+
+    &[data-position-narrow='bottom'] {
+      width: 100dvw;
+      max-width: 100dvw;
+      height: auto;
+      max-height: calc(100dvh - 64px);
+      border-radius: var(--borderRadius-large, var(--borderRadius-large));
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+
+      /* reset align margins since position wins at narrow */
+      &[data-align] {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+
+      @media screen and (prefers-reduced-motion: no-preference) {
+        animation: Overlay--motion-slideUp 0.25s cubic-bezier(0.33, 1, 0.68, 1) 1ms 1 normal none
+          running;
+      }
+    }
+
+    &[data-position-narrow='fullscreen'] {
+      width: 100%;
+      max-width: 100dvw;
+      height: 100%;
+      max-height: 100dvh;
+      border-radius: unset !important;
+      flex-grow: 1;
+
+      /* reset align margins since fullscreen wins at narrow */
+      &[data-align] {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+
+      @media screen and (prefers-reduced-motion: no-preference) {
+        animation: Overlay--motion-scaleFade 0.2s cubic-bezier(0.33, 1, 0.68, 1) 1ms 1 normal none
+          running;
+      }
+    }
   }
 }
 
-.dialog__header {
-  align-items: start;
-  border-bottom: 1px solid var(--borderColor-default, #d1d9e0);
-  display: grid;
-  gap: 0.75rem;
-  grid-template-columns: minmax(0, 1fr) auto;
-  padding: 0.5rem;
+/*
+ * PERFORMANCE OPTIMIZATION: Direct attribute on body - O(1) lookup
+ */
+/* stylelint-disable-next-line selector-no-qualifying-type */
+body[data-dialog-scroll-disabled] {
+  /* stylelint-disable-next-line primer/spacing */
+  padding-right: var(--prc-dialog-scrollgutter) !important;
+  overflow: hidden !important;
 }
 
-.dialog__header-content {
-  display: grid;
-  gap: 0.25rem;
-  padding: 6px 8px;
-  min-width: 0;
+.DialogOverflowWrapper {
+  flex-grow: 1;
 }
 
-.dialog__title {
-  color: var(--fgColor-default, #1f2328);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-}
+/*
+Add a border between the body and footer if:
+- the dialog has a footer
+- the dialog has a body that can scroll
+- the browser supports the `animation-timeline` property and its `scroll()` function
+*/
+.Dialog[data-has-footer] {
+  --can-scroll: 0;
 
-.dialog__subtitle {
-  color: var(--fgColor-muted, #59636e);
-  font-size: 12px;
-  line-height: 1.5;
-  margin: 0;
-  overflow-wrap: anywhere;
-}
+  .DialogOverflowWrapper {
+    /* If the browser does not support the `animation-timeline` property, always show a border */
+    border-bottom: var(--borderWidth-default) solid var(--borderColor-default);
+    animation: detect-scroll;
+    animation-timeline: scroll(self);
 
-.dialog__close {
-  align-items: center;
-  appearance: none;
-  background: var(--button-invisible-bgColor-rest, transparent);
-  border: 1px solid var(--button-invisible-borderColor-rest, transparent);
-  border-radius: var(--borderRadius-medium, 0.375rem);
-  color: var(--fgColor-muted, #59636e);
-  cursor: pointer;
-  display: inline-flex;
-  height: var(--control-medium-size, 2rem);
-  justify-content: center;
-  padding: 0;
-  width: var(--control-medium-size, 2rem);
-}
-
-.dialog__close:hover {
-  background: var(--button-invisible-bgColor-hover, var(--control-transparent-bgColor-hover, #818b981a));
-  color: var(--fgColor-default, #1f2328);
-}
-
-.dialog__close:active {
-  background: var(--button-invisible-bgColor-active, var(--control-transparent-bgColor-active, #818b9826));
-}
-
-.dialog__close:focus-visible {
-  outline: 2px solid var(--focus-outlineColor, #0969da);
-  outline-offset: -2px;
-}
-
-:global(.dialog-fade-enter-active) {
-  transition: opacity 160ms cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-:global(.dialog-fade-enter-active) .dialog {
-  transition: transform 160ms cubic-bezier(0.65, 0, 0.35, 1);
-}
-
-:global(.dialog-fade-enter-from) {
-  opacity: 0;
-}
-
-:global(.dialog-fade-enter-from) .dialog {
-  transform: scale(0.96);
-}
-
-@media (pointer: fine) {
-  :global(html[data-dialog-scroll-locked='true'] body) {
-    padding-right: var(--dialog-scrollbar-compensation, 0px);
+    @supports (animation-timeline: scroll(self)) {
+      border-bottom: calc(var(--borderWidth-thin) * var(--can-scroll)) solid
+        var(--borderColor-default);
+    }
   }
+}
+
+.Header {
+  z-index: 1;
+  max-height: 35vh;
+  padding: var(--base-size-8);
+  overflow-y: auto;
+  /* stylelint-disable-next-line primer/box-shadow */
+  box-shadow: 0 1px 0 var(--borderColor-default);
+  flex-shrink: 0;
+}
+
+.HeaderInner {
+  display: flex;
+}
+
+.HeaderContent {
+  display: flex;
+  padding-inline: var(--base-size-8);
+  padding-block: var(--base-size-6);
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.Title {
+  margin: 0; /* override default margin */
+  font-size: var(--text-body-size-medium);
+  font-weight: var(--text-title-weight-large);
+}
+
+.Subtitle {
+  margin: 0; /* override default margin */
+  margin-top: var(--base-size-4);
+  font-size: var(--text-body-size-small);
+  font-weight: var(--base-text-weight-normal);
+  color: var(--fgColor-muted);
+}
+
+.Body {
+  padding: var(--base-size-16);
+  overflow: auto;
+  flex-grow: 1;
+}
+
+.Footer {
+  z-index: 1;
+  display: flex;
+  flex-flow: wrap;
+  justify-content: flex-end;
+  padding: var(--base-size-16);
+  gap: var(--base-size-8);
+  flex-shrink: 0;
+}
+
+.Dialog[data-footer-button-layout='scroll'] .Footer {
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+  flex-direction: row;
+  justify-content: unset;
+}
+
+.ScrollableRegion {
+  position: relative;
+  overflow: auto;
 }

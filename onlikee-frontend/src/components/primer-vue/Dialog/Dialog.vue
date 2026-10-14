@@ -1,270 +1,239 @@
 <script lang="ts">
-let activeDialogScrollLocks = 0
-const DIALOG_SCROLLBAR_COMPENSATION_PROPERTY = '--dialog-scrollbar-compensation'
-
-function lockDocumentScroll() {
-  if (activeDialogScrollLocks === 0) {
-    const scrollbarWidth = Math.max(window.innerWidth - document.documentElement.clientWidth, 0)
-    document.documentElement.style.setProperty(
-      DIALOG_SCROLLBAR_COMPENSATION_PROPERTY,
-      `${scrollbarWidth}px`,
-    )
-  }
-
-  activeDialogScrollLocks += 1
-  document.documentElement.dataset.dialogScrollLocked = 'true'
-}
-
-function unlockDocumentScroll() {
-  if (activeDialogScrollLocks === 0) return
-
-  activeDialogScrollLocks -= 1
-  if (activeDialogScrollLocks === 0) {
-    delete document.documentElement.dataset.dialogScrollLocked
-    document.documentElement.style.removeProperty(DIALOG_SCROLLBAR_COMPENSATION_PROPERTY)
-  }
-}
+let dialogScrollDisabledCount = 0
 </script>
 
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, provide, ref, watch } from 'vue'
+import {
+  h,
+  onBeforeUnmount,
+  onMounted,
+  provide,
+  shallowRef,
+  useAttrs,
+  useCssModule,
+  useId,
+  useSlots,
+  watch,
+  type VNodeChild,
+} from 'vue'
+import DialogHeader from './DialogHeader.vue'
+import DialogTitle from './DialogTitle.vue'
+import DialogSubtitle from './DialogSubtitle.vue'
+import DialogBody from './DialogBody.vue'
+import DialogFooter from './DialogFooter.vue'
+import DialogCloseButton from './DialogCloseButton.vue'
+import DefaultFooter from './DefaultFooter.vue'
+import type { DialogComponentProps, DialogHeaderProps } from './types'
 import { dialogContextKey } from './context'
+import { useFocusTrap } from '../composables/useFocusTrap'
+import { useSlots as extractSlots } from '../composables/useSlots'
+import { registerEscapeHandler } from '../internal/documentRegistries'
+import { normalizeReactStyle } from '../internal/style'
+import { Portal } from '../Portal'
 
-export type DialogCloseGesture = 'close-button' | 'escape' | 'backdrop'
-export type DialogWidth = 'small' | 'medium' | 'large' | 'xlarge' | string | number
-export type DialogHeight = 'small' | 'large' | 'auto'
-
+defineOptions({ name: 'PrimerDialog', displayName: 'Dialog', inheritAttrs: false })
+const props = withDefaults(defineProps<DialogComponentProps>(), { title: 'Dialog', subtitle: '' })
+defineSlots<{ default?: () => VNodeChild }>()
+const attrs = useAttrs()
+const children = useSlots()
+const styles = useCssModule()
 provide(dialogContextKey, true)
+const dialog = shallowRef<HTMLDivElement | null>(null)
+const backdrop = shallowRef<HTMLDivElement | null>(null)
+const body = shallowRef<HTMLDivElement | null>(null)
+const autoFocusedFooterButtonRef = shallowRef<HTMLButtonElement | null>(null)
+const hasOverflow = shallowRef(false)
+const footerButtonLayout = shallowRef<'wrap' | 'scroll'>('wrap')
+const dialogLabelId = useId()
+const dialogDescriptionId = useId()
+defineExpose({ element: dialog })
+useFocusTrap(() => ({
+  containerRef: dialog,
+  initialFocusRef: props.initialFocusRef ?? autoFocusedFooterButtonRef,
+  restoreFocusOnCleanUp: !props.returnFocusRef?.value,
+  returnFocusRef: props.returnFocusRef,
+}))
 
-const props = withDefaults(
-  defineProps<{
-    open?: boolean
-    title: string
-    subtitle?: string
-    width?: DialogWidth
-    height?: DialogHeight
-    role?: 'dialog' | 'alertdialog'
-    closeOnEscape?: boolean
-    closeOnBackdrop?: boolean
-  }>(),
-  {
-    open: false,
-    subtitle: '',
-    width: 'xlarge',
-    height: 'auto',
-    role: 'dialog',
-    closeOnEscape: true,
-    closeOnBackdrop: true,
-  },
-)
-
-const emit = defineEmits<{
-  'update:open': [open: boolean]
-  close: [gesture: DialogCloseGesture]
-}>()
-
-const isPresetWidth = computed(
-  () =>
-    typeof props.width === 'string' && ['small', 'medium', 'large', 'xlarge'].includes(props.width),
-)
-const customWidth = computed(() =>
-  isPresetWidth.value
-    ? undefined
-    : typeof props.width === 'number'
-      ? `${props.width}px`
-      : props.width,
-)
-
-const dialogRef = ref<HTMLElement | null>(null)
-const closeButtonRef = ref<HTMLButtonElement | null>(null)
-const dialogId = `dialog-${Math.random().toString(36).slice(2, 10)}`
-const titleId = `${dialogId}-title`
-const subtitleId = computed(() => (props.subtitle ? `${dialogId}-subtitle` : undefined))
-
-let previousFocus: HTMLElement | null = null
-let hasScrollLock = false
-let isBackdropPointerDown = false
-
-const FOCUSABLE_SELECTOR = [
-  'a[href]',
-  'button:not([disabled])',
-  'input:not([disabled])',
-  'select:not([disabled])',
-  'textarea:not([disabled])',
-  '[tabindex]:not([tabindex="-1"])',
-  '[contenteditable="true"]',
-].join(',')
-
-function getFocusableElements() {
-  const dialog = dialogRef.value
-  if (!dialog) return []
-
-  return Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
-    (element) =>
-      element.getAttribute('aria-hidden') !== 'true' && element.getClientRects().length > 0,
+let lastMouseDownIsBackdrop = false
+function handleBackdropMouseDown(event: MouseEvent) {
+  lastMouseDownIsBackdrop = event.target === event.currentTarget
+}
+function handleBackdropClick(event: MouseEvent) {
+  if (event.target === event.currentTarget && lastMouseDownIsBackdrop) props.onClose('escape')
+}
+function handleCloseKeydown(event: KeyboardEvent) {
+  if (event.key !== 'Escape') return
+  event.stopPropagation()
+  props.onClose('escape')
+}
+function defaultHeader(headerProps: DialogHeaderProps) {
+  return h(DialogHeader<'div'>, null, {
+    default: () =>
+      h('div', { class: styles.HeaderInner }, [
+        h('div', { class: styles.HeaderContent }, [
+          h(DialogTitle, { id: dialogLabelId }, { default: () => headerProps.title ?? 'Dialog' }),
+          headerProps.subtitle
+            ? h(
+                DialogSubtitle,
+                { id: dialogDescriptionId },
+                { default: () => headerProps.subtitle },
+              )
+            : headerProps.subtitle,
+        ]),
+        h(DialogCloseButton, {
+          onClose: () => props.onClose('close-button'),
+          onKeydown: handleCloseKeydown,
+        }),
+      ]),
+  })
+}
+const Render = () => {
+  for (const button of props.footerButtons ?? []) {
+    if (button.autoFocus) button.ref = autoFocusedFooterButtonRef
+  }
+  const allChildren = children.default?.() ?? []
+  const [slots, rest] = extractSlots(allChildren, {
+    header: DialogHeader,
+    body: DialogBody,
+    footer: DialogFooter,
+  })
+  const defaultedProps = {
+    ...props,
+    'data-component': attrs['data-component'] as string | undefined,
+    children: allChildren,
+    title: props.title === undefined ? 'Dialog' : props.title,
+    subtitle: props.subtitle === undefined ? '' : props.subtitle,
+    role: props.role ?? 'dialog',
+    dialogLabelId,
+    dialogDescriptionId,
+  }
+  const header = slots.header ?? (props.renderHeader ?? defaultHeader)(defaultedProps)
+  const content =
+    slots.body ??
+    (props.renderBody
+      ? props.renderBody({ ...defaultedProps, children: rest })
+      : h(DialogBody<'div'>, null, { default: () => rest }))
+  const footer =
+    slots.footer ??
+    (props.renderFooter
+      ? props.renderFooter(defaultedProps)
+      : props.footerButtons
+        ? h(DefaultFooter, { buttons: props.footerButtons })
+        : null)
+  const hasFooter = footer != null
+  const width = props.width ?? 'xlarge'
+  const isPresetWidth =
+    typeof width === 'string' && ['small', 'medium', 'large', 'xlarge'].includes(width)
+  const position = props.position ?? { narrow: 'center', regular: 'center' }
+  const positionAttrs =
+    typeof position === 'string'
+      ? { 'data-position-regular': position }
+      : Object.fromEntries(
+          Object.entries(position).map(([key, value]) => [`data-position-${key}`, value]),
+        )
+  const alignAttrs = props.align ? { 'data-align': props.align } : {}
+  return h(Portal, null, {
+    default: () =>
+      h(
+        'div',
+        {
+          ref: backdrop,
+          class: styles.Backdrop,
+          ...positionAttrs,
+          ...alignAttrs,
+          onMousedown: handleBackdropMouseDown,
+          onClick: handleBackdropClick,
+        },
+        [
+          h(
+            'div',
+            {
+              ref: dialog,
+              role: defaultedProps.role,
+              'aria-labelledby': dialogLabelId,
+              'aria-describedby': dialogDescriptionId,
+              'aria-modal': 'true',
+              ...positionAttrs,
+              ...alignAttrs,
+              'data-width': isPresetWidth ? width : undefined,
+              'data-height': props.height ?? 'auto',
+              'data-has-footer': hasFooter ? '' : undefined,
+              'data-footer-button-layout': hasFooter ? footerButtonLayout.value : undefined,
+              class: [props.className, attrs.class, styles.Dialog],
+              style: normalizeReactStyle({
+                ...props.style,
+                ...(!isPresetWidth
+                  ? { '--dialog-width': typeof width === 'number' ? `${width}px` : width }
+                  : {}),
+              }),
+              'data-component': attrs['data-component'] ?? 'Dialog',
+            },
+            [
+              header,
+              h(
+                'div',
+                {
+                  ref: body,
+                  class: [styles.DialogOverflowWrapper, styles.ScrollableRegion],
+                  role: hasOverflow.value ? 'region' : undefined,
+                  tabindex: hasOverflow.value ? 0 : undefined,
+                  'aria-labelledby': hasOverflow.value ? dialogLabelId : undefined,
+                  'data-component': 'ScrollableRegion',
+                },
+                [content],
+              ),
+              footer,
+            ],
+          ),
+        ],
+      ),
+  })
+}
+function updateFooterButtonLayout() {
+  if (!dialog.value?.hasAttribute('data-has-footer') || !body.value) return
+  dialog.value.setAttribute('data-footer-button-layout', 'wrap')
+  footerButtonLayout.value = body.value.clientHeight >= 48 ? 'wrap' : 'scroll'
+  dialog.value.setAttribute('data-footer-button-layout', footerButtonLayout.value)
+}
+watch([body, backdrop], ([region, backdropElement], _previous, onCleanup) => {
+  if (!region || !backdropElement) return
+  const overflowObserver = new ResizeObserver((entries) => {
+    hasOverflow.value = entries.some(
+      ({ target }) =>
+        target.scrollHeight > target.clientHeight || target.scrollWidth > target.clientWidth,
+    )
+  })
+  overflowObserver.observe(region)
+  const layoutObserver = new ResizeObserver(updateFooterButtonLayout)
+  layoutObserver.observe(backdropElement)
+  onCleanup(() => {
+    overflowObserver.disconnect()
+    layoutObserver.disconnect()
+  })
+})
+let unregisterEscape: (() => void) | undefined
+onMounted(() => {
+  dialogScrollDisabledCount++
+  document.body.style.setProperty(
+    '--prc-dialog-scrollgutter',
+    `${window.innerWidth - document.body.clientWidth}px`,
   )
-}
-
-function focusInitialElement() {
-  const dialog = dialogRef.value
-  if (!dialog) return
-
-  const autofocusElement = dialog.querySelector<HTMLElement>('[autofocus]')
-  if (autofocusElement && !autofocusElement.hasAttribute('disabled')) {
-    autofocusElement.focus()
-    return
-  }
-
-  const initialElement = closeButtonRef.value ?? getFocusableElements()[0] ?? dialog
-  initialElement.focus()
-}
-
-function lockPageScroll() {
-  if (hasScrollLock) return
-
-  lockDocumentScroll()
-  hasScrollLock = true
-}
-
-function unlockPageScroll() {
-  if (!hasScrollLock) return
-
-  unlockDocumentScroll()
-  hasScrollLock = false
-}
-
-async function handleOpenChange(open: boolean) {
-  if (open) {
-    lockPageScroll()
-    previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null
-    await nextTick()
-    focusInitialElement()
-    return
-  }
-}
-
-function handleAfterLeave() {
-  if (props.open) return
-
-  if (previousFocus?.isConnected) {
-    previousFocus.focus()
-  }
-  previousFocus = null
-  unlockPageScroll()
-}
-
-function requestClose(gesture: DialogCloseGesture) {
-  emit('close', gesture)
-  emit('update:open', false)
-}
-
-function handleBackdropPointerDown(event: PointerEvent) {
-  isBackdropPointerDown = event.button === 0 && event.target === event.currentTarget
-}
-
-function handleBackdropPointerUp(event: PointerEvent) {
-  if (event.button === 0 && props.closeOnBackdrop && isBackdropPointerDown) {
-    requestClose('backdrop')
-  }
-
-  isBackdropPointerDown = false
-}
-
-function handleKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape' && props.closeOnEscape) {
-    event.stopPropagation()
-    requestClose('escape')
-    return
-  }
-
-  if (event.key !== 'Tab') return
-
-  const focusableElements = getFocusableElements()
-  if (!focusableElements.length) {
+  document.body.setAttribute('data-dialog-scroll-disabled', '')
+  unregisterEscape = registerEscapeHandler((event) => {
+    props.onClose('escape')
     event.preventDefault()
-    dialogRef.value?.focus()
-    return
+  })
+})
+onBeforeUnmount(() => {
+  unregisterEscape?.()
+  dialogScrollDisabledCount--
+  if (dialogScrollDisabledCount === 0) {
+    document.body.style.removeProperty('--prc-dialog-scrollgutter')
+    document.body.removeAttribute('data-dialog-scroll-disabled')
   }
-
-  const firstElement = focusableElements[0]
-  const lastElement = focusableElements[focusableElements.length - 1]
-  const activeElement = document.activeElement
-
-  if (event.shiftKey && activeElement === firstElement) {
-    event.preventDefault()
-    lastElement.focus()
-    return
-  }
-
-  if (!event.shiftKey && activeElement === lastElement) {
-    event.preventDefault()
-    firstElement.focus()
-  }
-}
-
-watch(
-  () => props.open,
-  (open) => {
-    void handleOpenChange(open)
-  },
-  { immediate: true },
-)
-
-onBeforeUnmount(unlockPageScroll)
+})
 </script>
 
-<template>
-  <Teleport to="body">
-    <Transition name="dialog-fade" @after-leave="handleAfterLeave">
-      <div
-        v-if="open"
-        :class="$style['dialog-layer']"
-        @pointerdown="handleBackdropPointerDown"
-        @pointerup="handleBackdropPointerUp"
-      >
-        <section
-          ref="dialogRef"
-          :class="$style['dialog']"
-          :style="{ '--dialog-width': customWidth }"
-          :data-width="isPresetWidth ? width : undefined"
-          :data-height="height"
-          :role="role"
-          aria-modal="true"
-          :aria-labelledby="titleId"
-          :aria-describedby="subtitleId"
-          tabindex="-1"
-          @keydown="handleKeydown"
-        >
-          <header :class="$style['dialog__header']">
-            <div :class="$style['dialog__header-content']">
-              <div :id="titleId" :class="$style['dialog__title']">
-                {{ title }}
-              </div>
-              <p v-if="subtitle" :id="subtitleId" :class="$style['dialog__subtitle']">
-                {{ subtitle }}
-              </p>
-            </div>
-            <button
-              ref="closeButtonRef"
-              :class="$style['dialog__close']"
-              type="button"
-              aria-label="关闭对话框"
-              @click="requestClose('close-button')"
-            >
-              <svg aria-hidden="true" height="16" viewBox="0 0 16 16" width="16">
-                <path
-                  d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 1 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </button>
-          </header>
-
-          <slot />
-        </section>
-      </div>
-    </Transition>
-  </Teleport>
-</template>
+<template><Render /></template>
 
 <style module src="./Dialog.module.css"></style>

@@ -35,7 +35,8 @@
     </div>
   </div>
   <Dialog
-    v-model:open="markdownDialogOpen"
+    v-if="markdownDialogOpen"
+    :on-close="() => (markdownDialogOpen = false)"
     title="编辑 README"
     subtitle="使用 Markdown 编写你的个人资料内容。"
     width="1024px"

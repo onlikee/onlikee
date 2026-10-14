@@ -159,7 +159,7 @@ const Render = () => {
                     CounterLabel,
                     {
                       class: classes.CounterLabel,
-                      dataComponent: 'ButtonCounter',
+                      'data-component': 'ButtonCounter',
                     },
                     { default: () => count },
                   ),

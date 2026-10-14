@@ -7,14 +7,18 @@
 
     <ComponentDocsSection title="基础用法">
       <template #description>
-        使用 <code>v-model:open</code> 控制展示状态。对话框打开后会自动聚焦关闭按钮，按
-        <code>Esc</code> 或点击背板可关闭。
+        使用 <code>v-if</code> 控制挂载，在必填的 <code>onClose</code> 回调中更新状态。
+        默认聚焦关闭按钮；Esc 或背板点击请求关闭，组件不会自行卸载。
       </template>
 
       <ComponentDocsDemoBlock :code="basicDemoCode">
         <Button @click="basicDialogOpen = true"> 打开 Dialog </Button>
 
-        <Dialog v-model:open="basicDialogOpen" title="创建新项目">
+        <Dialog
+          v-if="basicDialogOpen"
+          :on-close="() => (basicDialogOpen = false)"
+          title="创建新项目"
+        >
           <Dialog.Body>
             <p>Dialog 用于承载短期任务，不应替代完整页面。保持内容集中，并提供明确的退出方式。</p>
           </Dialog.Body>
@@ -32,7 +36,8 @@
         <Button @click="footerDialogOpen = true"> 打开带操作的 Dialog </Button>
 
         <Dialog
-          v-model:open="footerDialogOpen"
+          v-if="footerDialogOpen"
+          :on-close="() => (footerDialogOpen = false)"
           title="删除部署环境"
           subtitle="此操作会停止当前环境中的所有运行实例。"
           role="alertdialog"
@@ -61,14 +66,21 @@
           <Button @click="largeDialogOpen = true"> Large </Button>
         </div>
 
-        <Dialog v-model:open="smallDialogOpen" title="小型 Dialog" width="small" height="small">
+        <Dialog
+          v-if="smallDialogOpen"
+          :on-close="() => (smallDialogOpen = false)"
+          title="小型 Dialog"
+          width="small"
+          height="small"
+        >
           <Dialog.Body>
             <p>小尺寸适合非常短的确认或说明内容。</p>
           </Dialog.Body>
         </Dialog>
 
         <Dialog
-          v-model:open="largeDialogOpen"
+          v-if="largeDialogOpen"
+          :on-close="() => (largeDialogOpen = false)"
           title="大型 Dialog"
           subtitle="用于需要更多空间的编辑或选择任务。"
           width="xlarge"
@@ -84,6 +96,47 @@
           <Dialog.Footer>
             <Button @click="largeDialogOpen = false"> 关闭 </Button>
           </Dialog.Footer>
+        </Dialog>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
+    <ComponentDocsSection title="默认页脚与响应式位置">
+      <template #description>
+        footerButtons 指定操作和初始焦点。position 按 narrow、regular
+        设置；主体空间不足时，页脚改为水平滚动。
+      </template>
+      <ComponentDocsDemoBlock :code="responsiveDemoCode">
+        <Button @click="responsiveOpen = true">打开响应式 Dialog</Button>
+        <Dialog
+          v-if="responsiveOpen"
+          :on-close="closeResponsive"
+          title="响应式任务"
+          :position="{ narrow: 'bottom', regular: 'right' }"
+          align="top"
+          :footer-buttons="responsiveButtons"
+        >
+          <p>窄屏在底部，常规屏和宽屏在右侧；默认聚焦继续按钮。</p>
+        </Dialog>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
+    <ComponentDocsSection title="自定义渲染与焦点">
+      <template #description>
+        renderHeader 可替换默认标题区域，通过 dialogLabelId 关联可访问名称。 initialFocusRef 和
+        returnFocusRef 指定打开与关闭时的焦点。
+      </template>
+      <ComponentDocsDemoBlock :code="renderDemoCode">
+        <button ref="returnTarget" type="button" @click="customOpen = true">
+          打开自定义 Dialog
+        </button>
+        <Dialog
+          v-if="customOpen"
+          v-bind="focusProps"
+          :on-close="() => (customOpen = false)"
+          title="自定义标题"
+          :render-header="renderHeader"
+        >
+          <input ref="initialTarget" aria-label="名称" placeholder="初始焦点" />
         </Dialog>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -120,9 +173,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { h, ref, shallowRef } from 'vue'
 import { Button } from '@/components/primer-vue/Button'
-import { Dialog } from '@/components/primer-vue/Dialog'
+import {
+  Dialog,
+  type DialogButtonProps,
+  type DialogHeaderProps,
+  type DialogProps,
+} from '@/components/primer-vue/Dialog'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
@@ -133,6 +191,73 @@ const basicDialogOpen = ref(false)
 const footerDialogOpen = ref(false)
 const smallDialogOpen = ref(false)
 const largeDialogOpen = ref(false)
+
+const responsiveOpen = ref(false)
+const closeResponsive = () => {
+  responsiveOpen.value = false
+}
+const responsiveButtons: DialogButtonProps[] = [
+  { content: '取消', onClick: closeResponsive },
+  { content: '继续', buttonType: 'primary', autoFocus: true, onClick: closeResponsive },
+]
+const customOpen = ref(false)
+const returnTarget = shallowRef<HTMLElement | null>(null)
+const initialTarget = shallowRef<HTMLElement | null>(null)
+const focusProps: Pick<DialogProps, 'initialFocusRef' | 'returnFocusRef'> = {
+  initialFocusRef: initialTarget,
+  returnFocusRef: returnTarget,
+}
+const renderHeader = (props: DialogHeaderProps) =>
+  h(Dialog.Header<'div'>, null, {
+    default: () => [
+      h(Dialog.Title, { id: props.dialogLabelId }, { default: () => props.title }),
+      h(Dialog.CloseButton, {
+        onClose: () => props.onClose('close-button'),
+        onKeydown: (event: KeyboardEvent) => {
+          if (event.key === 'Escape') {
+            event.stopPropagation()
+            props.onClose('escape')
+          }
+        },
+      }),
+    ],
+  })
+const responsiveDemoCode = `<script setup lang="ts">
+import { ref } from 'vue'
+import { Dialog, type DialogButtonProps } from '@/components/primer-vue/Dialog'
+const open = ref(false)
+const close = () => { open.value = false }
+const buttons: DialogButtonProps[] = [
+  { content: '取消', onClick: close },
+  { content: '继续', buttonType: 'primary', autoFocus: true, onClick: close },
+]
+<\/script>
+<template>
+  <button @click="open = true">打开</button>
+  <Dialog v-if="open" :on-close="close" title="响应式任务"
+    :position="{ narrow: 'bottom', regular: 'right' }"
+    align="top" :footer-buttons="buttons">任务内容</Dialog>
+</template>`
+const renderDemoCode = `<script setup lang="ts">
+import { h, ref, shallowRef } from 'vue'
+import { Dialog, type DialogHeaderProps, type DialogProps } from '@/components/primer-vue/Dialog'
+const open = ref(false)
+const initialTarget = shallowRef<HTMLElement | null>(null)
+const returnTarget = shallowRef<HTMLElement | null>(null)
+const focusProps: Pick<DialogProps, 'initialFocusRef' | 'returnFocusRef'> = {
+  initialFocusRef: initialTarget, returnFocusRef: returnTarget,
+}
+const renderHeader = (props: DialogHeaderProps) => h(Dialog.Header<'div'>, null, {
+  default: () => h(Dialog.Title, { id: props.dialogLabelId }, { default: () => props.title }),
+})
+<\/script>
+<template>
+  <button ref="returnTarget" @click="open = true">打开</button>
+  <Dialog v-if="open" v-bind="focusProps" :on-close="() => (open = false)"
+    title="自定义标题" :render-header="renderHeader">
+    <input ref="initialTarget" aria-label="名称" />
+  </Dialog>
+</template>`
 
 const largeDialogItems = [
   '对话框内容超过可用高度时，主体区域会独立滚动，页背景保持锁定。',
@@ -151,7 +276,7 @@ const open = ref(false)
 <template>
   <Button @click="open = true">打开 Dialog</Button>
 
-  <Dialog v-model:open="open" title="创建新项目">
+  <Dialog v-if="open" :on-close="() => (open = false)" title="创建新项目">
     <Dialog.Body>
       <p>Dialog 用于承载短期任务，不应替代完整页面。</p>
     </Dialog.Body>
@@ -170,7 +295,7 @@ const open = ref(false)
   <Button @click="open = true">打开带操作的 Dialog</Button>
 
   <Dialog
-    v-model:open="open"
+    v-if="open" :on-close="() => (open = false)"
     title="删除部署环境"
     subtitle="此操作会停止当前环境中的所有运行实例。"
     role="alertdialog"
@@ -198,11 +323,11 @@ const largeOpen = ref(false)
   <Button @click="smallOpen = true">Small</Button>
   <Button @click="largeOpen = true">Large</Button>
 
-  <Dialog v-model:open="smallOpen" title="小型 Dialog" width="small" height="small">
+  <Dialog v-if="smallOpen" :on-close="() => (smallOpen = false)" title="小型 Dialog" width="small" height="small">
     <Dialog.Body>小尺寸适合非常短的确认或说明内容。</Dialog.Body>
   </Dialog>
 
-  <Dialog v-model:open="largeOpen" title="大型 Dialog" width="xlarge" height="large">
+  <Dialog v-if="largeOpen" :on-close="() => (largeOpen = false)" title="大型 Dialog" width="xlarge" height="large">
     <Dialog.Body>大型内容区域会独立滚动。</Dialog.Body>
   </Dialog>
 </template>`
@@ -216,54 +341,104 @@ const apiTableColumns: TableColumn[] = [
 
 const dialogPropsRows = [
   {
-    name: 'open',
-    default: 'false',
-    type: 'boolean',
-    description: '控制 Dialog 是否展示，支持 v-model:open。',
+    name: 'onClose',
+    default: '必填',
+    type: "(gesture: 'close-button' | 'escape') => void",
+    description:
+      '请求关闭时调用；Esc 和背板点击均为 escape，关闭按钮为 close-button。组件不会自行卸载。',
   },
   {
     name: 'title',
-    default: '-',
-    type: 'string',
-    description: 'Dialog 的可见标题，同时作为 aria-labelledby 的来源。',
+    default: "'Dialog'",
+    type: 'VNodeChild',
+    description: '可见标题，与 aria-labelledby 关联。',
   },
   {
     name: 'subtitle',
     default: "''",
-    type: 'string',
-    description: '标题下方的辅助说明，同时作为 aria-describedby 的来源。',
+    type: 'VNodeChild',
+    description: '可选副标题，与 aria-describedby 关联。',
+  },
+  {
+    name: 'renderHeader',
+    default: '内置 Header',
+    type: '(props: DialogHeaderProps) => VNodeChild',
+    description:
+      '接收默认化的 title、subtitle、role 和 dialogLabelId、dialogDescriptionId；直接 Header 子节点优先。自定义标题须设置对应 ID。',
+  },
+  {
+    name: 'renderBody',
+    default: '内置 Body',
+    type: '(props: DialogProps & { children?: VNodeChild }) => VNodeChild',
+    description: '接收未匹配结构插槽的 children；直接 Body 子节点优先。',
+  },
+  {
+    name: 'renderFooter',
+    default: '内置 Footer',
+    type: '(props: DialogProps) => VNodeChild',
+    description: '直接 Footer 子节点优先。返回 null 或 undefined 表示没有页脚。',
+  },
+  {
+    name: 'footerButtons',
+    default: '无页脚',
+    type: 'DialogButtonProps[]',
+    description: '省略时不渲染页脚，空数组仍渲染空页脚；内置页脚支持左右箭头和 Tab 导航。',
   },
   {
     name: 'width',
     default: "'xlarge'",
-    type: "'small' | 'medium' | 'large' | 'xlarge' | string | number",
-    description:
-      '控制 Dialog 宽度：small 为 296px，medium 为 320px，large 为 480px，xlarge 为 640px。也支持有效 CSS 宽度（如 400px、80rem），数字按像素处理。最小宽度为 296px，最大宽度通常为视口宽度减 64px。',
+    type: "'small' | 'medium' | 'large' | 'xlarge' | CSSProperties['width']",
+    description: '预设宽度分别为 296、320、480、640px；支持 CSS 宽度和像素数值，受位置及视口约束。',
   },
   {
     name: 'height',
     default: "'auto'",
     type: "'small' | 'large' | 'auto'",
+    description: 'small 为 480px，large 为 640px，auto 随内容变化，受位置及视口约束。',
+  },
+  {
+    name: 'position',
+    default: "{ narrow: 'center', regular: 'center' }",
+    type: "'center' | 'left' | 'right' | { narrow?, regular?, wide? }",
     description:
-      '控制 Dialog 高度：small 为 480px，large 为 640px，auto 根据内容变化。最大高度通常为视口高度减 64px；视口宽度不超过 767px 且高度不超过 280px 时，宽高的视口预留均改为 12px。',
+      '响应式类型支持 center/left/right/bottom/fullscreen；字符串仅设置 regular。基准 CSS 处理 regular 的 center/left/right，以及窄屏（≤767px）的 center/bottom/fullscreen；wide 仅透传属性，没有独立布局规则。',
+  },
+  {
+    name: 'align',
+    default: '-',
+    type: "'top' | 'center' | 'bottom'",
+    description: 'center 位置的垂直对齐方式；省略时居中。',
   },
   {
     name: 'role',
     default: "'dialog'",
     type: "'dialog' | 'alertdialog'",
-    description: '设置 ARIA role，危险确认可使用 alertdialog。',
+    description: 'ARIA 角色。',
   },
   {
-    name: 'closeOnEscape',
-    default: 'true',
-    type: 'boolean',
-    description: '是否允许按 Esc 关闭。',
+    name: 'initialFocusRef',
+    default: 'autoFocus 操作按钮或首个可聚焦元素',
+    type: 'Ref<HTMLElement | null>',
+    description: '指定初始焦点；通过包含 ref 的对象 v-bind 传入，避免模板自动解包。',
   },
   {
-    name: 'closeOnBackdrop',
-    default: 'true',
-    type: 'boolean',
-    description: '是否允许点击背板关闭。',
+    name: 'returnFocusRef',
+    default: '打开前的焦点',
+    type: 'Ref<HTMLElement | null>',
+    description: '关闭时将焦点还给指定元素；通过包含 ref 的对象 v-bind 传入。',
+  },
+  {
+    name: 'className / style',
+    default: '-',
+    type: 'string / CSSProperties',
+    description:
+      '应用于根 div；数值样式遵循 React 的单位规则。自定义 width 优先于 style 中的 --dialog-width。',
+  },
+  {
+    name: 'data-component',
+    default: "'Dialog'",
+    type: 'string',
+    description: '根节点的组件标识。',
   },
 ]
 
@@ -273,7 +448,29 @@ const slotTableColumns: TableColumn[] = [
 ]
 
 const slotTableRows = [
-  { name: 'Dialog default', description: '放置 Dialog.Body、Dialog.Footer 或自定义内容。' },
+  {
+    name: 'Dialog default',
+    description:
+      '直接放置 Header、Body、Footer 替换对应区域；其余内容进入默认 Body。只使用首个匹配节点。',
+  },
+  {
+    name: 'Dialog.Header / Title / Subtitle',
+    description: '自定义标题区域；Title 固定 h1，Subtitle 固定 h2，须设置与 Dialog 关联的 ID。',
+  },
+  {
+    name: 'Dialog.Buttons',
+    description:
+      'buttons 必填。content 为 VNodeChild，buttonType 为 default/normal/primary/danger，其他属性遵循 Button。仅首个 autoFocus 按钮绑定焦点引用；Dialog 会将 autofocus 按钮的 ref 替换为内部引用。',
+  },
+  {
+    name: 'Dialog.CloseButton',
+    description: 'onClose 必填，onKeydown 可选；使用 Close 标签与 invisible IconButton。',
+  },
+  {
+    name: '组件引用',
+    description:
+      'Dialog、结构组件和标题组件暴露 element。Header、Body、Footer 固定渲染 div，as 作为属性透传，遵循基准的实际行为。',
+  },
   { name: 'Dialog.Body default', description: '主体内容区域，超出可用高度时独立滚动。' },
   { name: 'Dialog.Footer default', description: '底部操作区域，通常放置 Button。' },
 ]
@@ -286,14 +483,9 @@ const eventTableColumns: TableColumn[] = [
 
 const eventTableRows = [
   {
-    name: 'update:open',
-    payload: 'boolean',
-    description: 'open 状态变更事件，用于 v-model:open。',
-  },
-  {
-    name: 'close',
-    payload: "'close-button' | 'escape' | 'backdrop'",
-    description: '用户通过关闭按钮、Esc 或背板请求关闭时触发。',
+    name: 'onClose',
+    payload: "'close-button' | 'escape'",
+    description: '必填回调属性，用于请求关闭；由调用方更新 v-if。',
   },
 ]
 </script>

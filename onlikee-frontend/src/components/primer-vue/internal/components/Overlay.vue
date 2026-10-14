@@ -21,7 +21,7 @@ import { useFeatureFlag } from '../../FeatureFlags'
 import { registerEscapeHandler, registerOutsideClickHandler } from '../documentRegistries'
 import type { OverlayProps, OverlayCloseGesture } from './overlayTypes'
 import { normalizeReactStyle } from '../style'
-import { getPortalRoot, registerPortalRoot } from '../../Portal'
+import { ensureDefaultPortal, getPortalRoot, usePortalContext } from '../../Portal'
 
 defineOptions({ name: 'Overlay', inheritAttrs: false })
 const props = withDefaults(defineProps<OverlayProps>(), {
@@ -47,6 +47,10 @@ const emit = defineEmits<{
 }>()
 const mounted = shallowRef(false)
 const portalRoot = shallowRef<Element>()
+const portalContext = usePortalContext()
+const portalContainerName = computed(
+  () => props.portalContainerName ?? portalContext.value.portalContainerName,
+)
 const cssAnchorName = `--primer-overlay-${useId().replace(/[^a-zA-Z0-9_-]/g, '-')}`
 const attrs = useAttrs()
 const dataComponent = computed(() => attrs['data-component'])
@@ -351,33 +355,21 @@ function resolvePortalRoot() {
     portalRoot.value = document.body
     return
   }
-  if (props.portalContainerName) {
-    const container = getPortalRoot(props.portalContainerName)
+  if (portalContainerName.value !== undefined) {
+    const container = getPortalRoot(portalContainerName.value)
     if (!container)
-      throw new Error(`Portal container '${props.portalContainerName}' is not yet registered.`)
+      throw new Error(`Portal container '${portalContainerName.value}' is not yet registered.`)
     portalRoot.value = container
     return
   }
-  const registered = getPortalRoot('__default__')
-  if (registered && document.body.contains(registered)) {
-    portalRoot.value = registered
-    return
-  }
-  let container = document.getElementById('__primerVuePortalRoot__')
-  if (!container) {
-    container = document.createElement('div')
-    container.id = '__primerVuePortalRoot__'
-    Object.assign(container.style, { position: 'absolute', top: '0', left: '0', width: '100%' })
-    ;(document.querySelector('[data-portal-root]') ?? document.body).appendChild(container)
-  }
-  portalRoot.value = container
-  registerPortalRoot(container)
+  ensureDefaultPortal()
+  portalRoot.value = getPortalRoot('__default__')
 }
 onMounted(() => {
-  if (props.open || !props.portalContainerName) resolvePortalRoot()
+  if (props.open || portalContainerName.value === undefined) resolvePortalRoot()
   mounted.value = true
 })
-watch([() => props.open, () => props.portalContainerName, disablePortal], ([open]) => {
+watch([() => props.open, portalContainerName, disablePortal], ([open]) => {
   if (mounted.value && open) resolvePortalRoot()
 })
 onBeforeUnmount(() => {

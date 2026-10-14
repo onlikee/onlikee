@@ -79,6 +79,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/branch-name.vue'),
       },
       {
+        path: 'counter-label',
+        name: 'CounterLabel',
+        component: () => import('../views/components/counter-label.vue'),
+      },
+      {
         path: 'copy-button',
         name: 'CopyButton',
         component: () => import('../views/components/copy-button.vue'),
@@ -260,6 +265,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         path: 'dialog',
         name: 'Dialog',
         component: () => import('../views/components/dialog.vue'),
+      },
+      {
+        path: 'confirmation-dialog',
+        name: 'ConfirmationDialog',
+        component: () => import('../views/components/confirmation-dialog.vue'),
       },
       {
         path: 'banner',
