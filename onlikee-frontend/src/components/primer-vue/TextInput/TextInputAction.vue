@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, useAttrs, useSlots, type Component, useCssModule } from 'vue'
 import { Button, IconButton } from '../Button'
 import type { ButtonA11yProps } from '../Button/types'
-import Tooltip from '../TooltipV2/Tooltip.vue'
+import Tooltip from '../Tooltip/Tooltip.vue'
 import type { TextInputActionOptions } from './types'
 
 defineOptions({ inheritAttrs: false })

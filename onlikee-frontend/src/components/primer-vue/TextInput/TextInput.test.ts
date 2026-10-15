@@ -202,7 +202,7 @@ describe('TextInput visual and action slots', () => {
     await button.trigger('click')
     expect(click).toHaveBeenCalledTimes(1)
     expect(document.activeElement).toBe(wrapper.get('input').element)
-    // 点击后 TextInput 把焦点移入 input → button blur → TooltipV2 关闭气泡
+    // 点击后 TextInput 把焦点移入 input → button blur → Tooltip 关闭气泡
     await nextTick()
     expect(tooltip?.classList.contains(':popover-open')).toBe(false)
   })

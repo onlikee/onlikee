@@ -124,11 +124,6 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/circle-badge.vue'),
       },
       {
-        path: 'dropdown',
-        name: 'Dropdown',
-        component: () => import('../views/components/dropdown.vue'),
-      },
-      {
         path: 'action-list',
         name: 'ActionList',
         component: () => import('../views/components/action-list.vue'),

@@ -381,7 +381,7 @@ import { h, ref } from 'vue'
 import { Button, IconButton, LinkButton, ButtonBase } from '@/components/primer-vue/Button'
 import { BellIcon, ArrowUpRightIcon, SearchIcon, CheckIcon } from '@onlikee/octicons-vue'
 import { KeybindingHint } from '@/components/primer-vue/KeybindingHint'
-import { Tooltip } from '@/components/primer-vue/TooltipV2'
+import { Tooltip } from '@/components/primer-vue/Tooltip'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
@@ -741,7 +741,7 @@ const keybindingDemoCode = `<script setup lang="ts">
 import { h } from 'vue'
 import { Button, IconButton } from '@/components/primer-vue/Button'
 import { KeybindingHint } from '@/components/primer-vue/KeybindingHint'
-import { Tooltip } from '@/components/primer-vue/TooltipV2'
+import { Tooltip } from '@/components/primer-vue/Tooltip'
 import { BellIcon, SearchIcon } from '@onlikee/octicons-vue'
 
 const saveKeybinding = h(KeybindingHint, { keys: 'Mod+S' })
@@ -764,7 +764,7 @@ const saveKeybinding = h(KeybindingHint, { keys: 'Mod+S' })
 const interactionDemoCode = `<script setup lang="ts">
 import { ref } from 'vue'
 import { Button } from '@/components/primer-vue/Button'
-import { Tooltip } from '@/components/primer-vue/TooltipV2'
+import { Tooltip } from '@/components/primer-vue/Tooltip'
 
 const isSaving = ref(false)
 <\\/script>

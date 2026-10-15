@@ -194,7 +194,6 @@ const navSections = ref([
       { path: '/component/container', label: 'Container 布局容器' },
       { path: '/component/stack', label: 'Stack 堆叠布局' },
       { path: '/component/divider', label: 'Divider 分隔线' },
-      { path: '/component/dropdown', label: 'Dropdown 下拉菜单' },
       { path: '/component/link', label: 'Link 链接' },
       { path: '/component/truncate', label: 'Truncate 文本截断' },
       { path: '/component/text', label: 'Text 文本' },

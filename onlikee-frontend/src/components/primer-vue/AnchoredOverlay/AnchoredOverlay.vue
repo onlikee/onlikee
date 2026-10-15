@@ -35,6 +35,9 @@ const styles = useCssModule()
 const generatedId = useId()
 const popoverId = `${useId()}-overlay`
 const anchor = shallowRef<HTMLElement | null>(null)
+const anchorTarget = shallowRef<
+  HTMLElement | { element?: HTMLElement | null; $el?: unknown } | null
+>(null)
 const overlay = shallowRef<{
   element: HTMLElement | null
   position?: AnchorPosition
@@ -54,7 +57,7 @@ const cssAnchor = computed(
     !props.cssAnchorPositioningSettings?.disable,
 )
 const usePopover = computed(() => cssAnchor.value && props.renderAs === 'popover')
-const anchorElement = computed(() => props.anchorRef?.value ?? anchor.value)
+const anchorElement = computed(() => (props.anchorRef ? props.anchorRef.value : anchor.value))
 const anchorName = `--anchored-overlay-anchor-${popoverId.replace(/[^a-zA-Z0-9_-]/g, '_')}`
 watch(
   [anchorElement, cssAnchor],
@@ -70,10 +73,28 @@ watch(
 )
 
 function setAnchor(value: unknown) {
-  const exposed = value as { element?: HTMLElement; $el?: HTMLElement } | null
-  anchor.value = value instanceof HTMLElement ? value : (exposed?.element ?? exposed?.$el ?? null)
-  assignElementRef(props.anchorRef, anchor.value)
+  anchorTarget.value = value as typeof anchorTarget.value
+  // Ref callbacks still run during unmount after setup watchers have stopped.
+  if (value === null) {
+    anchor.value = null
+    assignElementRef(props.anchorRef, null)
+  }
 }
+watch(
+  () => {
+    const target = anchorTarget.value
+    if (!target) return null
+    // An exposed element may become available after the component ref is assigned.
+    const element =
+      target instanceof HTMLElement ? target : 'element' in target ? target.element : target.$el
+    return element instanceof HTMLElement ? element : null
+  },
+  (element) => {
+    anchor.value = element
+    assignElementRef(props.anchorRef, element)
+  },
+  { flush: 'sync' },
+)
 watch(
   () => props.anchorRef,
   (next, previous) => {

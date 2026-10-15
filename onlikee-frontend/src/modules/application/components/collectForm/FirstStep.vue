@@ -34,34 +34,32 @@
       </div>
 
       <div class="visibility-select-wrap">
-        <Dropdown ref="visibilityDropdownRef">
-          <Dropdown.trigger>
-            <Button
-              :leading-visual="collectVisibility === '私有的' ? LockIcon : RepoIcon"
-              :trailing-visual="TriangleDownIcon"
-            >
-              {{ collectVisibility === '私有的' ? '私有的' : '公开的' }}
-            </Button>
-          </Dropdown.trigger>
-          <Dropdown.content width="medium">
-            <ActionList role="listbox" aria-label="应用可见性" selection-variant="single">
+        <AnchoredOverlay
+          :open="visibilityOpen"
+          :render-anchor="renderVisibilityAnchor"
+          :overlay-props="{ role: 'dialog', 'aria-label': '选择可见性' }"
+          :close-button-props="{ 'aria-label': '关闭可见性选择' }"
+          :focus-zone-settings="{ disabled: true }"
+          @open="visibilityOpen = true"
+          @close="visibilityOpen = false"
+        >
+          <div class="visibility-options">
+            <ActionList role="listbox" aria-label="选择选项" selection-variant="single">
               <ActionList.Item
                 v-for="item in visibilityOptions"
-                :key="item.value"
-                :selected="collectVisibility === item.value"
-                @select="selectVisibility(item.value)"
+                :key="item.label"
+                :selected="props.collectVisibility === item.label"
+                @select="selectVisibility(item.label)"
               >
-                <ActionList.LeadingVisual>
-                  <component :is="item.icon" />
-                </ActionList.LeadingVisual>
-                {{ item.value }}
-                <ActionList.Description variant="block">
-                  {{ item.description }}
-                </ActionList.Description>
+                <ActionList.LeadingVisual><component :is="item.icon" /></ActionList.LeadingVisual>
+                {{ item.label }}
+                <ActionList.Description variant="block">{{
+                  item.description
+                }}</ActionList.Description>
               </ActionList.Item>
             </ActionList>
-          </Dropdown.content>
-        </Dropdown>
+          </div>
+        </AnchoredOverlay>
       </div>
     </section>
 
@@ -86,12 +84,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { h, ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { TextInput } from '@/components/primer-vue/TextInput'
 import { Textarea } from '@/components/primer-vue/Textarea'
 import { Button } from '@/components/primer-vue/Button'
-import { Dropdown } from '@/components/primer-vue/Dropdown'
+import { AnchoredOverlay, type AnchorRenderProps } from '@/components/primer-vue/AnchoredOverlay'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import RepoIcon from '@onlikee/octicons-vue/icons/repo'
 import TriangleDownIcon from '@onlikee/octicons-vue/icons/triangle-down'
@@ -107,7 +105,7 @@ interface Props {
   collectDescriptionError?: string
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   collectNameError: '',
   collectUrlError: '',
   collectDescriptionError: '',
@@ -122,23 +120,34 @@ const emit = defineEmits<{
 
 const visibilityOptions = [
   {
-    value: '公开的',
+    label: '公开的',
     description: '你的应用被公开，所有人都能够在应用广场上看见它。',
     icon: RepoIcon,
   },
   {
-    value: '私有的',
+    label: '私有的',
     description: '你可以在个人应用中查看和管理它。当然别人也可以通过URL进行访问。',
     icon: LockIcon,
   },
 ]
 
-const visibilityDropdownRef = ref<InstanceType<typeof Dropdown>>()
-
+const visibilityOpen = ref(false)
 function selectVisibility(value: string) {
   emit('update:collect-visibility', value)
-  visibilityDropdownRef.value?.close()
+  visibilityOpen.value = false
 }
+const renderVisibilityAnchor = (anchorProps: AnchorRenderProps) =>
+  h(
+    Button,
+    {
+      ...anchorProps,
+      type: 'button',
+      'aria-haspopup': 'dialog',
+      leadingVisual: props.collectVisibility === '私有的' ? LockIcon : RepoIcon,
+      trailingVisual: TriangleDownIcon,
+    },
+    () => props.collectVisibility,
+  )
 </script>
 
 <style scoped>

@@ -8,7 +8,7 @@ import type {
   NativeElements,
   VNode,
 } from 'vue'
-import type { TooltipDirection } from '../TooltipV2/types'
+import type { TooltipDirection } from '../Tooltip/types'
 
 export type VariantType = 'default' | 'primary' | 'invisible' | 'danger' | 'link'
 export type Size = 'small' | 'medium' | 'large'

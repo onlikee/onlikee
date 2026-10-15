@@ -6,7 +6,7 @@ import { defineComponent, h, nextTick, provide, shallowRef, type VNode } from 'v
 import { ActionMenu } from './index'
 import { ActionList } from '../ActionList'
 import { Button } from '../Button'
-import Tooltip from '../TooltipV2/Tooltip.vue'
+import Tooltip from '../Tooltip/Tooltip.vue'
 import { FeatureFlags } from '../FeatureFlags'
 import { getAnchoredPosition } from '@primer/behaviors'
 import { dialogContextKey } from '../Dialog/context'
@@ -849,4 +849,43 @@ describe('ActionMenu public behavior', () => {
     expect(document.activeElement).toBe(items()[0])
     expect(overlay.value?.element?.getAttribute('data-focus-trap')).toBe('active')
   })
+})
+
+it('keeps tooltip ids distinct from menu anchor ids on either wrapper side', async () => {
+  for (const insideAnchor of [true, false]) {
+    const tooltip = () =>
+      h(
+        Tooltip,
+        {
+          text: 'Additional context',
+          ...(insideAnchor ? { id: 'custom-menu-tip' } : {}),
+        },
+        {
+          default: () =>
+            insideAnchor
+              ? h(Button, null, { default: () => 'Menu' })
+              : h(ActionMenu.Button, null, { default: () => 'Menu' }),
+        },
+      )
+    const wrapper = render(() => [
+      insideAnchor ? h(ActionMenu.Anchor, null, { default: tooltip }) : tooltip(),
+      h(ActionMenu.Overlay, null, {
+        default: () => h(ActionList, null, { default: () => item('Copy') }),
+      }),
+    ])
+    await settle()
+    const button = wrapper.get('button')
+    const tip = wrapper.get('[data-component="Tooltip"]')
+    const tipId = tip.attributes('id')!
+    if (insideAnchor) expect(tipId).toBe('custom-menu-tip')
+    expect(button.attributes('id')).not.toBe(tipId)
+    expect(button.attributes('aria-describedby')).toContain(tipId)
+    expect(document.querySelectorAll('[id="' + tipId + '"]')).toHaveLength(1)
+    click(button.element)
+    await settle()
+    expect(menus()).toHaveLength(1)
+    expect(menus()[0].getAttribute('aria-labelledby')).toBe(button.attributes('id'))
+    wrapper.unmount()
+    wrappers.splice(wrappers.indexOf(wrapper), 1)
+  }
 })

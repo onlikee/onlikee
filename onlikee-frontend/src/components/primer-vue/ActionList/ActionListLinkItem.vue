@@ -3,7 +3,7 @@
 import classes from './ActionList.module.css'
 import { defineComponent, h, ref, type Component, type PropType } from 'vue'
 import Item from './ActionListItemBase.vue'
-import Tooltip from '../TooltipV2/Tooltip.vue'
+import Tooltip from '../Tooltip/Tooltip.vue'
 import { normalizeReactStyle } from '../internal/style'
 import { exposeElement } from './context'
 import type { ActionListItemSize, ActionListItemVariant } from './types'

@@ -7,7 +7,7 @@ import type {
   VNode,
   VNodeChild,
 } from 'vue'
-import type { TooltipDirection } from '../TooltipV2/types'
+import type { TooltipDirection } from '../Tooltip/types'
 
 export type ActionListVariant = 'inset' | 'horizontal-inset' | 'full'
 export type ActionListSelectionVariant = 'single' | 'radio' | 'multiple'

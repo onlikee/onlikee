@@ -4,10 +4,10 @@
       <slot />
     </div>
     <div class="demo-actions">
-      <Tooltip :content="codeCopied ? copiedLabel : copyLabel" placement="bottom">
+      <Tooltip :text="codeCopied ? copiedLabel : copyLabel" direction="s" type="label">
         <CopyButton @click="copyCode" />
       </Tooltip>
-      <Tooltip :content="codeVisible ? hideCodeLabel : showCodeLabel" placement="bottom">
+      <Tooltip :text="codeVisible ? hideCodeLabel : showCodeLabel" direction="s" type="label">
         <button class="action-btn" @click="codeVisible = !codeVisible">
           <CodeIcon />
         </button>

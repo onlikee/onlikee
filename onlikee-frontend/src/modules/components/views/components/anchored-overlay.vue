@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { h, shallowRef } from 'vue'
+import { computed, h, shallowRef } from 'vue'
 import { AnchoredOverlay, type AnchorRenderProps } from '@/components/primer-vue/AnchoredOverlay'
+import { ActionList } from '@/components/primer-vue/ActionList'
 import { Button } from '@/components/primer-vue/Button'
+import { LockIcon, RepoIcon, TriangleDownIcon } from '@onlikee/octicons-vue'
 import { FeatureFlags } from '@/components/primer-vue/FeatureFlags'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
@@ -18,6 +20,96 @@ const detachedBindings = { anchorRef: detachedAnchor }
 const basicAnchor = (props: AnchorRenderProps) => h(Button, props, () => '打开浮层')
 const fullscreenAnchor = (props: AnchorRenderProps) => h(Button, props, () => '响应式浮层')
 const popoverAnchor = (props: AnchorRenderProps) => h(Button, props, () => 'Popover 浮层')
+const visibilityOpen = shallowRef(false)
+const visibility = shallowRef('公开的')
+const selectedVisibility = computed({
+  get: () => visibility.value,
+  set: (value: string) => {
+    visibility.value = value
+    visibilityOpen.value = false
+  },
+})
+const visibilityOptions = [
+  { label: '公开的', description: '所有人都能够在应用广场上看见它。', icon: RepoIcon },
+  { label: '私有的', description: '仅在个人应用中展示，其他人可通过 URL 访问。', icon: LockIcon },
+]
+const visibilityAnchor = (props: AnchorRenderProps) =>
+  h(
+    Button,
+    {
+      ...props,
+      type: 'button',
+      'aria-haspopup': 'dialog',
+      leadingVisual: selectedVisibility.value === '私有的' ? LockIcon : RepoIcon,
+      trailingVisual: TriangleDownIcon,
+    },
+    () => selectedVisibility.value,
+  )
+
+const visibilityCode = `<script setup lang="ts">
+import { computed, h, shallowRef } from 'vue'
+import { AnchoredOverlay, type AnchorRenderProps } from '@/components/primer-vue/AnchoredOverlay'
+import { ActionList } from '@/components/primer-vue/ActionList'
+import { Button } from '@/components/primer-vue/Button'
+import { LockIcon, RepoIcon, TriangleDownIcon } from '@onlikee/octicons-vue'
+
+const open = shallowRef(false)
+const visibility = shallowRef('公开的')
+const selectedVisibility = computed({
+  get: () => visibility.value,
+  set: (value: string) => {
+    visibility.value = value
+    open.value = false
+  },
+})
+const visibilityOptions = [
+  { label: '公开的', description: '所有人都能够在应用广场上看见它。', icon: RepoIcon },
+  { label: '私有的', description: '仅在个人应用中展示，其他人可通过 URL 访问。', icon: LockIcon },
+]
+const renderAnchor = (props: AnchorRenderProps) => h(Button, {
+  ...props,
+  type: 'button',
+  'aria-haspopup': 'dialog',
+  leadingVisual: selectedVisibility.value === '私有的' ? LockIcon : RepoIcon,
+  trailingVisual: TriangleDownIcon,
+}, () => selectedVisibility.value)
+<\/script>
+
+<template>
+  <AnchoredOverlay
+    :open="open"
+    :render-anchor="renderAnchor"
+    :variant="{ regular: 'anchored', narrow: 'fullscreen' }"
+    :overlay-props="{ role: 'dialog', 'aria-label': '选择可见性' }"
+    :close-button-props="{ 'aria-label': '关闭可见性选择' }"
+    :focus-zone-settings="{ disabled: true }"
+    @open="open = true"
+    @close="open = false"
+  >
+    <div class="visibility-options">
+      <ActionList role="listbox" aria-label="选择选项" selection-variant="single">
+        <ActionList.Item
+          v-for="item in visibilityOptions"
+          :key="item.label"
+          :selected="selectedVisibility === item.label"
+          @select="selectedVisibility = item.label"
+        >
+          <ActionList.LeadingVisual><component :is="item.icon" /></ActionList.LeadingVisual>
+          {{ item.label }}
+          <ActionList.Description variant="block">{{ item.description }}</ActionList.Description>
+        </ActionList.Item>
+      </ActionList>
+    </div>
+  </AnchoredOverlay>
+</template>
+
+<style scoped>
+@media (max-width: calc(768px - 0.02px)) {
+  .visibility-options {
+    padding-top: 48px;
+  }
+}
+<\/style>`
 
 const basicCode = `<script setup lang="ts">
 import { h, shallowRef } from 'vue'
@@ -278,6 +370,41 @@ const eventRows = [
         </AnchoredOverlay>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
+    <ComponentDocsSection title="配合 ActionList 单选">
+      <template #description>
+        ActionList
+        管理选项语义和方向键导航，选择后关闭浮层。窄屏使用全屏面板，并为关闭按钮预留空间。
+      </template>
+      <ComponentDocsDemoBlock :code="visibilityCode">
+        <AnchoredOverlay
+          :open="visibilityOpen"
+          :render-anchor="visibilityAnchor"
+          :variant="{ regular: 'anchored', narrow: 'fullscreen' }"
+          :overlay-props="{ role: 'dialog', 'aria-label': '选择可见性' }"
+          :close-button-props="{ 'aria-label': '关闭可见性选择' }"
+          :focus-zone-settings="{ disabled: true }"
+          @open="visibilityOpen = true"
+          @close="visibilityOpen = false"
+        >
+          <div class="visibility-options">
+            <ActionList role="listbox" aria-label="选择选项" selection-variant="single">
+              <ActionList.Item
+                v-for="item in visibilityOptions"
+                :key="item.label"
+                :selected="selectedVisibility === item.label"
+                @select="selectedVisibility = item.label"
+              >
+                <ActionList.LeadingVisual><component :is="item.icon" /></ActionList.LeadingVisual>
+                {{ item.label }}
+                <ActionList.Description variant="block">{{
+                  item.description
+                }}</ActionList.Description>
+              </ActionList.Item>
+            </ActionList>
+          </div>
+        </AnchoredOverlay>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
     <ComponentDocsSection title="独立锚点与方向">
       <ComponentDocsDemoBlock :code="detachedCode">
         <button
@@ -344,5 +471,10 @@ const eventRows = [
 }
 .fullscreen-content {
   padding-top: 48px;
+}
+@media (max-width: calc(768px - 0.02px)) {
+  .visibility-options {
+    padding-top: 48px;
+  }
 }
 </style>

@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, Component, Ref } from 'vue'
 import type { SelectEvent } from '../ActionList/types'
-import type { TooltipDirection } from '../TooltipV2/types'
+import type { TooltipDirection } from '../Tooltip/types'
 
 export type ActionBarSize = 'small' | 'medium' | 'large'
 export type ActionBarGap = 'none' | 'condensed'

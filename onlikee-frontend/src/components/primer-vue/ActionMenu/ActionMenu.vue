@@ -20,7 +20,7 @@ import type { ActionMenuProps, MenuCloseGesture } from './types'
 import Anchor from './ActionMenuAnchor.vue'
 import Button from './ActionMenuButton.vue'
 import Overlay from './ActionMenuOverlay.vue'
-import Tooltip from '../TooltipV2/Tooltip.vue'
+import Tooltip from '../Tooltip/Tooltip.vue'
 import { isSlot } from '../composables/useSlots'
 
 defineOptions({ name: 'ActionMenu', inheritAttrs: false })
@@ -142,8 +142,9 @@ const RenderContents = () => {
   const isAnchor = (child: VNode) => {
     if (isSlot(child, Anchor) || isSlot(child, Button)) return true
     if (!isSlot(child, Tooltip)) return false
-    const tooltipChildren = child.children as { default?: () => VNode[] } | null
-    return tooltipChildren?.default?.().some((node) => isSlot(node, Button)) ?? false
+    const tooltipChildren = child.children as { default?: () => VNode | VNode[] } | null
+    const content = tooltipChildren?.default?.() ?? []
+    return (Array.isArray(content) ? content : [content]).some((node) => isSlot(node, Button))
   }
   const anchors = children.filter(isAnchor)
   return children.flatMap((child) =>

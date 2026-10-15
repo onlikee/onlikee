@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { computed, getCurrentInstance, inject, shallowRef, useAttrs } from 'vue'
 import ButtonBase from './ButtonBase.vue'
-import Tooltip from '../TooltipV2/Tooltip.vue'
-import { TOOLTIP_CONTEXT_KEY } from '../TooltipV2/TooltipContext'
-import { TOOLTIP_CONTEXT_KEY as TOOLTIP_V1_CONTEXT_KEY } from '../Tooltip/TooltipContext'
+import Tooltip from '../Tooltip/Tooltip.vue'
+import { TOOLTIP_CONTEXT_KEY } from '../Tooltip/TooltipContext'
 import classes from './ButtonBase.module.css'
 import type { IconButtonComponentProps, ButtonInstance } from './types'
 
@@ -18,14 +17,13 @@ const attrs = useAttrs()
 const instance = getCurrentInstance()!
 const normalizedProps = props as typeof props & { ariaLabel?: string; ariaLabelledby?: string }
 const tooltipContext = inject(TOOLTIP_CONTEXT_KEY, undefined)
-const tooltipContextV1 = inject(TOOLTIP_V1_CONTEXT_KEY, undefined)
 const withoutTooltip = computed(
   () =>
     props.unsafeDisableTooltip ||
     props.disabled ||
     normalizedProps.ariaLabel === undefined ||
     normalizedProps.ariaLabel === '' ||
-    Boolean(tooltipContext?.tooltipId || tooltipContextV1?.tooltipId),
+    Boolean(tooltipContext?.tooltipId),
 )
 function hasActivePopup() {
   return (
@@ -82,7 +80,7 @@ defineExpose({
     :type="description ? undefined : 'label'"
     :direction="tooltipDirection"
     :keybinding-hint="keybindingHint ?? keyshortcuts"
-    :private-disable-tooltip="hasActivePopup()"
+    :_private-disable-tooltip="hasActivePopup()"
   >
     <ButtonBase v-bind="bindings(true)" ref="button" />
   </Tooltip>

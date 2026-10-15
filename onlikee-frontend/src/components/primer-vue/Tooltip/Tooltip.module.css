@@ -1,115 +1,100 @@
-.tooltip-wrapper {
-  display: inline-flex;
-  position: relative;
+@keyframes tooltip-appear {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
-
-.tooltip {
-  --tooltip-gap: 4px;
+.primer-tooltip {
+  display: none;
+}
+.primer-tooltip[popover] {
+  margin: auto;
+  max-width: 250px;
+  overflow: visible;
+  padding: var(--overlay-paddingBlock-condensed) var(--overlay-padding-condensed);
   position: absolute;
-  z-index: 1000;
-  padding: 0.375rem 0.625rem;
-  font-size: 0.75rem;
-  line-height: 1.4;
-  white-space: nowrap;
-  border-radius: 4px;
-  pointer-events: auto;
-  background: var(--bgColor-emphasis, #25292e);
-  color: var(--fgColor-onEmphasis, #ffffff);
+  width: max-content;
+  clip: auto;
+  background: var(--tooltip-bgColor);
+  border: 0;
+  border-radius: var(--borderRadius-medium);
+  color: var(--tooltip-fgColor);
+  font: var(--text-body-shorthand-small);
+  overflow-wrap: break-word;
+  text-align: center;
+  white-space: normal;
+  -webkit-font-smoothing: subpixel-antialiased;
+  inset: auto;
+  text-wrap: balance;
 }
-
-/* 顶部位置 */
-.tooltip--top {
-  bottom: calc(100% + var(--tooltip-gap, 4px));
-  left: 50%;
-  transform: translateX(-50%);
+.primer-tooltip[popover]:popover-open {
+  display: block;
 }
-
-/* 底部位置 */
-.tooltip--bottom {
-  top: calc(100% + var(--tooltip-gap, 4px));
-  left: 50%;
-  transform: translateX(-50%);
+.primer-tooltip[popover]:global(.\:popover-open) {
+  display: block;
 }
-
-/* 左侧位置 */
-.tooltip--left {
-  right: calc(100% + var(--tooltip-gap, 4px));
-  top: 50%;
-  transform: translateY(-50%);
+@media (forced-colors: active) {
+  .primer-tooltip {
+    outline: 1px solid transparent;
+  }
 }
-
-/* 右侧位置 */
-.tooltip--right {
-  left: calc(100% + var(--tooltip-gap, 4px));
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-/* 宸︿笂 */
-.tooltip--left-top {
-  bottom: calc(100% + var(--tooltip-gap, 4px));
-  right: 0;
-}
-
-/* 宸︿笅 */
-.tooltip--left-bottom {
-  top: calc(100% + var(--tooltip-gap, 4px));
-  right: 0;
-}
-
-/* 鍙充笂 */
-.tooltip--right-top {
-  bottom: calc(100% + var(--tooltip-gap, 4px));
-  left: 0;
-}
-
-/* 鍙充笅 */
-.tooltip--right-bottom {
-  top: calc(100% + var(--tooltip-gap, 4px));
-  left: 0;
-}
-
-/* 透明桥接区：跨过间隙，避免鼠标移动时触发隐藏 */
-.tooltip--top::after,
-.tooltip--bottom::after,
-.tooltip--left::after,
-.tooltip--right::after,
-.tooltip--left-top::after,
-.tooltip--left-bottom::after,
-.tooltip--right-top::after,
-.tooltip--right-bottom::after {
+.primer-tooltip::after {
   content: '';
+  display: block;
+  height: var(--overlay-offset);
+  left: 0;
   position: absolute;
+  right: 0;
 }
-
-.tooltip--top::after,
-.tooltip--left-top::after,
-.tooltip--right-top::after {
+.primer-tooltip[data-direction='n']::after,
+.primer-tooltip[data-direction='ne']::after,
+.primer-tooltip[data-direction='nw']::after {
   top: 100%;
-  left: 0;
-  right: 0;
-  height: var(--tooltip-gap, 4px);
 }
-
-.tooltip--bottom::after,
-.tooltip--left-bottom::after,
-.tooltip--right-bottom::after {
+.primer-tooltip[data-direction='s']::after,
+.primer-tooltip[data-direction='se']::after,
+.primer-tooltip[data-direction='sw']::after {
   bottom: 100%;
-  left: 0;
-  right: 0;
-  height: var(--tooltip-gap, 4px);
 }
-
-.tooltip--left::after {
+.primer-tooltip[data-direction='w']::after {
   left: 100%;
-  top: 0;
-  bottom: 0;
-  width: var(--tooltip-gap, 4px);
 }
-
-.tooltip--right::after {
-  right: 100%;
-  top: 0;
+.primer-tooltip[data-direction='e']::after,
+.primer-tooltip[data-direction='w']::after {
   bottom: 0;
-  width: var(--tooltip-gap, 4px);
+  content: '';
+  display: block;
+  height: 100%;
+  position: absolute;
+  width: 8px;
+}
+.primer-tooltip[data-direction='e']::after {
+  margin-left: -8px;
+  right: 100%;
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  .primer-tooltip:popover-open,
+  .primer-tooltip:popover-open::before {
+    animation-delay: 0s;
+    animation-duration: 0.1s;
+    animation-fill-mode: forwards;
+    animation-name: tooltip-appear;
+    animation-timing-function: ease-in;
+  }
+  .primer-tooltip:global(.\:popover-open),
+  .primer-tooltip:global(.\:popover-open)::before {
+    animation-delay: 0s;
+    animation-duration: 0.1s;
+    animation-fill-mode: forwards;
+    animation-name: tooltip-appear;
+    animation-timing-function: ease-in;
+  }
+}
+.primer-tooltip__keybinding-hint-container.primer-tooltip__has-text-before {
+  margin-left: var(--base-size-6);
+}
+.primer-tooltip__keybinding-hint-container.primer-tooltip__has-text-before.primer-tooltip__has-multiple-hints {
+  margin-left: var(--base-size-8);
 }

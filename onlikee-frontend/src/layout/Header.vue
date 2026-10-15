@@ -16,11 +16,13 @@
 
       <div class="user-menu">
         <div v-if="!userStore.userInfo" class="nav-link" @click="goToLogin">登录</div>
-        <Dropdown v-else side="outside-bottom">
-          <Dropdown.trigger>
-            <Avatar :src="userStore.userInfo?.avatarUrl" :size="32" />
-          </Dropdown.trigger>
-          <Dropdown.content>
+        <ActionMenu v-else>
+          <ActionMenu.Anchor>
+            <button type="button" class="user-menu-trigger" aria-label="账户菜单">
+              <Avatar :src="userStore.userInfo?.avatarUrl" :size="32" />
+            </button>
+          </ActionMenu.Anchor>
+          <ActionMenu.Overlay>
             <div class="user-header">
               <Avatar :src="userStore.userInfo?.avatarUrl" :size="36" />
               <div class="user-info">
@@ -54,8 +56,8 @@
                 退出登录
               </ActionList.Item>
             </ActionList>
-          </Dropdown.content>
-        </Dropdown>
+          </ActionMenu.Overlay>
+        </ActionMenu>
       </div>
     </div>
   </header>
@@ -65,7 +67,7 @@
 import { onMounted, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { Dropdown } from '@/components/primer-vue/Dropdown'
+import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { Avatar } from '@/components/primer-vue/Avatar'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { PersonIcon, AppsIcon, SignOutIcon } from '@onlikee/octicons-vue'
@@ -221,6 +223,20 @@ watch(
 .user-menu {
   position: absolute;
   right: 2rem;
+}
+
+.user-menu-trigger {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.user-menu-trigger:focus-visible {
+  outline: 2px solid var(--focus-outlineColor);
+  outline-offset: 2px;
 }
 
 .user-header {

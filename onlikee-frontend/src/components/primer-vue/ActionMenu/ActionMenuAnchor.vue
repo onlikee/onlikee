@@ -16,7 +16,7 @@ import { ChevronRightIcon } from '@onlikee/octicons-vue'
 import { ActionList, ActionListContainerContext } from '../ActionList'
 import { useContainerContext } from '../ActionList/context'
 import { isSlot } from '../composables/useSlots'
-import Tooltip from '../TooltipV2/Tooltip.vue'
+import Tooltip from '../Tooltip/Tooltip.vue'
 import { useMenuContext } from './context'
 
 export default defineComponent({
@@ -65,19 +65,16 @@ export default defineComponent({
       // The accessibility props belong on the Tooltip's interactive child.
       if (child.type === Tooltip || isSlot(child, Tooltip)) {
         const children = child.children as { default?: () => VNode | VNode[] }
-        return cloneVNode(
-          {
-            ...child,
-            children: {
-              ...children,
-              default: () => {
-                const content = children.default?.() ?? []
-                return (Array.isArray(content) ? content : [content]).map(decorate)
-              },
+        return cloneVNode({
+          ...child,
+          children: {
+            ...children,
+            default: () => {
+              const content = children.default?.() ?? []
+              return (Array.isArray(content) ? content : [content]).map(decorate)
             },
           },
-          { id: props.id ?? menu.anchorId.value },
-        )
+        })
       }
       const original = child.props ?? {}
       const isItem = child.type === ActionList.Item || isSlot(child, ActionList.Item)

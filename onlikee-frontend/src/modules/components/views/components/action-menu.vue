@@ -3,7 +3,7 @@ import { ref, shallowRef } from 'vue'
 import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { IconButton } from '@/components/primer-vue/Button'
-import Tooltip from '@/components/primer-vue/TooltipV2/Tooltip.vue'
+import Tooltip from '@/components/primer-vue/Tooltip/Tooltip.vue'
 import { CopyIcon, PencilIcon, TrashIcon, KebabHorizontalIcon } from '@onlikee/octicons-vue'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
@@ -204,7 +204,7 @@ const modes = ['Fast forward', 'Recursive', 'Squash']
 const anchorCode = `<script setup lang="ts">
 ${imports}
 import { IconButton } from '@/components/primer-vue/Button'
-import Tooltip from '@/components/primer-vue/TooltipV2/Tooltip.vue'
+import Tooltip from '@/components/primer-vue/Tooltip/Tooltip.vue'
 import { KebabHorizontalIcon } from '@onlikee/octicons-vue'
 <\/script>
 

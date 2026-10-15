@@ -4,9 +4,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import { createSSRApp, defineComponent, h, nextTick, shallowRef } from 'vue'
 import { renderToString } from '@vue/server-renderer'
+import { apply as applyPopoverPolyfill } from '@oddbird/popover-polyfill/fn'
 import { AnchoredOverlay, type AnchorRenderProps } from './index'
 import { FeatureFlags } from '../FeatureFlags'
-import LegacyTooltip from '../Tooltip/Tooltip.vue'
+import { Button } from '../Button'
+import { TOOLTIP_CONTEXT_KEY } from '../Tooltip/TooltipContext'
 import { registerPortalRoot } from '../Portal'
 
 const wrappers: VueWrapper[] = []
@@ -339,6 +341,77 @@ describe('AnchoredOverlay public contract', () => {
 })
 
 describe('AnchoredOverlay native positioning', () => {
+  it('uses an explicitly cleared external anchor ref without falling back to the rendered anchor', async () => {
+    nativeSupport()
+    const anchorRef = shallowRef<HTMLElement | null>(null)
+    const { anchor, open } = fixture({ anchorRef }, true)
+    await settle()
+    const element = anchor.element as HTMLElement
+    expect(anchorRef.value).toBe(element)
+    expect(element.style.getPropertyValue('anchor-name')).not.toBe('')
+    anchorRef.value = null
+    await settle()
+    expect(element.style.getPropertyValue('anchor-name')).toBe('')
+    open.value = true
+    await settle()
+    expect(anchorRef.value).toBeNull()
+    expect(overlay()?.style.getPropertyValue('position-anchor')).toBe('')
+  })
+
+  it('resolves the real Button element through its Fragment root and restores focus', async () => {
+    nativeSupport()
+    const anchorRef = shallowRef<HTMLElement | null>(null)
+    const { anchor, wrapper } = fixture(
+      { anchorRef, renderAnchor: (props: AnchorRenderProps) => h(Button, props, () => 'Open') },
+      true,
+    )
+    await settle()
+    expect(anchorRef.value).toBe(anchor.element)
+    const name = anchorRef.value!.style.getPropertyValue('anchor-name')
+    expect(name).toMatch(/^--anchored-overlay-anchor-/)
+    await anchor.trigger('click')
+    await settle()
+    expect(overlay()?.style.getPropertyValue('position-anchor')).toBe(name)
+    await anchor.trigger('keydown', { key: 'Escape' })
+    await settle()
+    expect(overlay()).toBeNull()
+    expect(document.activeElement).toBe(anchor.element)
+    wrapper.unmount()
+    wrappers.splice(wrappers.indexOf(wrapper), 1)
+    expect(anchorRef.value).toBeNull()
+    expect((anchor.element as HTMLElement).style.getPropertyValue('anchor-name')).toBe('')
+  })
+
+  it('waits for an exposed element and tracks its replacement without using the Fragment placeholder', async () => {
+    nativeSupport()
+    const element = shallowRef<HTMLElement | null>(null)
+    const anchorRef = shallowRef<HTMLElement | null>(null)
+    const Anchor = defineComponent({
+      inheritAttrs: false,
+      setup(_props, { attrs, expose }) {
+        expose({ element })
+        return () => [h('button', attrs, 'Open'), h('span', 'Anchor content')]
+      },
+    })
+    const { anchor } = fixture(
+      { anchorRef, renderAnchor: (props: AnchorRenderProps) => h(Anchor, props) },
+      true,
+    )
+    await settle()
+    expect(anchorRef.value).toBeNull()
+    element.value = anchor.element as HTMLElement
+    await settle()
+    expect(anchorRef.value).toBe(anchor.element)
+    const name = element.value.style.getPropertyValue('anchor-name')
+    expect(name).toMatch(/^--anchored-overlay-anchor-/)
+    const replacement = document.createElement('button')
+    document.body.append(replacement)
+    element.value = replacement
+    await settle()
+    expect(anchorRef.value).toBe(replacement)
+    expect((anchor.element as HTMLElement).style.getPropertyValue('anchor-name')).toBe('')
+    expect(replacement.style.getPropertyValue('anchor-name')).toBe(name)
+  })
   it('keeps the CSS anchor name while closed, replaces detached anchors and cleans names on unmount', async () => {
     nativeSupport()
     const first = document.createElement('button')
@@ -565,17 +638,11 @@ describe('AnchoredOverlay source parity regressions', () => {
     expect(overlay()).not.toBeNull()
     expect(overlay()?.closest('[data-component="Portal"]')).toBeNull()
   })
-  it('does not add an icon-button tooltip inside an inherited legacy tooltip', async () => {
-    const wrapper = mount(LegacyTooltip, {
-      props: { content: 'External label' },
-      slots: {
-        default: () =>
-          h(
-            AnchoredOverlay,
-            { open: true, renderAnchor, onClose: vi.fn(), variant: { narrow: 'fullscreen' } },
-            { default: () => h('button', 'First') },
-          ),
-      },
+  it('does not add an icon-button tooltip inside an inherited tooltip context', async () => {
+    const wrapper = mount(AnchoredOverlay, {
+      props: { open: true, renderAnchor, onClose: vi.fn(), variant: { narrow: 'fullscreen' } },
+      slots: { default: () => h('button', 'First') },
+      global: { provide: { [TOOLTIP_CONTEXT_KEY]: { tooltipId: 'external-tip' } } },
       attachTo: document.body,
     })
     wrappers.push(wrapper)
@@ -814,4 +881,33 @@ it('keeps Overlay opening focus when the independent trap starts disabled', asyn
   wrappers.push(wrapper)
   await settle()
   expect(document.activeElement?.textContent).toBe('First')
+})
+
+it('closes the close-button tooltip before closing its parent overlay on Escape', async () => {
+  // The native popover fixture removes showPopover; restore the jsdom polyfill API.
+  applyPopoverPolyfill()
+  vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+  const { anchor } = fixture({ variant: { narrow: 'fullscreen' } })
+  await anchor.trigger('click')
+  await settle()
+  const closeButton = document.querySelector<HTMLButtonElement>(
+    '[data-component="AnchoredOverlay.CloseButton"]',
+  )!
+  closeButton.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }))
+  await vi.advanceTimersByTimeAsync(50)
+  const tooltipId = closeButton.getAttribute('aria-labelledby')!
+  const tooltip = document.getElementById(tooltipId)!
+  expect(tooltip.classList.contains(':popover-open')).toBe(true)
+  closeButton.dispatchEvent(
+    new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+  )
+  await settle()
+  expect(tooltip.classList.contains(':popover-open')).toBe(false)
+  expect(overlay()).not.toBeNull()
+  closeButton.dispatchEvent(
+    new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+  )
+  await settle()
+  expect(overlay()).toBeNull()
+  expect(document.activeElement).toBe(anchor.element)
 })

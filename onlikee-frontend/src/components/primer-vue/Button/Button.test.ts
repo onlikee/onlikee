@@ -14,8 +14,8 @@ import {
 } from 'vue'
 import { Button, ButtonBase, IconButton, LinkButton } from './index'
 import { BellIcon } from '@onlikee/octicons-vue'
-import Tooltip from '../TooltipV2/Tooltip.vue'
-import { TOOLTIP_CONTEXT_KEY as V1_TOOLTIP_CONTEXT } from '../Tooltip/TooltipContext'
+import Tooltip from '../Tooltip/Tooltip.vue'
+import { TOOLTIP_CONTEXT_KEY as TOOLTIP_CONTEXT } from '../Tooltip/TooltipContext'
 import { registerEscapeHandler } from '../internal/documentRegistries'
 import classes from './ButtonBase.module.css'
 
@@ -629,7 +629,7 @@ describe('IconButton source contracts', () => {
     else expect(wrapper.get('button').attributes('aria-labelledby')).toBe('external')
   })
 
-  it('suppresses internal tooltips inside either tooltip context', async () => {
+  it('suppresses internal tooltips inside the inherited tooltip context', async () => {
     const Outer = defineComponent({
       render: () =>
         h(
@@ -641,7 +641,7 @@ describe('IconButton source contracts', () => {
     expect(render(Outer).findAll('[data-component="Tooltip"]')).toHaveLength(1)
     const wrapper = mount(IconButton, {
       props: { icon: Icon, 'aria-label': 'Close' },
-      global: { provide: { [V1_TOOLTIP_CONTEXT]: { tooltipId: 'v1-tip' } } },
+      global: { provide: { [TOOLTIP_CONTEXT]: { tooltipId: 'external-tip' } } },
       attachTo: document.body,
     })
     wrappers.push(wrapper)

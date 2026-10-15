@@ -314,17 +314,15 @@
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
-    <ComponentDocsSection title="配合 Dropdown 使用">
+    <ComponentDocsSection title="配合 ActionMenu 使用">
       <template #description>
-        ActionList 可以直接放入 Dropdown 内容区，形成 Primer 风格的操作面板。
+        ActionList 可以放入 ActionMenu.Overlay，由 ActionMenu 管理键盘导航和选择后关闭。
       </template>
 
       <ComponentDocsDemoBlock :code="demo8Code">
-        <Dropdown>
-          <Dropdown.trigger>
-            <Button :trailing-visual="TriangleDownIcon"> 更多操作 </Button>
-          </Dropdown.trigger>
-          <Dropdown.content>
+        <ActionMenu>
+          <ActionMenu.Button>更多操作</ActionMenu.Button>
+          <ActionMenu.Overlay>
             <ActionList role="menu" aria-label="更多操作">
               <ActionList.Item role="menuitem">
                 <ActionList.LeadingVisual>
@@ -346,8 +344,8 @@
                 删除
               </ActionList.Item>
             </ActionList>
-          </Dropdown.content>
-        </Dropdown>
+          </ActionMenu.Overlay>
+        </ActionMenu>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
@@ -490,8 +488,7 @@
 import { ref } from 'vue'
 import { FeatureFlags } from '@/components/primer-vue/FeatureFlags'
 import { ActionList } from '@/components/primer-vue/ActionList'
-import { Button } from '@/components/primer-vue/Button'
-import { Dropdown } from '@/components/primer-vue/Dropdown'
+import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { Table, type TableColumn } from '@/components/primer-vue/Table'
 import {
   ArchiveIcon,
@@ -514,7 +511,6 @@ import {
   ShieldLockIcon,
   SignOutIcon,
   TrashIcon,
-  TriangleDownIcon,
   ZapIcon,
 } from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
@@ -761,13 +757,9 @@ import { BookIcon, LinkExternalIcon, MarkGithubIcon, ZapIcon } from '@onlikee/oc
 <\/script>`
 
 const demo8Code = `<template>
-  <Dropdown>
-    <Dropdown.trigger>
-      <Button :trailing-visual="TriangleDownIcon">
-        更多操作
-      </Button>
-    </Dropdown.trigger>
-    <Dropdown.content>
+  <ActionMenu>
+    <ActionMenu.Button>更多操作</ActionMenu.Button>
+    <ActionMenu.Overlay>
       <ActionList role="menu" aria-label="更多操作">
         <ActionList.Item role="menuitem">
           <ActionList.LeadingVisual><PencilIcon /></ActionList.LeadingVisual>
@@ -783,15 +775,14 @@ const demo8Code = `<template>
           删除
         </ActionList.Item>
       </ActionList>
-    </Dropdown.content>
-  </Dropdown>
+    </ActionMenu.Overlay>
+  </ActionMenu>
 </template>
 
 <script setup lang="ts">
 import { ActionList } from '@/components/primer-vue/ActionList'
-import { Button } from '@/components/primer-vue/Button'
-import { Dropdown } from '@/components/primer-vue/Dropdown'
-import { CopyIcon, PencilIcon, TrashIcon, TriangleDownIcon } from '@onlikee/octicons-vue'
+import { ActionMenu } from '@/components/primer-vue/ActionMenu'
+import { CopyIcon, PencilIcon, TrashIcon } from '@onlikee/octicons-vue'
 <\/script>`
 
 const apiTableColumns: TableColumn[] = [

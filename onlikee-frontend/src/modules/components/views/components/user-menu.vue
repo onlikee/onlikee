@@ -4,16 +4,18 @@
 
     <ComponentDocsSection title="基础用法">
       <template #description>
-        使用 <code>Dropdown</code>、<code>Avatar</code>、<code>ActionList</code> 和
+        使用 <code>ActionMenu</code>、<code>Avatar</code>、<code>ActionList</code> 和
         <code>Octicons Vue</code> 组合用户菜单。
       </template>
       <ComponentDocsDemoBlock :code="demo1Code">
         <div class="user-menu">
-          <Dropdown>
-            <Dropdown.trigger>
-              <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" :size="42" />
-            </Dropdown.trigger>
-            <Dropdown.content>
+          <ActionMenu>
+            <ActionMenu.Anchor>
+              <button type="button" class="user-menu-trigger" aria-label="用户菜单">
+                <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" :size="42" />
+              </button>
+            </ActionMenu.Anchor>
+            <ActionMenu.Overlay>
               <div class="user-header">
                 <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" :size="36" />
                 <div class="user-info">
@@ -50,8 +52,8 @@
                   退出登录
                 </ActionList.Item>
               </ActionList>
-            </Dropdown.content>
-          </Dropdown>
+            </ActionMenu.Overlay>
+          </ActionMenu>
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -65,16 +67,18 @@ import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { Avatar } from '@/components/primer-vue/Avatar'
-import { Dropdown } from '@/components/primer-vue/Dropdown'
+import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { GearIcon, MarkGithubIcon, PersonIcon, SignOutIcon } from '@onlikee/octicons-vue'
 
 const demo1Code = `<template>
   <div class="user-menu">
-    <Dropdown>
-      <Dropdown.trigger>
-        <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" :size="42" />
-      </Dropdown.trigger>
-      <Dropdown.content>
+    <ActionMenu>
+      <ActionMenu.Anchor>
+        <button type="button" class="user-menu-trigger" aria-label="用户菜单">
+          <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" :size="42" />
+        </button>
+      </ActionMenu.Anchor>
+      <ActionMenu.Overlay>
         <div class="user-header">
           <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" :size="36" />
           <div class="user-info">
@@ -103,21 +107,35 @@ const demo1Code = `<template>
             退出登录
           </ActionList.Item>
         </ActionList>
-      </Dropdown.content>
-    </Dropdown>
+      </ActionMenu.Overlay>
+    </ActionMenu>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { Avatar } from '@/components/primer-vue/Avatar'
-import { Dropdown } from '@/components/primer-vue/Dropdown'
+import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { GearIcon, MarkGithubIcon, PersonIcon, SignOutIcon } from '@onlikee/octicons-vue'
 <\/script>
 
 <style scoped>
 .user-menu {
   position: absolute;
+}
+
+.user-menu-trigger {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.user-menu-trigger:focus-visible {
+  outline: 2px solid var(--focus-outlineColor);
+  outline-offset: 2px;
 }
 
 .user-header {
@@ -148,6 +166,20 @@ import { GearIcon, MarkGithubIcon, PersonIcon, SignOutIcon } from '@onlikee/octi
 <style scoped>
 .user-menu {
   position: absolute;
+}
+
+.user-menu-trigger {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.user-menu-trigger:focus-visible {
+  outline: 2px solid var(--focus-outlineColor);
+  outline-offset: 2px;
 }
 
 .user-header {

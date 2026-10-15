@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, shallowRef, watch, type Ref } from 'vue'
+import { onBeforeUnmount, shallowRef, watch, type Ref } from 'vue'
 import { getAnchoredPosition, type AnchorAlignment, type AnchorSide } from '@primer/behaviors'
 import { apply, isSupported } from '@oddbird/popover-polyfill/fn'
 import { registerEscapeHandler } from '../internal/documentRegistries'
@@ -51,7 +51,8 @@ export interface TooltipControllerSettings {
   delay: () => TooltipDelay
   type: () => TooltipType
   enabled: () => boolean
-  privateDisableTooltip: () => boolean
+  _privateDisableTooltip: () => boolean
+  triggerTarget: Ref<unknown>
   triggerRef: Ref<HTMLElement | null>
   tooltipRef: Ref<HTMLElement | null>
 }
@@ -102,7 +103,7 @@ export function useTooltipController(settings: TooltipControllerSettings) {
         trigger instanceof HTMLElement &&
         tooltip.hasAttribute('popover') &&
         !tooltip.matches(':popover-open') &&
-        !settings.privateDisableTooltip()
+        !settings._privateDisableTooltip()
       ) {
         tooltip.showPopover()
         isPopoverOpen.value = true
@@ -155,35 +156,36 @@ export function useTooltipController(settings: TooltipControllerSettings) {
   }
 
   function makeTriggerHandlers(originals: TooltipTriggerOriginalHandlers = {}) {
+    const onBlur = (event: FocusEvent) => {
+      closeTooltip()
+      originals.onBlur?.(event)
+    }
+    const onFocus = (event: FocusEvent) => {
+      try {
+        if (!(event.target instanceof Element) || !event.target.matches(':focus-visible')) return
+      } catch {
+        // jsdom may not support :focus-visible.
+      }
+      openTooltip()
+      originals.onFocus?.(event)
+    }
     return {
-      onBlur: (event: FocusEvent) => {
-        closeTooltip()
-        originals.onBlur?.(event)
+      onBlur,
+      onFocus,
+      // React focus events bubble; Vue's native focus/blur need focusin/out for descendants.
+      onFocusin: (event: FocusEvent) => {
+        if (event.target !== event.currentTarget) onFocus(event)
+      },
+      onFocusout: (event: FocusEvent) => {
+        if (event.target !== event.currentTarget) onBlur(event)
       },
       onTouchend: (event: TouchEvent) => {
         originals.onTouchend?.(event)
-        // Hide tooltips on tap to essentially disable them on touch devices;
-        // this still allows viewing the tooltip on tap-and-hold
         safeSetTimeout(() => closeTooltip(), 10)
-      },
-      onFocus: (event: FocusEvent) => {
-        // only show tooltip on :focus-visible, not on :focus
-        try {
-          if (!(event.target instanceof Element) || !event.target.matches(':focus-visible')) return
-        } catch {
-          // jsdom does not support `:focus-visible` yet and would throw an error
-          // https://github.com/jsdom/jsdom/issues/3426
-        }
-        openTooltip()
-        originals.onFocus?.(event)
       },
       onMouseoverCapture: (event: MouseEvent) => {
         const delayTime = delayTimeMap[settings.delay()] || 50
-        // We use a `capture` event to ensure this is called first before
-        // events that might cancel the opening timeout (like `onTouchEnd`)
-        // show tooltip after mouse has been hovering for the specified delay time
         openTimeout = safeSetTimeout(() => {
-          // if the mouse is already moved out, do not show the tooltip
           if (!openTimeout) return
           openTooltip()
           originals.onMouseenter?.(event)
@@ -197,7 +199,7 @@ export function useTooltipController(settings: TooltipControllerSettings) {
   }
 
   function runTriggerEffect() {
-    if (!settings.tooltipRef.value || !settings.triggerRef.value) return
+    if (!settings.tooltipRef.value || !settings.triggerTarget.value) return
     const trigger = settings.triggerRef.value
     const isInvalidTrigger = !(trigger instanceof HTMLElement)
     if (isInvalidTrigger) {
@@ -223,10 +225,12 @@ export function useTooltipController(settings: TooltipControllerSettings) {
         )
       )
     })
-    if (!(isTriggerInteractive || hasInteractiveDescendant)) {
-      throw new Error(
-        'The `Tooltip` component expects a single element that contains interactive content. Consider using a `<button>` or equivalent interactive element instead.',
+    if (import.meta.env.DEV && !(isTriggerInteractive || hasInteractiveDescendant)) {
+      const error = new Error(
+        'The `Tooltip` component expects a single React element that contains interactive content. Consider using a `<button>` or equivalent interactive element instead.',
       )
+      error.name = 'Invariant Violation'
+      throw error
     }
     // If the tooltip is used for labelling the interactive element, the trigger element or any
     // of its children should not have aria-label
@@ -252,11 +256,15 @@ export function useTooltipController(settings: TooltipControllerSettings) {
     settings.tooltipRef.value.setAttribute('popover', 'auto')
   }
 
-  onMounted(() => {
-    if (settings.enabled()) runTriggerEffect()
-  })
   watch(
-    () => [settings.direction(), settings.type(), settings.enabled()] as const,
+    () =>
+      [
+        settings.direction(),
+        settings.type(),
+        settings.enabled(),
+        settings.triggerRef.value,
+        settings.tooltipRef.value,
+      ] as const,
     () => {
       if (settings.enabled()) runTriggerEffect()
     },
@@ -264,19 +272,21 @@ export function useTooltipController(settings: TooltipControllerSettings) {
   )
 
   // 提示打开时独占 Escape，阻止事件继续关闭外层浮层。
-  let unregisterEscape: (() => void) | undefined
-  onMounted(() => {
-    unregisterEscape = registerEscapeHandler((event) => {
-      if (settings.enabled() && isPopoverOpen.value) {
+  watch(
+    isPopoverOpen,
+    (open, _previous, onCleanup) => {
+      if (!open) return
+      const unregisterEscape = registerEscapeHandler((event) => {
         event.stopImmediatePropagation()
         event.preventDefault()
         closeTooltip()
-      }
-    })
-  })
+      })
+      onCleanup(unregisterEscape)
+    },
+    { flush: 'sync' },
+  )
 
   onBeforeUnmount(() => {
-    unregisterEscape?.()
     for (const id of timeouts) clearTimeout(id)
     timeouts.clear()
   })
