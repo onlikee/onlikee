@@ -2,10 +2,18 @@
 /* eslint-disable vue/one-component-per-file -- Independent tooltip test fixtures. */
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mount, flushPromises, type VueWrapper } from '@vue/test-utils'
-import { Comment, defineComponent, Fragment, h, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import {
+  Comment,
+  defineComponent,
+  Fragment,
+  h,
+  nextTick,
+  onMounted,
+  onBeforeUnmount,
+  useTemplateRef,
+} from 'vue'
 import { FeatureFlags } from '../FeatureFlags'
 import * as tooltipExports from './index'
-import { CopyButton } from '../CopyButton'
 import { registerEscapeHandler } from '../internal/documentRegistries'
 import Tooltip from './Tooltip.vue'
 import { IconButton } from '../Button'
@@ -553,23 +561,30 @@ describe('Tooltip trigger refs and public contract', () => {
     expect(captured).toHaveLength(1)
   })
 
-  it('labels documentation CopyButton triggers and preserves their click behavior', async () => {
-    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+  it('labels custom button triggers and preserves their ref and click behavior', async () => {
+    const ButtonTrigger = defineComponent({
+      setup(_, { expose }) {
+        const element = useTemplateRef<HTMLButtonElement>('element')
+        expose({ element })
+        return () => h('button', { ref: 'element', type: 'button' })
+      },
+    })
     const click = vi.fn()
+    const forwardedRef = { current: null as HTMLElement | null }
     const wrapper = track(
       mount(Tooltip, {
-        props: { text: 'Copy code', type: 'label' },
-        slots: { default: () => h(CopyButton, { onClick: click }) },
+        props: { text: 'Copy code', type: 'label', forwardedRef },
+        slots: { default: () => h(ButtonTrigger, { onClick: click }) },
         attachTo: document.body,
       }),
     )
     await settle()
+    expect(forwardedRef.current).toBe(wrapper.get('button').element)
     expect(wrapper.get('button').attributes('aria-labelledby')).toBe(
       wrapper.get('[data-component="Tooltip"]').attributes('id'),
     )
     await wrapper.get('button').trigger('click')
     expect(click).toHaveBeenCalledOnce()
-    expect(wrapper.find('[data-octicon="check"]').exists()).toBe(true)
   })
 })
 

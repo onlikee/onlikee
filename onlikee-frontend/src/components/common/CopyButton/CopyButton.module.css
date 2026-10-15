@@ -1,0 +1,3 @@
+.CopyButton[data-copy-state='success'] svg {
+  color: var(--fgColor-success);
+}

@@ -22,40 +22,45 @@
               <Avatar :src="userStore.userInfo?.avatarUrl" :size="32" />
             </button>
           </ActionMenu.Anchor>
-          <ActionMenu.Overlay>
+          <ActionMenu.Overlay
+            width="small"
+            align="end"
+            :variant="{ regular: 'anchored', narrow: 'fullscreen' }"
+          >
             <div class="user-header">
-              <Avatar :src="userStore.userInfo?.avatarUrl" :size="36" />
+              <Avatar :src="userStore.userInfo?.avatarUrl" :size="32" />
               <div class="user-info">
-                <div class="user-name">
+                <div class="user-name" :title="userStore.userInfo?.nickname">
                   {{ userStore.userInfo?.nickname }}
                 </div>
-                <div class="user-email">
+                <div class="user-email" :title="userStore.userInfo?.email">
                   {{ userStore.userInfo?.email ?? '暂未设置邮箱' }}
                 </div>
               </div>
             </div>
-            <ActionList role="menu" aria-label="账户操作">
-              <ActionList.Divider />
-              <ActionList.Item role="menuitem" @select="goToProfile">
-                <ActionList.LeadingVisual>
-                  <PersonIcon />
-                </ActionList.LeadingVisual>
-                个人资料
-              </ActionList.Item>
-              <ActionList.Item role="menuitem" @select="navigateToPage('/application')">
-                <ActionList.LeadingVisual>
-                  <AppsIcon />
-                </ActionList.LeadingVisual>
-                我的应用
-              </ActionList.Item>
-              <ActionList.Divider />
-              <ActionList.Item role="menuitem" @select="navigateToPage('/auth/logout')">
-                <ActionList.LeadingVisual>
-                  <SignOutIcon />
-                </ActionList.LeadingVisual>
-                退出登录
-              </ActionList.Item>
-            </ActionList>
+            <div class="user-menu-content">
+              <ActionList variant="full" role="menu" aria-label="账户操作">
+                <ActionList.Item role="menuitem" @select="goToProfile">
+                  <ActionList.LeadingVisual>
+                    <PersonIcon />
+                  </ActionList.LeadingVisual>
+                  个人资料
+                </ActionList.Item>
+                <ActionList.Item role="menuitem" @select="navigateToPage('/application')">
+                  <ActionList.LeadingVisual>
+                    <AppsIcon />
+                  </ActionList.LeadingVisual>
+                  我的应用
+                </ActionList.Item>
+                <ActionList.Divider />
+                <ActionList.Item role="menuitem" @select="navigateToPage('/auth/logout')">
+                  <ActionList.LeadingVisual>
+                    <SignOutIcon />
+                  </ActionList.LeadingVisual>
+                  退出登录
+                </ActionList.Item>
+              </ActionList>
+            </div>
           </ActionMenu.Overlay>
         </ActionMenu>
       </div>
@@ -242,26 +247,41 @@ watch(
 .user-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 12px 0px 12px;
+  gap: var(--base-size-8);
+  padding: var(--base-size-16) var(--base-size-16) 0;
+}
+
+.user-header > :first-child {
+  flex-shrink: 0;
 }
 
 .user-info {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  min-width: 128px;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.user-name,
+.user-email {
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .user-name {
-  font-size: 14px;
   font-weight: 600;
   color: var(--fgColor-default);
 }
 
 .user-email {
-  font-size: 12px;
   color: var(--fgColor-muted);
-  white-space: nowrap;
+}
+
+.user-menu-content {
+  padding: var(--base-size-8);
 }
 
 @media (max-width: 768px) {

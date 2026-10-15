@@ -173,10 +173,6 @@ const navSections = ref([
     items: [{ path: '/component/octicons-vue', label: 'Octicons Vue 图标' }],
   },
   {
-    title: 'Blocks 组合式组件',
-    items: [{ path: '/component/user-menu', label: 'UserMenu 用户菜单' }],
-  },
-  {
     title: 'Basic 基础组件',
     items: [
       { path: '/component/action-bar', label: 'ActionBar 操作栏' },
@@ -189,7 +185,6 @@ const navSections = ref([
       { path: '/component/branch-name', label: 'BranchName 分支名' },
       { path: '/component/button', label: 'Button 按钮' },
       { path: '/component/button-group', label: 'ButtonGroup 按钮组' },
-      { path: '/component/copy-button', label: 'CopyButton 复制按钮' },
       { path: '/component/counter-label', label: 'CounterLabel 计数标签' },
       { path: '/component/container', label: 'Container 布局容器' },
       { path: '/component/stack', label: 'Stack 堆叠布局' },

@@ -31,12 +31,6 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         name: 'OcticonsVue',
         component: () => import('../views/components/octicons-vue.vue'),
       },
-      // Blocks
-      {
-        path: 'user-menu',
-        name: 'UserMenu',
-        component: () => import('../views/components/user-menu.vue'),
-      },
       // Basic
       {
         path: 'anchored-overlay',
@@ -82,11 +76,6 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         path: 'counter-label',
         name: 'CounterLabel',
         component: () => import('../views/components/counter-label.vue'),
-      },
-      {
-        path: 'copy-button',
-        name: 'CopyButton',
-        component: () => import('../views/components/copy-button.vue'),
       },
       {
         path: 'link',

@@ -4,14 +4,14 @@
       <slot />
     </div>
     <div class="demo-actions">
-      <Tooltip :text="codeCopied ? copiedLabel : copyLabel" direction="s" type="label">
-        <CopyButton @click="copyCode" />
-      </Tooltip>
-      <Tooltip :text="codeVisible ? hideCodeLabel : showCodeLabel" direction="s" type="label">
-        <button class="action-btn" @click="codeVisible = !codeVisible">
-          <CodeIcon />
-        </button>
-      </Tooltip>
+      <CopyButton :text="code" :label="copyLabel" />
+      <IconButton
+        :icon="CodeIcon"
+        :aria-label="codeVisible ? hideCodeLabel : showCodeLabel"
+        variant="invisible"
+        tooltip-direction="s"
+        @click="codeVisible = !codeVisible"
+      />
     </div>
     <transition name="code-expand">
       <div v-if="codeVisible" class="demo-code">
@@ -30,20 +30,18 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { Tooltip } from '@/components/primer-vue/Tooltip'
+import { IconButton } from '@/components/primer-vue/Button'
 import { CodeIcon } from '@onlikee/octicons-vue'
-import { CopyButton } from '@/components/primer-vue/CopyButton'
+import { CopyButton } from '@/components/common/CopyButton'
 
 const props = defineProps<{ code: string }>()
 
 const copyLabel = '复制代码'
-const copiedLabel = '已复制'
 const showCodeLabel = '查看代码'
 const hideCodeLabel = '隐藏代码'
 const hideSourceLabel = '隐藏源代码'
 
 const codeVisible = ref(false)
-const codeCopied = ref(false)
 
 import { codeToHtml } from 'shiki'
 const highlightedCode = ref('')
@@ -53,15 +51,6 @@ onMounted(async () => {
     theme: 'github-light',
   })
 })
-
-const copyCode = () => {
-  navigator.clipboard.writeText(props.code).then(() => {
-    codeCopied.value = true
-    window.setTimeout(() => {
-      codeCopied.value = false
-    }, 2000)
-  })
-}
 </script>
 
 <style scoped>
@@ -85,23 +74,6 @@ const copyCode = () => {
   border-top: 1px solid var(--borderColor-default);
   justify-content: flex-end;
   padding: 4px;
-}
-
-.action-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: none;
-  color: var(--fgColor-muted);
-  cursor: pointer;
-  border-radius: 4px;
-  background-color: transparent;
-}
-
-.action-btn:hover {
-  color: var(--fgColor-default);
 }
 
 .demo-code {
@@ -170,11 +142,6 @@ const copyCode = () => {
 @media (max-width: 768px) {
   .demo-content {
     padding: 1.25rem;
-  }
-
-  .action-btn {
-    width: 36px;
-    height: 36px;
   }
 
   .code-content :deep(pre.shiki) {
