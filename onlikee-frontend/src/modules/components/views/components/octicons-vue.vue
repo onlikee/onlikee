@@ -77,7 +77,7 @@
     </ComponentDocsSection>
 
     <ComponentDocsSection title="API" variant="api">
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="apiTableRows"
         row-key="name"
@@ -93,7 +93,7 @@ import { computed, ref } from 'vue'
 import type { Component } from 'vue'
 import * as octicons from '@onlikee/octicons-vue'
 import { Link } from '@/components/primer-vue/Link'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -210,7 +210,7 @@ const copySVG = (iconName: string, event: MouseEvent) => {
   Banner.success(`${iconName} SVG 已复制到剪贴板！`, { duration: 3000 })
 }
 
-const apiTableColumns: TableColumn[] = [
+const apiTableColumns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'default', label: '默认值', minWidth: '100px' },
   { key: 'type', label: '类型', minWidth: '160px', wrap: true },

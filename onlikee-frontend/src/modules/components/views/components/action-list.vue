@@ -376,7 +376,7 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h4>ActionList Props</h4>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="actionListPropsRows"
         row-key="name"
@@ -385,7 +385,7 @@
       />
 
       <h4>ActionList.Item Props</h4>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="actionListItemPropsRows"
         row-key="name"
@@ -394,7 +394,7 @@
       />
 
       <h4>ActionList.LinkItem Props</h4>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="actionListLinkItemPropsRows"
         row-key="name"
@@ -403,7 +403,7 @@
       />
 
       <h4>ActionList.Description Props</h4>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="actionListDescriptionPropsRows"
         row-key="name"
@@ -412,7 +412,7 @@
       />
 
       <h4>ActionList.Group Props</h4>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="actionListGroupPropsRows"
         row-key="name"
@@ -421,7 +421,7 @@
       />
 
       <h4>ActionList.GroupHeading Props</h4>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="actionListGroupHeadingPropsRows"
         row-key="name"
@@ -430,7 +430,7 @@
       />
 
       <h4>ActionList.Heading Props</h4>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="headingPropsRows"
         row-key="name"
@@ -438,7 +438,7 @@
         :hoverable="false"
       />
       <h4>ActionList.TrailingAction / GroupHeading.TrailingAction Props</h4>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="trailingActionPropsRows"
         row-key="name"
@@ -464,7 +464,7 @@
         disableItemGap 时生效。
       </p>
       <h4>Events</h4>
-      <Table
+      <DataTable
         :columns="eventsTableColumns"
         :data="eventsRows"
         row-key="name"
@@ -473,7 +473,7 @@
       />
 
       <h4>Slots</h4>
-      <Table
+      <DataTable
         :columns="slotsTableColumns"
         :data="slotsRows"
         row-key="key"
@@ -489,7 +489,7 @@ import { ref } from 'vue'
 import { FeatureFlags } from '@/components/primer-vue/FeatureFlags'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { ActionMenu } from '@/components/primer-vue/ActionMenu'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import {
   ArchiveIcon,
   BookIcon,
@@ -785,7 +785,7 @@ import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { CopyIcon, PencilIcon, TrashIcon } from '@onlikee/octicons-vue'
 <\/script>`
 
-const apiTableColumns: TableColumn[] = [
+const apiTableColumns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '160px' },
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '220px' },
@@ -1089,7 +1089,7 @@ import { ActionList } from '@/components/primer-vue/ActionList'
 import { PencilIcon } from '@onlikee/octicons-vue'
 <\/script>`
 
-const eventsTableColumns: TableColumn[] = [
+const eventsTableColumns: DataTableColumn[] = [
   { key: 'name', label: '事件名', rowHeader: true, minWidth: '160px' },
   { key: 'component', label: '组件', minWidth: '180px' },
   { key: 'description', label: '说明', minWidth: '300px', wrap: true },
@@ -1109,7 +1109,7 @@ const eventsRows = [
   },
 ]
 
-const slotsTableColumns: TableColumn[] = [
+const slotsTableColumns: DataTableColumn[] = [
   { key: 'component', label: '组件', rowHeader: true, minWidth: '180px' },
   { key: 'name', label: '插槽名', minWidth: '160px' },
   { key: 'description', label: '说明', minWidth: '300px', wrap: true },

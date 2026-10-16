@@ -7,7 +7,7 @@ import {
 } from '@/components/primer-vue/SelectPanel'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { Button } from '@/components/primer-vue/Button'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '../../components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '../../components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '../../components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -281,7 +281,7 @@ const external = { anchor: computed(() => (button.value?.$el as HTMLElement | un
   />
 </template>`
 
-const apiTableColumns: TableColumn[] = [
+const apiTableColumns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '180px' },
   { key: 'default', label: '默认值', minWidth: '130px', wrap: true },
   { key: 'type', label: '类型', minWidth: '240px', wrap: true },
@@ -540,7 +540,7 @@ const inheritedPropsRows = [
   },
 ]
 
-const eventTableColumns: TableColumn[] = [
+const eventTableColumns: DataTableColumn[] = [
   { key: 'name', label: '事件名', rowHeader: true, minWidth: '200px' },
   { key: 'payload', label: '载荷', minWidth: '260px', wrap: true },
   { key: 'description', label: '说明', minWidth: '300px', wrap: true },
@@ -576,7 +576,7 @@ const eventTableRows = [
   },
 ]
 
-const slotTableColumns: TableColumn[] = [
+const slotTableColumns: DataTableColumn[] = [
   { key: 'name', label: '插槽名', rowHeader: true, minWidth: '180px' },
   { key: 'description', label: '说明', minWidth: '320px', wrap: true },
 ]
@@ -593,7 +593,7 @@ const slotTableRows = [
   { name: 'footer', description: '底部内容（已废弃，请用 secondaryAction）。' },
 ]
 
-const compoundTableColumns: TableColumn[] = [
+const compoundTableColumns: DataTableColumn[] = [
   { key: 'name', label: '组件', rowHeader: true, minWidth: '260px' },
   { key: 'description', label: '说明', minWidth: '320px', wrap: true },
 ]
@@ -834,7 +834,7 @@ const compoundTableRows = [
 
     <ComponentDocsSection title="API" variant="api">
       <h3>SelectPanel Props</h3>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="selectPanelPropsRows"
         row-key="name"
@@ -843,7 +843,7 @@ const compoundTableRows = [
       />
 
       <h3>继承的列表 Props（FilteredActionList）</h3>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="inheritedPropsRows"
         row-key="name"
@@ -856,7 +856,7 @@ const compoundTableRows = [
       </p>
 
       <h3>事件</h3>
-      <Table
+      <DataTable
         :columns="eventTableColumns"
         :data="eventTableRows"
         row-key="name"
@@ -865,7 +865,7 @@ const compoundTableRows = [
       />
 
       <h3>插槽</h3>
-      <Table
+      <DataTable
         :columns="slotTableColumns"
         :data="slotTableRows"
         row-key="name"
@@ -874,7 +874,7 @@ const compoundTableRows = [
       />
 
       <h3>组合组件</h3>
-      <Table
+      <DataTable
         :columns="compoundTableColumns"
         :data="compoundTableRows"
         row-key="name"

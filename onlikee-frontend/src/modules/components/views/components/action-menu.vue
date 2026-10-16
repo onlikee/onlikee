@@ -5,7 +5,7 @@ import { ActionList } from '@/components/primer-vue/ActionList'
 import { IconButton } from '@/components/primer-vue/Button'
 import Tooltip from '@/components/primer-vue/Tooltip/Tooltip.vue'
 import { CopyIcon, PencilIcon, TrashIcon, KebabHorizontalIcon } from '@onlikee/octicons-vue'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -290,7 +290,7 @@ ${imports}
     </ActionMenu.Overlay>
   </ActionMenu>
 </template>`
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: '属性', rowHeader: true },
   { key: 'type', label: '类型', wrap: true },
   { key: 'default', label: '默认值' },
@@ -770,13 +770,13 @@ const overlayRows = [
       </p>
     </ComponentDocsSection>
     <ComponentDocsSection title="ActionMenu API">
-      <Table :columns="columns" :data="menuRows" />
+      <DataTable :columns="columns" :data="menuRows" />
     </ComponentDocsSection>
     <ComponentDocsSection title="Button / Anchor API">
-      <Table :columns="columns" :data="buttonRows" />
+      <DataTable :columns="columns" :data="buttonRows" />
     </ComponentDocsSection>
     <ComponentDocsSection title="Overlay API">
-      <Table :columns="columns" :data="overlayRows" />
+      <DataTable :columns="columns" :data="overlayRows" />
     </ComponentDocsSection>
     <ComponentDocsSection title="导出与 Divider">
       <p>

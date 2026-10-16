@@ -2,7 +2,7 @@
 import { reactive } from 'vue'
 import { RouterLink } from 'vue-router'
 import { Breadcrumbs, BreadcrumbsItem } from '@/components/primer-vue/Breadcrumbs'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -67,7 +67,7 @@ import { Breadcrumbs, BreadcrumbsItem } from '@/components/primer-vue/Breadcrumb
   </div>
 </template>`
 }
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: '属性', rowHeader: true },
   { key: 'type', label: '类型', wrap: true },
   { key: 'default', label: '默认值' },
@@ -199,7 +199,7 @@ const itemRows = [
         从 @/components/primer-vue/Breadcrumbs 导入 Breadcrumbs 和 BreadcrumbsItem，也支持
         Breadcrumbs.Item。默认插槽放置路径项，导航区域的无障碍名称为 Breadcrumbs。
       </template>
-      <Table :columns="columns" :data="breadcrumbRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="breadcrumbRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
     <ComponentDocsSection title="BreadcrumbsItem API" variant="api">
       <template #description>
@@ -209,7 +209,7 @@ const itemRows = [
         IconButton，菜单使用原生 Details；折叠后不会保留重复的隐藏路径项。 BreadcrumbsItem 的组件
         ref 通过 element 暴露实际 DOM 元素。Breadcrumb 与对应旧类型是已弃用别名。
       </template>
-      <Table :columns="columns" :data="itemRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="itemRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

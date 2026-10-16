@@ -216,7 +216,7 @@ const navSections = ref([
     title: 'Data 数据展示',
     items: [
       { path: '/component/card', label: 'Card 卡片' },
-      { path: '/component/table', label: 'Table 表格' },
+      { path: '/component/data-table', label: 'DataTable 表格' },
       { path: '/component/timeline', label: 'Timeline 时间线' },
     ],
   },

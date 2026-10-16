@@ -11,7 +11,7 @@ import { Card } from '@/components/primer-vue/Card'
 import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { IconButton } from '@/components/primer-vue/Button'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -83,7 +83,7 @@ const appearanceCode = `<Card padding="condensed" border-radius="medium">
   <Card.Description>内边距与圆角分别独立控制。</Card.Description>
 </Card>
 <Card padding="none"><div style="padding: 16px">自定义内容</div></Card>`
-const apiColumns: TableColumn[] = [
+const apiColumns: DataTableColumn[] = [
   { key: 'name', label: '属性', rowHeader: true, minWidth: '140px' },
   { key: 'type', label: '类型', minWidth: '200px', wrap: true },
   { key: 'default', label: '默认值', minWidth: '100px' },
@@ -311,9 +311,9 @@ const childRows = [
 
     <ComponentDocsSection title="API" variant="api">
       <h3>Card Props</h3>
-      <Table :columns="apiColumns" :data="rootRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="apiColumns" :data="rootRows" row-key="name" compact :hoverable="false" />
       <h3>子组件</h3>
-      <Table :columns="apiColumns" :data="childRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="apiColumns" :data="childRows" row-key="name" compact :hoverable="false" />
       <p>
         子组件也可独立导入
         CardIcon、CardImage、CardHeading、CardDescription、CardAction、CardMetadata。

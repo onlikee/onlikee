@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { UnderlineNav } from '@/components/primer-vue/UnderlineNav'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import { CodeIcon, IssueOpenedIcon } from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
@@ -35,7 +35,7 @@ import { UnderlineNav } from '@/components/primer-vue/UnderlineNav'
 import { CodeIcon, IssueOpenedIcon } from '@onlikee/octicons-vue'
 <\/script>`
 
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '160px' },
   { key: 'type', label: '类型', minWidth: '190px' },
   { key: 'default', label: '默认值', minWidth: '100px' },
@@ -112,9 +112,9 @@ const itemRows = [
 
     <ComponentDocsSection title="API" variant="api">
       <h3>UnderlineNav</h3>
-      <Table :columns="columns" :data="rootRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="rootRows" row-key="name" compact :hoverable="false" />
       <h3>UnderlineNav.Item</h3>
-      <Table :columns="columns" :data="itemRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="itemRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

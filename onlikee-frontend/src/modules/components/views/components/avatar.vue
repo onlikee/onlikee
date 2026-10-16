@@ -95,7 +95,7 @@
     </ComponentDocsSection>
 
     <ComponentDocsSection title="API" variant="api">
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="apiTableRows"
         row-key="name"
@@ -108,7 +108,7 @@
 
 <script setup lang="ts">
 import { Avatar } from '@/components/primer-vue/Avatar'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -163,7 +163,7 @@ const nativeCode = `<Avatar
   style="background: var(--bgColor-muted)"
 />`
 
-const apiTableColumns: TableColumn[] = [
+const apiTableColumns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '160px', wrap: true },

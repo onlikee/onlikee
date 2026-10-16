@@ -4,7 +4,7 @@ import { RouterLink } from 'vue-router'
 import { GitBranchIcon } from '@onlikee/octicons-vue'
 import { BranchName } from '@/components/primer-vue/BranchName'
 import { Stack } from '@/components/primer-vue/Stack'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -22,7 +22,7 @@ const contentCode = `<BranchName href="#">
     branch_name
   </Stack>
 </BranchName>`
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'type', label: '类型', minWidth: '180px', wrap: true },
   { key: 'default', label: '默认值', minWidth: '100px' },
@@ -99,7 +99,7 @@ const rows = [
         在原生标签下为对应 DOM 元素，在自定义组件下为组件公开实例，卸载后为 null。事件采用 Vue
         的原生事件类型。
       </template>
-      <Table :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

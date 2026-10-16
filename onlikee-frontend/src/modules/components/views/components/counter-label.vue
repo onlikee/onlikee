@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { CounterLabel } from '@/components/primer-vue/CounterLabel'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -17,7 +17,7 @@ const variantsCode = `<CounterLabel variant="primary">12</CounterLabel>
 <CounterLabel variant="secondary">12</CounterLabel>`
 const contentCode = `<span>Open issues <CounterLabel>0</CounterLabel></span>
 <span>Stars <CounterLabel>12K</CounterLabel></span>`
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'type', label: '类型', minWidth: '180px', wrap: true },
   { key: 'default', label: '默认值', minWidth: '100px' },
@@ -103,7 +103,7 @@ const rows = [
         和隐藏标签内。组件没有额外根容器；属性、类名与事件只应用到可见 span。组件 ref 的 element
         指向该 HTMLSpanElement，卸载后为 null。组件不添加焦点或键盘行为，事件使用 Vue 原生事件类型。
       </template>
-      <Table :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

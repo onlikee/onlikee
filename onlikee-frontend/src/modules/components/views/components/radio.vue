@@ -97,14 +97,14 @@
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
     <ComponentDocsSection title="属性" variant="api">
-      <Table :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
     <ComponentDocsSection title="事件" variant="api">
-      <Table :columns="columns" :data="eventRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="eventRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
     <ComponentDocsSection title="组件实例" variant="api">
       <template #description> 通过模板 ref 获取组件实例，可访问输入元素或控制焦点。 </template>
-      <Table :columns="columns" :data="instanceRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="instanceRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
@@ -115,7 +115,7 @@ import { Radio } from '@/components/primer-vue/Radio'
 import { RadioGroup } from '@/components/primer-vue/RadioGroup'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { Button } from '@/components/primer-vue/Button'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '../../components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '../../components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '../../components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -155,7 +155,7 @@ function select(event: Event) { selected.value = (event.currentTarget as HTMLInp
   <FormControl><Radio value="weekly" /><FormControl.Label>每周</FormControl.Label></FormControl>
 </RadioGroup>`,
 }
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: '名称', rowHeader: true },
   { key: 'type', label: '类型', wrap: true },
   { key: 'description', label: '说明', wrap: true },

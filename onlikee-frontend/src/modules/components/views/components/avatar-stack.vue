@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { Avatar } from '@/components/primer-vue/Avatar'
 import { AvatarStack } from '@/components/primer-vue/AvatarStack'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: '属性', rowHeader: true },
   { key: 'type', label: '类型', wrap: true },
   { key: 'default', label: '默认值' },
@@ -213,7 +213,7 @@ const linkedCode = `<AvatarStack :size="32">
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
     <ComponentDocsSection id="avatar-stack-api" title="API" variant="api">
-      <Table :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

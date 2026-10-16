@@ -4,7 +4,7 @@ import { Button, IconButton } from '@/components/primer-vue/Button'
 import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { XIcon } from '@onlikee/octicons-vue'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -71,7 +71,7 @@ const refCode =
   '<script setup lang="ts">\n' +
   imports +
   '\nconst trigger = { current: null as HTMLElement | null }\n<\/script>\n\n<template>\n  <Tooltip text="获取触发元素" :forwarded-ref="trigger">\n    <Button>触发元素</Button>\n  </Tooltip>\n</template>'
-const apiCols: TableColumn[] = [
+const apiCols: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '150px' },
   { key: 'type', label: '类型', minWidth: '240px', wrap: true },
   { key: 'default', label: '默认值', minWidth: '100px' },
@@ -218,7 +218,7 @@ const apiRows = [
       >
     </ComponentDocsSection>
     <ComponentDocsSection title="API" variant="api">
-      <Table :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
       <p>
         HTML 属性传到提示节点；关联触发节点的属性由 Tooltip 注入。_privateDisableTooltip
         是内部接口，用于菜单等组合场景，不作为通用 disabled 属性使用。

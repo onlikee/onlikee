@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Stack, StackItem } from '@/components/primer-vue/Stack'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
@@ -16,7 +16,7 @@ const codes = [
   '<template>\n<Stack as="ul" class="demo-list" gap="condensed">\n  <StackItem as="li" class="demo-item">列表项一</StackItem>\n  <StackItem as="li">\n    <Stack direction="horizontal" gap="tight">\n      <span class="demo-item">嵌套项 A</span>\n      <span class="demo-item">嵌套项 B</span>\n    </Stack>\n  </StackItem>\n</Stack>\n</template>',
 ]
 const importCode = "import { Stack, StackItem } from '@/components/primer-vue/Stack'"
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true },
   { key: 'type', label: '类型', wrap: true },
   { key: 'default', label: '默认值' },
@@ -213,10 +213,10 @@ const itemRows = [
         regular?: T, wide?: T }。 StackSpacing = 'none' | 'tight' | 'condensed' | 'cozy' | 'normal'
         | 'spacious'。
       </template>
-      <Table :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
     <ComponentDocsSection title="StackItem API" variant="api">
-      <Table :columns="columns" :data="itemRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="itemRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

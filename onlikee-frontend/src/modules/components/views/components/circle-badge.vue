@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { CheckIcon, ZapIcon } from '@onlikee/octicons-vue'
 import { CircleBadge } from '@/components/primer-vue/CircleBadge'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsPage from '../../components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsHeader from '../../components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsSection from '../../components/ComponentDocsPage/ComponentDocsSection.vue'
@@ -25,7 +25,7 @@ const inlineCode = `<p>状态：<CircleBadge as="span" inline :size="32"><Circle
 <CircleBadge as="a" href="/component/checkbox" title="查看复选框" :size="56">
   <CircleBadge.Icon :icon="CheckIcon" :size="32" aria-label="查看复选框" />
 </CircleBadge>`
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: '属性', rowHeader: true, minWidth: '140px' },
   { key: 'type', label: '类型', minWidth: '200px', wrap: true },
   { key: 'default', label: '默认值', minWidth: '100px' },
@@ -134,7 +134,7 @@ const rows = [
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
     <ComponentDocsSection title="API" variant="api">
-      <Table :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
       <p>默认插槽支持图片、图标或自定义内容；CircleBadge.Icon 也可独立导入 CircleBadgeIcon。</p>
       <p>组件 ref 通过 element 获取实际 DOM 元素。</p>
     </ComponentDocsSection>

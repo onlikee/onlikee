@@ -38,7 +38,7 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h4>Props</h4>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="apiTableRows"
         row-key="name"
@@ -46,7 +46,7 @@
         :hoverable="false"
       />
       <h4 style="margin-top: 24px">Slots</h4>
-      <Table
+      <DataTable
         :columns="slotTableColumns"
         :data="slotTableRows"
         row-key="name"
@@ -59,7 +59,7 @@
 
 <script setup lang="ts">
 import { Admonition } from '@/components/primer-vue/Admonition'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -95,7 +95,7 @@ import { Admonition } from '@/components/primer-vue/Admonition'
 
 // ---------- API Tables ----------
 
-const apiTableColumns: TableColumn[] = [
+const apiTableColumns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'default', label: '默认值', minWidth: '100px' },
   { key: 'type', label: '类型', minWidth: '220px', wrap: true },
@@ -117,7 +117,7 @@ const apiTableRows = [
   },
 ]
 
-const slotTableColumns: TableColumn[] = [
+const slotTableColumns: DataTableColumn[] = [
   { key: 'name', label: '插槽名', rowHeader: true, minWidth: '140px' },
   { key: 'description', label: '说明', minWidth: '300px', wrap: true },
 ]

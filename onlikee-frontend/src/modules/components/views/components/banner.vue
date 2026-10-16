@@ -79,7 +79,7 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h4>Banner 方法</h4>
-      <Table
+      <DataTable
         :columns="methodTableColumns"
         :data="methodTableRows"
         row-key="name"
@@ -88,7 +88,7 @@
       />
 
       <h4 style="margin-top: 24px">BannerOptions</h4>
-      <Table
+      <DataTable
         :columns="optionsTableColumns"
         :data="optionsTableRows"
         row-key="name"
@@ -97,7 +97,7 @@
       />
 
       <h4 style="margin-top: 24px">BannerAction</h4>
-      <Table
+      <DataTable
         :columns="actionTableColumns"
         :data="actionTableRows"
         row-key="name"
@@ -106,7 +106,7 @@
       />
 
       <h4 style="margin-top: 24px">BannerExposed</h4>
-      <Table
+      <DataTable
         :columns="exposedTableColumns"
         :data="exposedTableRows"
         row-key="name"
@@ -121,7 +121,7 @@
 import { ref } from 'vue'
 import { Banner } from '@/components/primer-vue/Banner'
 import BannerView, { type BannerExposed } from '@/components/primer-vue/Banner/Banner.vue'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -383,7 +383,7 @@ const closeBannerWithRef = () => bannerRef.value?.close()
 }
 <\/style>`
 
-const methodTableColumns: TableColumn[] = [
+const methodTableColumns: DataTableColumn[] = [
   { key: 'name', label: '方法', rowHeader: true, minWidth: '220px', wrap: true },
   { key: 'description', label: '说明', minWidth: '240px', wrap: true },
   { key: 'signature', label: '签名', minWidth: '360px', wrap: true },
@@ -412,7 +412,7 @@ const methodTableRows = [
   },
 ]
 
-const optionsTableColumns: TableColumn[] = [
+const optionsTableColumns: DataTableColumn[] = [
   { key: 'name', label: '字段', rowHeader: true, minWidth: '170px' },
   { key: 'description', label: '说明', minWidth: '220px', wrap: true },
   { key: 'type', label: '类型', minWidth: '240px', wrap: true },
@@ -447,7 +447,7 @@ const optionsTableRows = [
   { name: 'duration', description: '自动关闭时长（毫秒）', type: 'number', default: "'undefined'" },
 ]
 
-const actionTableColumns: TableColumn[] = [
+const actionTableColumns: DataTableColumn[] = [
   { key: 'name', label: '字段', rowHeader: true, minWidth: '160px' },
   { key: 'description', label: '说明', minWidth: '260px', wrap: true },
   { key: 'type', label: '类型', minWidth: '260px', wrap: true },
@@ -459,7 +459,7 @@ const actionTableRows = [
   { name: 'onClick', description: '点击回调（无 href 时常用）', type: '(() => void) | undefined' },
 ]
 
-const exposedTableColumns: TableColumn[] = [
+const exposedTableColumns: DataTableColumn[] = [
   { key: 'name', label: '方法', rowHeader: true, minWidth: '220px', wrap: true },
   { key: 'description', label: '说明', minWidth: '220px', wrap: true },
   { key: 'signature', label: '签名', minWidth: '360px', wrap: true },

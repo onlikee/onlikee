@@ -356,7 +356,7 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="apiTableRows"
         row-key="name"
@@ -365,7 +365,7 @@
       />
 
       <h3>插槽</h3>
-      <Table
+      <DataTable
         :columns="contentTableColumns"
         :data="contentTableRows"
         row-key="name"
@@ -382,7 +382,7 @@ import { Button, IconButton, LinkButton, ButtonBase } from '@/components/primer-
 import { BellIcon, ArrowUpRightIcon, SearchIcon, CheckIcon } from '@onlikee/octicons-vue'
 import { KeybindingHint } from '@/components/primer-vue/KeybindingHint'
 import { Tooltip } from '@/components/primer-vue/Tooltip'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -795,7 +795,7 @@ import { ArrowUpRightIcon, CheckIcon } from '@onlikee/octicons-vue'
   <ButtonBase type="button" :leading-visual="CheckIcon">基础按钮</ButtonBase>
 </template>`
 
-const apiTableColumns: TableColumn[] = [
+const apiTableColumns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '200px', wrap: true },
@@ -992,7 +992,7 @@ const apiTableRows = [
   },
 ]
 
-const contentTableColumns: TableColumn[] = [
+const contentTableColumns: DataTableColumn[] = [
   { key: 'name', label: '名称', rowHeader: true, minWidth: '180px' },
   { key: 'description', label: '说明', minWidth: '320px', wrap: true },
 ]

@@ -5,7 +5,7 @@ import { ActionList } from '@/components/primer-vue/ActionList'
 import { Button } from '@/components/primer-vue/Button'
 import { LockIcon, RepoIcon, TriangleDownIcon } from '@onlikee/octicons-vue'
 import { FeatureFlags } from '@/components/primer-vue/FeatureFlags'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -194,7 +194,7 @@ const renderAnchor = (props: AnchorRenderProps) => h(Button, props, () => 'Popov
   </FeatureFlags>
 </template>`
 
-const apiColumns: TableColumn[] = [
+const apiColumns: DataTableColumn[] = [
   { key: 'name', label: '属性', rowHeader: true, minWidth: '180px' },
   { key: 'type', label: '类型', minWidth: '240px', wrap: true },
   { key: 'default', label: '默认值', minWidth: '120px' },
@@ -307,7 +307,7 @@ const apiRows = [
     description: '关闭原生锚定，或限制 CSS 回退策略；命名 Portal 也会关闭原生锚定。',
   },
 ]
-const eventColumns: TableColumn[] = [
+const eventColumns: DataTableColumn[] = [
   { key: 'name', label: '事件 / 内容', rowHeader: true, minWidth: '150px' },
   { key: 'description', label: '说明', minWidth: '420px', wrap: true },
 ]
@@ -455,8 +455,8 @@ const eventRows = [
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
     <ComponentDocsSection title="API" variant="api">
-      <Table :columns="apiColumns" :data="apiRows" row-key="name" compact :hoverable="false" />
-      <Table :columns="eventColumns" :data="eventRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="apiColumns" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="eventColumns" :data="eventRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

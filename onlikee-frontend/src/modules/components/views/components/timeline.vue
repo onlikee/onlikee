@@ -110,7 +110,7 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>Timeline</h3>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="apiTableRows"
         row-key="name"
@@ -119,7 +119,7 @@
       />
 
       <h3>子组件</h3>
-      <Table
+      <DataTable
         :columns="subComponentColumns"
         :data="subComponentRows"
         row-key="name"
@@ -132,7 +132,7 @@
 
 <script setup lang="ts">
 import { Timeline } from '@/components/primer-vue/Timeline'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -201,7 +201,7 @@ const clipSidebarDemoCode = `<template>
 import { Timeline } from '@/components/primer-vue/Timeline'
 <\/script>`
 
-const apiTableColumns: TableColumn[] = [
+const apiTableColumns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '180px' },
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '200px', wrap: true },
@@ -219,7 +219,7 @@ const apiTableRows = [
   },
 ]
 
-const subComponentColumns: TableColumn[] = [
+const subComponentColumns: DataTableColumn[] = [
   { key: 'name', label: '子组件', rowHeader: true, minWidth: '180px' },
   { key: 'description', label: '说明', minWidth: '320px', wrap: true },
   { key: 'slot', label: '插槽', minWidth: '180px' },

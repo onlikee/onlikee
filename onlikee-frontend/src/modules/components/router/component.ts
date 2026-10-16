@@ -194,9 +194,10 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/card.vue'),
       },
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('../views/components/table.vue'),
+        path: 'data-table',
+        alias: 'table',
+        name: 'DataTable',
+        component: () => import('../views/components/data-table.vue'),
       },
       {
         path: 'timeline',

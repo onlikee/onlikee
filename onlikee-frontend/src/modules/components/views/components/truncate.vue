@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Truncate } from '@/components/primer-vue/Truncate'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -19,7 +19,7 @@ const variantsCode = `<template>
   <Truncate title="Inline truncated label" inline max-width="8rem">Inline truncated label</Truncate>
 </template>`
 
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '130px' },
   { key: 'type', label: '类型', minWidth: '180px' },
   { key: 'default', label: '默认值', minWidth: '100px' },
@@ -74,7 +74,7 @@ const rows = [
     </ComponentDocsSection>
 
     <ComponentDocsSection title="API" variant="api">
-      <Table :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

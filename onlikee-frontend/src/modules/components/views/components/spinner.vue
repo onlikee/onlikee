@@ -70,7 +70,7 @@
         <code>class</code>、<code>style</code>、<code>aria-*</code> 和
         <code>data-*</code> 属性会传给 SVG。
       </template>
-      <Table :columns="apiColumns" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="apiColumns" :data="apiRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
@@ -78,7 +78,7 @@
 <script setup lang="ts">
 import { shallowRef } from 'vue'
 import { Spinner } from '@/components/primer-vue/Spinner'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -108,7 +108,7 @@ const delayCode = `<Spinner delay="short" />
 <Spinner :delay="500" />
 <Spinner delay="long" />`
 
-const apiColumns: TableColumn[] = [
+const apiColumns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'type', label: '类型', minWidth: '220px', wrap: true },
   { key: 'default', label: '默认值', minWidth: '120px' },

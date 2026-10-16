@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { ImageUpload, type ImageUploadFile } from '@/components/primer-vue/ImageUpload'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -43,7 +43,7 @@ const images = ref<ImageUploadFile[]>([])
     <span>添加封面</span>
   </ImageUpload>
 </template>`
-const apiCols: TableColumn[] = [
+const apiCols: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'default', label: '默认值', minWidth: '100px' },
   { key: 'type', label: '类型', minWidth: '160px', wrap: true },
@@ -109,7 +109,7 @@ const apiRows = [
     description: '禁用选择和拖拽；切换为禁用时取消当前裁剪。',
   },
 ]
-const fileCols: TableColumn[] = [
+const fileCols: DataTableColumn[] = [
   { key: 'name', label: '字段', rowHeader: true },
   { key: 'type', label: '类型' },
   { key: 'description', label: '说明', wrap: true },
@@ -239,15 +239,15 @@ const slotRows = [
         绑定值包含原图或已确认的裁剪结果，最多一个元素；外部将绑定值设为空数组后回退显示
         <code>previewUrl</code>，两者均为空时清除预览。
       </template>
-      <Table :columns="fileCols" :data="fileRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="fileCols" :data="fileRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <Table :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
       <h3>事件</h3>
-      <Table :columns="fileCols" :data="eventRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="fileCols" :data="eventRows" row-key="name" compact :hoverable="false" />
       <h3>插槽</h3>
-      <Table :columns="fileCols" :data="slotRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="fileCols" :data="slotRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

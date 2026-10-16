@@ -19,7 +19,7 @@ import {
   TasklistIcon,
   KebabHorizontalIcon,
 } from '@onlikee/octicons-vue'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -163,7 +163,7 @@ const menuCode = [
   '  <p>{{ selected }}</p>',
   '</template>',
 ].join('\n')
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: '属性', rowHeader: true },
   { key: 'type', label: '类型', wrap: true },
   { key: 'default', label: '默认值' },
@@ -396,13 +396,13 @@ const menuRows = [
       </p>
     </ComponentDocsSection>
     <ComponentDocsSection title="ActionBar API">
-      <Table :columns="columns" :data="barRows" />
+      <DataTable :columns="columns" :data="barRows" />
     </ComponentDocsSection>
     <ComponentDocsSection title="Button / IconButton API">
-      <Table :columns="columns" :data="buttonRows" />
+      <DataTable :columns="columns" :data="buttonRows" />
     </ComponentDocsSection>
     <ComponentDocsSection title="Menu API">
-      <Table :columns="columns" :data="menuRows" />
+      <DataTable :columns="columns" :data="menuRows" />
     </ComponentDocsSection>
     <ComponentDocsSection title="Group / Divider 与导出">
       <p>Group 通过默认插槽组合操作，整体溢出；Divider 渲染装饰性竖线，溢出时转为菜单分隔线。</p>

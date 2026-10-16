@@ -1,6 +1,6 @@
 <template>
   <ComponentDocsPage>
-    <ComponentDocsHeader title="Table 表格" description="用于展示结构化数据的表格组件。" />
+    <ComponentDocsHeader title="DataTable 表格" description="用于展示结构化数据的表格组件。" />
 
     <ComponentDocsSection title="基础用法">
       <template #description>
@@ -11,7 +11,7 @@
 
       <ComponentDocsDemoBlock :code="basicDemoCode">
         <div class="table-demo">
-          <Table caption="Repository metadata" :columns="columns" :data="repoRows" row-key="id" />
+          <DataTable caption="Repository metadata" :columns="columns" :data="repoRows" row-key="id" />
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -26,11 +26,11 @@
         <div class="table-demo table-demo--split">
           <div class="table-demo__panel">
             <div class="table-demo__label">默认</div>
-            <Table caption="Default table" :columns="columns" :data="repoRows" row-key="id" />
+            <DataTable caption="Default table" :columns="columns" :data="repoRows" row-key="id" />
           </div>
           <div class="table-demo__panel">
             <div class="table-demo__label">紧凑 / 无边框 / 关闭悬浮</div>
-            <Table
+            <DataTable
               caption="Compact table"
               :columns="columns"
               :data="repoRows"
@@ -54,7 +54,7 @@
           <div v-if="selectedName" class="status-bar">
             最近点击：<strong>{{ selectedName }}</strong>
           </div>
-          <Table
+          <DataTable
             caption="Clickable rows"
             :columns="columns"
             :data="repoRows"
@@ -76,7 +76,7 @@
         <div class="table-demo table-demo--split">
           <div class="table-demo__panel">
             <div class="table-demo__label">空状态</div>
-            <Table
+            <DataTable
               caption="Empty table"
               :columns="columns"
               :data="emptyRows"
@@ -85,7 +85,7 @@
           </div>
           <div class="table-demo__panel">
             <div class="table-demo__label">空值占位符</div>
-            <Table
+            <DataTable
               caption="Placeholder table"
               :columns="columns"
               :data="placeholderRows"
@@ -104,13 +104,13 @@
 
       <ComponentDocsDemoBlock :code="wrapDemoCode">
         <div class="table-demo">
-          <Table caption="Wrapped content" :columns="wrapColumns" :data="wrapRows" row-key="id" />
+          <DataTable caption="Wrapped content" :columns="wrapColumns" :data="wrapRows" row-key="id" />
         </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="API" variant="api">
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="apiTableRows"
         row-key="name"
@@ -123,7 +123,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Table, type RowData, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type RowData, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -197,7 +197,7 @@ const placeholderRows: RepoRow[] = repoRows.map((row, index) => ({
   owner: index % 3 === 0 ? '' : row.owner,
 }))
 
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   {
     key: 'name',
     label: 'Repository',
@@ -227,7 +227,7 @@ const columns: TableColumn[] = [
   },
 ]
 
-const wrapColumns: TableColumn[] = [
+const wrapColumns: DataTableColumn[] = [
   {
     key: 'name',
     label: 'Repository',
@@ -294,7 +294,7 @@ function handleRowClick(payload: { row: RowData; rowIndex: number }) {
 }
 
 const basicDemoCode = `<template>
-  <Table
+  <DataTable
     :columns="columns"
     :data="rows"
     row-key="id"
@@ -302,7 +302,7 @@ const basicDemoCode = `<template>
 </template>
 
 <script setup lang="ts">
-import { type TableColumn } from '@/components/primer-vue/Table/Table'
+import { type DataTableColumn } from '@/components/primer-vue/DataTable'
 
 interface Row {
   id: number
@@ -313,7 +313,7 @@ interface Row {
   owner: string
 }
 
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: 'Repository', rowHeader: true, minWidth: '240px' },
   { key: 'visibility', label: 'Visibility', width: '120px' },
   { key: 'updatedAt', label: 'Updated', width: '150px' },
@@ -329,8 +329,8 @@ const rows: Row[] = [
 
 const compactDemoCode = `<template>
   <div class="table-demo table-demo--split">
-    <Table :columns="columns" :data="rows" row-key="id" />
-    <Table
+    <DataTable :columns="columns" :data="rows" row-key="id" />
+    <DataTable
       :columns="columns"
       :data="rows"
       row-key="id"
@@ -342,7 +342,7 @@ const compactDemoCode = `<template>
 </template>
 
 <script setup lang="ts">
-import { type TableColumn } from '@/components/primer-vue/Table/Table'
+import { type DataTableColumn } from '@/components/primer-vue/DataTable'
 
 interface Row {
   id: number
@@ -353,7 +353,7 @@ interface Row {
   owner: string
 }
 
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: 'Repository', rowHeader: true, minWidth: '240px' },
   { key: 'visibility', label: 'Visibility', width: '120px' },
   { key: 'updatedAt', label: 'Updated', width: '150px' },
@@ -371,7 +371,7 @@ const clickableDemoCode = `<template>
   <div class="status-bar" v-if="selectedName">
     最近点击：<strong>{{ selectedName }}</strong>
   </div>
-  <Table
+  <DataTable
     :columns="columns"
     :data="rows"
     row-clickable
@@ -381,7 +381,7 @@ const clickableDemoCode = `<template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { type RowData, type TableColumn } from '@/components/primer-vue/Table/Table'
+import { type RowData, type DataTableColumn } from '@/components/primer-vue/DataTable'
 
 interface Row {
   id: number
@@ -394,7 +394,7 @@ interface Row {
 
 const selectedName = ref('')
 
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: 'Repository', rowHeader: true, minWidth: '240px' },
   { key: 'visibility', label: 'Visibility', width: '120px' },
   { key: 'updatedAt', label: 'Updated', width: '150px' },
@@ -415,13 +415,13 @@ function handleRowClick(payload: { row: RowData; rowIndex: number }) {
 
 const emptyDemoCode = `<template>
   <div class="table-demo table-demo--split">
-    <Table :columns="columns" :data="emptyRows" empty-text="暂无记录" />
-    <Table :columns="columns" :data="placeholderRows" placeholder-text="—" />
+    <DataTable :columns="columns" :data="emptyRows" empty-text="暂无记录" />
+    <DataTable :columns="columns" :data="placeholderRows" placeholder-text="—" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { type TableColumn } from '@/components/primer-vue/Table/Table'
+import { type DataTableColumn } from '@/components/primer-vue/DataTable'
 
 interface Row {
   id: number
@@ -432,7 +432,7 @@ interface Row {
   owner: string
 }
 
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: 'Repository', rowHeader: true, minWidth: '240px' },
   { key: 'visibility', label: 'Visibility', width: '120px' },
   { key: 'updatedAt', label: 'Updated', width: '150px' },
@@ -449,7 +449,7 @@ const emptyRows: Row[] = []
 <\/script>`
 
 const wrapDemoCode = `<template>
-  <Table
+  <DataTable
     :columns="wrapColumns"
     :data="rows"
     row-key="id"
@@ -457,7 +457,7 @@ const wrapDemoCode = `<template>
 </template>
 
 <script setup lang="ts">
-import { type TableColumn } from '@/components/primer-vue/Table/Table'
+import { type DataTableColumn } from '@/components/primer-vue/DataTable'
 
 interface Row {
   id: number
@@ -468,7 +468,7 @@ interface Row {
   owner: string
 }
 
-const wrapColumns: TableColumn[] = [
+const wrapColumns: DataTableColumn[] = [
   { key: 'name', label: 'Repository', rowHeader: true, minWidth: '240px', wrap: true },
   { key: 'visibility', label: 'Visibility', width: '120px' },
   { key: 'updatedAt', label: 'Updated', width: '150px' },
@@ -496,7 +496,7 @@ const rows: Row[] = [
 ]
 <\/script>`
 
-const apiTableColumns: TableColumn[] = [
+const apiTableColumns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '160px' },
   { key: 'default', label: '默认值', minWidth: '140px' },
   { key: 'type', label: '类型', minWidth: '200px', wrap: true },
@@ -508,7 +508,7 @@ const apiTableRows = [
   {
     name: 'columns',
     description: '列配置数组',
-    type: 'TableColumn[]',
+    type: 'DataTableColumn[]',
     options: '—',
     default: '[]',
   },

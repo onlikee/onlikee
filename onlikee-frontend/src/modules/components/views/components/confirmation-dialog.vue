@@ -10,7 +10,7 @@ import {
   useConfirm,
   type ConfirmationDialogCloseGesture,
 } from '@/components/primer-vue/ConfirmationDialog'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -210,7 +210,7 @@ onBeforeUnmount(() => root.remove())
     </ConfirmationDialog>
   </PortalContext.Provider>
 </template>`
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: '属性', rowHeader: true, minWidth: '180px' },
   { key: 'type', label: '类型', minWidth: '240px', wrap: true },
   { key: 'default', label: '默认值', minWidth: '100px' },
@@ -454,10 +454,10 @@ const hookRows = [
       </p>
     </ComponentDocsSection>
     <ComponentDocsSection title="组件 API" variant="api"
-      ><Table :columns="columns" :data="propsRows" row-key="name"
+      ><DataTable :columns="columns" :data="propsRows" row-key="name"
     /></ComponentDocsSection>
     <ComponentDocsSection title="useConfirm API" variant="api"
-      ><Table :columns="columns" :data="hookRows" row-key="name"
+      ><DataTable :columns="columns" :data="hookRows" row-key="name"
     /></ComponentDocsSection>
   </ComponentDocsPage>
 </template>

@@ -114,11 +114,11 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <Table :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
       <h3>原生属性透传（常用）</h3>
-      <Table :columns="apiCols" :data="nativeRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="apiCols" :data="nativeRows" row-key="name" compact :hoverable="false" />
       <h3>事件</h3>
-      <Table :columns="eventCols" :data="eventRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="eventCols" :data="eventRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
@@ -127,7 +127,7 @@
 import { computed, ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { TextInput } from '@/components/primer-vue/TextInput'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -253,7 +253,7 @@ const valMedium = ref('')
 const valLarge = ref('')
 <\/script>`
 
-const apiCols: TableColumn[] = [
+const apiCols: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '220px', wrap: true },
@@ -326,7 +326,7 @@ const nativeRows = [
   },
 ]
 
-const eventCols: TableColumn[] = [
+const eventCols: DataTableColumn[] = [
   { key: 'name', label: '事件名', rowHeader: true, minWidth: '180px' },
   { key: 'description', label: '说明', minWidth: '240px', wrap: true },
   { key: 'type', label: '回调参数', minWidth: '200px', wrap: true },

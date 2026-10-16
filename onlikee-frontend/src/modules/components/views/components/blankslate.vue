@@ -150,7 +150,7 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>Blankslate Props</h3>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="rootPropsRows"
         row-key="name"
@@ -159,7 +159,7 @@
       />
 
       <h3>Blankslate.Heading Props</h3>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="headingPropsRows"
         row-key="name"
@@ -168,7 +168,7 @@
       />
 
       <h3>Blankslate.PrimaryAction Props</h3>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="primaryActionPropsRows"
         row-key="name"
@@ -177,7 +177,7 @@
       />
 
       <h3>Blankslate.SecondaryAction Props</h3>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="secondaryActionPropsRows"
         row-key="name"
@@ -190,7 +190,7 @@
       </p>
 
       <h3>插槽</h3>
-      <Table
+      <DataTable
         :columns="slotTableColumns"
         :data="slotTableRows"
         row-key="name"
@@ -199,7 +199,7 @@
       />
 
       <h3>事件</h3>
-      <Table
+      <DataTable
         :columns="eventTableColumns"
         :data="eventTableRows"
         row-key="name"
@@ -219,7 +219,7 @@ import {
   InboxIcon,
   RepoIcon,
 } from '@onlikee/octicons-vue'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -394,7 +394,7 @@ const actionDemoCode = `<template>
 }
 </style>`
 
-const apiTableColumns: TableColumn[] = [
+const apiTableColumns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '150px' },
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '260px', wrap: true },
@@ -466,7 +466,7 @@ const secondaryActionPropsRows = [
   },
 ]
 
-const slotTableColumns: TableColumn[] = [
+const slotTableColumns: DataTableColumn[] = [
   { key: 'name', label: '插槽名', rowHeader: true, minWidth: '180px' },
   { key: 'description', label: '说明', minWidth: '320px', wrap: true },
 ]
@@ -483,7 +483,7 @@ const slotTableRows = [
   { name: 'SecondaryAction default', description: '次要操作文案。' },
 ]
 
-const eventTableColumns: TableColumn[] = [
+const eventTableColumns: DataTableColumn[] = [
   { key: 'name', label: '事件名', rowHeader: true, minWidth: '160px' },
   { key: 'description', label: '说明', minWidth: '300px', wrap: true },
 ]

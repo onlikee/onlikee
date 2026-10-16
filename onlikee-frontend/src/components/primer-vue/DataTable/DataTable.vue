@@ -76,24 +76,24 @@ import { computed, useCssModule } from 'vue'
 const styles = useCssModule()
 
 export type RowData = object
-export type TableAlign = 'left' | 'center' | 'right'
+export type DataTableAlign = 'left' | 'center' | 'right'
 
-export interface TableColumn {
+export interface DataTableColumn {
   key: string
   label: string
-  align?: TableAlign
+  align?: DataTableAlign
   width?: string
   minWidth?: string
   rowHeader?: boolean
   wrap?: boolean
   className?: string
   headerClassName?: string
-  formatter?: (value: unknown, row: RowData, column: TableColumn, rowIndex: number) => unknown
+  formatter?: (value: unknown, row: RowData, column: DataTableColumn, rowIndex: number) => unknown
 }
 
 const props = withDefaults(
   defineProps<{
-    columns: TableColumn[]
+    columns: DataTableColumn[]
     data: RowData[]
     rowKey?: string | ((row: RowData, index: number) => string | number)
     caption?: string
@@ -151,11 +151,11 @@ function resolveRowKey(row: RowData, index: number): string | number {
   return index
 }
 
-function getValue(row: RowData, column: TableColumn): unknown {
+function getValue(row: RowData, column: DataTableColumn): unknown {
   return getValueByPath(row, column.key)
 }
 
-function formatValue(value: unknown, row: RowData, column: TableColumn, rowIndex: number): unknown {
+function formatValue(value: unknown, row: RowData, column: DataTableColumn, rowIndex: number): unknown {
   if (column.formatter) {
     return column.formatter(value, row, column, rowIndex)
   }
@@ -183,15 +183,15 @@ function onRowClick(row: RowData, rowIndex: number) {
   emit('row-click', { row, rowIndex })
 }
 
-function alignClass(align: TableAlign | undefined) {
+function alignClass(align: DataTableAlign | undefined) {
   return align ? styles[`is-align-${align}`] : styles['is-align-left']
 }
 
-function columnStyle(column: TableColumn) {
+function columnStyle(column: DataTableColumn) {
   const style: Record<string, string> = {}
   if (column.width) style.width = column.width
   if (column.minWidth) style.minWidth = column.minWidth
   return style
 }
 </script>
-<style module src="./Table.module.css" />
+<style module src="./DataTable.module.css" />

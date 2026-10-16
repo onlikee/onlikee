@@ -81,10 +81,10 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>FormControl Props</h3>
-      <Table :columns="apiCols" :data="rootPropRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="apiCols" :data="rootPropRows" row-key="name" compact :hoverable="false" />
 
       <h3>子组件</h3>
-      <Table
+      <DataTable
         :columns="subComponentCols"
         :data="subComponentRows"
         row-key="name"
@@ -93,7 +93,7 @@
       />
 
       <h3>Validation Props</h3>
-      <Table
+      <DataTable
         :columns="apiCols"
         :data="validationPropRows"
         row-key="name"
@@ -108,7 +108,7 @@
 import { computed, ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { TextInput } from '@/components/primer-vue/TextInput'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -192,7 +192,7 @@ import { TextInput } from '@/components/primer-vue/TextInput'
 const domainPrefix = ref('podcast-hub')
 <\/script>`
 
-const apiCols: TableColumn[] = [
+const apiCols: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '180px' },
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '220px', wrap: true },
@@ -232,7 +232,7 @@ const rootPropRows = [
   },
 ]
 
-const subComponentCols: TableColumn[] = [
+const subComponentCols: DataTableColumn[] = [
   { key: 'name', label: '子组件', rowHeader: true, minWidth: '200px' },
   { key: 'description', label: '说明', minWidth: '320px', wrap: true },
   { key: 'publicProps', label: '公开 Props', minWidth: '220px', wrap: true },

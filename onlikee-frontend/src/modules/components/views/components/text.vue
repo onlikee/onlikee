@@ -5,7 +5,7 @@ import {
   type TextWeight,
   type TextWhiteSpace,
 } from '@/components/primer-vue/Text'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '../../components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '../../components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '../../components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -43,7 +43,7 @@ const codes = {
 </style>`,
 }
 
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: '名称', rowHeader: true },
   { key: 'type', label: '类型', wrap: true },
   { key: 'default', label: '默认值' },
@@ -174,15 +174,15 @@ const slotRows = [
     </ComponentDocsSection>
 
     <ComponentDocsSection title="属性" variant="api">
-      <Table :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
 
     <ComponentDocsSection title="组件实例" variant="api">
-      <Table :columns="columns" :data="instanceRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="instanceRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
 
     <ComponentDocsSection title="插槽" variant="api">
-      <Table :columns="columns" :data="slotRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="slotRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

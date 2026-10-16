@@ -71,11 +71,11 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <Table :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
       <h3>事件</h3>
-      <Table :columns="eventCols" :data="eventRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="eventCols" :data="eventRows" row-key="name" compact :hoverable="false" />
       <h3>插槽</h3>
-      <Table :columns="slotCols" :data="slotRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="slotCols" :data="slotRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
@@ -84,7 +84,7 @@
 import { ref } from 'vue'
 import { Upload } from '@/components/primer-vue/Upload'
 import type { UploadFile } from '@/components/primer-vue/Upload'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import { UploadIcon } from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
@@ -173,7 +173,7 @@ import { UploadIcon } from '@onlikee/octicons-vue'
 const files = ref<UploadFile[]>([])
 <\/script>`
 
-const apiCols: TableColumn[] = [
+const apiCols: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'default', label: '默认值', minWidth: '100px' },
   { key: 'type', label: '类型', minWidth: '200px', wrap: true },
@@ -225,7 +225,7 @@ const apiRows = [
   },
 ]
 
-const eventCols: TableColumn[] = [
+const eventCols: DataTableColumn[] = [
   { key: 'name', label: '事件名', rowHeader: true, minWidth: '180px' },
   { key: 'description', label: '说明', minWidth: '200px', wrap: true },
   { key: 'type', label: '回调参数', minWidth: '200px', wrap: true },
@@ -239,7 +239,7 @@ const eventRows = [
   },
 ]
 
-const slotCols: TableColumn[] = [
+const slotCols: DataTableColumn[] = [
   { key: 'name', label: '插槽名', rowHeader: true, minWidth: '140px' },
   { key: 'description', label: '说明', minWidth: '300px', wrap: true },
 ]

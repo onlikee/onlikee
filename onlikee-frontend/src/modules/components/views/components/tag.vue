@@ -90,7 +90,7 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="apiTableRows"
         row-key="name"
@@ -98,7 +98,7 @@
         :hoverable="false"
       />
       <h3>子组件</h3>
-      <Table
+      <DataTable
         :columns="slotTableColumns"
         :data="slotTableRows"
         row-key="name"
@@ -106,7 +106,7 @@
         :hoverable="false"
       />
       <h3>事件</h3>
-      <Table
+      <DataTable
         :columns="eventTableColumns"
         :data="eventTableRows"
         row-key="name"
@@ -119,7 +119,7 @@
 
 <script setup lang="ts">
 import { Tag } from '@/components/primer-vue/Tag'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import { StarIcon, CheckIcon, AlertIcon } from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
@@ -237,7 +237,7 @@ const handleRemove = (label: string) => {
 }
 </style>`
 
-const apiTableColumns: TableColumn[] = [
+const apiTableColumns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'default', label: '默认值', minWidth: '100px' },
   { key: 'type', label: '类型', minWidth: '200px', wrap: true },
@@ -271,7 +271,7 @@ const apiTableRows = [
   },
 ]
 
-const slotTableColumns: TableColumn[] = [
+const slotTableColumns: DataTableColumn[] = [
   { key: 'name', label: '子组件', rowHeader: true, minWidth: '140px' },
   { key: 'description', label: '说明', minWidth: '300px', wrap: true },
 ]
@@ -283,7 +283,7 @@ const slotTableRows = [
   },
 ]
 
-const eventTableColumns: TableColumn[] = [
+const eventTableColumns: DataTableColumn[] = [
   { key: 'name', label: '事件名', rowHeader: true, minWidth: '140px' },
   { key: 'params', label: '参数', minWidth: '140px' },
   { key: 'description', label: '说明', minWidth: '200px', wrap: true },

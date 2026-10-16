@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { shallowRef } from 'vue'
 import { UnderlinePanels } from '@/components/primer-vue/UnderlinePanels'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import { CodeIcon, IssueOpenedIcon } from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
@@ -36,7 +36,7 @@ const manualCode = `<template>
   </UnderlinePanels>
 </template>`
 
-const columns: TableColumn[] = [
+const columns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '150px' },
   { key: 'type', label: '类型', minWidth: '200px' },
   { key: 'default', label: '默认值', minWidth: '100px' },
@@ -125,11 +125,11 @@ const panelRows = [
 
     <ComponentDocsSection title="API" variant="api">
       <h3>UnderlinePanels</h3>
-      <Table :columns="columns" :data="rootRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="rootRows" row-key="name" compact :hoverable="false" />
       <h3>UnderlinePanels.Tab</h3>
-      <Table :columns="columns" :data="tabRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="tabRows" row-key="name" compact :hoverable="false" />
       <h3>UnderlinePanels.Panel</h3>
-      <Table :columns="columns" :data="panelRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="columns" :data="panelRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

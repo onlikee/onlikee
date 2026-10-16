@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { Link } from '@/components/primer-vue/Link'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -18,7 +18,7 @@ const contentCode = `<Link href="https://github.com" target="_blank" rel="noopen
   <strong>GitHub</strong>
 </Link>`
 
-const apiTableColumns: TableColumn[] = [
+const apiTableColumns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '160px', wrap: true },
@@ -118,7 +118,7 @@ const apiTableRows = [
         <code>LinkProps</code> 根据 <code>as</code> 接受对应元素或组件的属性。组件 ref 的
         <code>element</code> 指向实际根元素，可调用其原生 <code>focus()</code>；卸载后为 null。
       </template>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="apiTableRows"
         row-key="name"

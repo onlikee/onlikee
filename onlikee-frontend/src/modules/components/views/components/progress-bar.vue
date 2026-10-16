@@ -100,21 +100,21 @@
     </ComponentDocsSection>
 
     <ComponentDocsSection title="API" variant="api">
-      <Table :columns="apiColumns" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="apiColumns" :data="apiRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
     <ComponentDocsSection title="ProgressBar.Item API" variant="api">
       <template #description>
         也可以具名导入 <code>ProgressBarItem</code>。两种组件均支持原生属性、class 和 style。
         多段模式下，父级颜色、动画和下列 ARIA 属性不会自动传给子项。
       </template>
-      <Table :columns="apiColumns" :data="itemApiRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="apiColumns" :data="itemApiRows" row-key="name" compact :hoverable="false" />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
 import { ProgressBar } from '@/components/primer-vue/ProgressBar'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -157,7 +157,7 @@ const animatedCode = `<ProgressBar :progress="50" animated aria-label="正在上
   <ProgressBar.Item :progress="25" aria-label="已处理的文件" />
 </ProgressBar>`
 
-const apiColumns: TableColumn[] = [
+const apiColumns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
   { key: 'type', label: '类型', minWidth: '180px', wrap: true },
   { key: 'default', label: '默认值', minWidth: '120px' },

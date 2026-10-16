@@ -143,7 +143,7 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>Dialog Props</h3>
-      <Table
+      <DataTable
         :columns="apiTableColumns"
         :data="dialogPropsRows"
         row-key="name"
@@ -152,7 +152,7 @@
       />
 
       <h3>插槽</h3>
-      <Table
+      <DataTable
         :columns="slotTableColumns"
         :data="slotTableRows"
         row-key="name"
@@ -161,7 +161,7 @@
       />
 
       <h3>事件</h3>
-      <Table
+      <DataTable
         :columns="eventTableColumns"
         :data="eventTableRows"
         row-key="name"
@@ -181,7 +181,7 @@ import {
   type DialogHeaderProps,
   type DialogProps,
 } from '@/components/primer-vue/Dialog'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
@@ -332,7 +332,7 @@ const largeOpen = ref(false)
   </Dialog>
 </template>`
 
-const apiTableColumns: TableColumn[] = [
+const apiTableColumns: DataTableColumn[] = [
   { key: 'name', label: '属性名', rowHeader: true, minWidth: '150px' },
   { key: 'default', label: '默认值', minWidth: '120px' },
   { key: 'type', label: '类型', minWidth: '260px', wrap: true },
@@ -442,7 +442,7 @@ const dialogPropsRows = [
   },
 ]
 
-const slotTableColumns: TableColumn[] = [
+const slotTableColumns: DataTableColumn[] = [
   { key: 'name', label: '插槽名', rowHeader: true, minWidth: '180px' },
   { key: 'description', label: '说明', minWidth: '320px', wrap: true },
 ]
@@ -475,7 +475,7 @@ const slotTableRows = [
   { name: 'Dialog.Footer default', description: '底部操作区域，通常放置 Button。' },
 ]
 
-const eventTableColumns: TableColumn[] = [
+const eventTableColumns: DataTableColumn[] = [
   { key: 'name', label: '事件名', rowHeader: true, minWidth: '160px' },
   { key: 'payload', label: '载荷', minWidth: '240px', wrap: true },
   { key: 'description', label: '说明', minWidth: '320px', wrap: true },

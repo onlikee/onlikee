@@ -4,7 +4,7 @@ import { Checkbox } from '@/components/primer-vue/Checkbox'
 import { CheckboxGroup } from '@/components/primer-vue/CheckboxGroup'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { Button } from '@/components/primer-vue/Button'
-import { Table, type TableColumn } from '@/components/primer-vue/Table'
+import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
 import ComponentDocsPage from '../../components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsHeader from '../../components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsSection from '../../components/ComponentDocsPage/ComponentDocsSection.vue'
@@ -24,7 +24,7 @@ const codes = {
   group:
     '<CheckboxGroup @change="selected = $event"><CheckboxGroup.Label>通知方式</CheckboxGroup.Label><FormControl><Checkbox value="email" default-checked /><FormControl.Label>邮件通知</FormControl.Label></FormControl></CheckboxGroup>',
 }
-const apiColumns: TableColumn[] = [
+const apiColumns: DataTableColumn[] = [
   { key: 'name', label: '属性 / 事件', rowHeader: true, minWidth: '180px' },
   { key: 'type', label: '类型', minWidth: '200px', wrap: true },
   { key: 'description', label: '说明', minWidth: '260px', wrap: true },
@@ -155,14 +155,14 @@ const groupRows = [
     </ComponentDocsSection>
     <ComponentDocsSection title="API" variant="api">
       <h3>Checkbox</h3>
-      <Table :columns="apiColumns" :data="checkboxRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="apiColumns" :data="checkboxRows" row-key="name" compact :hoverable="false" />
       <p>组件 ref 通过 element 或 input 获取原生 input，也支持 focus() 和 blur()。</p>
       <p>
         非受控输入的 aria-checked 沿用 React 原版，在组件渲染后同步；原生选中和表单提交状态由 input
         管理。CheckboxGroup 重新渲染时也会同步组内 Checkbox 的 aria-checked。
       </p>
       <h3>CheckboxGroup</h3>
-      <Table :columns="apiColumns" :data="groupRows" row-key="name" compact :hoverable="false" />
+      <DataTable :columns="apiColumns" :data="groupRows" row-key="name" compact :hoverable="false" />
       <p>
         有 Label 时渲染 fieldset/legend；无 Label 时使用 role="group" 并关联说明、校验和必填提示。
       </p>
