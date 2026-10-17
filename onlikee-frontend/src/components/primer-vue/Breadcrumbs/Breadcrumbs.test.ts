@@ -79,6 +79,7 @@ beforeEach(() => {
 afterEach(() => {
   wrappers.splice(0).forEach((wrapper) => wrapper.unmount())
   document.body.innerHTML = ''
+  vi.useRealTimers()
 })
 
 describe('Breadcrumbs source contracts', () => {
@@ -211,6 +212,30 @@ describe('Breadcrumbs source contracts', () => {
     await settle()
     expect(wrapper.get('summary').attributes('aria-expanded')).toBe('true')
     cleanup()
+  })
+
+  it('dismisses the trigger Tooltip before closing the Details menu on the next Escape', async () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    const wrapper = await render()
+    const summary = wrapper.get('summary')
+    await summary.trigger('click')
+    summary.element.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }))
+    await vi.advanceTimersByTimeAsync(50)
+    const tooltip = wrapper.get('[data-component="Tooltip"]').element
+    expect(tooltip.classList.contains(':popover-open')).toBe(true)
+    summary.element.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    )
+    await settle()
+    expect(tooltip.classList.contains(':popover-open')).toBe(false)
+    expect(summary.attributes('aria-expanded')).toBe('true')
+    summary.element.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    )
+    await settle()
+    expect((wrapper.get('details').element as HTMLDetailsElement).open).toBe(false)
+    expect(summary.attributes('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(summary.element)
   })
 
   it('closes on primary outside mousedown but ignores menu, trigger and auxiliary clicks', async () => {

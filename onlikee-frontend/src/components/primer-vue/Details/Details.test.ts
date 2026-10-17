@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mount, type VueWrapper } from '@vue/test-utils'
-import { h, type Component } from 'vue'
+import { defineComponent, h, type Component } from 'vue'
 import { Details, Summary, type DetailsInstance } from './index'
 import { Button } from '../Button'
 
@@ -55,5 +55,93 @@ describe('Details', () => {
       'Warning:',
       expect.stringContaining('must have a <summary>'),
     )
+  })
+
+  it('merges classes and styles and forwards native toggle and click events', async () => {
+    const toggle = vi.fn()
+    const click = vi.fn()
+    const wrapper = mount(Details, {
+      props: { className: 'source' },
+      attrs: { class: 'vue', style: { marginTop: 4 }, name: 'accordion', onToggle: toggle },
+      slots: {
+        default: () =>
+          h(Summary as Component, { onClick: click, title: 'Summary title' }, () => 'Summary'),
+      },
+    })
+    wrappers.push(wrapper)
+    expect(wrapper.classes()).toEqual(expect.arrayContaining(['source', 'vue']))
+    expect((wrapper.element as HTMLElement).style.marginTop).toBe('4px')
+    expect(wrapper.attributes('name')).toBe('accordion')
+    expect(wrapper.get('summary').attributes('title')).toBe('Summary title')
+    await wrapper.trigger('toggle')
+    expect(toggle).toHaveBeenCalledOnce()
+    await wrapper.get('summary').trigger('click')
+    expect(click).toHaveBeenCalledOnce()
+  })
+
+  it('forwards summary attributes, classes and styles and forces the source marker', () => {
+    const wrapper = mount(Summary as Component, {
+      props: { className: 'source' },
+      attrs: {
+        class: 'vue',
+        style: { paddingTop: 3 },
+        id: 'summary',
+        'data-component': 'Override',
+      },
+      slots: { default: () => 'Summary' },
+    })
+    wrappers.push(wrapper)
+    expect(wrapper.element.tagName).toBe('SUMMARY')
+    expect(wrapper.classes()).toEqual(expect.arrayContaining(['source', 'vue']))
+    expect((wrapper.element as HTMLElement).style.paddingTop).toBe('3px')
+    expect(wrapper.attributes('id')).toBe('summary')
+    expect(wrapper.attributes('data-component')).toBe('Details.Summary')
+    expect(wrapper.attributes('as')).toBeUndefined()
+  })
+
+  it('passes as=summary and custom props to a consumer component', () => {
+    const CustomSummary = defineComponent({
+      props: { as: { type: String, default: 'button' }, label: { type: String, required: true } },
+      setup:
+        (props, { attrs }) =>
+        () =>
+          h(props.as ?? 'button', attrs, props.label),
+    })
+    const wrapper = mount(Details, {
+      slots: {
+        default: () =>
+          h(Summary as Component, { as: CustomSummary, label: 'Custom', id: 'custom' }),
+      },
+    })
+    wrappers.push(wrapper)
+    expect(wrapper.get('summary').text()).toBe('Custom')
+    expect(wrapper.get('summary').attributes('id')).toBe('custom')
+    expect(wrapper.find('button').exists()).toBe(false)
+  })
+
+  it.each(['native', 'button'] as const)('accepts a %s summary without warning', (summary) => {
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const wrapper = mount(Details, {
+      slots: {
+        default: () =>
+          summary === 'native'
+            ? h('summary', 'Native')
+            : h(Summary as Component, { as: Button }, () => 'Button'),
+      },
+    })
+    wrappers.push(wrapper)
+    expect(warning).not.toHaveBeenCalled()
+  })
+
+  it('warns only on mount and skips the warning in production', async () => {
+    const warning = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const wrapper = mount(Details)
+    wrappers.push(wrapper)
+    expect(warning).toHaveBeenCalledOnce()
+    await wrapper.setProps({ className: 'changed' })
+    expect(warning).toHaveBeenCalledOnce()
+    vi.stubEnv('DEV', false)
+    wrappers.push(mount(Details))
+    expect(warning).toHaveBeenCalledOnce()
   })
 })
