@@ -150,39 +150,43 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>Blankslate Props</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >Blankslate 空状态 Blankslate Props</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
         :columns="apiTableColumns"
         :data="rootPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h3>Blankslate.Heading Props</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >Blankslate 空状态 Blankslate.Heading Props</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
         :columns="apiTableColumns"
         :data="headingPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h3>Blankslate.PrimaryAction Props</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-2`"
+        >Blankslate 空状态 Blankslate.PrimaryAction Props</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
         :columns="apiTableColumns"
         :data="primaryActionPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h3>Blankslate.SecondaryAction Props</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-3`"
+        >Blankslate 空状态 Blankslate.SecondaryAction Props</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-3`"
         :columns="apiTableColumns"
         :data="secondaryActionPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
       <p>
         容器的原生属性、style 和事件传给外层 div；className 与 Vue class 合并到内层。Visual、Heading
@@ -190,27 +194,28 @@
       </p>
 
       <h3>插槽</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-4`">Blankslate 空状态 插槽</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-4`"
         :columns="slotTableColumns"
         :data="slotTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h3>事件</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-5`">Blankslate 空状态 事件</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-5`"
         :columns="eventTableColumns"
         :data="eventTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { Blankslate } from '@/components/primer-vue/Blankslate'
 import {
   BookIcon,
@@ -219,11 +224,15 @@ import {
   InboxIcon,
   RepoIcon,
 } from '@onlikee/octicons-vue'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const basicDemoCode = `<script setup lang="ts">
 import { Blankslate } from '@/components/primer-vue/Blankslate'
@@ -394,33 +403,37 @@ const actionDemoCode = `<template>
 }
 </style>`
 
-const apiTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '150px' },
-  { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'type', label: '类型', minWidth: '260px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '260px', wrap: true },
+const apiTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '150px' },
+  { field: 'default', header: '默认值', minWidth: '120px' },
+  { field: 'type', header: '类型', minWidth: '260px' },
+  { field: 'description', header: '说明', minWidth: '260px' },
 ]
 
 const rootPropsRows = [
   {
+    id: 'border',
     name: 'border',
     default: 'false',
     type: 'boolean',
     description: '是否显示边框。',
   },
   {
+    id: 'narrow',
     name: 'narrow',
     default: 'false',
     type: 'boolean',
     description: '将最大宽度限制为 485px，不改变 size。',
   },
   {
+    id: 'spacious',
     name: 'spacious',
     default: 'false',
     type: 'boolean',
     description: '是否增加上下留白。',
   },
   {
+    id: 'size',
     name: 'size',
     default: "'medium'",
     type: "'small' | 'medium' | 'large'",
@@ -430,6 +443,7 @@ const rootPropsRows = [
 
 const headingPropsRows = [
   {
+    id: 'as',
     name: 'as',
     default: "'h2'",
     type: "'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'",
@@ -439,18 +453,21 @@ const headingPropsRows = [
 
 const primaryActionPropsRows = [
   {
+    id: 'href',
     name: 'href',
     default: '—',
     type: 'string',
     description: '可选；非空地址渲染为链接。链接模式的公开属性仅含 href。',
   },
   {
+    id: 'type',
     name: 'type',
     default: "'button'",
     type: "'button' | 'submit' | 'reset'",
     description: '按钮模式的原生按钮类型，默认值来自 Button。',
   },
   {
+    id: 'disabled',
     name: 'disabled',
     default: '—',
     type: 'boolean',
@@ -459,6 +476,7 @@ const primaryActionPropsRows = [
 ]
 const secondaryActionPropsRows = [
   {
+    id: 'href',
     name: 'href',
     default: '必填',
     type: 'string',
@@ -466,30 +484,36 @@ const secondaryActionPropsRows = [
   },
 ]
 
-const slotTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '插槽名', rowHeader: true, minWidth: '180px' },
-  { key: 'description', label: '说明', minWidth: '320px', wrap: true },
+const slotTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '插槽名', rowHeader: true, minWidth: '180px' },
+  { field: 'description', header: '说明', minWidth: '320px' },
 ]
 
 const slotTableRows = [
   {
+    id: 'Blankslate default',
     name: 'Blankslate default',
     description: '放置 Visual、Heading、Description 和 Action 子组件。',
   },
-  { name: 'Visual default', description: '视觉元素，通常放置 Octicon 或其他轻量图形。' },
-  { name: 'Heading default', description: '空状态主标题。' },
-  { name: 'Description default', description: '空状态说明文本。' },
-  { name: 'PrimaryAction default', description: '主操作文案。' },
-  { name: 'SecondaryAction default', description: '次要操作文案。' },
+  {
+    id: 'Visual default',
+    name: 'Visual default',
+    description: '视觉元素，通常放置 Octicon 或其他轻量图形。',
+  },
+  { id: 'Heading default', name: 'Heading default', description: '空状态主标题。' },
+  { id: 'Description default', name: 'Description default', description: '空状态说明文本。' },
+  { id: 'PrimaryAction default', name: 'PrimaryAction default', description: '主操作文案。' },
+  { id: 'SecondaryAction default', name: 'SecondaryAction default', description: '次要操作文案。' },
 ]
 
-const eventTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '事件名', rowHeader: true, minWidth: '160px' },
-  { key: 'description', label: '说明', minWidth: '300px', wrap: true },
+const eventTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '事件名', rowHeader: true, minWidth: '160px' },
+  { field: 'description', header: '说明', minWidth: '300px' },
 ]
 
 const eventTableRows = [
   {
+    id: 'click',
     name: 'click',
     description:
       'PrimaryAction 按钮模式透传原生 MouseEvent；禁用按钮不激活。SecondaryAction 不提供 click 接口。',

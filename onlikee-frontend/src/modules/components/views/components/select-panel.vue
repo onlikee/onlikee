@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import {
   SelectPanel,
@@ -7,11 +10,15 @@ import {
 } from '@/components/primer-vue/SelectPanel'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { Button } from '@/components/primer-vue/Button'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '../../components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '../../components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '../../components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '../../components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const choices: ItemInput[] = [
   { id: 'bug', text: 'Bug', description: '需要修复的问题', groupId: 'work' },
@@ -281,33 +288,37 @@ const external = { anchor: computed(() => (button.value?.$el as HTMLElement | un
   />
 </template>`
 
-const apiTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '180px' },
-  { key: 'default', label: '默认值', minWidth: '130px', wrap: true },
-  { key: 'type', label: '类型', minWidth: '240px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '300px', wrap: true },
+const apiTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '180px' },
+  { field: 'default', header: '默认值', minWidth: '130px' },
+  { field: 'type', header: '类型', minWidth: '240px' },
+  { field: 'description', header: '说明', minWidth: '300px' },
 ]
 
 const selectPanelPropsRows = [
   {
+    id: 'open（必填）',
     name: 'open（必填）',
     default: '-',
     type: 'boolean',
     description: '面板是否打开，支持 v-model:open。',
   },
   {
+    id: 'selected（必填）',
     name: 'selected（必填）',
     default: '-',
     type: 'ItemInput | ItemInput[] | undefined',
     description: '当前选中项；传数组即多选。支持 v-model:selected。单选模态下点 Save 才更新。',
   },
   {
+    id: 'items（必填）',
     name: 'items（必填）',
     default: '-',
     type: 'ItemInput[]',
     description: '列表数据。筛选逻辑由调用方提供（通常基于 filterValue 的 computed）。',
   },
   {
+    id: 'variant',
     name: 'variant',
     default: "'anchored'",
     type: "'anchored' | 'modal'",
@@ -315,66 +326,77 @@ const selectPanelPropsRows = [
       'anchored 关闭即应用选择；modal 需点击 Save 确认（窄屏 fullscreen 同 modal 语义）。',
   },
   {
+    id: 'title',
     name: 'title',
     default: "'Select an item' / 'Select items'",
     type: 'string | VNodeChild',
     description: '面板标题，作为 aria-labelledby 来源；默认值随单选/多选切换。',
   },
   {
+    id: 'subtitle',
     name: 'subtitle',
     default: '-',
     type: 'string | VNodeChild',
     description: '副标题，作为 aria-describedby 来源；也可用 #subtitle 插槽。',
   },
   {
+    id: 'placeholder',
     name: 'placeholder',
     default: '-',
     type: 'string',
     description: '无选中项时内置锚按钮显示的文本（内置 label 来源）。',
   },
   {
+    id: 'placeholderText',
     name: 'placeholderText',
     default: "'Filter items'",
     type: 'string',
     description: '筛选输入框占位文本。',
   },
   {
+    id: 'inputLabel',
     name: 'inputLabel',
     default: '同 placeholderText',
     type: 'string',
     description: '筛选输入框的 aria-label。',
   },
   {
+    id: 'filterValue',
     name: 'filterValue',
     default: '-',
     type: 'string',
     description: '受控筛选文本，支持 v-model:filter-value；不传则内部维护。',
   },
   {
+    id: 'loading',
     name: 'loading',
     default: '内部推断',
     type: 'boolean',
     description: '加载态。未传时按内部节奏推断（打开后延迟判定，避免闪烁）。',
   },
   {
+    id: 'initialLoadingType',
     name: 'initialLoadingType',
     default: "'spinner'",
     type: "'spinner' | 'skeleton'",
     description: '首次打开（尚无数据）时的加载样式；数据到达后的再次加载固定为输入框内 spinner。',
   },
   {
+    id: 'message',
     name: 'message',
     default: '默认空态消息',
     type: 'SelectPanelMessageProps',
     description: "空/错误/警告消息区。items 为空且未传时显示默认 'No items available'。",
   },
   {
+    id: 'notice',
     name: 'notice',
     default: '-',
     type: "{ text: VNodeChild; variant: 'info' | 'warning' | 'error' }",
     description: '面板顶部通知条；也可用 #notice 插槽。',
   },
   {
+    id: 'secondaryAction',
     name: 'secondaryAction',
     default: '-',
     type: 'VNodeChild',
@@ -382,12 +404,14 @@ const selectPanelPropsRows = [
       '底部次要操作区；也可用 #secondaryAction 插槽，配合 SecondaryActionLink / SecondaryActionButton。',
   },
   {
+    id: 'footer',
     name: 'footer',
     default: '-',
     type: 'VNodeChild',
     description: '已废弃，请使用 secondaryAction。',
   },
   {
+    id: 'showSelectedOptionsFirst',
     name: 'showSelectedOptionsFirst',
     default: 'true',
     type: 'boolean',
@@ -395,6 +419,7 @@ const selectPanelPropsRows = [
       '打开时把已选项排到列表顶部（受 primer_react_select_panel_order_selected_at_top 特性开关控制）。',
   },
   {
+    id: 'showSelectAll',
     name: 'showSelectAll',
     default: 'false',
     type: 'boolean',
@@ -402,36 +427,42 @@ const selectPanelPropsRows = [
       '多选时显示全选框；文案随状态在 Select all / Deselect all 间切换，部分选中时呈半选态。仅作用于当前筛选结果。',
   },
   {
+    id: 'disableFullscreenOnNarrow',
     name: 'disableFullscreenOnNarrow',
     default: 'false',
     type: 'boolean',
     description: '窄视口下禁用全屏行为，保持锚定位置。',
   },
   {
+    id: 'displayInViewport',
     name: 'displayInViewport',
     default: 'false',
     type: 'boolean',
     description: '尽量将面板完整放入可视视口，避免页面滚动。',
   },
   {
+    id: 'align',
     name: 'align',
     default: "'start'",
     type: "'start' | 'end' | 'center'",
     description: '面板相对锚点的对齐方式。',
   },
   {
+    id: 'width / height',
     name: 'width / height',
     default: '-',
     type: 'OverlayWidth / OverlayHeight',
     description: "浮层尺寸档位（'auto' | 'small' | … | 'xxlarge' / 'fit-content' 等）。",
   },
   {
+    id: 'overlayProps',
     name: 'overlayProps',
     default: '-',
     type: 'Partial<OverlayProps>',
     description: '透传底层 Overlay（side、anchorOffset、trapFocus 等）。',
   },
   {
+    id: 'renderAnchor',
     name: 'renderAnchor',
     default: '内置按钮',
     type: '((props: AnchorRenderProps) => VNodeChild) | null',
@@ -439,24 +470,28 @@ const selectPanelPropsRows = [
       '自定义触发器渲染函数，接收 ref、点击/键盘处理与 ARIA 属性，须全部转发；传 null 关闭内置触发器（必须配合 anchorRef）。',
   },
   {
+    id: 'anchorRef',
     name: 'anchorRef',
     default: '-',
     type: 'Ref<HTMLElement | null>',
     description: '外部锚点元素 ref；触发器与面板分离时使用，open 需手动切换。',
   },
   {
+    id: 'cssAnchorPositioningSettings',
     name: 'cssAnchorPositioningSettings',
     default: '-',
     type: '{ disable?: boolean; fallbackStrategy?: string }',
     description: 'CSS anchor positioning 实验配置（特性开关默认关闭）。',
   },
   {
+    id: 'disabled / required / validationStatus',
     name: 'disabled / required / validationStatus',
     default: '-',
     type: "boolean / boolean / 'error' | 'success'",
     description: 'FormControl 表单集成：禁用、必填与校验状态。',
   },
   {
+    id: 'onCancel / onOpenChange / onSelectedChange',
     name: 'onCancel / onOpenChange / onSelectedChange',
     default: '-',
     type: 'function',
@@ -466,6 +501,7 @@ const selectPanelPropsRows = [
 
 const inheritedPropsRows = [
   {
+    id: 'groupMetadata',
     name: 'groupMetadata',
     default: '-',
     type: 'GroupMetadata[]',
@@ -473,66 +509,77 @@ const inheritedPropsRows = [
       '分组元数据（groupId、header.title、renderItem）；items 用 groupId 归组。提供分组时虚拟化不生效。',
   },
   {
+    id: 'virtualized',
     name: 'virtualized',
     default: 'false',
     type: 'boolean',
     description: '客户端虚拟滚动，仅渲染可视区 + overscan 缓冲；超过 100 项建议开启。',
   },
   {
+    id: 'textInputProps',
     name: 'textInputProps',
     default: '-',
     type: 'Record<string, unknown>',
     description: '透传筛选输入框（TextInput props，如 contrast、leadingVisual）。',
   },
   {
+    id: 'inputRef / scrollContainerRef',
     name: 'inputRef / scrollContainerRef',
     default: '-',
     type: 'Ref | ((el) => void)',
     description: '筛选输入框 / 滚动容器的 ref（对象或回调形式）。',
   },
   {
+    id: 'actionListProps',
     name: 'actionListProps',
     default: '-',
     type: 'object',
     description: '透传列表容器（className、variant、showDividers 等）。',
   },
   {
+    id: 'renderItem / renderGroup',
     name: 'renderItem / renderGroup',
     default: '-',
     type: '(props) => VNodeChild',
     description: '自定义列表项 / 分组渲染。',
   },
   {
+    id: 'id / aria-label',
     name: 'id / aria-label',
     default: '-',
     type: 'string',
     description: '列表容器 id 与无障碍名称（列表 role 固定为 listbox，项默认 role=option）。',
   },
   {
+    id: 'focusOutBehavior',
     name: 'focusOutBehavior',
     default: "'wrap'",
     type: "'stop' | 'wrap'",
     description: 'Tab 到达面板边界时循环（wrap）或停止（stop）。',
   },
   {
+    id: 'announcementsEnabled',
     name: 'announcementsEnabled',
     default: 'true',
     type: 'boolean',
     description: '筛选结果变化时的屏幕阅读器播报。',
   },
   {
+    id: 'onSelectAllChange',
     name: 'onSelectAllChange',
     default: '-',
     type: '(checked: boolean) => void',
     description: '全选框变化回调（不拦截默认全选行为时可不传）。',
   },
   {
+    id: 'onActiveDescendantChanged',
     name: 'onActiveDescendantChanged',
     default: '-',
     type: '(current, previous, directlyActivated) => void',
     description: '激活项（active descendant）变化回调。',
   },
   {
+    id: 'scrollBehavior',
     name: 'scrollBehavior',
     default: '-',
     type: 'ScrollBehavior',
@@ -540,75 +587,93 @@ const inheritedPropsRows = [
   },
 ]
 
-const eventTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '事件名', rowHeader: true, minWidth: '200px' },
-  { key: 'payload', label: '载荷', minWidth: '260px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '300px', wrap: true },
+const eventTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '事件名', rowHeader: true, minWidth: '200px' },
+  { field: 'payload', header: '载荷', minWidth: '260px' },
+  { field: 'description', header: '说明', minWidth: '300px' },
 ]
 
 const eventTableRows = [
-  { name: 'update:open', payload: 'boolean', description: 'open 变更，用于 v-model:open。' },
   {
+    id: 'update:open',
+    name: 'update:open',
+    payload: 'boolean',
+    description: 'open 变更，用于 v-model:open。',
+  },
+  {
+    id: 'open-change',
     name: 'open-change',
     payload:
       "(open: boolean, gesture: 'anchor-click' | 'anchor-key-press' | 'click-outside' | 'escape' | 'selection' | 'cancel')",
     description: '开关变更及触发手势。',
   },
   {
+    id: 'update:selected / selected-change',
     name: 'update:selected / selected-change',
     payload: 'ItemInput | ItemInput[] | undefined',
     description: '选中项变更；单选锚定模式点选即触发，单选模态在 Save 时触发。',
   },
   {
+    id: 'update:filterValue / filter-change',
     name: 'update:filterValue / filter-change',
     payload: 'string, Event | null',
     description: '筛选文本变更；首次空列表加载引发的事件为 null。',
   },
   {
+    id: 'cancel',
     name: 'cancel',
     payload: '-',
     description: '取消手势：模态 Cancel 按钮、关闭按钮、模态下点击外部。',
   },
   {
+    id: 'active-descendant-changed',
     name: 'active-descendant-changed',
     payload: 'HTMLElement | undefined ×2, boolean',
     description: '激活项变化（当前项、前一项、是否直接激活）。',
   },
 ]
 
-const slotTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '插槽名', rowHeader: true, minWidth: '180px' },
-  { key: 'description', label: '说明', minWidth: '320px', wrap: true },
+const slotTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '插槽名', rowHeader: true, minWidth: '180px' },
+  { field: 'description', header: '说明', minWidth: '320px' },
 ]
 
 const slotTableRows = [
   {
+    id: 'anchor',
     name: 'anchor',
     description:
       '替换内置触发按钮（仅在未传 renderAnchor 时生效）；自定义触发器应转发 ref、点击/键盘处理与 ARIA 属性。',
   },
-  { name: 'subtitle', description: '副标题内容，subtitle prop 优先。' },
-  { name: 'notice', description: '通知条内容，notice.text 优先。' },
-  { name: 'secondaryAction', description: '底部次要操作区内容，secondaryAction prop 优先。' },
-  { name: 'footer', description: '底部内容（已废弃，请用 secondaryAction）。' },
+  { id: 'subtitle', name: 'subtitle', description: '副标题内容，subtitle prop 优先。' },
+  { id: 'notice', name: 'notice', description: '通知条内容，notice.text 优先。' },
+  {
+    id: 'secondaryAction',
+    name: 'secondaryAction',
+    description: '底部次要操作区内容，secondaryAction prop 优先。',
+  },
+  { id: 'footer', name: 'footer', description: '底部内容（已废弃，请用 secondaryAction）。' },
 ]
 
-const compoundTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '组件', rowHeader: true, minWidth: '260px' },
-  { key: 'description', label: '说明', minWidth: '320px', wrap: true },
+const compoundTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '组件', rowHeader: true, minWidth: '260px' },
+  { field: 'description', header: '说明', minWidth: '320px' },
 ]
 
 const compoundTableRows = [
   {
+    id: 'SelectPanel.Message',
     name: 'SelectPanel.Message',
     description:
       "面板消息区：title（必填）、variant（'empty' | 'error' | 'warning'）、body、icon、action、className。message prop 即其配置形式。",
   },
   {
+    id: 'SelectPanel.SecondaryActionButton',
     name: 'SelectPanel.SecondaryActionButton',
     description: '页脚块级按钮，属性透传 Button（loading、count、onClick 等）。',
   },
   {
+    id: 'SelectPanel.SecondaryActionLink',
     name: 'SelectPanel.SecondaryActionLink',
     description: '页脚块级链接（invisible 按钮形态、as="a"），透传 href、target 等原生属性。',
   },
@@ -834,21 +899,23 @@ const compoundTableRows = [
 
     <ComponentDocsSection title="API" variant="api">
       <h3>SelectPanel Props</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >SelectPanel 选择面板 SelectPanel Props</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
         :columns="apiTableColumns"
         :data="selectPanelPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h3>继承的列表 Props（FilteredActionList）</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >SelectPanel 选择面板 继承的列表 Props（FilteredActionList）</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
         :columns="apiTableColumns"
         :data="inheritedPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
       <p class="select-panel-docs__note">
         完整继承清单见 <code>src/components/primer-vue/FilteredActionList/types.ts</code> 的
@@ -856,30 +923,33 @@ const compoundTableRows = [
       </p>
 
       <h3>事件</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-2`"
+        >SelectPanel 选择面板 事件</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
         :columns="eventTableColumns"
         :data="eventTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h3>插槽</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-3`"
+        >SelectPanel 选择面板 插槽</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-3`"
         :columns="slotTableColumns"
         :data="slotTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h3>组合组件</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-4`"
+        >SelectPanel 选择面板 组合组件</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-4`"
         :columns="compoundTableColumns"
         :data="compoundTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
     </ComponentDocsSection>
   </ComponentDocsPage>

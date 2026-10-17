@@ -66,24 +66,30 @@
     </ComponentDocsSection>
 
     <ComponentDocsSection title="API" variant="api">
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Divider 分割线 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
         :columns="apiTableColumns"
         :data="apiTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { Divider } from '@/components/primer-vue/Divider'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const demo1Code = `<template>
   <p>上方内容</p>
@@ -135,22 +141,29 @@ const demo4Code = `<template>
 import { Divider } from '@/components/primer-vue/Divider'
 <\/script>`
 
-const apiTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'type', label: '类型', minWidth: '160px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
+const apiTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'default', header: '默认值', minWidth: '120px' },
+  { field: 'type', header: '类型', minWidth: '160px' },
+  { field: 'description', header: '说明', minWidth: '200px' },
 ]
 
 const apiTableRows = [
   {
+    id: 'direction',
     name: 'direction',
     description: '分割线方向',
     type: "'horizontal' | 'vertical'",
     default: "'horizontal'",
   },
-  { name: 'width', description: '水平模式下自定义宽度', type: 'string', default: '—' },
-  { name: 'height', description: '纵向模式下自定义高度', type: 'string', default: "'1em'" },
+  { id: 'width', name: 'width', description: '水平模式下自定义宽度', type: 'string', default: '—' },
+  {
+    id: 'height',
+    name: 'height',
+    description: '纵向模式下自定义高度',
+    type: 'string',
+    default: "'1em'",
+  },
 ]
 </script>
 

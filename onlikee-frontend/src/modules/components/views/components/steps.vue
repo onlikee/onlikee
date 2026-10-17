@@ -44,24 +44,46 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <DataTable :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Steps 步骤条 属性</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="apiCols"
+        :data="apiRows"
+      />
       <h3>StepItem</h3>
-      <DataTable :columns="apiCols" :data="stepItemRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">Steps 步骤条 StepItem</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="apiCols"
+        :data="stepItemRows"
+      />
       <h3>插槽</h3>
-      <DataTable :columns="slotCols" :data="slotRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-2`">Steps 步骤条 插槽</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
+        :columns="slotCols"
+        :data="slotRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { ref } from 'vue'
 import { Steps, type StepItem } from '@/components/primer-vue/Steps'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import { PersonIcon, PackageIcon, CreditCardIcon, RocketIcon } from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const active1 = ref(0)
 const active3 = ref(1)
@@ -141,17 +163,24 @@ const steps: StepItem[] = [
 ]
 <\/script>`
 
-const apiCols: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'type', label: '类型', minWidth: '200px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
+const apiCols: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'type', header: '类型', minWidth: '200px' },
+  { field: 'description', header: '说明', minWidth: '200px' },
 ]
 
 const apiRows = [
-  { name: 'modelValue', description: '当前激活步骤索引（v-model）', type: 'number', default: '0' },
-  { name: 'steps', description: '步骤配置数组', type: 'StepItem[]', default: '—' },
   {
+    id: 'modelValue',
+    name: 'modelValue',
+    description: '当前激活步骤索引（v-model）',
+    type: 'number',
+    default: '0',
+  },
+  { id: 'steps', name: 'steps', description: '步骤配置数组', type: 'StepItem[]', default: '—' },
+  {
+    id: 'orientation',
     name: 'orientation',
     description: '方向',
     type: "'horizontal' | 'vertical'",
@@ -160,17 +189,27 @@ const apiRows = [
 ]
 
 const stepItemRows = [
-  { name: 'title', description: '步骤标题', type: 'string', default: '—' },
-  { name: 'description', description: '步骤描述（可选）', type: 'string', default: '—' },
+  { id: 'title', name: 'title', description: '步骤标题', type: 'string', default: '—' },
+  {
+    id: 'description',
+    name: 'description',
+    description: '步骤描述（可选）',
+    type: 'string',
+    default: '—',
+  },
 ]
 
-const slotCols: DataTableColumn[] = [
-  { key: 'name', label: '插槽名', rowHeader: true, minWidth: '140px' },
-  { key: 'description', label: '说明', minWidth: '300px', wrap: true },
+const slotCols: DocumentationColumn[] = [
+  { field: 'name', header: '插槽名', rowHeader: true, minWidth: '140px' },
+  { field: 'description', header: '说明', minWidth: '300px' },
 ]
 
 const slotRows = [
-  { name: 'icon-{index}', description: '自定义第 N 步的图标内容，作用域参数：{ state, index }' },
+  {
+    id: 'icon-{index}',
+    name: 'icon-{index}',
+    description: '自定义第 N 步的图标内容，作用域参数：{ state, index }',
+  },
 ]
 </script>
 

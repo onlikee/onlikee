@@ -1,11 +1,18 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { ref } from 'vue'
 import { ImageUpload, type ImageUploadFile } from '@/components/primer-vue/ImageUpload'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const images = ref<ImageUploadFile[]>([])
 const circleImages = ref<ImageUploadFile[]>([])
@@ -43,14 +50,15 @@ const images = ref<ImageUploadFile[]>([])
     <span>添加封面</span>
   </ImageUpload>
 </template>`
-const apiCols: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'type', label: '类型', minWidth: '160px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '260px', wrap: true },
+const apiCols: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'type', header: '类型', minWidth: '160px' },
+  { field: 'description', header: '说明', minWidth: '260px' },
 ]
 const apiRows = [
   {
+    id: 'modelValue',
     name: 'modelValue',
     default: '[]',
     type: 'ImageUploadFile[]',
@@ -58,6 +66,7 @@ const apiRows = [
       '最多一张已选择或已确认裁剪的图片；置空后回退显示 previewUrl，两者均为空时显示空态。不绑定时也可在组件内预览。',
   },
   {
+    id: 'previewUrl',
     name: 'previewUrl',
     default: "''",
     type: 'string',
@@ -65,18 +74,21 @@ const apiRows = [
       '已有图片的预览地址，支持动态更新；本地选择或确认裁剪后的图片优先展示。仅用于回显，不写入 modelValue，也不触发上传或裁剪。',
   },
   {
+    id: 'width',
     name: 'width',
     default: "''",
     type: 'string',
     description: '上传区域的宽度，支持 CSS 尺寸值，如 100px、100%；未设置时占满父容器宽度。',
   },
   {
+    id: 'circle',
     name: 'circle',
     default: 'false',
     type: 'boolean',
     description: '以圆形显示上传区域和图片预览，不改变返回文件的形状。可与 crop 搭配使用。',
   },
   {
+    id: 'crop',
     name: 'crop',
     default: 'false',
     type: 'boolean',
@@ -84,6 +96,7 @@ const apiRows = [
       '是否启用裁剪。默认直接返回原图；启用后确认裁剪才提交。关闭时取消正在进行的裁剪并保留旧值。',
   },
   {
+    id: 'accept',
     name: 'accept',
     default: "''",
     type: 'string',
@@ -91,37 +104,42 @@ const apiRows = [
       '在 JPG、JPEG、PNG、WEBP、SVG 中进一步筛选，支持扩展名、MIME 和 image/*；不能扩大默认范围。',
   },
   {
+    id: 'text',
     name: 'text',
     default: "''",
     type: 'string',
     description: '无图片预览时显示的主文案，为空时不渲染。',
   },
   {
+    id: 'hint',
     name: 'hint',
     default: "''",
     type: 'string',
     description: '无图片预览时显示的辅助说明，为空时不渲染。',
   },
   {
+    id: 'disabled',
     name: 'disabled',
     default: 'false',
     type: 'boolean',
     description: '禁用选择和拖拽；切换为禁用时取消当前裁剪。',
   },
 ]
-const fileCols: DataTableColumn[] = [
-  { key: 'name', label: '字段', rowHeader: true },
-  { key: 'type', label: '类型' },
-  { key: 'description', label: '说明', wrap: true },
+const fileCols: DocumentationColumn[] = [
+  { field: 'name', header: '字段', rowHeader: true },
+  { field: 'type', header: '类型' },
+  { field: 'description', header: '说明' },
 ]
 const fileRows = [
   {
+    id: 'file',
     name: 'file',
     type: 'File',
     description:
       'crop=false 时为原始 File，不转换格式；crop=true 时为浏览器生成的正方形裁剪文件，JPEG、PNG、WEBP 保留格式，SVG 输出 PNG。均可用于 FormData。',
   },
   {
+    id: 'relativePath',
     name: 'relativePath',
     type: 'string',
     description: '所返回文件的文件名，与 UploadFile 的数据结构一致。',
@@ -129,6 +147,7 @@ const fileRows = [
 ]
 const eventRows = [
   {
+    id: 'update:modelValue',
     name: 'update:modelValue',
     type: 'ImageUploadFile[]',
     description:
@@ -137,6 +156,7 @@ const eventRows = [
 ]
 const slotRows = [
   {
+    id: 'default',
     name: 'default',
     type: '—',
     description: '替换空上传区域的图标和主文案，保留 hint；选择图片后显示预览。请使用非交互内容。',
@@ -239,15 +259,43 @@ const slotRows = [
         绑定值包含原图或已确认的裁剪结果，最多一个元素；外部将绑定值设为空数组后回退显示
         <code>previewUrl</code>，两者均为空时清除预览。
       </template>
-      <DataTable :columns="fileCols" :data="fileRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >ImageUpload 图片上传 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="fileCols"
+        :data="fileRows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <DataTable :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >ImageUpload 图片上传 属性</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="apiCols"
+        :data="apiRows"
+      />
       <h3>事件</h3>
-      <DataTable :columns="fileCols" :data="eventRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-2`"
+        >ImageUpload 图片上传 事件</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
+        :columns="fileCols"
+        :data="eventRows"
+      />
       <h3>插槽</h3>
-      <DataTable :columns="fileCols" :data="slotRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-3`"
+        >ImageUpload 图片上传 插槽</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-3`"
+        :columns="fileCols"
+        :data="slotRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

@@ -3,7 +3,10 @@ import { computed, inject, provide } from 'vue'
 import { FeatureFlagScope, type FeatureFlagValues } from './FeatureFlagScope'
 import { DefaultFeatureFlags, featureFlagContextKey } from './context'
 defineOptions({ name: 'FeatureFlags' })
-const props = defineProps<{ flags: FeatureFlagValues }>()
+export interface FeatureFlagsProps {
+  flags: FeatureFlagValues
+}
+const props = defineProps<FeatureFlagsProps>()
 const parent = inject(
   featureFlagContextKey,
   computed(() => DefaultFeatureFlags),

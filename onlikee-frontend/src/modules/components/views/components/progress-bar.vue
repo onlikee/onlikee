@@ -100,25 +100,42 @@
     </ComponentDocsSection>
 
     <ComponentDocsSection title="API" variant="api">
-      <DataTable :columns="apiColumns" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">ProgressBar 进度条 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="apiColumns"
+        :data="apiRows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="ProgressBar.Item API" variant="api">
       <template #description>
         也可以具名导入 <code>ProgressBarItem</code>。两种组件均支持原生属性、class 和 style。
         多段模式下，父级颜色、动画和下列 ARIA 属性不会自动传给子项。
       </template>
-      <DataTable :columns="apiColumns" :data="itemApiRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">ProgressBar 进度条 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="apiColumns"
+        :data="itemApiRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { ProgressBar } from '@/components/primer-vue/ProgressBar'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const sizes = ['small', 'default', 'large'] as const
 const colors = ['success.emphasis', 'accent.emphasis', 'danger', 'attention.emphasis']
@@ -157,34 +174,44 @@ const animatedCode = `<ProgressBar :progress="50" animated aria-label="正在上
   <ProgressBar.Item :progress="25" aria-label="已处理的文件" />
 </ProgressBar>`
 
-const apiColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'type', label: '类型', minWidth: '180px', wrap: true },
-  { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'description', label: '说明', minWidth: '220px', wrap: true },
+const apiColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'type', header: '类型', minWidth: '180px' },
+  { field: 'default', header: '默认值', minWidth: '120px' },
+  { field: 'description', header: '说明', minWidth: '220px' },
 ]
 
 const sharedApiRows = [
   {
+    id: 'progress',
     name: 'progress',
     type: 'string | number',
     default: '—',
     description: '百分比数值，不带 %；未设置时显示 0%，不自动限制范围。',
   },
   {
+    id: 'bg',
     name: 'bg',
     type: 'string',
     default: 'success.emphasis',
     description: '主题背景颜色，例如 accent.emphasis 或 danger。',
   },
-  { name: 'aria-label', type: 'string', default: '—', description: '进度条的无障碍名称。' },
   {
+    id: 'aria-label',
+    name: 'aria-label',
+    type: 'string',
+    default: '—',
+    description: '进度条的无障碍名称。',
+  },
+  {
+    id: 'aria-valuenow',
     name: 'aria-valuenow',
     type: 'number | string',
     default: '由 progress 计算',
     description: '覆盖向辅助技术报告的当前数值，支持显式设置 0。',
   },
   {
+    id: 'aria-valuetext',
     name: 'aria-valuetext',
     type: 'string',
     default: '—',
@@ -195,19 +222,28 @@ const sharedApiRows = [
 const apiRows = [
   ...sharedApiRows,
   {
+    id: 'barSize',
     name: 'barSize',
     type: "'small' | 'default' | 'large'",
     default: 'default',
     description: '高度分别为 5px、8px、10px。',
   },
   {
+    id: 'inline',
     name: 'inline',
     type: 'boolean',
     default: 'false',
     description: '使用行内布局，由调用方设置宽度。',
   },
-  { name: 'animated', type: 'boolean', default: 'false', description: '为默认单段启用流光动画。' },
   {
+    id: 'animated',
+    name: 'animated',
+    type: 'boolean',
+    default: 'false',
+    description: '为默认单段启用流光动画。',
+  },
+  {
+    id: 'default 插槽',
     name: 'default 插槽',
     type: 'ProgressBar.Item',
     default: '单段进度',
@@ -217,7 +253,13 @@ const apiRows = [
 
 const itemApiRows = [
   ...sharedApiRows,
-  { name: 'data-animated', type: "'true'", default: '—', description: '为当前分段启用流光动画。' },
+  {
+    id: 'data-animated',
+    name: 'data-animated',
+    type: "'true'",
+    default: '—',
+    description: '为当前分段启用流光动画。',
+  },
 ]
 </script>
 

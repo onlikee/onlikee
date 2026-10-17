@@ -1,15 +1,22 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { computed, h, shallowRef } from 'vue'
 import { AnchoredOverlay, type AnchorRenderProps } from '@/components/primer-vue/AnchoredOverlay'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { Button } from '@/components/primer-vue/Button'
 import { LockIcon, RepoIcon, TriangleDownIcon } from '@onlikee/octicons-vue'
 import { FeatureFlags } from '@/components/primer-vue/FeatureFlags'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const basicOpen = shallowRef(false)
 const fullscreenOpen = shallowRef(false)
@@ -194,80 +201,86 @@ const renderAnchor = (props: AnchorRenderProps) => h(Button, props, () => 'Popov
   </FeatureFlags>
 </template>`
 
-const apiColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性', rowHeader: true, minWidth: '180px' },
-  { key: 'type', label: '类型', minWidth: '240px', wrap: true },
-  { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'description', label: '说明', minWidth: '280px', wrap: true },
+const apiColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性', rowHeader: true, minWidth: '180px' },
+  { field: 'type', header: '类型', minWidth: '240px' },
+  { field: 'default', header: '默认值', minWidth: '120px' },
+  { field: 'description', header: '说明', minWidth: '280px' },
 ]
 const apiRows = [
+  { id: 'open', name: 'open', type: 'boolean', default: '必填', description: '受控的展示状态。' },
   {
-    name: 'open',
-    type: 'boolean',
-    default: '必填',
-    description: '受控的展示状态。',
-  },
-  {
+    id: 'renderAnchor',
     name: 'renderAnchor',
     type: '(anchorProps) => VNodeChild | null',
     default: '—',
     description: '必填；函数渲染锚点，null 时必须提供 anchorRef。',
   },
   {
+    id: 'anchorRef / anchorId',
     name: 'anchorRef / anchorId',
     type: 'Ref<HTMLElement | null> / string',
     default: '内部 ref / 自动 ID',
     description: '锚点引用和 ID；将 anchorProps 绑定到锚点以连接事件和 ARIA。',
   },
   {
+    id: 'side / align',
     name: 'side / align',
     type: 'AnchorSide / start | center | end',
     default: 'outside-bottom / start',
     description: '浮层方向和对齐；side 支持 outside-*、inside-* 和 inside-center。',
   },
   {
+    id: 'anchorOffset / alignmentOffset',
     name: 'anchorOffset / alignmentOffset',
     type: 'number',
     default: '定位器默认值',
     description: '锚点方向和对齐方向的像素偏移。',
   },
   {
+    id: 'width',
     name: 'width',
     type: 'auto | small | medium | large | xlarge | xxlarge',
     default: 'auto',
     description: '预设宽度为 256、320、480、640、960px。',
   },
   {
+    id: 'height',
     name: 'height',
     type: 'auto | xsmall | small | medium | large | xlarge | initial | fit-content',
     default: 'auto',
     description: '预设高度为 192、256、320、432、600px；initial 保留首次内容高度。',
   },
   {
+    id: 'variant',
     name: 'variant',
     type: "'anchored' | { regular?, narrow?, wide? }",
     default: 'anchored',
     description: 'narrow 可设置 fullscreen；其余断点为 anchored。',
   },
   {
+    id: 'displayCloseButton / closeButtonProps',
     name: 'displayCloseButton / closeButtonProps',
     type: 'boolean / Partial<IconButtonProps>',
     default: 'true / —',
     description: '提供 onClose 时显示窄屏全屏关闭按钮；aria-labelledby 优先于 aria-label。',
   },
   {
+    id: 'displayInViewport / pinPosition',
     name: 'displayInViewport / pinPosition',
     type: 'boolean',
     default: 'false / false',
     description: '视口相对定位，以及上方定位时固定位置。',
   },
   {
+    id: 'preventOverflow',
     name: 'preventOverflow',
     type: 'boolean',
     default: 'true',
     description: '沿用 Overlay 的溢出与宽度约束设置。',
   },
   {
+    id: 'overlayProps',
     name: 'overlayProps',
     type: 'Partial<OverlayProps> & { ref? }',
     default: '—',
@@ -275,12 +288,14 @@ const apiRows = [
       '内部浮层属性，包括 role、ARIA、style、portalContainerName 和 DOM ref；覆盖默认浮层属性。',
   },
   {
+    id: 'focusTrapSettings / focusZoneSettings',
     name: 'focusTrapSettings / focusZoneSettings',
     type: 'FocusTrapSettings / FocusZoneHookSettings',
     default: '启用',
     description: '配置初始焦点、焦点约束、方向键导航或禁用行为。',
   },
   {
+    id: 'className / class',
     name: 'className / class',
     type: 'string',
     default: '—',
@@ -288,12 +303,14 @@ const apiRows = [
       '与 overlayProps.className 合并后应用于浮层；DOM 与 ARIA 属性通过 overlayProps 传入。',
   },
   {
+    id: 'onPositionChange',
     name: 'onPositionChange',
     type: '({ position: AnchorPosition }) => void',
     default: '—',
     description: 'JavaScript 定位结果变化时调用。',
   },
   {
+    id: 'renderAs',
     name: 'renderAs',
     type: 'portal | popover',
     default: 'portal',
@@ -301,26 +318,33 @@ const apiRows = [
       'popover 仅在 CSS anchor 特性开关开启且浏览器支持时生效；否则使用 Portal 与 JavaScript 定位。',
   },
   {
+    id: 'cssAnchorPositioningSettings',
     name: 'cssAnchorPositioningSettings',
     type: "{ disable?, fallbackStrategy?: 'default' | 'none' | 'opposite-side' }",
     default: 'default',
     description: '关闭原生锚定，或限制 CSS 回退策略；命名 Portal 也会关闭原生锚定。',
   },
 ]
-const eventColumns: DataTableColumn[] = [
-  { key: 'name', label: '事件 / 内容', rowHeader: true, minWidth: '150px' },
-  { key: 'description', label: '说明', minWidth: '420px', wrap: true },
+const eventColumns: DocumentationColumn[] = [
+  { field: 'name', header: '事件 / 内容', rowHeader: true, minWidth: '150px' },
+  { field: 'description', header: '说明', minWidth: '420px' },
 ]
 const eventRows = [
   {
+    id: 'open',
     name: 'open',
     description: '(gesture, event?)；键盘打开时附带 KeyboardEvent，点击打开只传 gesture。',
   },
   {
+    id: 'close',
     name: 'close',
     description: '(gesture)；gesture 为 anchor-click、click-outside、escape 或 close。',
   },
-  { name: 'default', description: '浮层内容；默认 role 为 none，应按内容设置语义和可访问名称。' },
+  {
+    id: 'default',
+    name: 'default',
+    description: '浮层内容；默认 role 为 none，应按内容设置语义和可访问名称。',
+  },
 ]
 </script>
 
@@ -455,8 +479,22 @@ const eventRows = [
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
     <ComponentDocsSection title="API" variant="api">
-      <DataTable :columns="apiColumns" :data="apiRows" row-key="name" compact :hoverable="false" />
-      <DataTable :columns="eventColumns" :data="eventRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >AnchoredOverlay 锚定浮层 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="apiColumns"
+        :data="apiRows"
+      />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >AnchoredOverlay 锚定浮层 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="eventColumns"
+        :data="eventRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

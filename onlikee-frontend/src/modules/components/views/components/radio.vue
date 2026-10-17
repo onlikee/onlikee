@@ -97,29 +97,51 @@
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
     <ComponentDocsSection title="属性" variant="api">
-      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Radio 单选框 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="columns"
+        :data="rows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="事件" variant="api">
-      <DataTable :columns="columns" :data="eventRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">Radio 单选框 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="columns"
+        :data="eventRows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="组件实例" variant="api">
       <template #description> 通过模板 ref 获取组件实例，可访问输入元素或控制焦点。 </template>
-      <DataTable :columns="columns" :data="instanceRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-2`">Radio 单选框 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
+        :columns="columns"
+        :data="instanceRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { ref } from 'vue'
 import { Radio } from '@/components/primer-vue/Radio'
 import { RadioGroup } from '@/components/primer-vue/RadioGroup'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { Button } from '@/components/primer-vue/Button'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '../../components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '../../components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '../../components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '../../components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 const selected = ref('a')
 function select(event: Event) {
   selected.value = (event.currentTarget as HTMLInputElement).value
@@ -155,36 +177,46 @@ function select(event: Event) { selected.value = (event.currentTarget as HTMLInp
   <FormControl><Radio value="weekly" /><FormControl.Label>每周</FormControl.Label></FormControl>
 </RadioGroup>`,
 }
-const columns: DataTableColumn[] = [
-  { key: 'name', label: '名称', rowHeader: true },
-  { key: 'type', label: '类型', wrap: true },
-  { key: 'description', label: '说明', wrap: true },
+const columns: DocumentationColumn[] = [
+  { field: 'name', header: '名称', rowHeader: true },
+  { field: 'type', header: '类型' },
+  { field: 'description', header: '说明' },
 ]
 const rows = [
-  { name: 'value', type: 'string（必填）', description: '选项的表单值' },
-  { name: 'name', type: 'string', description: '同组名称，未提供时继承 RadioGroup.name' },
+  { id: 'value', name: 'value', type: 'string（必填）', description: '选项的表单值' },
   {
+    id: 'name',
+    name: 'name',
+    type: 'string',
+    description: '同组名称，未提供时继承 RadioGroup.name',
+  },
+  {
+    id: 'checked',
     name: 'checked',
     type: 'boolean | undefined',
     description: '受控选中状态；未提供时使用非受控模式',
   },
-  { name: 'defaultChecked', type: 'boolean', description: '非受控初始状态' },
+  { id: 'defaultChecked', name: 'defaultChecked', type: 'boolean', description: '非受控初始状态' },
   {
+    id: 'disabled',
     name: 'disabled',
     type: 'boolean',
     description: '禁用选项；与 FormControl 组合时，在 FormControl 上设置',
   },
   {
+    id: 'required',
     name: 'required',
     type: 'boolean',
     description: '设置原生表单必填校验；与 FormControl 组合时，使用组级校验提示',
   },
   {
+    id: 'id',
     name: 'id',
     type: 'string',
     description: '输入元素标识；与 FormControl 组合时，在 FormControl 上设置',
   },
   {
+    id: 'class / className',
     name: 'class / className',
     type: 'string',
     description: '为单选框添加自定义样式类',
@@ -192,15 +224,21 @@ const rows = [
 ]
 const eventRows = [
   {
+    id: 'change',
     name: 'change',
     type: '(event: Event) => void',
     description: '选择选项时触发，通过 event.currentTarget 获取输入元素',
   },
 ]
 const instanceRows = [
-  { name: 'input', type: 'HTMLInputElement | null', description: '单选框的输入元素' },
-  { name: 'focus', type: '(options?: FocusOptions) => void', description: '让单选框获得焦点' },
-  { name: 'blur', type: '() => void', description: '让单选框失去焦点' },
+  { id: 'input', name: 'input', type: 'HTMLInputElement | null', description: '单选框的输入元素' },
+  {
+    id: 'focus',
+    name: 'focus',
+    type: '(options?: FocusOptions) => void',
+    description: '让单选框获得焦点',
+  },
+  { id: 'blur', name: 'blur', type: '() => void', description: '让单选框失去焦点' },
 ]
 </script>
 

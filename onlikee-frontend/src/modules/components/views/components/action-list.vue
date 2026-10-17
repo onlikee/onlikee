@@ -376,74 +376,82 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h4>ActionList Props</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >ActionList 操作列表 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
         :columns="apiTableColumns"
         :data="actionListPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h4>ActionList.Item Props</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >ActionList 操作列表 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
         :columns="apiTableColumns"
         :data="actionListItemPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h4>ActionList.LinkItem Props</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-2`"
+        >ActionList 操作列表 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
         :columns="apiTableColumns"
         :data="actionListLinkItemPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h4>ActionList.Description Props</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-3`"
+        >ActionList 操作列表 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-3`"
         :columns="apiTableColumns"
         :data="actionListDescriptionPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h4>ActionList.Group Props</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-4`"
+        >ActionList 操作列表 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-4`"
         :columns="apiTableColumns"
         :data="actionListGroupPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h4>ActionList.GroupHeading Props</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-5`"
+        >ActionList 操作列表 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-5`"
         :columns="apiTableColumns"
         :data="actionListGroupHeadingPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h4>ActionList.Heading Props</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-6`"
+        >ActionList 操作列表 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-6`"
         :columns="apiTableColumns"
         :data="headingPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
       <h4>ActionList.TrailingAction / GroupHeading.TrailingAction Props</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-7`"
+        >ActionList 操作列表 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-7`"
         :columns="apiTableColumns"
         :data="trailingActionPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
       <h4>上下文与元素引用</h4>
       <p>
@@ -464,32 +472,39 @@
         disableItemGap 时生效。
       </p>
       <h4>Events</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-8`"
+        >ActionList 操作列表 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-8`"
         :columns="eventsTableColumns"
         :data="eventsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h4>Slots</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-9`"
+        >ActionList 操作列表 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-9`"
         :columns="slotsTableColumns"
         :data="slotsRows"
-        row-key="key"
-        compact
-        :hoverable="false"
       />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { ref } from 'vue'
 import { FeatureFlags } from '@/components/primer-vue/FeatureFlags'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { ActionMenu } from '@/components/primer-vue/ActionMenu'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import {
   ArchiveIcon,
   BookIcon,
@@ -517,6 +532,8 @@ import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDoc
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const visibilityOptions = [
   {
@@ -785,28 +802,37 @@ import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { CopyIcon, PencilIcon, TrashIcon } from '@onlikee/octicons-vue'
 <\/script>`
 
-const apiTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '160px' },
-  { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'type', label: '类型', minWidth: '220px' },
-  { key: 'description', label: '说明', minWidth: '260px', wrap: true },
+const apiTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '160px' },
+  { field: 'default', header: '默认值', minWidth: '120px' },
+  { field: 'type', header: '类型', minWidth: '220px' },
+  { field: 'description', header: '说明', minWidth: '260px' },
 ]
 
 const actionListPropsRows = [
-  { name: 'as', type: 'string | Component', default: "'ul'", description: '根列表元素或组件' },
   {
+    id: 'as',
+    name: 'as',
+    type: 'string | Component',
+    default: "'ul'",
+    description: '根列表元素或组件',
+  },
+  {
+    id: 'variant',
     name: 'variant',
     type: "'inset' | 'horizontal-inset' | 'full'",
     default: "'inset'",
     description: '列表边缘间距',
   },
   {
+    id: 'selectionVariant',
     name: 'selectionVariant',
     type: "'single' | 'radio' | 'multiple'",
     default: 'undefined',
     description: '选择标记；角色与选择状态仍需正确设置',
   },
   {
+    id: 'role',
     name: 'role',
     type: '原生 ARIA role',
     default: '容器 listRole',
@@ -814,24 +840,28 @@ const actionListPropsRows = [
       'listbox 推导 option，tablist 推导 tab；menu 的条目需显式角色或 ActionMenu 容器上下文',
   },
   {
+    id: 'showDividers',
     name: 'showDividers',
     type: 'boolean',
     default: 'false',
     description: '连续列表项之间显示分隔线',
   },
   {
+    id: 'disableFocusZone',
     name: 'disableFocusZone',
     type: 'boolean',
     default: 'false',
     description: '关闭 menu、menubar、listbox 的焦点管理；容器 enableFocusZone 优先',
   },
   {
+    id: 'disableItemGap',
     name: 'disableItemGap',
     type: 'boolean',
     default: 'false',
     description: '关闭 NavList 容器的 FeatureFlag 项间距',
   },
   {
+    id: 'className / 原生属性',
     name: 'className / 原生属性',
     type: 'HTMLAttributes',
     default: '—',
@@ -840,57 +870,78 @@ const actionListPropsRows = [
 ]
 const actionListItemPropsRows = [
   {
+    id: 'selected',
     name: 'selected',
     type: 'boolean',
     default: 'undefined',
     description:
       '选择状态；option 对应 aria-selected，menuitemradio/menuitemcheckbox 对应 aria-checked',
   },
-  { name: 'active', type: 'boolean', default: 'false', description: '显示当前项背景与左侧强调线' },
   {
+    id: 'active',
+    name: 'active',
+    type: 'boolean',
+    default: 'false',
+    description: '显示当前项背景与左侧强调线',
+  },
+  {
+    id: 'variant',
     name: 'variant',
     type: "'default' | 'danger'",
     default: "'default'",
     description: '默认或危险操作样式',
   },
   {
+    id: 'disabled',
     name: 'disabled',
     type: 'boolean',
     default: 'false',
     description: '设置 aria-disabled 并阻止 select；仍可在焦点区中聚焦',
   },
   {
+    id: 'inactiveText',
     name: 'inactiveText',
     type: 'string',
     default: 'undefined',
     description: '非活动原因，阻止操作；普通列表显示提示图标，menu/listbox 显示警告文本',
   },
   {
+    id: 'loading',
     name: 'loading',
     type: 'boolean',
     default: 'undefined',
     description: '显示 Spinner 与 Loading 公告，阻止 select 并隐藏尾部操作',
   },
-  { name: 'size', type: "'medium' | 'large'", default: "'medium'", description: '条目高度' },
   {
+    id: 'size',
+    name: 'size',
+    type: "'medium' | 'large'",
+    default: "'medium'",
+    description: '条目高度',
+  },
+  {
+    id: 'id / role / 原生属性',
     name: 'id / role / 原生属性',
     type: 'HTMLAttributes',
     default: '—',
     description: '属性按语义落到 button 或 li；class 落在外层 li',
   },
   {
+    id: 'as',
     name: 'as',
     type: 'string | Component',
     default: 'undefined',
     description: '已弃用，对 Item 不生效；使用 LinkItem 的 as 实现自定义链接',
   },
   {
+    id: 'privateItemWrapper / _PrivateItemWrapper / privateTooltipText / _PrivateTooltipText',
     name: 'privateItemWrapper / _PrivateItemWrapper / privateTooltipText / _PrivateTooltipText',
     type: '函数 / string',
     default: 'undefined',
     description: '对应源 _PrivateItemWrapper / _PrivateTooltipText 的内部适配接口',
   },
   {
+    id: 'groupId / renderItem / handleAddItem',
     name: 'groupId / renderItem / handleAddItem',
     type: 'string / 函数',
     default: 'undefined',
@@ -898,32 +949,43 @@ const actionListItemPropsRows = [
   },
 ]
 const actionListLinkItemPropsRows = [
-  { name: 'as', type: 'string | Component', default: "'a'", description: '原生链接或路由链接组件' },
   {
+    id: 'as',
+    name: 'as',
+    type: 'string | Component',
+    default: "'a'",
+    description: '原生链接或路由链接组件',
+  },
+  {
+    id: 'href / target / rel',
     name: 'href / target / rel',
     type: '原生链接属性',
     default: 'undefined',
     description: '直接传递到链接，使用 target="_blank" 指定新标签页',
   },
   {
+    id: 'active / variant / size',
     name: 'active / variant / size',
     type: '与 Item 对应属性相同',
     default: 'false / default / medium',
     description: '条目视觉状态',
   },
   {
+    id: 'inactiveText',
     name: 'inactiveText',
     type: 'string',
     default: 'undefined',
     description: '非活动链接渲染 span 并移除链接交互',
   },
   {
+    id: 'privateTooltipText / _PrivateTooltipText',
     name: 'privateTooltipText / _PrivateTooltipText',
     type: 'string',
     default: 'undefined',
     description: '链接提示内容',
   },
   {
+    id: 'className / 原生属性',
     name: 'className / 原生属性',
     type: 'HTMLAttributes',
     default: '—',
@@ -932,18 +994,21 @@ const actionListLinkItemPropsRows = [
 ]
 const actionListDescriptionPropsRows = [
   {
+    id: 'variant',
     name: 'variant',
     type: "'inline' | 'block'",
     default: "'inline'",
     description: '说明显示在同一行或下一行',
   },
   {
+    id: 'truncate',
     name: 'truncate',
     type: 'boolean',
     default: 'undefined',
     description: '仅 inline 截断；按钮条目自动显示全文 Tooltip，其他语义使用 title',
   },
   {
+    id: 'className / style',
     name: 'className / style',
     type: 'string / CSSProperties',
     default: '—',
@@ -952,12 +1017,14 @@ const actionListDescriptionPropsRows = [
 ]
 const actionListGroupPropsRows = [
   {
+    id: 'selectionVariant',
     name: 'selectionVariant',
     type: "'single' | 'radio' | 'multiple' | false",
     default: 'undefined',
     description: '覆盖选择标记；false 隐藏组内选择标记',
   },
   {
+    id: 'role / aria-label',
     name: 'role / aria-label',
     type: 'string',
     default: '由列表推导',
@@ -965,12 +1032,14 @@ const actionListGroupPropsRows = [
       '角色列表内的 ul 为 group，通过 aria-label 标记；复杂标题应显式设置 aria-label，普通列表使用标题 ID',
   },
   {
+    id: 'title / variant / auxiliaryText',
     name: 'title / variant / auxiliaryText',
     type: 'string / subtle或filled / string',
     default: 'undefined / subtle / undefined',
     description: '旧标题接口，推荐使用 GroupHeading；同时提供 title 和 GroupHeading 时不渲染标题',
   },
   {
+    id: 'className / 原生属性',
     name: 'className / 原生属性',
     type: 'HTMLAttributes',
     default: '—',
@@ -979,25 +1048,35 @@ const actionListGroupPropsRows = [
 ]
 const actionListGroupHeadingPropsRows = [
   {
+    id: 'as',
     name: 'as',
     type: "'h1' 至 'h6'",
     default: 'undefined',
     description: '普通列表必须设置标题级别；menu/listbox 等角色列表禁止设置 as',
   },
   {
+    id: 'variant',
     name: 'variant',
     type: "'subtle' | 'filled'",
     default: "'subtle'",
     description: '标题视觉样式',
   },
-  { name: 'auxiliaryText', type: 'string', default: 'undefined', description: '标题辅助文字' },
   {
+    id: 'auxiliaryText',
+    name: 'auxiliaryText',
+    type: 'string',
+    default: 'undefined',
+    description: '标题辅助文字',
+  },
+  {
+    id: 'headingWrapElement',
     name: 'headingWrapElement',
     type: "'div' | 'li'",
     default: "'div'",
     description: '标题包装元素',
   },
   {
+    id: 'id / className / 原生属性',
     name: 'id / className / 原生属性',
     type: 'HTMLAttributes',
     default: '生成 id',
@@ -1006,24 +1085,28 @@ const actionListGroupHeadingPropsRows = [
 ]
 const headingPropsRows = [
   {
+    id: 'as',
     name: 'as',
     type: "'h1' 至 'h6'",
     default: '必填',
     description: '列表标题级别；禁止在 ActionMenu 容器使用',
   },
   {
+    id: 'size',
     name: 'size',
     type: "'large' | 'medium' | 'small'",
     default: 'undefined',
     description: '标题字号',
   },
   {
+    id: 'visuallyHidden',
     name: 'visuallyHidden',
     type: 'boolean',
     default: 'false',
     description: '保留标题语义并在视觉上隐藏',
   },
   {
+    id: 'id / className / 原生属性',
     name: 'id / className / 原生属性',
     type: 'HTMLAttributes',
     default: '生成 id',
@@ -1032,36 +1115,42 @@ const headingPropsRows = [
 ]
 const trailingActionPropsRows = [
   {
+    id: 'label',
     name: 'label',
     type: 'string',
     default: '必填',
     description: '文本按钮内容或图标按钮的可访问名称',
   },
   {
+    id: 'icon',
     name: 'icon',
     type: 'Component',
     default: 'undefined',
     description: '使用 IconButton；GroupHeading.TrailingAction 必填',
   },
   {
+    id: 'as / href',
     name: 'as / href',
     type: "'button' | 'a' / string",
     default: "'button' / undefined",
     description: 'as=a 必须提供 href',
   },
   {
+    id: 'loading',
     name: 'loading',
     type: 'boolean',
     default: 'undefined',
     description: '仅 button 支持；加载时关闭点击并公告状态',
   },
   {
+    id: 'tooltipDirection',
     name: 'tooltipDirection',
     type: 'TooltipDirection',
     default: "'w'",
     description: '图标提示方向',
   },
   {
+    id: 'className / style / 原生属性',
     name: 'className / style / 原生属性',
     type: 'HTMLAttributes',
     default: '—',
@@ -1089,19 +1178,21 @@ import { ActionList } from '@/components/primer-vue/ActionList'
 import { PencilIcon } from '@onlikee/octicons-vue'
 <\/script>`
 
-const eventsTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '事件名', rowHeader: true, minWidth: '160px' },
-  { key: 'component', label: '组件', minWidth: '180px' },
-  { key: 'description', label: '说明', minWidth: '300px', wrap: true },
+const eventsTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '事件名', rowHeader: true, minWidth: '160px' },
+  { field: 'component', header: '组件', minWidth: '180px' },
+  { field: 'description', header: '说明', minWidth: '300px' },
 ]
 
 const eventsRows = [
   {
+    id: 'click',
     name: 'click',
     component: 'ActionList.LinkItem / TrailingAction',
     description: '原生链接或尾部按钮的点击事件',
   },
   {
+    id: 'select',
     name: 'select',
     component: 'ActionList.Item',
     description:
@@ -1109,57 +1200,57 @@ const eventsRows = [
   },
 ]
 
-const slotsTableColumns: DataTableColumn[] = [
-  { key: 'component', label: '组件', rowHeader: true, minWidth: '180px' },
-  { key: 'name', label: '插槽名', minWidth: '160px' },
-  { key: 'description', label: '说明', minWidth: '300px', wrap: true },
+const slotsTableColumns: DocumentationColumn[] = [
+  { field: 'component', header: '组件', rowHeader: true, minWidth: '180px' },
+  { field: 'name', header: '插槽名', minWidth: '160px' },
+  { field: 'description', header: '说明', minWidth: '300px' },
 ]
 
 const slotsRows = [
   {
-    key: 'action-list-default',
+    id: 'action-list-default',
     component: 'ActionList',
     name: 'default',
     description: '列表子项，通常为 Item、LinkItem、Group 或 Divider',
   },
   {
-    key: 'item-default',
+    id: 'item-default',
     component: 'ActionList.Item / LinkItem',
     name: 'default',
     description: '列表项主标签',
   },
   {
-    key: 'leading-default',
+    id: 'leading-default',
     component: 'ActionList.LeadingVisual',
     name: 'default',
     description: '列表项左侧图标区域',
   },
   {
-    key: 'description-default',
+    id: 'description-default',
     component: 'ActionList.Description',
     name: 'default',
     description: '列表项说明文字',
   },
   {
-    key: 'trailing-default',
+    id: 'trailing-default',
     component: 'ActionList.TrailingVisual',
     name: 'default',
     description: '列表项右侧图标或辅助信息区域',
   },
   {
-    key: 'group-default',
+    id: 'group-default',
     component: 'ActionList.Group',
     name: 'default',
     description: '分组内的列表项及 GroupHeading 子组件',
   },
   {
-    key: 'heading-default',
+    id: 'heading-default',
     component: 'ActionList.GroupHeading',
     name: 'default',
     description: '分组标题内容及 GroupHeading.TrailingAction 子组件',
   },
   {
-    key: 'list-heading',
+    id: 'list-heading',
     component: 'ActionList.Heading',
     name: 'default',
     description: '列表标题',

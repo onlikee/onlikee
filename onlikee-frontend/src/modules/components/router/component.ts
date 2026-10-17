@@ -88,6 +88,26 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/truncate.vue'),
       },
       {
+        path: 'label',
+        name: 'Label',
+        component: () => import('../views/components/label.vue'),
+      },
+      {
+        path: 'label-group',
+        name: 'LabelGroup',
+        component: () => import('../views/components/label-group.vue'),
+      },
+      {
+        path: 'relative-time',
+        name: 'RelativeTime',
+        component: () => import('../views/components/relative-time.vue'),
+      },
+      {
+        path: 'heading',
+        name: 'Heading',
+        component: () => import('../views/components/heading.vue'),
+      },
+      {
         path: 'text',
         name: 'Text',
         component: () => import('../views/components/text.vue'),
@@ -230,6 +250,16 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         path: 'progress-bar',
         name: 'ProgressBar',
         component: () => import('../views/components/progress-bar.vue'),
+      },
+      {
+        path: 'skeleton',
+        name: 'Skeleton',
+        component: () => import('../views/components/skeleton.vue'),
+      },
+      {
+        path: 'skeleton-text',
+        name: 'SkeletonText',
+        component: () => import('../views/components/skeleton-text.vue'),
       },
       {
         path: 'spinner',

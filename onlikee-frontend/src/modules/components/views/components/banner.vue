@@ -79,53 +79,56 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h4>Banner 方法</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Banner 横幅提示 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
         :columns="methodTableColumns"
         :data="methodTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h4 style="margin-top: 24px">BannerOptions</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">Banner 横幅提示 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
         :columns="optionsTableColumns"
         :data="optionsTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h4 style="margin-top: 24px">BannerAction</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-2`">Banner 横幅提示 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
         :columns="actionTableColumns"
         :data="actionTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h4 style="margin-top: 24px">BannerExposed</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-3`">Banner 横幅提示 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-3`"
         :columns="exposedTableColumns"
         :data="exposedTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { ref } from 'vue'
 import { Banner } from '@/components/primer-vue/Banner'
 import BannerView, { type BannerExposed } from '@/components/primer-vue/Banner/Banner.vue'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const bannerRef = ref<BannerExposed | null>(null)
 
@@ -383,99 +386,155 @@ const closeBannerWithRef = () => bannerRef.value?.close()
 }
 <\/style>`
 
-const methodTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '方法', rowHeader: true, minWidth: '220px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '240px', wrap: true },
-  { key: 'signature', label: '签名', minWidth: '360px', wrap: true },
+const methodTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '方法', rowHeader: true, minWidth: '220px' },
+  { field: 'description', header: '说明', minWidth: '240px' },
+  { field: 'signature', header: '签名', minWidth: '360px' },
 ]
 
 const methodTableRows = [
   {
+    id: 'Banner(message, type?, options?)',
     name: 'Banner(message, type?, options?)',
     description: '按类型展示横幅提示，并返回 close 句柄。',
     signature: '(message: string, type?: BannerType, options?: BannerOptions) => BannerResult',
   },
   {
+    id: 'Banner.info/success/warning/critical/upsell',
     name: 'Banner.info/success/warning/critical/upsell',
     description: '语义化快捷方法。',
     signature: '(message: string, options?: BannerOptions) => BannerResult',
   },
   {
+    id: 'Banner.error',
     name: 'Banner.error',
     description: 'critical 的别名，等同 Banner.critical。',
     signature: '(message: string, options?: BannerOptions) => BannerResult',
   },
   {
+    id: 'Banner.close',
     name: 'Banner.close',
     description: '关闭当前横幅。',
     signature: '() => void',
   },
 ]
 
-const optionsTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '字段', rowHeader: true, minWidth: '170px' },
-  { key: 'description', label: '说明', minWidth: '220px', wrap: true },
-  { key: 'type', label: '类型', minWidth: '240px', wrap: true },
-  { key: 'default', label: '默认值', minWidth: '140px' },
+const optionsTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '字段', rowHeader: true, minWidth: '170px' },
+  { field: 'description', header: '说明', minWidth: '220px' },
+  { field: 'type', header: '类型', minWidth: '240px' },
+  { field: 'default', header: '默认值', minWidth: '140px' },
 ]
 
 const optionsTableRows = [
-  { name: 'title', description: '标题文本', type: 'string', default: 'type 对应默认标题' },
-  { name: 'description', description: '描述文本', type: 'string', default: 'message' },
-  { name: 'ariaLabel', description: '无障碍标签', type: 'string', default: "'undefined'" },
-  { name: 'hideTitle', description: '是否隐藏可见标题', type: 'boolean', default: 'false' },
-  { name: 'dismissible', description: '是否显示关闭按钮', type: 'boolean', default: 'true' },
   {
+    id: 'title',
+    name: 'title',
+    description: '标题文本',
+    type: 'string',
+    default: 'type 对应默认标题',
+  },
+  {
+    id: 'description',
+    name: 'description',
+    description: '描述文本',
+    type: 'string',
+    default: 'message',
+  },
+  {
+    id: 'ariaLabel',
+    name: 'ariaLabel',
+    description: '无障碍标签',
+    type: 'string',
+    default: "'undefined'",
+  },
+  {
+    id: 'hideTitle',
+    name: 'hideTitle',
+    description: '是否隐藏可见标题',
+    type: 'boolean',
+    default: 'false',
+  },
+  {
+    id: 'dismissible',
+    name: 'dismissible',
+    description: '是否显示关闭按钮',
+    type: 'boolean',
+    default: 'true',
+  },
+  {
+    id: 'primaryAction',
     name: 'primaryAction',
     description: '主操作按钮配置',
     type: 'BannerAction',
     default: "'undefined'",
   },
   {
+    id: 'secondaryAction',
     name: 'secondaryAction',
     description: '次操作按钮配置',
     type: 'BannerAction',
     default: "'undefined'",
   },
   {
+    id: 'actionsLayout',
     name: 'actionsLayout',
     description: '操作按钮布局',
     type: "'default' | 'inline' | 'stacked'",
     default: "'default'",
   },
-  { name: 'flush', description: '是否使用通栏样式', type: 'boolean', default: 'false' },
-  { name: 'duration', description: '自动关闭时长（毫秒）', type: 'number', default: "'undefined'" },
+  {
+    id: 'flush',
+    name: 'flush',
+    description: '是否使用通栏样式',
+    type: 'boolean',
+    default: 'false',
+  },
+  {
+    id: 'duration',
+    name: 'duration',
+    description: '自动关闭时长（毫秒）',
+    type: 'number',
+    default: "'undefined'",
+  },
 ]
 
-const actionTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '字段', rowHeader: true, minWidth: '160px' },
-  { key: 'description', label: '说明', minWidth: '260px', wrap: true },
-  { key: 'type', label: '类型', minWidth: '260px', wrap: true },
+const actionTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '字段', rowHeader: true, minWidth: '160px' },
+  { field: 'description', header: '说明', minWidth: '260px' },
+  { field: 'type', header: '类型', minWidth: '260px' },
 ]
 
 const actionTableRows = [
-  { name: 'label', description: '按钮文本', type: 'string' },
-  { name: 'href', description: '跳转链接（存在时渲染为 a 标签）', type: 'string | undefined' },
-  { name: 'onClick', description: '点击回调（无 href 时常用）', type: '(() => void) | undefined' },
+  { id: 'label', name: 'label', description: '按钮文本', type: 'string' },
+  {
+    id: 'href',
+    name: 'href',
+    description: '跳转链接（存在时渲染为 a 标签）',
+    type: 'string | undefined',
+  },
+  {
+    id: 'onClick',
+    name: 'onClick',
+    description: '点击回调（无 href 时常用）',
+    type: '(() => void) | undefined',
+  },
 ]
 
-const exposedTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '方法', rowHeader: true, minWidth: '220px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '220px', wrap: true },
-  { key: 'signature', label: '签名', minWidth: '360px', wrap: true },
+const exposedTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '方法', rowHeader: true, minWidth: '220px' },
+  { field: 'description', header: '说明', minWidth: '220px' },
+  { field: 'signature', header: '签名', minWidth: '360px' },
 ]
 
 const exposedTableRows = [
   {
+    id: 'show',
     name: 'show',
     description: '显示 Banner。',
     signature: '(message: string, type?: BannerType, options?: BannerOptions) => BannerResult',
   },
-  {
-    name: 'close',
-    description: '关闭 Banner。',
-    signature: '() => void',
-  },
+  { id: 'close', name: 'close', description: '关闭 Banner。', signature: '() => void' },
 ]
 </script>
 

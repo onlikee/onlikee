@@ -1,11 +1,18 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { RouterLink } from 'vue-router'
 import { Link } from '@/components/primer-vue/Link'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const basicCode = `<Link href="#">Link</Link>
 <Link href="#" muted>Muted link</Link>`
@@ -18,26 +25,29 @@ const contentCode = `<Link href="https://github.com" target="_blank" rel="noopen
   <strong>GitHub</strong>
 </Link>`
 
-const apiTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'type', label: '类型', minWidth: '160px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '240px', wrap: true },
+const apiTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'default', header: '默认值', minWidth: '120px' },
+  { field: 'type', header: '类型', minWidth: '160px' },
+  { field: 'description', header: '说明', minWidth: '240px' },
 ]
 const apiTableRows = [
   {
+    id: 'as',
     name: 'as',
     type: 'string | Component',
     default: 'a',
     description: '根元素或自定义组件；应最终渲染为 a 或 button',
   },
   {
+    id: 'muted',
     name: 'muted',
     type: 'boolean',
     default: 'undefined',
     description: '使用弱化颜色，悬停时恢复强调色并移除下划线',
   },
   {
+    id: 'inline',
     name: 'inline',
     type: 'boolean',
     default: 'undefined',
@@ -45,12 +55,14 @@ const apiTableRows = [
       '文本块中的链接；祖先 data-a11y-link-underlines="true" 时默认显示下划线，悬停时移除',
   },
   {
+    id: 'className',
     name: 'className',
     type: 'string',
     default: '—',
     description: '合并到根元素的类名，也可使用 Vue 的 class 属性',
   },
   {
+    id: 'hoverColor',
     name: 'hoverColor',
     type: 'string',
     default: '—',
@@ -118,12 +130,11 @@ const apiTableRows = [
         <code>LinkProps</code> 根据 <code>as</code> 接受对应元素或组件的属性。组件 ref 的
         <code>element</code> 指向实际根元素，可调用其原生 <code>focus()</code>；卸载后为 null。
       </template>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Link 链接 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
         :columns="apiTableColumns"
         :data="apiTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
     </ComponentDocsSection>
   </ComponentDocsPage>

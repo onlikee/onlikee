@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { h, onBeforeUnmount, onMounted, shallowRef } from 'vue'
 import { Button } from '@/components/primer-vue/Button'
 import { ActionMenu } from '@/components/primer-vue/ActionMenu'
@@ -10,11 +13,15 @@ import {
   useConfirm,
   type ConfirmationDialogCloseGesture,
 } from '@/components/primer-vue/ConfirmationDialog'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const basicOpen = shallowRef(false)
 const dangerOpen = shallowRef(false)
@@ -210,80 +217,92 @@ onBeforeUnmount(() => root.remove())
     </ConfirmationDialog>
   </PortalContext.Provider>
 </template>`
-const columns: DataTableColumn[] = [
-  { key: 'name', label: '属性', rowHeader: true, minWidth: '180px' },
-  { key: 'type', label: '类型', minWidth: '240px', wrap: true },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'description', label: '说明', minWidth: '280px', wrap: true },
+const columns: DocumentationColumn[] = [
+  { field: 'name', header: '属性', rowHeader: true, minWidth: '180px' },
+  { field: 'type', header: '类型', minWidth: '240px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'description', header: '说明', minWidth: '280px' },
 ]
 const propsRows = [
   {
+    id: 'title',
     name: 'title',
     type: 'VNodeChild（必需）',
     default: '—',
     description: '可见标题与无障碍名称；可传文字或 h() 创建的 VNode。',
   },
   {
+    id: 'onClose',
     name: 'onClose',
     type: "(gesture: 'confirm' | 'cancel' | 'close-button' | 'escape') => void（必需）",
     default: '—',
     description: '关闭请求回调；调用方决定是否卸载。点击背板与 Escape 均传 escape。',
   },
   {
+    id: 'cancelButtonContent',
     name: 'cancelButtonContent',
     type: 'VNodeChild',
     default: 'Cancel',
     description: '取消按钮内容。',
   },
   {
+    id: 'confirmButtonContent',
     name: 'confirmButtonContent',
     type: 'VNodeChild',
     default: 'OK',
     description: '确认按钮内容。',
   },
   {
+    id: 'confirmButtonType',
     name: 'confirmButtonType',
     type: "'normal' | 'primary' | 'danger'",
     default: 'normal',
     description: '确认按钮变体；danger 默认聚焦取消按钮，其余默认聚焦确认按钮。',
   },
   {
+    id: 'cancelButtonLoading',
     name: 'cancelButtonLoading',
     type: 'boolean',
     default: 'false',
     description: '取消按钮显示加载指示并阻止点击。',
   },
   {
+    id: 'confirmButtonLoading',
     name: 'confirmButtonLoading',
     type: 'boolean',
     default: 'false',
     description: '确认按钮显示加载指示并阻止点击。',
   },
   {
+    id: 'overrideButtonFocus',
     name: 'overrideButtonFocus',
     type: "'cancel' | 'confirm'",
     default: '按变体选择',
     description: '覆盖初始焦点，危险操作通常应保留取消按钮为默认焦点。',
   },
   {
+    id: 'className',
     name: 'className',
     type: 'string',
     default: '—',
     description: '添加到 role="alertdialog" 的根节点。也支持 Vue 原生 class。',
   },
   {
+    id: 'width',
     name: 'width',
     type: "'small' | 'medium' | 'large' | 'xlarge' | CSS width | number",
     default: 'medium',
     description: '预设为 296/320/480/640px；数字按像素处理。',
   },
   {
+    id: 'height',
     name: 'height',
     type: "'small' | 'large' | 'auto'",
     default: 'auto',
     description: 'small 为 480px、large 为 640px；auto 随内容变化。',
   },
   {
+    id: '默认插槽',
     name: '默认插槽',
     type: 'VNode',
     default: '—',
@@ -293,12 +312,14 @@ const propsRows = [
 ]
 const hookRows = [
   {
+    id: 'useConfirm()',
     name: 'useConfirm()',
     type: '(options: ConfirmOptions) => Promise<boolean>',
     default: '—',
     description: '返回命令式确认函数；确认时返回 true，其余关闭方式返回 false，并卸载独立根节点。',
   },
   {
+    id: 'ConfirmOptions',
     name: 'ConfirmOptions',
     type: "Omit<ConfirmationDialogProps, 'onClose'> & { content: VNodeChild }",
     default: '—',
@@ -454,10 +475,22 @@ const hookRows = [
       </p>
     </ComponentDocsSection>
     <ComponentDocsSection title="组件 API" variant="api"
-      ><DataTable :columns="columns" :data="propsRows" row-key="name"
+      ><VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >ConfirmationDialog 确认对话框 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="columns"
+        :data="propsRows"
     /></ComponentDocsSection>
     <ComponentDocsSection title="useConfirm API" variant="api"
-      ><DataTable :columns="columns" :data="hookRows" row-key="name"
+      ><VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >ConfirmationDialog 确认对话框 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="columns"
+        :data="hookRows"
     /></ComponentDocsSection>
   </ComponentDocsPage>
 </template>

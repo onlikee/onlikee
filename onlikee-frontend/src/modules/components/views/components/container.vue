@@ -59,20 +59,41 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <DataTable :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >Container 布局容器 属性</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="apiCols"
+        :data="apiRows"
+      />
       <h3>插槽</h3>
-      <DataTable :columns="slotCols" :data="slotRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >Container 布局容器 插槽</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="slotCols"
+        :data="slotRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { Container } from '@/components/primer-vue/Container'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const demo1Code = `<template>
   <Container>
@@ -121,15 +142,16 @@ const demo4Code = `<template>
 import { Container } from '@/components/primer-vue/Container'
 <\/script>`
 
-const apiCols: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'type', label: '类型', minWidth: '200px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
+const apiCols: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'type', header: '类型', minWidth: '200px' },
+  { field: 'description', header: '说明', minWidth: '200px' },
 ]
 
 const apiRows = [
   {
+    id: 'maxWidth',
     name: 'maxWidth',
     description: '容器最大宽度，模板中可写为 max-width',
     type: 'string',
@@ -137,12 +159,12 @@ const apiRows = [
   },
 ]
 
-const slotCols: DataTableColumn[] = [
-  { key: 'name', label: '插槽名', rowHeader: true, minWidth: '140px' },
-  { key: 'description', label: '说明', minWidth: '300px', wrap: true },
+const slotCols: DocumentationColumn[] = [
+  { field: 'name', header: '插槽名', rowHeader: true, minWidth: '140px' },
+  { field: 'description', header: '说明', minWidth: '300px' },
 ]
 
-const slotRows = [{ name: 'default', description: '容器的主体内容' }]
+const slotRows = [{ id: 'default', name: 'default', description: '容器的主体内容' }]
 </script>
 
 <style scoped>

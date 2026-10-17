@@ -1,14 +1,21 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { Tooltip, type TooltipDirection } from '@/components/primer-vue/Tooltip'
 import { Button, IconButton } from '@/components/primer-vue/Button'
 import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { XIcon } from '@onlikee/octicons-vue'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const directions: TooltipDirection[] = ['n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw']
 const delays = ['short', 'medium', 'long'] as const
@@ -71,41 +78,58 @@ const refCode =
   '<script setup lang="ts">\n' +
   imports +
   '\nconst trigger = { current: null as HTMLElement | null }\n<\/script>\n\n<template>\n  <Tooltip text="获取触发元素" :forwarded-ref="trigger">\n    <Button>触发元素</Button>\n  </Tooltip>\n</template>'
-const apiCols: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '150px' },
-  { key: 'type', label: '类型', minWidth: '240px', wrap: true },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'description', label: '说明', minWidth: '240px', wrap: true },
+const apiCols: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '150px' },
+  { field: 'type', header: '类型', minWidth: '240px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'description', header: '说明', minWidth: '240px' },
 ]
 const apiRows = [
-  { name: 'text', type: 'string', default: '必填', description: '提示文字' },
+  { id: 'text', name: 'text', type: 'string', default: '必填', description: '提示文字' },
   {
+    id: 'direction',
     name: 'direction',
     type: "'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w' | 'nw'",
     default: "'s'",
     description: '首选方向，空间不足时重新定位',
   },
   {
+    id: 'type',
     name: 'type',
     type: "'label' | 'description'",
     default: "'description'",
     description: '提供名称或补充描述',
   },
   {
+    id: 'delay',
     name: 'delay',
     type: "'short' | 'medium' | 'long'",
     default: "'short'",
     description: '鼠标延迟：50 / 400 / 1200ms；键盘焦点立即显示',
   },
   {
+    id: 'keybindingHint',
     name: 'keybindingHint',
     type: 'string | string[]',
     default: '[]',
     description: '快捷键，多个提示以 or 分隔',
   },
-  { name: 'id', type: 'string', default: '自动生成', description: '用于关联触发元素与提示的 ID' },
-  { name: 'className', type: 'string', default: '—', description: '提示节点的附加类名' },
   {
+    id: 'id',
+    name: 'id',
+    type: 'string',
+    default: '自动生成',
+    description: '用于关联触发元素与提示的 ID',
+  },
+  {
+    id: 'className',
+    name: 'className',
+    type: 'string',
+    default: '—',
+    description: '提示节点的附加类名',
+  },
+  {
+    id: 'forwardedRef',
     name: 'forwardedRef',
     type: '{ current: HTMLElement | null } | ((element: HTMLElement | null) => void | (() => void))',
     default: '—',
@@ -218,7 +242,12 @@ const apiRows = [
       >
     </ComponentDocsSection>
     <ComponentDocsSection title="API" variant="api">
-      <DataTable :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Tooltip 文字提示 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="apiCols"
+        :data="apiRows"
+      />
       <p>
         HTML 属性传到提示节点；关联触发节点的属性由 Tooltip 注入。_privateDisableTooltip
         是内部接口，用于菜单等组合场景，不作为通用 disabled 属性使用。

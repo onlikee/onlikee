@@ -1,14 +1,21 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { shallowRef } from 'vue'
 import { RouterLink } from 'vue-router'
 import { GitBranchIcon } from '@onlikee/octicons-vue'
 import { BranchName } from '@/components/primer-vue/BranchName'
 import { Stack } from '@/components/primer-vue/Stack'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const activations = shallowRef(0)
 const basicCode = `<BranchName href="#">main</BranchName>
@@ -22,26 +29,29 @@ const contentCode = `<BranchName href="#">
     branch_name
   </Stack>
 </BranchName>`
-const columns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'type', label: '类型', minWidth: '180px', wrap: true },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'description', label: '说明', minWidth: '240px', wrap: true },
+const columns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'type', header: '类型', minWidth: '180px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'description', header: '说明', minWidth: '240px' },
 ]
 const rows = [
   {
+    id: 'as',
     name: 'as',
     type: '原生标签 | Component',
     default: 'a',
     description: '指定根元素或自定义组件；非 a 元素使用弱化文字颜色',
   },
   {
+    id: 'className',
     name: 'className',
     type: 'string',
     default: '—',
     description: '与组件类名合并，Vue class 属性也会合并到根元素',
   },
   {
+    id: '原生或组件属性',
     name: '原生或组件属性',
     type: '由 as 决定',
     default: '—',
@@ -99,7 +109,12 @@ const rows = [
         在原生标签下为对应 DOM 元素，在自定义组件下为组件公开实例，卸载后为 null。事件采用 Vue
         的原生事件类型。
       </template>
-      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">BranchName 分支名 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="columns"
+        :data="rows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

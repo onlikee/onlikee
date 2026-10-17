@@ -81,38 +81,54 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>FormControl Props</h3>
-      <DataTable :columns="apiCols" :data="rootPropRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >FormControl 表单控件 FormControl Props</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="apiCols"
+        :data="rootPropRows"
+      />
 
       <h3>子组件</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >FormControl 表单控件 子组件</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
         :columns="subComponentCols"
         :data="subComponentRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h3>Validation Props</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-2`"
+        >FormControl 表单控件 Validation Props</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
         :columns="apiCols"
         :data="validationPropRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { computed, ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { TextInput } from '@/components/primer-vue/TextInput'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const appName = ref('')
 const appUrlPrefix = ref('onlikee-app')
@@ -192,39 +208,44 @@ import { TextInput } from '@/components/primer-vue/TextInput'
 const domainPrefix = ref('podcast-hub')
 <\/script>`
 
-const apiCols: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '180px' },
-  { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'type', label: '类型', minWidth: '220px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '280px', wrap: true },
+const apiCols: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '180px' },
+  { field: 'default', header: '默认值', minWidth: '120px' },
+  { field: 'type', header: '类型', minWidth: '220px' },
+  { field: 'description', header: '说明', minWidth: '280px' },
 ]
 
 const rootPropRows = [
   {
+    id: 'id',
     name: 'id',
     description: '输入控件的 ID；未指定时生成稳定 ID。',
     type: 'string',
     default: '自动生成',
   },
   {
+    id: 'disabled',
     name: 'disabled',
     description: '禁用输入及标签，并继承选择控件组的禁用状态。',
     type: 'boolean',
     default: 'false',
   },
   {
+    id: 'layout',
     name: 'layout',
     description: '普通输入默认纵向；选择控件始终横向。横向普通输入不渲染校验消息。',
     type: "'vertical' | 'horizontal'",
     default: "'vertical'",
   },
   {
+    id: 'className / style',
     name: 'className / style',
     description: '根容器类名与行内样式；也支持 Vue 的 class 属性。',
     type: 'string / CSSProperties',
     default: '—',
   },
   {
+    id: 'required',
     name: 'required',
     description: '标记当前表单项为必填，并让 FormControl.Label 自动追加 *。',
     type: 'boolean',
@@ -232,30 +253,34 @@ const rootPropRows = [
   },
 ]
 
-const subComponentCols: DataTableColumn[] = [
-  { key: 'name', label: '子组件', rowHeader: true, minWidth: '200px' },
-  { key: 'description', label: '说明', minWidth: '320px', wrap: true },
-  { key: 'publicProps', label: '公开 Props', minWidth: '220px', wrap: true },
+const subComponentCols: DocumentationColumn[] = [
+  { field: 'name', header: '子组件', rowHeader: true, minWidth: '200px' },
+  { field: 'description', header: '说明', minWidth: '320px' },
+  { field: 'publicProps', header: '公开 Props', minWidth: '220px' },
 ]
 
 const subComponentRows = [
   {
+    id: 'FormControl.Label',
     name: 'FormControl.Label',
     description: '标签区域；读取根组件的 required 上下文并自动显示必填标记。',
     publicProps: 'id、as、htmlFor、visuallyHidden、className、style',
   },
   {
+    id: 'FormControl.Validation',
     name: 'FormControl.Validation',
     description:
       '校验消息区域；通常放在 Caption 上方，显示状态图标，FormControl 自动读取 variant。',
     publicProps: '见下方 Validation Props',
   },
   {
+    id: 'FormControl.Caption',
     name: 'FormControl.Caption',
     description: '辅助说明区域；通常用于提示、说明或补充文案。',
     publicProps: 'id、className、style',
   },
   {
+    id: 'FormControl.LeadingVisual',
     name: 'FormControl.LeadingVisual',
     description: '仅用于 Checkbox 和 Radio 左侧的视觉元素。',
     publicProps: 'className、style',
@@ -264,6 +289,7 @@ const subComponentRows = [
 
 const validationPropRows = [
   {
+    id: 'variant',
     name: 'variant',
     description: '校验信息的视觉状态；同时影响图标、文字颜色和纵向普通输入的校验状态。',
     type: "'error' | 'success'",

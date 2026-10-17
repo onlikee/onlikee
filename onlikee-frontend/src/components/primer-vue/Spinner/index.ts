@@ -1,1 +1,2 @@
-export { default as Spinner } from './Spinner.vue'
+export { default, default as Spinner } from './Spinner.vue'
+export type { SpinnerProps } from './types'

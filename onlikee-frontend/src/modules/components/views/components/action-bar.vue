@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { shallowRef } from 'vue'
 import {
   ActionBar,
@@ -19,11 +22,15 @@ import {
   TasklistIcon,
   KebabHorizontalIcon,
 } from '@onlikee/octicons-vue'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const width = shallowRef(360)
 const size = shallowRef<ActionBarSize>('medium')
@@ -163,48 +170,66 @@ const menuCode = [
   '  <p>{{ selected }}</p>',
   '</template>',
 ].join('\n')
-const columns: DataTableColumn[] = [
-  { key: 'name', label: '属性', rowHeader: true },
-  { key: 'type', label: '类型', wrap: true },
-  { key: 'default', label: '默认值' },
-  { key: 'description', label: '说明', wrap: true },
+const columns: DocumentationColumn[] = [
+  { field: 'name', header: '属性', rowHeader: true },
+  { field: 'type', header: '类型' },
+  { field: 'default', header: '默认值' },
+  { field: 'description', header: '说明' },
 ]
 const barRows = [
   {
+    id: 'aria-label / aria-labelledby',
     name: 'aria-label / aria-labelledby',
     type: 'string',
     default: '—',
     description: '必须提供其中一个，为 toolbar 命名；其他原生属性和 class 透传到外层容器。',
   },
   {
+    id: 'size',
     name: 'size',
     type: 'small | medium | large',
     default: 'medium',
     description: '28 / 32 / 40px，传给按钮和溢出按钮。',
   },
   {
+    id: 'gap',
     name: 'gap',
     type: 'none | condensed',
     default: 'condensed',
     description: '0 / 8px；none 时分隔线自身保留左右 8px 留白。',
   },
-  { name: 'flush', type: 'boolean', default: 'false', description: '去除默认左右 16px 留白。' },
-  { name: 'className', type: 'string', default: '—', description: '也可使用 Vue 原生 class。' },
+  {
+    id: 'flush',
+    name: 'flush',
+    type: 'boolean',
+    default: 'false',
+    description: '去除默认左右 16px 留白。',
+  },
+  {
+    id: 'className',
+    name: 'className',
+    type: 'string',
+    default: '—',
+    description: '也可使用 Vue 原生 class。',
+  },
 ]
 const buttonRows = [
   {
+    id: 'icon / aria-label',
     name: 'icon / aria-label',
     type: 'Component / string',
     default: '—',
     description: 'IconButton 必填，图标组件和无障碍标签；自带 Tooltip。',
   },
   {
+    id: '默认插槽 / leadingVisual',
     name: '默认插槽 / leadingVisual',
     type: 'VNode / Component',
     default: '—',
     description: 'Button 的文字内容和前导图标，在溢出菜单中保留。',
   },
   {
+    id: 'disabled',
     name: 'disabled',
     type: 'boolean',
     default: 'false',
@@ -212,18 +237,21 @@ const buttonRows = [
       'Button / IconButton 仍可聚焦，设置 aria-disabled 并阻止激活。Menu 使用原生 disabled。',
   },
   {
+    id: '@click',
     name: '@click',
     type: '(MouseEvent | KeyboardEvent) => void',
     default: '—',
     description: '工具栏点击和溢出菜单选择共享同一事件；preventDefault 可阻止菜单关闭。',
   },
   {
+    id: '按钮属性',
     name: '按钮属性',
     type: 'size, loading, type, leadingVisual, trailingVisual, trailingAction, count…',
     default: '—',
     description: '复用现有按钮实现；variant 固定为 invisible。',
   },
   {
+    id: 'Tooltip 属性',
     name: 'Tooltip 属性',
     type: 'description, tooltipDirection, keyshortcuts, keybindingHint, unsafeDisableTooltip',
     default: '—',
@@ -232,24 +260,28 @@ const buttonRows = [
 ]
 const menuRows = [
   {
+    id: 'icon / aria-label / items',
     name: 'icon / aria-label / items',
     type: 'Component / string / ActionBarMenuItemProps[]',
     default: '—',
     description: '菜单按钮图标、标签和菜单项，均为必填。',
   },
   {
+    id: 'overflowIcon',
     name: 'overflowIcon',
     type: "Component | 'none'",
     default: 'icon',
     description: '进入溢出菜单时的图标；none 隐藏图标。',
   },
   {
+    id: 'returnFocusRef',
     name: 'returnFocusRef',
     type: 'HTMLElement | Ref<HTMLElement | null>',
     default: '菜单按钮',
     description: '关闭或选择后恢复焦点的目标。',
   },
   {
+    id: '菜单项',
     name: '菜单项',
     type: 'label, disabled, leadingVisual, trailingVisual, variant, onClick, items',
     default: "type: 'action'",
@@ -257,6 +289,7 @@ const menuRows = [
       'trailingVisual 支持字符串或图标；variant 为 default / danger；items 创建嵌套菜单。',
   },
   {
+    id: '分隔线项',
     name: '分隔线项',
     type: "{ type: 'divider' }",
     default: '—',
@@ -396,13 +429,28 @@ const menuRows = [
       </p>
     </ComponentDocsSection>
     <ComponentDocsSection title="ActionBar API">
-      <DataTable :columns="columns" :data="barRows" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">ActionBar 操作栏 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="columns"
+        :data="barRows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="Button / IconButton API">
-      <DataTable :columns="columns" :data="buttonRows" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">ActionBar 操作栏 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="columns"
+        :data="buttonRows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="Menu API">
-      <DataTable :columns="columns" :data="menuRows" />
+      <VisuallyHidden :id="`${documentationId}-api-table-2`">ActionBar 操作栏 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
+        :columns="columns"
+        :data="menuRows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="Group / Divider 与导出">
       <p>Group 通过默认插槽组合操作，整体溢出；Divider 渲染装饰性竖线，溢出时转为菜单分隔线。</p>

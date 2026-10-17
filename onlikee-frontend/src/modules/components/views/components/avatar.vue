@@ -95,24 +95,30 @@
     </ComponentDocsSection>
 
     <ComponentDocsSection title="API" variant="api">
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Avatar 头像 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
         :columns="apiTableColumns"
         :data="apiTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { Avatar } from '@/components/primer-vue/Avatar'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const demo1Code = `<template>
   <Avatar src="https://avatars.githubusercontent.com/u/131276691?v=4" />
@@ -163,39 +169,44 @@ const nativeCode = `<Avatar
   style="background: var(--bgColor-muted)"
 />`
 
-const apiTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'type', label: '类型', minWidth: '160px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
+const apiTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'default', header: '默认值', minWidth: '120px' },
+  { field: 'type', header: '类型', minWidth: '160px' },
+  { field: 'description', header: '说明', minWidth: '200px' },
 ]
 
 const apiTableRows = [
   {
+    id: 'src',
     name: 'src',
     description: '头像图片地址；未提供或为空时显示 placeholder',
     type: 'string',
     default: '—',
   },
   {
+    id: 'alt',
     name: 'alt',
     description: '图片替代文本；占位分支用作无障碍名称',
     type: 'string',
     default: '空字符串',
   },
   {
+    id: 'placeholder',
     name: 'placeholder',
     description: '占位文字（仅 src 为空时显示）',
     type: 'string',
     default: '空字符串',
   },
   {
+    id: 'size',
     name: 'size',
     description: '头像尺寸',
     type: 'number | { narrow?: number; regular?: number; wide?: number }',
     default: '20',
   },
   {
+    id: 'square',
     name: 'square',
     description: '使用圆角方形头像',
     type: 'boolean',

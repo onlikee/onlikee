@@ -6,3 +6,4 @@ export const Link = LinkComponent as <As extends keyof NativeElements | Componen
   props: LinkComponentProps<As> & VNodeProps & AllowedComponentProps,
 ) => ReturnType<typeof LinkComponent<As>>
 export type { LinkOptions, LinkProps, LinkInstance } from './types'
+export default Link

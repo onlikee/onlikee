@@ -1,8 +1,13 @@
 <script setup lang="ts">
-withDefaults(defineProps<{ isVisible?: boolean; as?: string }>(), { isVisible: false, as: 'span' })
+import type { Component } from 'vue'
+withDefaults(defineProps<{ isVisible?: boolean; as?: string | Component; className?: string }>(), {
+  isVisible: false,
+  as: 'span',
+  className: undefined,
+})
 </script>
 <template>
-  <component :is="as || 'span'" :class="{ 'internal-visually-hidden': !isVisible }">
+  <component :is="as || 'span'" :class="[className, { 'internal-visually-hidden': !isVisible }]">
     <slot />
   </component>
 </template>

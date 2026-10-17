@@ -114,24 +114,48 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <DataTable :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">TextInput 输入框 属性</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="apiCols"
+        :data="apiRows"
+      />
       <h3>原生属性透传（常用）</h3>
-      <DataTable :columns="apiCols" :data="nativeRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >TextInput 输入框 原生属性透传（常用）</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="apiCols"
+        :data="nativeRows"
+      />
       <h3>事件</h3>
-      <DataTable :columns="eventCols" :data="eventRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-2`">TextInput 输入框 事件</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
+        :columns="eventCols"
+        :data="eventRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { computed, ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { TextInput } from '@/components/primer-vue/TextInput'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const val1 = ref('')
 const val2 = ref('Disabled value')
@@ -253,58 +277,72 @@ const valMedium = ref('')
 const valLarge = ref('')
 <\/script>`
 
-const apiCols: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'type', label: '类型', minWidth: '220px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '220px', wrap: true },
+const apiCols: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'default', header: '默认值', minWidth: '120px' },
+  { field: 'type', header: '类型', minWidth: '220px' },
+  { field: 'description', header: '说明', minWidth: '220px' },
 ]
 
 const apiRows = [
   {
+    id: 'value',
     name: 'value',
     description: '受控绑定值（v-model:value）',
     type: 'string | number',
     default: '—',
   },
-  { name: 'defaultValue', description: '非受控初始值', type: 'string | number', default: '—' },
   {
+    id: 'defaultValue',
+    name: 'defaultValue',
+    description: '非受控初始值',
+    type: 'string | number',
+    default: '—',
+  },
+  {
+    id: 'size',
     name: 'size',
     description: '输入框尺寸',
     type: "'small' | 'medium' | 'large'",
     default: "'medium'",
   },
   {
+    id: 'leadingVisual / trailingVisual',
     name: 'leadingVisual / trailingVisual',
     description: '输入框前后视觉元素；支持同名具名插槽',
     type: 'VNodeChild | Component',
     default: '—',
   },
   {
+    id: 'trailingAction',
     name: 'trailingAction',
     description: '输入框操作按钮，通常使用 TextInput.Action',
     type: 'VNodeChild | Component',
     default: '—',
   },
   {
+    id: 'loading / loaderPosition / loaderText',
     name: 'loading / loaderPosition / loaderText',
     description: '加载状态、位置和无障碍提示',
     type: "boolean / 'auto' | 'leading' | 'trailing' / string",
     default: "— / 'auto' / 'Loading'",
   },
   {
+    id: 'characterLimit',
     name: 'characterLimit',
     description: '字符计数与超限错误状态，不阻止输入',
     type: 'number',
     default: '—',
   },
   {
+    id: 'validationStatus',
     name: 'validationStatus',
     description: '错误或成功状态',
     type: "'error' | 'success'",
     default: '—',
   },
   {
+    id: 'block / contrast / monospace',
     name: 'block / contrast / monospace',
     description: '占满容器、高对比背景和等宽字体',
     type: 'boolean',
@@ -313,12 +351,25 @@ const apiRows = [
 ]
 
 const nativeRows = [
-  { name: 'type', description: '输入类型', type: 'string', default: "'text'" },
-  { name: 'placeholder', description: '占位文本', type: 'string', default: '-' },
-  { name: 'disabled', description: '禁用输入', type: 'boolean', default: 'false' },
-  { name: 'maxlength', description: '最大输入长度', type: 'number | string', default: '-' },
-  { name: 'autocomplete', description: '自动填充提示', type: 'string', default: '-' },
+  { id: 'type', name: 'type', description: '输入类型', type: 'string', default: "'text'" },
+  { id: 'placeholder', name: 'placeholder', description: '占位文本', type: 'string', default: '-' },
+  { id: 'disabled', name: 'disabled', description: '禁用输入', type: 'boolean', default: 'false' },
   {
+    id: 'maxlength',
+    name: 'maxlength',
+    description: '最大输入长度',
+    type: 'number | string',
+    default: '-',
+  },
+  {
+    id: 'autocomplete',
+    name: 'autocomplete',
+    description: '自动填充提示',
+    type: 'string',
+    default: '-',
+  },
+  {
+    id: 'id / name / aria-*',
     name: 'id / name / aria-*',
     description: '其他原生属性会透传到 input 元素',
     type: 'string',
@@ -326,20 +377,26 @@ const nativeRows = [
   },
 ]
 
-const eventCols: DataTableColumn[] = [
-  { key: 'name', label: '事件名', rowHeader: true, minWidth: '180px' },
-  { key: 'description', label: '说明', minWidth: '240px', wrap: true },
-  { key: 'type', label: '回调参数', minWidth: '200px', wrap: true },
+const eventCols: DocumentationColumn[] = [
+  { field: 'name', header: '事件名', rowHeader: true, minWidth: '180px' },
+  { field: 'description', header: '说明', minWidth: '240px' },
+  { field: 'type', header: '回调参数', minWidth: '200px' },
 ]
 
 const eventRows = [
   {
+    id: 'update:value',
     name: 'update:value',
     description: '输入值变化时触发（IME 组合输入在 compositionend 后更新）',
     type: 'string',
   },
-  { name: 'change / input', description: '原生输入事件；change 随文本修改触发', type: 'Event' },
-  { name: 'focus / blur', description: '原生焦点事件', type: 'FocusEvent' },
+  {
+    id: 'change / input',
+    name: 'change / input',
+    description: '原生输入事件；change 随文本修改触发',
+    type: 'Event',
+  },
+  { id: 'focus / blur', name: 'focus / blur', description: '原生焦点事件', type: 'FocusEvent' },
 ]
 </script>
 

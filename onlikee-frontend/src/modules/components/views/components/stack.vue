@@ -1,10 +1,17 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { Stack, StackItem } from '@/components/primer-vue/Stack'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
+
+const documentationId = useDocumentationId()
 
 const codes = [
   '<template>\n<Stack>\n  <div class="demo-item">第一项</div>\n  <div class="demo-item">第二项</div>\n  <div class="demo-item">第三项</div>\n</Stack>\n</template>',
@@ -16,62 +23,65 @@ const codes = [
   '<template>\n<Stack as="ul" class="demo-list" gap="condensed">\n  <StackItem as="li" class="demo-item">列表项一</StackItem>\n  <StackItem as="li">\n    <Stack direction="horizontal" gap="tight">\n      <span class="demo-item">嵌套项 A</span>\n      <span class="demo-item">嵌套项 B</span>\n    </Stack>\n  </StackItem>\n</Stack>\n</template>',
 ]
 const importCode = "import { Stack, StackItem } from '@/components/primer-vue/Stack'"
-const columns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true },
-  { key: 'type', label: '类型', wrap: true },
-  { key: 'default', label: '默认值' },
-  { key: 'description', label: '说明', wrap: true },
+const columns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true },
+  { field: 'type', header: '类型' },
+  { field: 'default', header: '默认值' },
+  { field: 'description', header: '说明' },
 ]
 const rows = [
   {
+    id: 'as',
     name: 'as',
     type: 'string | Component',
     default: 'div',
     description: '根元素或 Vue 组件。',
   },
   {
+    id: 'direction',
     name: 'direction',
     type: "'horizontal' | 'vertical'",
     default: 'vertical',
     description: '排列方向。',
   },
+  { id: 'gap', name: 'gap', type: 'StackSpacing', default: 'normal', description: '子项间距。' },
   {
-    name: 'gap',
-    type: 'StackSpacing',
-    default: 'normal',
-    description: '子项间距。',
-  },
-  {
+    id: 'align',
     name: 'align',
     type: "'stretch' | 'start' | 'center' | 'end' | 'baseline'",
     default: 'stretch',
     description: '交叉轴对齐。',
   },
   {
+    id: 'justify',
     name: 'justify',
     type: "'start' | 'center' | 'end' | 'space-between' | 'space-evenly'",
     default: 'start',
     description: '主轴分布。',
   },
   {
+    id: 'wrap',
     name: 'wrap',
     type: "'wrap' | 'nowrap'",
     default: 'nowrap',
     description: '是否允许换行。',
   },
   {
+    id: 'padding',
     name: 'padding',
     type: 'StackSpacing',
     default: 'none',
     description: '容器内边距。',
   },
   {
+    id: 'paddingBlock',
     name: 'paddingBlock',
     type: 'StackSpacing',
     default: '—',
     description: '覆盖块轴内边距。',
   },
   {
+    id: 'paddingInline',
     name: 'paddingInline',
     type: 'StackSpacing',
     default: '—',
@@ -79,14 +89,22 @@ const rows = [
   },
 ]
 const itemRows = [
-  { name: 'as', type: 'string | Component', default: 'div', description: '根元素或 Vue 组件。' },
   {
+    id: 'as',
+    name: 'as',
+    type: 'string | Component',
+    default: 'div',
+    description: '根元素或 Vue 组件。',
+  },
+  {
+    id: 'grow',
     name: 'grow',
     type: 'boolean | ResponsiveValue<boolean>',
     default: 'false',
     description: '是否填充剩余空间。',
   },
   {
+    id: 'shrink',
     name: 'shrink',
     type: 'boolean | ResponsiveValue<boolean>',
     default: 'true',
@@ -213,10 +231,20 @@ const itemRows = [
         regular?: T, wide?: T }。 StackSpacing = 'none' | 'tight' | 'condensed' | 'cozy' | 'normal'
         | 'spacious'。
       </template>
-      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Stack 堆叠布局 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="columns"
+        :data="rows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="StackItem API" variant="api">
-      <DataTable :columns="columns" :data="itemRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">Stack 堆叠布局 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="columns"
+        :data="itemRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

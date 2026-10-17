@@ -71,25 +71,47 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <DataTable :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Upload 上传 属性</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="apiCols"
+        :data="apiRows"
+      />
       <h3>事件</h3>
-      <DataTable :columns="eventCols" :data="eventRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">Upload 上传 事件</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="eventCols"
+        :data="eventRows"
+      />
       <h3>插槽</h3>
-      <DataTable :columns="slotCols" :data="slotRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-2`">Upload 上传 插槽</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
+        :columns="slotCols"
+        :data="slotRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { ref } from 'vue'
 import { Upload } from '@/components/primer-vue/Upload'
 import type { UploadFile } from '@/components/primer-vue/Upload'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import { UploadIcon } from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const files1 = ref<UploadFile[]>([])
 const files2 = ref<UploadFile[]>([])
@@ -173,51 +195,58 @@ import { UploadIcon } from '@onlikee/octicons-vue'
 const files = ref<UploadFile[]>([])
 <\/script>`
 
-const apiCols: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'type', label: '类型', minWidth: '200px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
+const apiCols: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'type', header: '类型', minWidth: '200px' },
+  { field: 'description', header: '说明', minWidth: '200px' },
 ]
 
 const apiRows = [
   {
+    id: 'modelValue',
     name: 'modelValue',
     description: '绑定的文件数组（v-model），设为空数组可清空选择。',
     type: 'UploadFile[]',
     default: '[]',
   },
   {
+    id: 'accept',
     name: 'accept',
     description: '接受的文件类型，格式同原生 input accept',
     type: 'string',
     default: "''",
   },
   {
+    id: 'text',
     name: 'text',
     description: '上传区域的主文案，为空时不渲染；文件夹模式也使用此文案。',
     type: 'string',
     default: "''",
   },
   {
+    id: 'hint',
     name: 'hint',
     description: '上传区域的辅助说明，为空时不渲染。',
     type: 'string',
     default: "''",
   },
   {
+    id: 'width',
     name: 'width',
     description: '上传区域的宽度，支持 CSS 尺寸值，如 320px、100%。',
     type: 'string',
     default: "''",
   },
   {
+    id: 'height',
     name: 'height',
     description: '上传区域的高度，不包含已选文件信息，支持 CSS 尺寸值。',
     type: 'string',
     default: "''",
   },
   {
+    id: 'directory',
     name: 'directory',
     description: '启用文件夹上传模式，并返回包含 file 和 relativePath 的扁平化数组',
     type: 'boolean',
@@ -225,27 +254,32 @@ const apiRows = [
   },
 ]
 
-const eventCols: DataTableColumn[] = [
-  { key: 'name', label: '事件名', rowHeader: true, minWidth: '180px' },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
-  { key: 'type', label: '回调参数', minWidth: '200px', wrap: true },
+const eventCols: DocumentationColumn[] = [
+  { field: 'name', header: '事件名', rowHeader: true, minWidth: '180px' },
+  { field: 'description', header: '说明', minWidth: '200px' },
+  { field: 'type', header: '回调参数', minWidth: '200px' },
 ]
 
 const eventRows = [
   {
+    id: 'update:modelValue',
     name: 'update:modelValue',
     description: '选择文件或文件夹时返回筛选后的文件数组；点击移除按钮时返回空数组。',
     type: 'UploadFile[]',
   },
 ]
 
-const slotCols: DataTableColumn[] = [
-  { key: 'name', label: '插槽名', rowHeader: true, minWidth: '140px' },
-  { key: 'description', label: '说明', minWidth: '300px', wrap: true },
+const slotCols: DocumentationColumn[] = [
+  { field: 'name', header: '插槽名', rowHeader: true, minWidth: '140px' },
+  { field: 'description', header: '说明', minWidth: '300px' },
 ]
 
 const slotRows = [
-  { name: 'default', description: '替换默认图标和主文案，保留 hint；请使用非交互内容。' },
+  {
+    id: 'default',
+    name: 'default',
+    description: '替换默认图标和主文案，保留 hint；请使用非交互内容。',
+  },
 ]
 </script>
 

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { shallowRef } from 'vue'
 import {
   RepoIcon,
@@ -11,11 +14,15 @@ import { Card } from '@/components/primer-vue/Card'
 import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { IconButton } from '@/components/primer-vue/Button'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const selectedAction = shallowRef('尚未选择操作')
 const basicCode = `<script setup lang="ts">
@@ -83,44 +90,50 @@ const appearanceCode = `<Card padding="condensed" border-radius="medium">
   <Card.Description>内边距与圆角分别独立控制。</Card.Description>
 </Card>
 <Card padding="none"><div style="padding: 16px">自定义内容</div></Card>`
-const apiColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性', rowHeader: true, minWidth: '140px' },
-  { key: 'type', label: '类型', minWidth: '200px', wrap: true },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'description', label: '说明', minWidth: '240px', wrap: true },
+const apiColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性', rowHeader: true, minWidth: '140px' },
+  { field: 'type', header: '类型', minWidth: '200px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'description', header: '说明', minWidth: '240px' },
 ]
 const rootRows = [
   {
+    id: 'as',
     name: 'as',
     type: "'div' | 'section'",
     default: 'div',
     description: '独立卡片可使用 section；列表中的卡片使用 div。',
   },
   {
+    id: 'padding',
     name: 'padding',
     type: "'none' | 'condensed' | 'normal'",
     default: 'normal',
     description: '控制内边距；compact 布局的 normal 留白更小。',
   },
   {
+    id: 'borderRadius',
     name: 'borderRadius',
     type: "'medium' | 'large'",
     default: 'large',
     description: '控制卡片圆角。',
   },
   {
+    id: 'layout',
     name: 'layout',
     type: "'default' | 'compact'",
     default: 'default',
     description: '纵向布局或横向紧凑布局。',
   },
   {
+    id: 'className',
     name: 'className',
     type: 'string',
     default: '—',
     description: '与 Vue class 合并；原生属性与事件传给根元素。',
   },
   {
+    id: 'default 插槽',
     name: 'default 插槽',
     type: 'VNode',
     default: '—',
@@ -129,54 +142,63 @@ const rootRows = [
 ]
 const childRows = [
   {
+    id: 'Icon.icon',
     name: 'Icon.icon',
     type: 'Component | string',
     default: '必填',
     description: 'Octicon 或自定义 SVG 组件，也可使用原生元素名称。',
   },
   {
+    id: 'Icon.aria-label',
     name: 'Icon.aria-label',
     type: 'string',
     default: '—',
     description: '有名称时使用 role="img"；无名称时作为装饰图标。',
   },
   {
+    id: 'Image.src',
     name: 'Image.src',
     type: 'string',
     default: '必填',
     description: '图片地址，支持原生 img 属性。',
   },
   {
+    id: 'Image.alt',
     name: 'Image.alt',
     type: 'string',
     default: "''",
     description: '图片替代文本，默认作为装饰图片。',
   },
   {
+    id: 'Heading.as',
     name: 'Heading.as',
     type: "'h2' | 'h3' | 'h4' | 'h5' | 'h6'",
     default: 'h3',
     description: '标题层级；section 自动生成关联 ID。',
   },
   {
+    id: 'Heading.id',
     name: 'Heading.id',
     type: 'string',
     default: '自动生成或无',
     description: '自定义 ID 时需同时为 Card 设置 aria-labelledby。',
   },
   {
+    id: 'Description',
     name: 'Description',
     type: 'default 插槽',
     default: '—',
     description: '渲染 p，内容应为段落内的文本或行内元素。',
   },
   {
+    id: 'Metadata',
     name: 'Metadata',
     type: 'default 插槽',
     default: '—',
     description: '底部元数据，可组合文字、图标和其他组件。',
   },
   {
+    id: 'Action',
     name: 'Action',
     type: 'default 插槽',
     default: '—',
@@ -311,9 +333,19 @@ const childRows = [
 
     <ComponentDocsSection title="API" variant="api">
       <h3>Card Props</h3>
-      <DataTable :columns="apiColumns" :data="rootRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Card 卡片 Card Props</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="apiColumns"
+        :data="rootRows"
+      />
       <h3>子组件</h3>
-      <DataTable :columns="apiColumns" :data="childRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">Card 卡片 子组件</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="apiColumns"
+        :data="childRows"
+      />
       <p>
         子组件也可独立导入
         CardIcon、CardImage、CardHeading、CardDescription、CardAction、CardMetadata。

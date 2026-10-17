@@ -1,15 +1,22 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { ref, shallowRef } from 'vue'
 import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { IconButton } from '@/components/primer-vue/Button'
 import Tooltip from '@/components/primer-vue/Tooltip/Tooltip.vue'
 import { CopyIcon, PencilIcon, TrashIcon, KebabHorizontalIcon } from '@onlikee/octicons-vue'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const selected = shallowRef('尚未选择操作')
 const mode = shallowRef('Fast forward')
@@ -290,32 +297,36 @@ ${imports}
     </ActionMenu.Overlay>
   </ActionMenu>
 </template>`
-const columns: DataTableColumn[] = [
-  { key: 'name', label: '属性', rowHeader: true },
-  { key: 'type', label: '类型', wrap: true },
-  { key: 'default', label: '默认值' },
-  { key: 'description', label: '说明', wrap: true },
+const columns: DocumentationColumn[] = [
+  { field: 'name', header: '属性', rowHeader: true },
+  { field: 'type', header: '类型' },
+  { field: 'default', header: '默认值' },
+  { field: 'description', header: '说明' },
 ]
 const menuRows = [
   {
+    id: '默认插槽',
     name: '默认插槽',
     type: 'VNode',
     default: '—',
     description: '组合 Button 或 Anchor，以及 Overlay；自身不渲染包装 DOM。',
   },
   {
+    id: 'open / v-model:open',
     name: 'open / v-model:open',
     type: 'boolean',
     default: '内部状态 false',
     description: '不传时内部管理；传入后由父组件决定实际状态。',
   },
   {
+    id: '@open-change',
     name: '@open-change',
     type: '(open: boolean) => void',
     default: '—',
     description: '菜单开关变化时触发，可配合 :open 更新父组件状态。',
   },
   {
+    id: 'anchorRef',
     name: 'anchorRef',
     type: 'HTMLElement | Ref<HTMLElement | null>',
     default: '内部触发器',
@@ -325,12 +336,14 @@ const menuRows = [
 ]
 const buttonRows = [
   {
+    id: '默认插槽',
     name: '默认插槽',
     type: 'VNode',
     default: '—',
     description: '按钮内容；默认使用 TriangleDownIcon 作为 trailingAction。',
   },
   {
+    id: '按钮属性',
     name: '按钮属性',
     type: 'size, variant, disabled, loading, leadingVisual, trailingVisual, trailingAction, count…',
     default: '现有按钮默认值',
@@ -338,6 +351,7 @@ const buttonRows = [
       '复用 ButtonBase 实现；原生属性和事件透传。disabled / loading / inactive 阻止打开。',
   },
   {
+    id: 'Anchor 默认插槽',
     name: 'Anchor 默认插槽',
     type: '一个可交互元素',
     default: '—',
@@ -345,6 +359,7 @@ const buttonRows = [
       '将现有按钮或 ActionList.Item 作为触发器，也支持 Tooltip 包裹。注入 id、aria-haspopup、aria-expanded 和键盘事件，保留原有事件、class 和 ref。',
   },
   {
+    id: 'Anchor id / className',
     name: 'Anchor id / className',
     type: 'string',
     default: '自动 ID / —',
@@ -353,6 +368,7 @@ const buttonRows = [
 ]
 const overlayRows = [
   {
+    id: '默认插槽',
     name: '默认插槽',
     type: 'VNode',
     default: '—',
@@ -360,12 +376,14 @@ const overlayRows = [
       '建议使用 ActionList；自动提供 menu / menuitem 角色、aria-checked 选择属性和关闭链。',
   },
   {
+    id: 'side / align',
     name: 'side / align',
     type: 'AnchorSide / AnchorAlignment',
     default: 'outside-bottom / start',
     description: '子菜单默认 outside-right；复用现有锚定定位。',
   },
   {
+    id: 'width / height',
     name: 'width / height',
     type: 'OverlayWidth / OverlayHeight',
     default: 'auto / auto',
@@ -373,12 +391,14 @@ const overlayRows = [
       'width: auto、small、medium、large、xlarge、xxlarge；height: auto、xsmall、small、medium、large、xlarge、initial、fit-content。',
   },
   {
+    id: 'maxHeight / maxWidth / overflow',
     name: 'maxHeight / maxWidth / overflow',
     type: '尺寸 token / auto | hidden | scroll | visible',
     default: '—',
     description: '控制浮层尺寸和容器滚动；maxHeight 不含 auto / initial，maxWidth 不含 auto。',
   },
   {
+    id: 'variant',
     name: 'variant',
     type: '{ regular?: anchored, narrow?: anchored | fullscreen, wide?: anchored }',
     default: '均 anchored',
@@ -386,6 +406,7 @@ const overlayRows = [
       '小于 768px 时可使用 fullscreen，提供关闭按钮和焦点循环，Tab 不关闭；wide 从 1400px 起生效。',
   },
   {
+    id: 'aria-labelledby',
     name: 'aria-labelledby',
     type: 'string',
     default: '触发器标签',
@@ -393,18 +414,21 @@ const overlayRows = [
       '显式指定优先；否则使用触发器 aria-labelledby（含 Tooltip 标签），再回退到触发器 ID。',
   },
   {
+    id: 'displayInViewport',
     name: 'displayInViewport',
     type: 'boolean',
     default: '位于 Dialog 内时 true',
     description: '显式传入可覆盖默认定位约束。',
   },
   {
+    id: 'onPositionChange',
     name: 'onPositionChange',
     type: '({ position: AnchorPosition }) => void',
     default: '—',
     description: '现有定位原语触发回调时传入实际位置。',
   },
   {
+    id: '其他 Overlay 属性',
     name: '其他 Overlay 属性',
     type: 'as, portalContainerName, preventFocusOnOpen, initialFocusRef, returnFocusRef, ignoreClickRefs, onEscape, onClickOutside, className, style…',
     default: '现有 Overlay 默认值',
@@ -770,13 +794,34 @@ const overlayRows = [
       </p>
     </ComponentDocsSection>
     <ComponentDocsSection title="ActionMenu API">
-      <DataTable :columns="columns" :data="menuRows" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >ActionMenu 操作菜单 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="columns"
+        :data="menuRows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="Button / Anchor API">
-      <DataTable :columns="columns" :data="buttonRows" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >ActionMenu 操作菜单 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="columns"
+        :data="buttonRows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="Overlay API">
-      <DataTable :columns="columns" :data="overlayRows" />
+      <VisuallyHidden :id="`${documentationId}-api-table-2`"
+        >ActionMenu 操作菜单 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
+        :columns="columns"
+        :data="overlayRows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="导出与 Divider">
       <p>

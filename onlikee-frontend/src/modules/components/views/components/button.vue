@@ -356,37 +356,42 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Button 按钮 属性</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
         :columns="apiTableColumns"
         :data="apiTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h3>插槽</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">Button 按钮 插槽</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
         :columns="contentTableColumns"
         :data="contentTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { h, ref } from 'vue'
 import { Button, IconButton, LinkButton, ButtonBase } from '@/components/primer-vue/Button'
 import { BellIcon, ArrowUpRightIcon, SearchIcon, CheckIcon } from '@onlikee/octicons-vue'
 import { KeybindingHint } from '@/components/primer-vue/KeybindingHint'
 import { Tooltip } from '@/components/primer-vue/Tooltip'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const saveKeybinding = h(KeybindingHint, { keys: 'Mod+S' })
 const isSaving = ref(false)
@@ -795,16 +800,17 @@ import { ArrowUpRightIcon, CheckIcon } from '@onlikee/octicons-vue'
   <ButtonBase type="button" :leading-visual="CheckIcon">基础按钮</ButtonBase>
 </template>`
 
-const apiTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'type', label: '类型', minWidth: '200px', wrap: true },
-  { key: 'options', label: '可选值', minWidth: '240px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '220px', wrap: true },
+const apiTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'default', header: '默认值', minWidth: '120px' },
+  { field: 'type', header: '类型', minWidth: '200px' },
+  { field: 'options', header: '可选值', minWidth: '240px' },
+  { field: 'description', header: '说明', minWidth: '220px' },
 ]
 
 const apiTableRows = [
   {
+    id: 'as',
     name: 'as',
     type: 'string | Component',
     default: "'button' / LinkButton: 'a'",
@@ -812,8 +818,16 @@ const apiTableRows = [
     description:
       "渲染原生标签或 Vue 组件。Vue 的 h() 接受开放的原生 props 字典；在 TypeScript 中用 h() 组合多态组件时，请先将 props 对象标注为 ButtonProps<'a'> 或 ButtonProps<typeof C>。ButtonBase、IconButton 和 LinkButton 使用各自的多态 props 类型。",
   },
-  { name: 'block', type: 'boolean', default: 'false', options: '—', description: '填满容器宽度。' },
   {
+    id: 'block',
+    name: 'block',
+    type: 'boolean',
+    default: 'false',
+    options: '—',
+    description: '填满容器宽度。',
+  },
+  {
+    id: 'alignContent',
     name: 'alignContent',
     type: "'start' | 'center'",
     default: "'center'",
@@ -821,6 +835,7 @@ const apiTableRows = [
     description: '视觉元素与内容的对齐。',
   },
   {
+    id: 'count',
     name: 'count',
     type: 'number | string',
     default: 'undefined',
@@ -828,6 +843,7 @@ const apiTableRows = [
     description: '计数徽标；trailingVisual 存在时不显示。',
   },
   {
+    id: 'trailingAction',
     name: 'trailingAction',
     type: 'Component | string | null',
     default: 'undefined',
@@ -835,6 +851,7 @@ const apiTableRows = [
     description: '位于内容区域之外的末尾动作视觉。',
   },
   {
+    id: 'icon',
     name: 'icon',
     type: 'Component | VNode | string | null',
     default: 'undefined',
@@ -842,6 +859,7 @@ const apiTableRows = [
     description: 'Button 的独立图标内容；图标按钮布局使用 IconButton。',
   },
   {
+    id: 'loadingAnnouncement',
     name: 'loadingAnnouncement',
     type: 'string',
     default: "'Loading'",
@@ -849,6 +867,7 @@ const apiTableRows = [
     description: '加载状态的辅助技术播报。',
   },
   {
+    id: 'inactive',
     name: 'inactive',
     type: 'boolean',
     default: 'undefined',
@@ -856,6 +875,7 @@ const apiTableRows = [
     description: '仅呈现不可用外观，保留交互。',
   },
   {
+    id: 'labelWrap',
     name: 'labelWrap',
     type: 'boolean',
     default: 'undefined',
@@ -863,6 +883,7 @@ const apiTableRows = [
     description: '允许文案换行。',
   },
   {
+    id: 'notificationIndicator',
     name: 'notificationIndicator',
     type: "'button' | 'leadingVisual'",
     default: 'undefined',
@@ -870,6 +891,7 @@ const apiTableRows = [
     description: 'Button / LinkButton 的通知标记位置。',
   },
   {
+    id: 'className / id',
     name: 'className / id',
     type: 'string',
     default: 'undefined',
@@ -877,6 +899,7 @@ const apiTableRows = [
     description: '附加样式类与元素 ID；也可使用原生 class/style。',
   },
   {
+    id: 'IconButton.icon',
     name: 'IconButton.icon',
     type: 'Component | string',
     default: '必填',
@@ -884,6 +907,7 @@ const apiTableRows = [
     description: '图标组件或元素标签。',
   },
   {
+    id: 'IconButton.aria-label / aria-labelledby',
     name: 'IconButton.aria-label / aria-labelledby',
     type: 'string',
     default: '二选一',
@@ -891,6 +915,7 @@ const apiTableRows = [
     description: '图标按钮的可访问名称。',
   },
   {
+    id: 'IconButton.notificationIndicator',
     name: 'IconButton.notificationIndicator',
     type: "'button' | 'icon'",
     default: 'undefined',
@@ -898,6 +923,7 @@ const apiTableRows = [
     description: '图标按钮的通知标记位置。',
   },
   {
+    id: 'IconButton.description',
     name: 'IconButton.description',
     type: 'string',
     default: 'undefined',
@@ -905,6 +931,7 @@ const apiTableRows = [
     description: 'Tooltip 描述，独立于可访问名称。',
   },
   {
+    id: 'IconButton.tooltipDirection',
     name: 'IconButton.tooltipDirection',
     type: "'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w'",
     default: "'s'",
@@ -912,6 +939,7 @@ const apiTableRows = [
     description: 'Tooltip 方向。',
   },
   {
+    id: 'IconButton.unsafeDisableTooltip',
     name: 'IconButton.unsafeDisableTooltip',
     type: 'boolean',
     default: 'false',
@@ -919,6 +947,7 @@ const apiTableRows = [
     description: '关闭内部 Tooltip。',
   },
   {
+    id: 'IconButton.keybindingHint',
     name: 'IconButton.keybindingHint',
     type: 'string | string[]',
     default: 'undefined',
@@ -926,6 +955,7 @@ const apiTableRows = [
     description: 'Tooltip 内的快捷键提示。',
   },
   {
+    id: 'IconButton.keyshortcuts',
     name: 'IconButton.keyshortcuts',
     type: 'string',
     default: 'undefined',
@@ -933,6 +963,7 @@ const apiTableRows = [
     description: '已弃用；传入时设置 aria-keyshortcuts，提示优先使用 keybindingHint。',
   },
   {
+    id: 'LinkButton 原生属性',
     name: 'LinkButton 原生属性',
     type: 'AnchorHTMLAttributes & ButtonHTMLAttributes',
     default: 'undefined',
@@ -941,6 +972,7 @@ const apiTableRows = [
       'href、target、rel、download、hreflang、media、ping、referrerpolicy，以及 ButtonHTMLAttributes。',
   },
   {
+    id: 'type',
     name: 'type',
     description: '透传原生 type；LinkButton 与 Button 一致，仅接受 button、submit 或 reset。',
     type: "Button / IconButton / LinkButton: 'button' | 'submit' | 'reset'",
@@ -948,6 +980,7 @@ const apiTableRows = [
     default: "Button / IconButton: 'button'; ButtonBase / LinkButton: undefined",
   },
   {
+    id: 'variant',
     name: 'variant',
     description: '控制按钮的视觉变体。',
     type: "'default' | 'primary' | 'invisible' | 'danger' | 'link'",
@@ -955,6 +988,7 @@ const apiTableRows = [
     default: "'default'",
   },
   {
+    id: 'size',
     name: 'size',
     description: '控制按钮高度与内边距。',
     type: "'small' | 'medium' | 'large'",
@@ -962,6 +996,7 @@ const apiTableRows = [
     default: "'medium'",
   },
   {
+    id: 'loading',
     name: 'loading',
     description:
       '保留焦点并移除点击回调，按视觉元素顺序显示 spinner；通过 loadingAnnouncement 提供播报。',
@@ -970,6 +1005,7 @@ const apiTableRows = [
     default: 'undefined',
   },
   {
+    id: 'disabled',
     name: 'disabled',
     description: '透传原生 disabled；禁用 button 的交互并展示禁用态样式。',
     type: 'boolean',
@@ -977,6 +1013,7 @@ const apiTableRows = [
     default: 'undefined',
   },
   {
+    id: 'leadingVisual',
     name: 'leadingVisual',
     description: '前置视觉组件，模板中使用 :leading-visual 传入；支持 Vue 单文件组件和函数式组件。',
     type: 'Component | VNode | string | null',
@@ -984,6 +1021,7 @@ const apiTableRows = [
     default: 'undefined',
   },
   {
+    id: 'trailingVisual',
     name: 'trailingVisual',
     description: '后置视觉组件或 VNode，模板中使用 :trailing-visual 传入。',
     type: 'Component | VNode | string | null',
@@ -992,13 +1030,14 @@ const apiTableRows = [
   },
 ]
 
-const contentTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '名称', rowHeader: true, minWidth: '180px' },
-  { key: 'description', label: '说明', minWidth: '320px', wrap: true },
+const contentTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '名称', rowHeader: true, minWidth: '180px' },
+  { field: 'description', header: '说明', minWidth: '320px' },
 ]
 
 const contentTableRows = [
   {
+    id: 'default',
     name: 'default',
     description:
       'Button、LinkButton 和 ButtonBase 的主文案通过默认插槽提供；仅含视觉元素的操作使用 IconButton。',

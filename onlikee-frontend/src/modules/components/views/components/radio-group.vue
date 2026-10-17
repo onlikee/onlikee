@@ -118,34 +118,69 @@
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
     <ComponentDocsSection title="属性" variant="api">
-      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >RadioGroup 单选框组 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="columns"
+        :data="rows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="子组件" variant="api">
-      <DataTable :columns="columns" :data="childRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >RadioGroup 单选框组 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="columns"
+        :data="childRows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="事件" variant="api">
-      <DataTable :columns="columns" :data="eventRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-2`"
+        >RadioGroup 单选框组 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
+        :columns="columns"
+        :data="eventRows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="插槽" variant="api">
       <template #description>
         单项的属性与事件请参阅 <RouterLink to="/component/radio"> Radio 文档 </RouterLink>。
       </template>
-      <DataTable :columns="columns" :data="slotRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-3`"
+        >RadioGroup 单选框组 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-3`"
+        :columns="columns"
+        :data="slotRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { ref } from 'vue'
 import { Radio } from '@/components/primer-vue/Radio'
 import { RadioGroup } from '@/components/primer-vue/RadioGroup'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { Button } from '@/components/primer-vue/Button'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '../../components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '../../components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '../../components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '../../components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 const plan = ref<string | null>(null)
 const frequency = ref<string | null>(null)
 const disabled = ref(true)
@@ -196,43 +231,54 @@ function onChange(value: string | null) { selected.value = value ?? '' }
   <FormControl><Radio value="dark" /><FormControl.Label>深色</FormControl.Label></FormControl>
 </RadioGroup>`,
 }
-const columns: DataTableColumn[] = [
-  { key: 'name', label: '名称', rowHeader: true },
-  { key: 'type', label: '类型', wrap: true },
-  { key: 'description', label: '说明', wrap: true },
+const columns: DocumentationColumn[] = [
+  { field: 'name', header: '名称', rowHeader: true },
+  { field: 'type', header: '类型' },
+  { field: 'description', header: '说明' },
 ]
 const rows = [
-  { name: 'name', type: 'string（必填）', description: '子 Radio 的默认 name' },
+  { id: 'name', name: 'name', type: 'string（必填）', description: '子 Radio 的默认 name' },
+  { id: 'disabled', name: 'disabled', type: 'boolean，默认 false', description: '禁用整组选项' },
   {
-    name: 'disabled',
-    type: 'boolean，默认 false',
-    description: '禁用整组选项',
-  },
-  {
+    id: 'required',
     name: 'required',
     type: 'boolean，默认 false',
     description: '显示组级必填标记，选择校验由业务逻辑处理',
   },
   {
+    id: 'id',
     name: 'id',
     type: 'string',
     description: '生成辅助说明及校验提示的关联标识，未设置时自动生成',
   },
-  { name: 'aria-labelledby', type: 'string', description: '没有 Label 时关联外部组标题' },
-  { name: 'class / className', type: 'string', description: '为选项组添加自定义样式类' },
+  {
+    id: 'aria-labelledby',
+    name: 'aria-labelledby',
+    type: 'string',
+    description: '没有 Label 时关联外部组标题',
+  },
+  {
+    id: 'class / className',
+    name: 'class / className',
+    type: 'string',
+    description: '为选项组添加自定义样式类',
+  },
 ]
 const childRows = [
   {
+    id: 'RadioGroup.Label',
     name: 'RadioGroup.Label',
     type: 'visuallyHidden?: boolean; className?: string',
     description: '组标题；必填时显示 *，支持视觉隐藏',
   },
   {
+    id: 'RadioGroup.Caption',
     name: 'RadioGroup.Caption',
     type: 'className?: string',
     description: '组级辅助说明，自动关联到选项组',
   },
   {
+    id: 'RadioGroup.Validation',
     name: 'RadioGroup.Validation',
     type: "variant: 'error' | 'success'",
     description: '在选项组下方显示校验提示和状态图标',
@@ -240,13 +286,19 @@ const childRows = [
 ]
 const eventRows = [
   {
+    id: 'change',
     name: 'change',
     type: '(value: string | null, event: Event) => void',
     description: '选择选项时触发，返回选项值和原生事件；先于单项 change 触发',
   },
 ]
 const slotRows = [
-  { name: 'default', type: '—', description: '放置 Label、Caption、Validation 及单选框选项' },
+  {
+    id: 'default',
+    name: 'default',
+    type: '—',
+    description: '放置 Label、Caption、Validation 及单选框选项',
+  },
 ]
 </script>
 

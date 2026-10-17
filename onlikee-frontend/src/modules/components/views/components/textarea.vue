@@ -77,24 +77,48 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <DataTable :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Textarea 文本域 属性</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="apiCols"
+        :data="apiRows"
+      />
       <h3>原生属性透传（常用）</h3>
-      <DataTable :columns="apiCols" :data="nativeRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >Textarea 文本域 原生属性透传（常用）</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="apiCols"
+        :data="nativeRows"
+      />
       <h3>事件</h3>
-      <DataTable :columns="eventCols" :data="eventRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-2`">Textarea 文本域 事件</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
+        :columns="eventCols"
+        :data="eventRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { computed, ref } from 'vue'
 import { FormControl } from '@/components/primer-vue/FormControl'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import { Textarea } from '@/components/primer-vue/Textarea'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const val1 = ref('')
 const val2 = ref('支持多行文本输入，适合描述、备注和说明等场景。')
@@ -164,47 +188,65 @@ const description = ref('Build a collaborative audio workspace for distributed t
 const descriptionTooLong = computed(() => description.value.length > 80)
 <\/script>`
 
-const apiCols: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'type', label: '类型', minWidth: '220px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '220px', wrap: true },
+const apiCols: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'default', header: '默认值', minWidth: '120px' },
+  { field: 'type', header: '类型', minWidth: '220px' },
+  { field: 'description', header: '说明', minWidth: '220px' },
 ]
 
 const apiRows = [
   {
+    id: 'value',
     name: 'value',
     description: '受控绑定值（v-model:value）',
     type: 'string | number',
     default: '—',
   },
-  { name: 'defaultValue', description: '非受控初始值', type: 'string | number', default: '—' },
   {
+    id: 'defaultValue',
+    name: 'defaultValue',
+    description: '非受控初始值',
+    type: 'string | number',
+    default: '—',
+  },
+  {
+    id: 'resize',
     name: 'resize',
     description: '允许用户调整尺寸的方向',
     type: "'none' | 'both' | 'horizontal' | 'vertical'",
     default: "'both'",
   },
-  { name: 'autoSize', description: '根据内容自动调整高度', type: 'boolean', default: 'false' },
   {
+    id: 'autoSize',
+    name: 'autoSize',
+    description: '根据内容自动调整高度',
+    type: 'boolean',
+    default: 'false',
+  },
+  {
+    id: 'minHeight / maxHeight',
     name: 'minHeight / maxHeight',
     description: '文本域高度限制，单位 px',
     type: 'number',
     default: '—',
   },
   {
+    id: 'characterLimit',
     name: 'characterLimit',
     description: '字符计数与超限错误状态，不阻止输入',
     type: 'number',
     default: '—',
   },
   {
+    id: 'validationStatus',
     name: 'validationStatus',
     description: '错误或成功状态',
     type: "'error' | 'success'",
     default: '—',
   },
   {
+    id: 'block / contrast',
     name: 'block / contrast',
     description: '占满容器和高对比背景',
     type: 'boolean',
@@ -213,16 +255,30 @@ const apiRows = [
 ]
 
 const nativeRows = [
-  { name: 'placeholder', description: '占位文本', type: 'string', default: '-' },
+  { id: 'placeholder', name: 'placeholder', description: '占位文本', type: 'string', default: '-' },
   {
+    id: 'rows / cols',
     name: 'rows / cols',
     description: '默认可见行数与列数',
     type: 'number | string',
     default: '7 / 30',
   },
-  { name: 'disabled', description: '禁用文本域', type: 'boolean', default: 'false' },
-  { name: 'maxlength', description: '最大输入长度', type: 'number | string', default: '-' },
   {
+    id: 'disabled',
+    name: 'disabled',
+    description: '禁用文本域',
+    type: 'boolean',
+    default: 'false',
+  },
+  {
+    id: 'maxlength',
+    name: 'maxlength',
+    description: '最大输入长度',
+    type: 'number | string',
+    default: '-',
+  },
+  {
+    id: 'id / name / aria-*',
     name: 'id / name / aria-*',
     description: '其他原生属性会透传到 textarea 元素',
     type: 'string',
@@ -230,14 +286,15 @@ const nativeRows = [
   },
 ]
 
-const eventCols: DataTableColumn[] = [
-  { key: 'name', label: '事件名', rowHeader: true, minWidth: '180px' },
-  { key: 'description', label: '说明', minWidth: '240px', wrap: true },
-  { key: 'type', label: '回调参数', minWidth: '200px', wrap: true },
+const eventCols: DocumentationColumn[] = [
+  { field: 'name', header: '事件名', rowHeader: true, minWidth: '180px' },
+  { field: 'description', header: '说明', minWidth: '240px' },
+  { field: 'type', header: '回调参数', minWidth: '200px' },
 ]
 
 const eventRows = [
   {
+    id: 'update:value',
     name: 'update:value',
     description: '输入值变化时触发（IME 组合输入在 compositionend 后更新）',
     type: 'string',

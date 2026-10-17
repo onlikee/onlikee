@@ -1,11 +1,18 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { UnderlineNav } from '@/components/primer-vue/UnderlineNav'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import { CodeIcon, IssueOpenedIcon } from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const basicCode = `<template>
   <UnderlineNav aria-label="Repository">
@@ -35,24 +42,38 @@ import { UnderlineNav } from '@/components/primer-vue/UnderlineNav'
 import { CodeIcon, IssueOpenedIcon } from '@onlikee/octicons-vue'
 <\/script>`
 
-const columns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '160px' },
-  { key: 'type', label: '类型', minWidth: '190px' },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'description', label: '说明', wrap: true },
+const columns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '160px' },
+  { field: 'type', header: '类型', minWidth: '190px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'description', header: '说明' },
 ]
 
 const rootRows = [
-  { name: 'aria-label', type: 'string', default: '—', description: '导航区域的无障碍名称。' },
-  { name: 'as', type: 'string', default: 'nav', description: '根元素。' },
-  { name: 'variant', type: 'inset | flush', default: 'inset', description: '导航项的水平内边距。' },
   {
+    id: 'aria-label',
+    name: 'aria-label',
+    type: 'string',
+    default: '—',
+    description: '导航区域的无障碍名称。',
+  },
+  { id: 'as', name: 'as', type: 'string', default: 'nav', description: '根元素。' },
+  {
+    id: 'variant',
+    name: 'variant',
+    type: 'inset | flush',
+    default: 'inset',
+    description: '导航项的水平内边距。',
+  },
+  {
+    id: 'loadingCounters',
     name: 'loadingCounters',
     type: 'boolean',
     default: 'false',
     description: '统一显示计数加载状态。',
   },
   {
+    id: 'hideIconsBreakpoint',
     name: 'hideIconsBreakpoint',
     type: 'xsmall | small | medium | large | xlarge | xxlarge | null',
     default: 'medium',
@@ -61,22 +82,42 @@ const rootRows = [
 ]
 
 const itemRows = [
-  { name: 'href', type: 'string', default: '#', description: '链接地址。' },
+  { id: 'href', name: 'href', type: 'string', default: '#', description: '链接地址。' },
   {
+    id: 'aria-current',
     name: 'aria-current',
     type: 'string | boolean',
     default: '—',
     description: '标记当前页面或当前位置。',
   },
-  { name: 'counter', type: 'number | string', default: '—', description: '导航项后的计数。' },
   {
+    id: 'counter',
+    name: 'counter',
+    type: 'number | string',
+    default: '—',
+    description: '导航项后的计数。',
+  },
+  {
+    id: 'as',
     name: 'as',
     type: 'string | Component',
     default: 'a',
     description: '链接元素或自定义导航组件。',
   },
-  { name: 'leadingVisual', type: 'Component', default: '—', description: '标签前的图标组件。' },
-  { name: 'select', type: 'event', default: '—', description: '点击或按 Enter、Space 时触发。' },
+  {
+    id: 'leadingVisual',
+    name: 'leadingVisual',
+    type: 'Component',
+    default: '—',
+    description: '标签前的图标组件。',
+  },
+  {
+    id: 'select',
+    name: 'select',
+    type: 'event',
+    default: '—',
+    description: '点击或按 Enter、Space 时触发。',
+  },
 ]
 </script>
 
@@ -112,9 +153,23 @@ const itemRows = [
 
     <ComponentDocsSection title="API" variant="api">
       <h3>UnderlineNav</h3>
-      <DataTable :columns="columns" :data="rootRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >UnderlineNav 下划线导航 UnderlineNav</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="columns"
+        :data="rootRows"
+      />
       <h3>UnderlineNav.Item</h3>
-      <DataTable :columns="columns" :data="itemRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >UnderlineNav 下划线导航 UnderlineNav.Item</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="columns"
+        :data="itemRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

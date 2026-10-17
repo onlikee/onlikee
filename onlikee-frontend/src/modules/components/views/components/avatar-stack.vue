@@ -1,34 +1,56 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { Avatar } from '@/components/primer-vue/Avatar'
 import { AvatarStack } from '@/components/primer-vue/AvatarStack'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 
-const columns: DataTableColumn[] = [
-  { key: 'name', label: '属性', rowHeader: true },
-  { key: 'type', label: '类型', wrap: true },
-  { key: 'default', label: '默认值' },
-  { key: 'description', label: '说明', wrap: true },
+const documentationId = useDocumentationId()
+
+const columns: DocumentationColumn[] = [
+  { field: 'name', header: '属性', rowHeader: true },
+  { field: 'type', header: '类型' },
+  { field: 'default', header: '默认值' },
+  { field: 'description', header: '说明' },
 ]
 const rows = [
   {
+    id: 'variant',
     name: 'variant',
     type: "'cascade' | 'stack'",
     default: 'cascade',
     description: '渐隐或等距堆叠',
   },
   {
+    id: 'shape',
     name: 'shape',
     type: "'circle' | 'square'",
     default: 'circle',
     description: '头像形状；circle 不覆盖子 Avatar 显式设置的 square',
   },
-  { name: 'alignRight', type: 'boolean', default: 'false', description: '从右侧开始堆叠与展开' },
-  { name: 'disableExpand', type: 'boolean', default: 'false', description: '禁用悬停和聚焦展开' },
   {
+    id: 'alignRight',
+    name: 'alignRight',
+    type: 'boolean',
+    default: 'false',
+    description: '从右侧开始堆叠与展开',
+  },
+  {
+    id: 'disableExpand',
+    name: 'disableExpand',
+    type: 'boolean',
+    default: 'false',
+    description: '禁用悬停和聚焦展开',
+  },
+  {
+    id: 'size',
     name: 'size',
     type: 'number | { narrow?: number; regular?: number; wide?: number }',
     default: '由子项推导',
@@ -213,7 +235,14 @@ const linkedCode = `<AvatarStack :size="32">
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
     <ComponentDocsSection id="avatar-stack-api" title="API" variant="api">
-      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >AvatarStack 头像堆叠 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="columns"
+        :data="rows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

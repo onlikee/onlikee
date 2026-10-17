@@ -97,23 +97,45 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <DataTable :columns="apiCols" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Select 选择器 属性</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="apiCols"
+        :data="apiRows"
+      />
       <h3>Option</h3>
-      <DataTable :columns="apiCols" :data="optionRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">Select 选择器 Option</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="apiCols"
+        :data="optionRows"
+      />
       <h3>事件</h3>
-      <DataTable :columns="eventCols" :data="eventRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-2`">Select 选择器 事件</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
+        :columns="eventCols"
+        :data="eventRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { ref } from 'vue'
 import { Select } from '@/components/primer-vue/Select'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const val1 = ref('')
 const val2a = ref('')
@@ -266,24 +288,38 @@ const options = [
 ]
 <\/script>`
 
-const apiCols: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'type', label: '类型', minWidth: '200px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
+const apiCols: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'type', header: '类型', minWidth: '200px' },
+  { field: 'description', header: '说明', minWidth: '200px' },
 ]
 
 const apiRows = [
   {
+    id: 'value',
     name: 'value',
     description: '受控绑定值（v-model:value）',
     type: 'string | number',
     default: '—',
   },
-  { name: 'defaultValue', description: '非受控初始值', type: 'string | number', default: '—' },
-  { name: 'placeholder', description: '未选时的占位文字', type: 'string', default: '—' },
-  { name: 'disabled', description: '是否禁用', type: 'boolean', default: 'false' },
   {
+    id: 'defaultValue',
+    name: 'defaultValue',
+    description: '非受控初始值',
+    type: 'string | number',
+    default: '—',
+  },
+  {
+    id: 'placeholder',
+    name: 'placeholder',
+    description: '未选时的占位文字',
+    type: 'string',
+    default: '—',
+  },
+  { id: 'disabled', name: 'disabled', description: '是否禁用', type: 'boolean', default: 'false' },
+  {
+    id: 'size',
     name: 'size',
     description: '选择器尺寸',
     type: `'small' | 'medium' | 'large'`,
@@ -292,25 +328,26 @@ const apiRows = [
 ]
 
 const optionRows = [
-  { name: 'value', description: '选项值', type: 'string', default: '—' },
+  { id: 'value', name: 'value', description: '选项值', type: 'string', default: '—' },
   {
+    id: 'disabled',
     name: 'disabled',
     description: '禁用选项；Select.OptGroup 也支持 label 与 disabled',
     type: 'boolean',
     default: 'false',
   },
-  { name: 'default', description: '选项内容', type: 'slot', default: '—' },
+  { id: 'default', name: 'default', description: '选项内容', type: 'slot', default: '—' },
 ]
 
-const eventCols: DataTableColumn[] = [
-  { key: 'name', label: '事件名', rowHeader: true, minWidth: '180px' },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
-  { key: 'type', label: '回调参数', minWidth: '200px', wrap: true },
+const eventCols: DocumentationColumn[] = [
+  { field: 'name', header: '事件名', rowHeader: true, minWidth: '180px' },
+  { field: 'description', header: '说明', minWidth: '200px' },
+  { field: 'type', header: '回调参数', minWidth: '200px' },
 ]
 
 const eventRows = [
-  { name: 'update:value', description: '选中值变化时触发', type: 'string' },
-  { name: 'change', description: '原生选择事件', type: 'Event' },
+  { id: 'update:value', name: 'update:value', description: '选中值变化时触发', type: 'string' },
+  { id: 'change', name: 'change', description: '原生选择事件', type: 'Event' },
 ]
 </script>
 

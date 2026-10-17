@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, shallowRef, useAttrs, useId, watch } from 'vue'
 import VisuallyHidden from '../VisuallyHidden/VisuallyHidden.vue'
+import { normalizeReactStyle } from '../internal/style'
+import type { SpinnerOptions } from './types'
 
 defineOptions({ inheritAttrs: false })
 
@@ -11,18 +13,11 @@ const sizeMap = {
   large: '64px',
 }
 
-const props = withDefaults(
-  defineProps<{
-    size?: keyof typeof sizeMap
-    srText?: string | null
-    delay?: boolean | 'short' | 'long' | number
-  }>(),
-  {
-    size: 'medium',
-    srText: 'Loading',
-    delay: false,
-  },
-)
+const props = withDefaults(defineProps<SpinnerOptions>(), {
+  size: 'medium',
+  srText: 'Loading',
+  delay: false,
+})
 
 const attrs = useAttrs()
 const labelId = useId()
@@ -31,30 +26,28 @@ const syncDelay = shallowRef(isVisible.value ? computeSyncDelay() : 0)
 const noMotionPreference = shallowRef(false)
 const hasHiddenLabel = () => props.srText !== null && attrs['aria-label'] === undefined
 
-watch(
-  () => props.delay,
-  (delay, _previous, onCleanup) => {
-    if (!delay) return
-
-    const duration = typeof delay === 'number' ? delay : delay === 'short' ? 300 : 1000
-    const timeoutId = window.setTimeout(() => {
-      isVisible.value = true
-      syncDelay.value = computeSyncDelay()
-    }, duration)
-    onCleanup(() => window.clearTimeout(timeoutId))
-  },
-  { immediate: true },
-)
-
 let motionQuery: MediaQueryList | undefined
 const updateMotionPreference = () => {
   noMotionPreference.value = motionQuery?.matches ?? false
 }
 
 onMounted(() => {
-  motionQuery = window.matchMedia('(prefers-reduced-motion: no-preference)')
+  watch(
+    () => props.delay,
+    (delay, _previous, onCleanup) => {
+      if (!delay) return
+      const duration = typeof delay === 'number' ? delay : delay === 'short' ? 300 : 1000
+      const timeoutId = setTimeout(() => {
+        isVisible.value = true
+        syncDelay.value = computeSyncDelay()
+      }, duration)
+      onCleanup(() => clearTimeout(timeoutId))
+    },
+    { immediate: true },
+  )
+  motionQuery = window.matchMedia?.('(prefers-reduced-motion: no-preference)')
   updateMotionPreference()
-  motionQuery.addEventListener('change', updateMotionPreference)
+  motionQuery?.addEventListener('change', updateMotionPreference)
 })
 
 onUnmounted(() => motionQuery?.removeEventListener('change', updateMotionPreference))
@@ -68,8 +61,11 @@ function computeSyncDelay(): number {
   <span v-if="isVisible" :class="$style['spinner']" data-component="Spinner">
     <svg
       v-bind="$attrs"
-      :class="$style['spinner__animation']"
-      :style="noMotionPreference ? { animationDelay: `${syncDelay}ms` } : undefined"
+      :class="[$style['spinner__animation'], className]"
+      :style="[
+        normalizeReactStyle(attrs.style),
+        noMotionPreference ? { animationDelay: `${syncDelay}ms` } : undefined,
+      ]"
       :height="sizeMap[size]"
       :width="sizeMap[size]"
       viewBox="0 0 16 16"

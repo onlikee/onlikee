@@ -1,4 +1,4 @@
-export { default as Text } from './Text.vue'
+export { default, default as Text } from './Text.vue'
 export type {
   TextOptions,
   TextProps,

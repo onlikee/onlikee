@@ -38,32 +38,37 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h4>Props</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Admonition 提示块 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
         :columns="apiTableColumns"
         :data="apiTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
       <h4 style="margin-top: 24px">Slots</h4>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">Admonition 提示块 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
         :columns="slotTableColumns"
         :data="slotTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { Admonition } from '@/components/primer-vue/Admonition'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 // ---------- demo code strings ----------
 
@@ -95,39 +100,30 @@ import { Admonition } from '@/components/primer-vue/Admonition'
 
 // ---------- API Tables ----------
 
-const apiTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'type', label: '类型', minWidth: '220px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
+const apiTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'type', header: '类型', minWidth: '220px' },
+  { field: 'description', header: '说明', minWidth: '200px' },
 ]
 
 const apiTableRows = [
   {
+    id: 'type',
     name: 'type',
     description: '语义变体类型',
     type: "'critical' | 'info' | 'success' | 'upsell' | 'warning'",
     default: "'info'",
   },
-  {
-    name: 'title',
-    description: '提示框标题文本',
-    type: 'string',
-    default: '—',
-  },
+  { id: 'title', name: 'title', description: '提示框标题文本', type: 'string', default: '—' },
 ]
 
-const slotTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '插槽名', rowHeader: true, minWidth: '140px' },
-  { key: 'description', label: '说明', minWidth: '300px', wrap: true },
+const slotTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '插槽名', rowHeader: true, minWidth: '140px' },
+  { field: 'description', header: '说明', minWidth: '300px' },
 ]
 
-const slotTableRows = [
-  {
-    name: 'default',
-    description: '提示框正文内容',
-  },
-]
+const slotTableRows = [{ id: 'default', name: 'default', description: '提示框正文内容' }]
 </script>
 
 <style scoped>

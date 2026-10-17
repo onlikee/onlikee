@@ -1,10 +1,17 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { CounterLabel } from '@/components/primer-vue/CounterLabel'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const basicCode = `<script setup lang="ts">
 import { CounterLabel } from '@/components/primer-vue/CounterLabel'
@@ -17,38 +24,43 @@ const variantsCode = `<CounterLabel variant="primary">12</CounterLabel>
 <CounterLabel variant="secondary">12</CounterLabel>`
 const contentCode = `<span>Open issues <CounterLabel>0</CounterLabel></span>
 <span>Stars <CounterLabel>12K</CounterLabel></span>`
-const columns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'type', label: '类型', minWidth: '180px', wrap: true },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'description', label: '说明', minWidth: '240px', wrap: true },
+const columns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'type', header: '类型', minWidth: '180px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'description', header: '说明', minWidth: '240px' },
 ]
 const rows = [
   {
+    id: 'variant',
     name: 'variant',
     type: 'primary | secondary',
     default: 'secondary',
     description: 'primary 使用较深背景和反色文字；secondary 使用较浅背景和默认文字颜色。',
   },
   {
+    id: 'scheme',
     name: 'scheme',
     type: 'primary | secondary',
     default: '—',
     description: '已弃用，请使用 variant。未指定 variant 时才使用 scheme。',
   },
   {
+    id: 'className',
     name: 'className',
     type: 'string',
     default: '—',
     description: '与组件类名合并，Vue class 属性也合并到可见 span。',
   },
   {
+    id: 'data-component',
     name: 'data-component',
     type: 'string',
     default: 'CounterLabel',
     description: '可覆盖可见 span 的组件标记；空字符串会保留。',
   },
   {
+    id: '原生 span 属性',
     name: '原生 span 属性',
     type: 'HTMLAttributes',
     default: '—',
@@ -103,7 +115,14 @@ const rows = [
         和隐藏标签内。组件没有额外根容器；属性、类名与事件只应用到可见 span。组件 ref 的 element
         指向该 HTMLSpanElement，卸载后为 null。组件不添加焦点或键盘行为，事件使用 Vue 原生事件类型。
       </template>
-      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >CounterLabel 计数标签 API</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="columns"
+        :data="rows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

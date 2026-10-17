@@ -1,12 +1,19 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { shallowRef } from 'vue'
 import { UnderlinePanels } from '@/components/primer-vue/UnderlinePanels'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import { CodeIcon, IssueOpenedIcon } from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const selected = shallowRef('code')
 
@@ -36,58 +43,99 @@ const manualCode = `<template>
   </UnderlinePanels>
 </template>`
 
-const columns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '150px' },
-  { key: 'type', label: '类型', minWidth: '200px' },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'description', label: '说明', wrap: true },
+const columns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '150px' },
+  { field: 'type', header: '类型', minWidth: '200px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'description', header: '说明' },
 ]
 
 const rootRows = [
   {
+    id: 'value / v-model:value',
     name: 'value / v-model:value',
     type: 'string',
     default: '—',
     description: '受控选中值；Tab 与 Panel 用相同 value 配对。',
   },
   {
+    id: 'defaultValue',
     name: 'defaultValue',
     type: 'string',
     default: '首项',
     description: '非受控模式的初始选中值。',
   },
   {
+    id: 'activationMode',
     name: 'activationMode',
     type: 'automatic | manual',
     default: 'automatic',
     description: '方向键移动焦点时是否立即切换面板。',
   },
   {
+    id: 'loadingCounters',
     name: 'loadingCounters',
     type: 'boolean',
     default: 'false',
     description: '统一显示计数加载状态。',
   },
-  { name: 'id', type: 'string', default: '自动生成', description: 'Tab 与 Panel 关联 ID 的前缀。' },
-  { name: 'as', type: 'string', default: 'div', description: '选项卡列表的容器元素。' },
-  { name: 'change', type: '{ value: string }', default: '—', description: '选中值改变时触发。' },
+  {
+    id: 'id',
+    name: 'id',
+    type: 'string',
+    default: '自动生成',
+    description: 'Tab 与 Panel 关联 ID 的前缀。',
+  },
+  { id: 'as', name: 'as', type: 'string', default: 'div', description: '选项卡列表的容器元素。' },
+  {
+    id: 'change',
+    name: 'change',
+    type: '{ value: string }',
+    default: '—',
+    description: '选中值改变时触发。',
+  },
 ]
 
 const tabRows = [
-  { name: 'value', type: 'string', default: '按位置配对', description: '与 Panel 的 value 对应。' },
-  { name: 'counter', type: 'number | string', default: '—', description: '标签后的计数。' },
-  { name: 'leadingVisual', type: 'Component', default: '—', description: '标签前的图标组件。' },
-  { name: 'select', type: 'event', default: '—', description: '点击或按 Enter、Space 时触发。' },
+  {
+    id: 'value',
+    name: 'value',
+    type: 'string',
+    default: '按位置配对',
+    description: '与 Panel 的 value 对应。',
+  },
+  {
+    id: 'counter',
+    name: 'counter',
+    type: 'number | string',
+    default: '—',
+    description: '标签后的计数。',
+  },
+  {
+    id: 'leadingVisual',
+    name: 'leadingVisual',
+    type: 'Component',
+    default: '—',
+    description: '标签前的图标组件。',
+  },
+  {
+    id: 'select',
+    name: 'select',
+    type: 'event',
+    default: '—',
+    description: '点击或按 Enter、Space 时触发。',
+  },
 ]
 
 const panelRows = [
   {
+    id: 'value',
     name: 'value',
     type: 'string',
     default: '按位置配对',
     description: '与 Tab 的 value 对应；选中时显示面板。',
   },
-  { name: 'default', type: 'slot', default: '—', description: '面板内容。' },
+  { id: 'default', name: 'default', type: 'slot', default: '—', description: '面板内容。' },
 ]
 </script>
 
@@ -125,11 +173,32 @@ const panelRows = [
 
     <ComponentDocsSection title="API" variant="api">
       <h3>UnderlinePanels</h3>
-      <DataTable :columns="columns" :data="rootRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >UnderlinePanels 下划线选项卡 UnderlinePanels</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="columns"
+        :data="rootRows"
+      />
       <h3>UnderlinePanels.Tab</h3>
-      <DataTable :columns="columns" :data="tabRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >UnderlinePanels 下划线选项卡 UnderlinePanels.Tab</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="columns"
+        :data="tabRows"
+      />
       <h3>UnderlinePanels.Panel</h3>
-      <DataTable :columns="columns" :data="panelRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-2`"
+        >UnderlinePanels 下划线选项卡 UnderlinePanels.Panel</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
+        :columns="columns"
+        :data="panelRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

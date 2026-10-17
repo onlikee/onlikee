@@ -1,12 +1,19 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { ButtonGroup } from '@/components/primer-vue/ButtonGroup'
 import { Button, IconButton } from '@/components/primer-vue/Button'
 import { PlusIcon, DashIcon } from '@onlikee/octicons-vue'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const basicCode = `<ButtonGroup>
   <Button>Left</Button>
@@ -27,32 +34,36 @@ const loadingCode = `<ButtonGroup>
   <Button as="a" href="/component">Link</Button>
   <Button>Action</Button>
 </ButtonGroup>`
-const columns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'type', label: '类型', minWidth: '160px', wrap: true },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'description', label: '说明', minWidth: '240px', wrap: true },
+const columns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'type', header: '类型', minWidth: '160px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'description', header: '说明', minWidth: '240px' },
 ]
 const rows = [
   {
+    id: 'as',
     name: 'as',
     type: '原生标签 | Component',
     default: 'div',
     description: '指定根元素或自定义组件',
   },
   {
+    id: 'role',
     name: 'role',
     type: 'string',
     default: '—',
     description: '仅 toolbar 启用左右方向键导航，并在首尾循环',
   },
   {
+    id: 'className',
     name: 'className',
     type: 'string',
     default: '—',
     description: '合并根元素类名，也支持 Vue class',
   },
   {
+    id: '原生或组件属性',
     name: '原生或组件属性',
     type: '由 as 决定',
     default: '—',
@@ -112,7 +123,12 @@ const rows = [
         为实际根元素或自定义组件公开实例，卸载后为 null。自定义根组件需要最终提供 HTMLElement
         才能启用工具栏焦点导航。
       </template>
-      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">ButtonGroup 按钮组 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="columns"
+        :data="rows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

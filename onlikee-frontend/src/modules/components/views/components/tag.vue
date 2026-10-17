@@ -90,41 +90,45 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Tag 标签 属性</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
         :columns="apiTableColumns"
         :data="apiTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
       <h3>子组件</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">Tag 标签 子组件</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
         :columns="slotTableColumns"
         :data="slotTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
       <h3>事件</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-2`">Tag 标签 事件</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
         :columns="eventTableColumns"
         :data="eventTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { Tag } from '@/components/primer-vue/Tag'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import { StarIcon, CheckIcon, AlertIcon } from '@onlikee/octicons-vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const demo1Code = `<template>
   <div class="tag-row">
@@ -237,33 +241,25 @@ const handleRemove = (label: string) => {
 }
 </style>`
 
-const apiTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'type', label: '类型', minWidth: '200px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
+const apiTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'type', header: '类型', minWidth: '200px' },
+  { field: 'description', header: '说明', minWidth: '200px' },
 ]
 
 const apiTableRows = [
   {
+    id: 'size',
     name: 'size',
     description: '标签尺寸',
     type: "'small' | 'medium' | 'large' | 'xlarge'",
     default: "'medium'",
   },
+  { id: 'color', name: 'color', description: '字体颜色', type: 'string', default: "''" },
+  { id: 'background', name: 'background', description: '背景颜色', type: 'string', default: "''" },
   {
-    name: 'color',
-    description: '字体颜色',
-    type: 'string',
-    default: "''",
-  },
-  {
-    name: 'background',
-    description: '背景颜色',
-    type: 'string',
-    default: "''",
-  },
-  {
+    id: 'removable',
     name: 'removable',
     description: '是否显示删除按钮',
     type: 'boolean',
@@ -271,30 +267,27 @@ const apiTableRows = [
   },
 ]
 
-const slotTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '子组件', rowHeader: true, minWidth: '140px' },
-  { key: 'description', label: '说明', minWidth: '300px', wrap: true },
+const slotTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '子组件', rowHeader: true, minWidth: '140px' },
+  { field: 'description', header: '说明', minWidth: '300px' },
 ]
 
 const slotTableRows = [
   {
+    id: 'Tag.leadingVisual',
     name: 'Tag.leadingVisual',
     description: '前置视觉引导，通常用于放置图标',
   },
 ]
 
-const eventTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '事件名', rowHeader: true, minWidth: '140px' },
-  { key: 'params', label: '参数', minWidth: '140px' },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
+const eventTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '事件名', rowHeader: true, minWidth: '140px' },
+  { field: 'params', header: '参数', minWidth: '140px' },
+  { field: 'description', header: '说明', minWidth: '200px' },
 ]
 
 const eventTableRows = [
-  {
-    name: 'remove',
-    params: '无',
-    description: '点击删除按钮时触发',
-  },
+  { id: 'remove', name: 'remove', params: '无', description: '点击删除按钮时触发' },
 ]
 </script>
 

@@ -1,15 +1,22 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import {
   Text,
   type TextSize,
   type TextWeight,
   type TextWhiteSpace,
 } from '@/components/primer-vue/Text'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '../../components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '../../components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '../../components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '../../components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const sizes: TextSize[] = ['small', 'medium', 'large']
 const weights: TextWeight[] = ['light', 'normal', 'medium', 'semibold']
@@ -43,38 +50,43 @@ const codes = {
 </style>`,
 }
 
-const columns: DataTableColumn[] = [
-  { key: 'name', label: '名称', rowHeader: true },
-  { key: 'type', label: '类型', wrap: true },
-  { key: 'default', label: '默认值' },
-  { key: 'description', label: '说明', wrap: true },
+const columns: DocumentationColumn[] = [
+  { field: 'name', header: '名称', rowHeader: true },
+  { field: 'type', header: '类型' },
+  { field: 'default', header: '默认值' },
+  { field: 'description', header: '说明' },
 ]
 const rows = [
   {
+    id: 'as',
     name: 'as',
     type: 'string | Component',
     default: 'span',
     description: '渲染的元素或组件，支持对应属性与事件透传',
   },
   {
+    id: 'size',
     name: 'size',
     type: "'small' | 'medium' | 'large'",
     default: '—',
     description: '同时设置字号与行高；未设置时继承上下文',
   },
   {
+    id: 'weight',
     name: 'weight',
     type: "'light' | 'normal' | 'medium' | 'semibold'",
     default: '—',
     description: '设置字重；未设置时保留元素的默认字重或继承上下文',
   },
   {
+    id: 'whiteSpace',
     name: 'whiteSpace',
     type: "'pre' | 'normal' | 'nowrap' | 'pre-wrap' | 'pre-line'",
     default: '—',
     description: '控制空格、换行符和自动换行；未设置时继承上下文',
   },
   {
+    id: 'class / className',
     name: 'class / className',
     type: 'string',
     default: '—',
@@ -83,6 +95,7 @@ const rows = [
 ]
 const instanceRows = [
   {
+    id: 'element',
     name: 'element',
     type: 'HTMLElement | SVGElement | ComponentPublicInstance | null',
     default: 'null',
@@ -90,7 +103,13 @@ const instanceRows = [
   },
 ]
 const slotRows = [
-  { name: 'default', type: '—', default: '—', description: '文本内容，可包含内联元素或其他组件' },
+  {
+    id: 'default',
+    name: 'default',
+    type: '—',
+    default: '—',
+    description: '文本内容，可包含内联元素或其他组件',
+  },
 ]
 </script>
 
@@ -174,15 +193,30 @@ const slotRows = [
     </ComponentDocsSection>
 
     <ComponentDocsSection title="属性" variant="api">
-      <DataTable :columns="columns" :data="rows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Text 文本 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="columns"
+        :data="rows"
+      />
     </ComponentDocsSection>
 
     <ComponentDocsSection title="组件实例" variant="api">
-      <DataTable :columns="columns" :data="instanceRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">Text 文本 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="columns"
+        :data="instanceRows"
+      />
     </ComponentDocsSection>
 
     <ComponentDocsSection title="插槽" variant="api">
-      <DataTable :columns="columns" :data="slotRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-2`">Text 文本 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
+        :columns="columns"
+        :data="slotRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>

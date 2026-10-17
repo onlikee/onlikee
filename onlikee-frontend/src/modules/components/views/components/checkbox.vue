@@ -1,14 +1,21 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { ref } from 'vue'
 import { Checkbox } from '@/components/primer-vue/Checkbox'
 import { CheckboxGroup } from '@/components/primer-vue/CheckboxGroup'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { Button } from '@/components/primer-vue/Button'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsPage from '../../components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsHeader from '../../components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsSection from '../../components/ComponentDocsPage/ComponentDocsSection.vue'
 import ComponentDocsDemoBlock from '../../components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
+
+const documentationId = useDocumentationId()
 const checked = ref(false)
 const disabled = ref(false)
 const selected = ref<string[]>(['email'])
@@ -24,44 +31,56 @@ const codes = {
   group:
     '<CheckboxGroup @change="selected = $event"><CheckboxGroup.Label>通知方式</CheckboxGroup.Label><FormControl><Checkbox value="email" default-checked /><FormControl.Label>邮件通知</FormControl.Label></FormControl></CheckboxGroup>',
 }
-const apiColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性 / 事件', rowHeader: true, minWidth: '180px' },
-  { key: 'type', label: '类型', minWidth: '200px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '260px', wrap: true },
+const apiColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性 / 事件', rowHeader: true, minWidth: '180px' },
+  { field: 'type', header: '类型', minWidth: '200px' },
+  { field: 'description', header: '说明', minWidth: '260px' },
 ]
 const checkboxRows = [
   {
+    id: 'checked / v-model:checked',
     name: 'checked / v-model:checked',
     type: 'boolean',
     description: '受控选中状态；不传 checked 时由原生 input 管理选中。',
   },
   {
+    id: 'defaultChecked',
     name: 'defaultChecked',
     type: 'boolean',
     description: '非受控初始选中状态，也是原生表单重置的默认值。',
   },
   {
+    id: 'indeterminate',
     name: 'indeterminate',
     type: 'boolean',
     description: '部分选中，优先于 checked；设置 aria-checked="mixed"。',
   },
   {
+    id: 'disabled / required',
     name: 'disabled / required',
     type: 'boolean',
     description: '原生禁用与必填；与 FormControl 组合时应传给 FormControl。',
   },
   {
+    id: 'validationStatus',
     name: 'validationStatus',
     type: "'error' | 'success'",
     description: '只影响 aria-invalid，不改变单个复选框的校验样式。',
   },
-  { name: 'value', type: 'string', description: '提交值，并作为默认 name；原生 name 可覆盖。' },
   {
+    id: 'value',
+    name: 'value',
+    type: 'string',
+    description: '提交值，并作为默认 name；原生 name 可覆盖。',
+  },
+  {
+    id: 'className',
     name: 'className',
     type: 'string',
     description: '与 Vue class 合并；其他原生 input 属性和事件传给 input。',
   },
   {
+    id: 'change',
     name: 'change',
     type: '(event: Event) => void',
     description: '原生 change 事件；分组 change 先于单个 Checkbox 的 change。',
@@ -69,39 +88,61 @@ const checkboxRows = [
 ]
 const groupRows = [
   {
+    id: 'id',
     name: 'id',
     type: 'string',
     description: '用于生成 caption 和 validation 的关联 ID，不写入根元素。',
   },
-  { name: 'disabled', type: 'boolean', description: '禁用 fieldset 和组内 FormControl。' },
-  { name: 'required', type: 'boolean', description: '标记组级必选；不会让组内每个复选框都必填。' },
   {
+    id: 'disabled',
+    name: 'disabled',
+    type: 'boolean',
+    description: '禁用 fieldset 和组内 FormControl。',
+  },
+  {
+    id: 'required',
+    name: 'required',
+    type: 'boolean',
+    description: '标记组级必选；不会让组内每个复选框都必填。',
+  },
+  {
+    id: 'aria-labelledby',
     name: 'aria-labelledby',
     type: 'string',
     description: '不使用 CheckboxGroup.Label 时引用外部标签。',
   },
   {
+    id: 'className / class',
     name: 'className / class',
     type: 'string',
     description: '应用到内层 fieldset 或 div；分组不透传其他任意 DOM 属性。',
   },
   {
+    id: 'data-component',
     name: 'data-component',
     type: 'string',
     description: '默认 CheckboxGroup，同时决定子组件标记的前缀。',
   },
   {
+    id: 'change',
     name: 'change',
     type: '(selected: string[], event?: Event) => void',
     description: '返回选中值和原生事件；初始选中从直接 FormControl 子项读取，之后由 change 更新。',
   },
   {
+    id: 'Label.visuallyHidden',
     name: 'Label.visuallyHidden',
     type: 'boolean',
     description: '隐藏组标签，但保留辅助技术名称。',
   },
-  { name: 'Label / Caption.className', type: 'string', description: '自定义标签或说明样式。' },
   {
+    id: 'Label / Caption.className',
+    name: 'Label / Caption.className',
+    type: 'string',
+    description: '自定义标签或说明样式。',
+  },
+  {
+    id: 'Validation.variant',
     name: 'Validation.variant',
     type: "'error' | 'success'",
     description: '必填，显示组级校验信息。',
@@ -155,14 +196,28 @@ const groupRows = [
     </ComponentDocsSection>
     <ComponentDocsSection title="API" variant="api">
       <h3>Checkbox</h3>
-      <DataTable :columns="apiColumns" :data="checkboxRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >Checkbox 复选框 Checkbox</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="apiColumns"
+        :data="checkboxRows"
+      />
       <p>组件 ref 通过 element 或 input 获取原生 input，也支持 focus() 和 blur()。</p>
       <p>
         非受控输入的 aria-checked 沿用 React 原版，在组件渲染后同步；原生选中和表单提交状态由 input
         管理。CheckboxGroup 重新渲染时也会同步组内 Checkbox 的 aria-checked。
       </p>
       <h3>CheckboxGroup</h3>
-      <DataTable :columns="apiColumns" :data="groupRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`"
+        >Checkbox 复选框 CheckboxGroup</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="apiColumns"
+        :data="groupRows"
+      />
       <p>
         有 Label 时渲染 fieldset/legend；无 Label 时使用 role="group" 并关联说明、校验和必填提示。
       </p>

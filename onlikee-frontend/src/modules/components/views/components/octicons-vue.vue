@@ -77,28 +77,34 @@
     </ComponentDocsSection>
 
     <ComponentDocsSection title="API" variant="api">
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Octicons Vue 图标 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
         :columns="apiTableColumns"
         :data="apiTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { computed, ref } from 'vue'
 import type { Component } from 'vue'
 import * as octicons from '@onlikee/octicons-vue'
 import { Link } from '@/components/primer-vue/Link'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
 import { Banner } from '@/components/primer-vue/Banner'
+
+const documentationId = useDocumentationId()
 
 type IconEntry = {
   name: string
@@ -210,16 +216,17 @@ const copySVG = (iconName: string, event: MouseEvent) => {
   Banner.success(`${iconName} SVG 已复制到剪贴板！`, { duration: 3000 })
 }
 
-const apiTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'default', label: '默认值', minWidth: '100px' },
-  { key: 'type', label: '类型', minWidth: '160px', wrap: true },
-  { key: 'options', label: '可选值', minWidth: '140px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '200px', wrap: true },
+const apiTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'default', header: '默认值', minWidth: '100px' },
+  { field: 'type', header: '类型', minWidth: '160px' },
+  { field: 'options', header: '可选值', minWidth: '140px' },
+  { field: 'description', header: '说明', minWidth: '200px' },
 ]
 
 const apiTableRows = [
   {
+    id: 'size',
     name: 'size',
     description: '显示高度；宽度按比例缩放',
     type: "number | 'small' | 'medium' | 'large'",
@@ -227,6 +234,7 @@ const apiTableRows = [
     default: '16',
   },
   {
+    id: 'fill',
     name: 'fill',
     description: '图标填充颜色',
     type: 'string',
@@ -234,6 +242,7 @@ const apiTableRows = [
     default: 'currentColor',
   },
   {
+    id: 'title',
     name: 'title',
     description: '添加 SVG title 元素；可访问名称通过 aria-label 或 aria-labelledby 设置',
     type: 'string',
@@ -241,6 +250,7 @@ const apiTableRows = [
     default: '—',
   },
   {
+    id: 'verticalAlign',
     name: 'verticalAlign',
     description: '垂直对齐方式，可由 style 覆盖',
     type: "CSSProperties['verticalAlign']",

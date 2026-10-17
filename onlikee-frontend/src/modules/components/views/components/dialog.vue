@@ -143,36 +143,38 @@
 
     <ComponentDocsSection title="API" variant="api">
       <h3>Dialog Props</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-0`"
+        >Dialog 对话框 Dialog Props</VisuallyHidden
+      >
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
         :columns="apiTableColumns"
         :data="dialogPropsRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h3>插槽</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">Dialog 对话框 插槽</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
         :columns="slotTableColumns"
         :data="slotTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
 
       <h3>事件</h3>
-      <DataTable
+      <VisuallyHidden :id="`${documentationId}-api-table-2`">Dialog 对话框 事件</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-2`"
         :columns="eventTableColumns"
         :data="eventTableRows"
-        row-key="name"
-        compact
-        :hoverable="false"
       />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { h, ref, shallowRef } from 'vue'
 import { Button } from '@/components/primer-vue/Button'
 import {
@@ -181,11 +183,15 @@ import {
   type DialogHeaderProps,
   type DialogProps,
 } from '@/components/primer-vue/Dialog'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const basicDialogOpen = ref(false)
 const footerDialogOpen = ref(false)
@@ -332,15 +338,16 @@ const largeOpen = ref(false)
   </Dialog>
 </template>`
 
-const apiTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '150px' },
-  { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'type', label: '类型', minWidth: '260px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '280px', wrap: true },
+const apiTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '150px' },
+  { field: 'default', header: '默认值', minWidth: '120px' },
+  { field: 'type', header: '类型', minWidth: '260px' },
+  { field: 'description', header: '说明', minWidth: '280px' },
 ]
 
 const dialogPropsRows = [
   {
+    id: 'onClose',
     name: 'onClose',
     default: '必填',
     type: "(gesture: 'close-button' | 'escape') => void",
@@ -348,18 +355,21 @@ const dialogPropsRows = [
       '请求关闭时调用；Esc 和背板点击均为 escape，关闭按钮为 close-button。组件不会自行卸载。',
   },
   {
+    id: 'title',
     name: 'title',
     default: "'Dialog'",
     type: 'VNodeChild',
     description: '可见标题，与 aria-labelledby 关联。',
   },
   {
+    id: 'subtitle',
     name: 'subtitle',
     default: "''",
     type: 'VNodeChild',
     description: '可选副标题，与 aria-describedby 关联。',
   },
   {
+    id: 'renderHeader',
     name: 'renderHeader',
     default: '内置 Header',
     type: '(props: DialogHeaderProps) => VNodeChild',
@@ -367,36 +377,42 @@ const dialogPropsRows = [
       '接收默认化的 title、subtitle、role 和 dialogLabelId、dialogDescriptionId；直接 Header 子节点优先。自定义标题须设置对应 ID。',
   },
   {
+    id: 'renderBody',
     name: 'renderBody',
     default: '内置 Body',
     type: '(props: DialogProps & { children?: VNodeChild }) => VNodeChild',
     description: '接收未匹配结构插槽的 children；直接 Body 子节点优先。',
   },
   {
+    id: 'renderFooter',
     name: 'renderFooter',
     default: '内置 Footer',
     type: '(props: DialogProps) => VNodeChild',
     description: '直接 Footer 子节点优先。返回 null 或 undefined 表示没有页脚。',
   },
   {
+    id: 'footerButtons',
     name: 'footerButtons',
     default: '无页脚',
     type: 'DialogButtonProps[]',
     description: '省略时不渲染页脚，空数组仍渲染空页脚；内置页脚支持左右箭头和 Tab 导航。',
   },
   {
+    id: 'width',
     name: 'width',
     default: "'xlarge'",
     type: "'small' | 'medium' | 'large' | 'xlarge' | CSSProperties['width']",
     description: '预设宽度分别为 296、320、480、640px；支持 CSS 宽度和像素数值，受位置及视口约束。',
   },
   {
+    id: 'height',
     name: 'height',
     default: "'auto'",
     type: "'small' | 'large' | 'auto'",
     description: 'small 为 480px，large 为 640px，auto 随内容变化，受位置及视口约束。',
   },
   {
+    id: 'position',
     name: 'position',
     default: "{ narrow: 'center', regular: 'center' }",
     type: "'center' | 'left' | 'right' | { narrow?, regular?, wide? }",
@@ -404,30 +420,35 @@ const dialogPropsRows = [
       '响应式类型支持 center/left/right/bottom/fullscreen；字符串仅设置 regular。基准 CSS 处理 regular 的 center/left/right，以及窄屏（≤767px）的 center/bottom/fullscreen；wide 仅透传属性，没有独立布局规则。',
   },
   {
+    id: 'align',
     name: 'align',
     default: '-',
     type: "'top' | 'center' | 'bottom'",
     description: 'center 位置的垂直对齐方式；省略时居中。',
   },
   {
+    id: 'role',
     name: 'role',
     default: "'dialog'",
     type: "'dialog' | 'alertdialog'",
     description: 'ARIA 角色。',
   },
   {
+    id: 'initialFocusRef',
     name: 'initialFocusRef',
     default: 'autoFocus 操作按钮或首个可聚焦元素',
     type: 'Ref<HTMLElement | null>',
     description: '指定初始焦点；通过包含 ref 的对象 v-bind 传入，避免模板自动解包。',
   },
   {
+    id: 'returnFocusRef',
     name: 'returnFocusRef',
     default: '打开前的焦点',
     type: 'Ref<HTMLElement | null>',
     description: '关闭时将焦点还给指定元素；通过包含 ref 的对象 v-bind 传入。',
   },
   {
+    id: 'className / style',
     name: 'className / style',
     default: '-',
     type: 'string / CSSProperties',
@@ -435,6 +456,7 @@ const dialogPropsRows = [
       '应用于根 div；数值样式遵循 React 的单位规则。自定义 width 优先于 style 中的 --dialog-width。',
   },
   {
+    id: 'data-component',
     name: 'data-component',
     default: "'Dialog'",
     type: 'string',
@@ -442,47 +464,61 @@ const dialogPropsRows = [
   },
 ]
 
-const slotTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '插槽名', rowHeader: true, minWidth: '180px' },
-  { key: 'description', label: '说明', minWidth: '320px', wrap: true },
+const slotTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '插槽名', rowHeader: true, minWidth: '180px' },
+  { field: 'description', header: '说明', minWidth: '320px' },
 ]
 
 const slotTableRows = [
   {
+    id: 'Dialog default',
     name: 'Dialog default',
     description:
       '直接放置 Header、Body、Footer 替换对应区域；其余内容进入默认 Body。只使用首个匹配节点。',
   },
   {
+    id: 'Dialog.Header / Title / Subtitle',
     name: 'Dialog.Header / Title / Subtitle',
     description: '自定义标题区域；Title 固定 h1，Subtitle 固定 h2，须设置与 Dialog 关联的 ID。',
   },
   {
+    id: 'Dialog.Buttons',
     name: 'Dialog.Buttons',
     description:
       'buttons 必填。content 为 VNodeChild，buttonType 为 default/normal/primary/danger，其他属性遵循 Button。仅首个 autoFocus 按钮绑定焦点引用；Dialog 会将 autofocus 按钮的 ref 替换为内部引用。',
   },
   {
+    id: 'Dialog.CloseButton',
     name: 'Dialog.CloseButton',
     description: 'onClose 必填，onKeydown 可选；使用 Close 标签与 invisible IconButton。',
   },
   {
+    id: '组件引用',
     name: '组件引用',
     description:
       'Dialog、结构组件和标题组件暴露 element。Header、Body、Footer 固定渲染 div，as 作为属性透传，遵循基准的实际行为。',
   },
-  { name: 'Dialog.Body default', description: '主体内容区域，超出可用高度时独立滚动。' },
-  { name: 'Dialog.Footer default', description: '底部操作区域，通常放置 Button。' },
+  {
+    id: 'Dialog.Body default',
+    name: 'Dialog.Body default',
+    description: '主体内容区域，超出可用高度时独立滚动。',
+  },
+  {
+    id: 'Dialog.Footer default',
+    name: 'Dialog.Footer default',
+    description: '底部操作区域，通常放置 Button。',
+  },
 ]
 
-const eventTableColumns: DataTableColumn[] = [
-  { key: 'name', label: '事件名', rowHeader: true, minWidth: '160px' },
-  { key: 'payload', label: '载荷', minWidth: '240px', wrap: true },
-  { key: 'description', label: '说明', minWidth: '320px', wrap: true },
+const eventTableColumns: DocumentationColumn[] = [
+  { field: 'name', header: '事件名', rowHeader: true, minWidth: '160px' },
+  { field: 'payload', header: '载荷', minWidth: '240px' },
+  { field: 'description', header: '说明', minWidth: '320px' },
 ]
 
 const eventTableRows = [
   {
+    id: 'onClose',
     name: 'onClose',
     payload: "'close-button' | 'escape'",
     description: '必填回调属性，用于请求关闭；由调用方更新 v-if。',

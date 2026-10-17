@@ -16,6 +16,7 @@
     "typecheck:test": "vue-tsc --noEmit -p tsconfig.test.json"
   },
   "dependencies": {
+    "@github/relative-time-element": "^5.0.0",
     "@guolao/vue-monaco-editor": "^1.6.0",
     "@oddbird/popover-polyfill": "^0.5.2",
     "@onlikee/octicons-vue": "^3.0.0",

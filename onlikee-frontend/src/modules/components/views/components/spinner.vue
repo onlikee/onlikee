@@ -70,19 +70,31 @@
         <code>class</code>、<code>style</code>、<code>aria-*</code> 和
         <code>data-*</code> 属性会传给 SVG。
       </template>
-      <DataTable :columns="apiColumns" :data="apiRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Spinner 加载指示器 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="apiColumns"
+        :data="apiRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
 
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { shallowRef } from 'vue'
 import { Spinner } from '@/components/primer-vue/Spinner'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const sizes = ['small', 'medium', 'large'] as const
 const delayKey = shallowRef(0)
@@ -108,33 +120,37 @@ const delayCode = `<Spinner delay="short" />
 <Spinner :delay="500" />
 <Spinner delay="long" />`
 
-const apiColumns: DataTableColumn[] = [
-  { key: 'name', label: '属性名', rowHeader: true, minWidth: '140px' },
-  { key: 'type', label: '类型', minWidth: '220px', wrap: true },
-  { key: 'default', label: '默认值', minWidth: '120px' },
-  { key: 'description', label: '说明', minWidth: '240px', wrap: true },
+const apiColumns: DocumentationColumn[] = [
+  { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
+  { field: 'type', header: '类型', minWidth: '220px' },
+  { field: 'default', header: '默认值', minWidth: '120px' },
+  { field: 'description', header: '说明', minWidth: '240px' },
 ]
 
 const apiRows = [
   {
+    id: 'size',
     name: 'size',
     type: "'small' | 'medium' | 'large'",
     default: 'medium',
     description: 'SVG 的宽和高分别为 16px、32px、64px。',
   },
   {
+    id: 'srText',
     name: 'srText',
     type: 'string | null',
     default: 'Loading',
     description: '屏幕阅读器文本；已有相邻状态文字时可设为 null。',
   },
   {
+    id: 'delay',
     name: 'delay',
     type: "boolean | 'short' | 'long' | number",
     default: 'false',
     description: '延迟显示；true/long 为 1000ms，short 为 300ms，数字为自定义毫秒数。',
   },
   {
+    id: 'aria-label',
     name: 'aria-label',
     type: 'string',
     default: '—',

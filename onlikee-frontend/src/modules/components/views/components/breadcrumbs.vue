@@ -1,12 +1,19 @@
 <script setup lang="ts">
+import { useId as useDocumentationId } from 'vue'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+
 import { reactive } from 'vue'
 import { RouterLink } from 'vue-router'
 import { Breadcrumbs, BreadcrumbsItem } from '@/components/primer-vue/Breadcrumbs'
-import { DataTable, type DataTableColumn } from '@/components/primer-vue/DataTable'
+import ComponentDocsTable, {
+  type DocumentationColumn,
+} from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
 import ComponentDocsDemoBlock from '@/modules/components/components/ComponentDocsPage/ComponentDocsDemoBlock.vue'
 import ComponentDocsHeader from '@/modules/components/components/ComponentDocsPage/ComponentDocsHeader.vue'
 import ComponentDocsPage from '@/modules/components/components/ComponentDocsPage/ComponentDocsPage.vue'
 import ComponentDocsSection from '@/modules/components/components/ComponentDocsPage/ComponentDocsSection.vue'
+
+const documentationId = useDocumentationId()
 
 const modes = [
   {
@@ -67,32 +74,36 @@ import { Breadcrumbs, BreadcrumbsItem } from '@/components/primer-vue/Breadcrumb
   </div>
 </template>`
 }
-const columns: DataTableColumn[] = [
-  { key: 'name', label: '属性', rowHeader: true },
-  { key: 'type', label: '类型', wrap: true },
-  { key: 'default', label: '默认值' },
-  { key: 'description', label: '说明', wrap: true },
+const columns: DocumentationColumn[] = [
+  { field: 'name', header: '属性', rowHeader: true },
+  { field: 'type', header: '类型' },
+  { field: 'default', header: '默认值' },
+  { field: 'description', header: '说明' },
 ]
 const breadcrumbRows = [
   {
+    id: 'overflow',
     name: 'overflow',
     type: 'wrap | menu | menu-with-root',
     default: 'wrap',
     description: '换行、折叠前导路径、优先保留根节点。折叠数量根据容器宽度和路径项宽度计算。',
   },
   {
+    id: 'variant',
     name: 'variant',
     type: 'normal | spacious',
     default: 'normal',
     description: '标准链接或增加留白的外观。',
   },
   {
+    id: 'className',
     name: 'className',
     type: 'string',
     default: '—',
     description: '导航容器的附加类名，也可使用 Vue 的 class 属性。',
   },
   {
+    id: 'style',
     name: 'style',
     type: 'CSSProperties',
     default: '—',
@@ -101,25 +112,35 @@ const breadcrumbRows = [
 ]
 const itemRows = [
   {
+    id: 'as',
     name: 'as',
     type: 'string | Component',
     default: 'a',
     description: '自定义元素或 RouterLink 组件；不可点击的当前页建议使用 span。',
   },
-  { name: 'href', type: 'string', default: '—', description: '透传给原生 a 元素的链接地址。' },
   {
+    id: 'href',
+    name: 'href',
+    type: 'string',
+    default: '—',
+    description: '透传给原生 a 元素的链接地址。',
+  },
+  {
+    id: 'to',
     name: 'to',
     type: 'RouteLocationRaw',
     default: '—',
     description: '配合 :as="RouterLink" 使用，不会自动将普通链接转换为路由链接。',
   },
   {
+    id: 'selected',
     name: 'selected',
     type: 'boolean',
     default: '—',
     description: '标记当前页并设置 aria-current="page"，不会自动禁用链接。',
   },
   {
+    id: 'className',
     name: 'className',
     type: 'string',
     default: '—',
@@ -199,7 +220,12 @@ const itemRows = [
         从 @/components/primer-vue/Breadcrumbs 导入 Breadcrumbs 和 BreadcrumbsItem，也支持
         Breadcrumbs.Item。默认插槽放置路径项，导航区域的无障碍名称为 Breadcrumbs。
       </template>
-      <DataTable :columns="columns" :data="breadcrumbRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-0`">Breadcrumbs 面包屑 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-0`"
+        :columns="columns"
+        :data="breadcrumbRows"
+      />
     </ComponentDocsSection>
     <ComponentDocsSection title="BreadcrumbsItem API" variant="api">
       <template #description>
@@ -209,7 +235,12 @@ const itemRows = [
         IconButton，菜单使用原生 Details；折叠后不会保留重复的隐藏路径项。 BreadcrumbsItem 的组件
         ref 通过 element 暴露实际 DOM 元素。Breadcrumb 与对应旧类型是已弃用别名。
       </template>
-      <DataTable :columns="columns" :data="itemRows" row-key="name" compact :hoverable="false" />
+      <VisuallyHidden :id="`${documentationId}-api-table-1`">Breadcrumbs 面包屑 API</VisuallyHidden>
+      <ComponentDocsTable
+        :aria-labelledby="`${documentationId}-api-table-1`"
+        :columns="columns"
+        :data="itemRows"
+      />
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
