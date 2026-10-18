@@ -108,6 +108,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/relative-time.vue'),
       },
       {
+        path: 'header',
+        name: 'Header',
+        component: () => import('../views/components/header.vue'),
+      },
+      {
         path: 'heading',
         name: 'Heading',
         component: () => import('../views/components/heading.vue'),

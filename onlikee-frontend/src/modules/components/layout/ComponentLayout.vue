@@ -191,6 +191,7 @@ const navSections = ref([
       { path: '/component/divider', label: 'Divider 分隔线' },
       { path: '/component/details', label: 'Details 详情折叠' },
       { path: '/component/link', label: 'Link 链接' },
+      { path: '/component/header', label: 'Header 页头' },
       { path: '/component/heading', label: 'Heading 标题' },
       { path: '/component/label', label: 'Label 标签' },
       { path: '/component/label-group', label: 'LabelGroup 标签组' },
