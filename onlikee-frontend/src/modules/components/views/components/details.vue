@@ -183,6 +183,10 @@ const hookRows = [
         的内容也会被外层视为外部点击。需要保持外层展开时，可在外层的 onClickOutside 中取消关闭。
       </p>
       <p>
+        内层的 toggle 会先通知内层，再传播给外层 Details，与 React 的合成事件一致。 外层 useDetails
+        也会同步内层的开合状态；可在内层的 toggle 处理器中调用 event.stopPropagation() 阻止传播。
+      </p>
+      <p>
         Breadcrumbs 的折叠菜单独立组合 Details、IconButton、Tooltip 和 ActionList，提供 Escape
         关闭并恢复焦点。若触发器的 Tooltip 已展开，第一次 Escape 先关闭提示，下一次关闭菜单。 通用
         Details 保留原生披露行为。

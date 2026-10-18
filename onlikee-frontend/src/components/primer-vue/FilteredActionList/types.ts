@@ -1,7 +1,11 @@
-import type { Component, HTMLAttributes, Ref, VNodeChild } from 'vue'
-import type { TextInputOptions } from '../TextInput/types'
+import type { Component, Ref, VNodeChild } from 'vue'
+import type { TextInputProps } from '../TextInput/types'
+import type { ActionListProps, ActionListItemProps } from '../ActionList/types'
 export type Visual = VNodeChild | Component
-export interface FilteredActionListItemProps extends Omit<HTMLAttributes, 'id' | 'children'> {
+export interface FilteredActionListItemProps extends Omit<
+  ActionListItemProps,
+  'id' | 'children' | 'renderItem' | 'onSelect'
+> {
   text?: string
   description?: string
   descriptionVariant?: 'inline' | 'block'
@@ -15,7 +19,8 @@ export interface FilteredActionListItemProps extends Omit<HTMLAttributes, 'id' |
   disabled?: boolean
   inactiveText?: string
   loading?: boolean
-  size?: 'small' | 'medium' | 'large'
+  size?: ActionListItemProps['size']
+  onSelect?: ActionListItemProps['onSelect']
   onAction?: (item: FilteredActionListItemProps, event: MouseEvent | KeyboardEvent) => void
   id?: number | string
   key?: string | number
@@ -55,7 +60,7 @@ export interface FilteredActionListProps extends ListPropsBase {
   placeholderText?: string
   filterValue?: string
   scrollContainerRef?: Ref<HTMLDivElement | null> | ((element: HTMLDivElement | null) => void)
-  textInputProps?: Record<string, unknown>
+  textInputProps?: Partial<Omit<TextInputProps, 'onChange'>>
   inputRef?: Ref<HTMLInputElement | null> | ((element: HTMLInputElement | null) => void)
   message?: VNodeChild
   messageText?: { title: string; description: string }
@@ -72,9 +77,8 @@ export interface FilteredActionListProps extends ListPropsBase {
     previous: HTMLElement | undefined,
     directlyActivated: boolean,
   ) => void
-  actionListProps?: HTMLAttributes & {
-    className?: string
-    variant?: ListPropsBase['variant']
+  actionListProps?: Omit<ActionListProps, 'selectionVariant' | 'id'> & {
+    id?: string
     selectionVariant?: ListPropsBase['selectionVariant'] | false
     showDividers?: boolean
   }
@@ -100,7 +104,7 @@ export const FilteredActionListLoadingTypes = {
   input: new FilteredActionListLoadingType('input', false),
 }
 export interface FilteredActionListInputProps extends Partial<
-  Omit<TextInputOptions, 'onChange' | 'onKeydown'>
+  Omit<TextInputProps, 'onChange' | 'onKeydown'>
 > {
   inputRef: Ref<HTMLInputElement | null> | ((element: HTMLInputElement | null) => void)
   onInputChange?: (event: Event) => void

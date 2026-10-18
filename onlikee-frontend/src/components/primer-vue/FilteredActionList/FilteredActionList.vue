@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import {
   computed,
+  defineComponent,
   getCurrentInstance,
   h,
   isVNode,
   nextTick,
   onBeforeUnmount,
+  onMounted,
+  provide,
+  reactive,
   shallowRef,
   useAttrs,
   useId,
@@ -14,14 +18,13 @@ import {
   type VNodeChild,
   useCssModule,
 } from 'vue'
-import { scrollIntoView, FocusKeys } from '@primer/behaviors'
+import { focusZone, scrollIntoView, FocusKeys } from '@primer/behaviors'
 import { useVirtualizer } from '@tanstack/vue-virtual'
-import { useFocusZone } from '../composables/useFocusZone'
+import { useFocusZone, type FocusZoneHookSettings } from '../composables/useFocusZone'
 import { useFeatureFlag } from '../FeatureFlags'
-import { Spinner } from '../Spinner'
 import { Checkbox } from '../Checkbox'
-import { Radio } from '../Radio'
-import CheckIcon from '@onlikee/octicons-vue/icons/check'
+import { ActionList } from '../ActionList'
+import { ActionListContainerContext } from '../ActionList/context'
 import { assignElementRef } from '../internal/assignElementRef'
 import { normalizeReactStyle } from '../internal/style'
 import FilteredActionListInput from './FilteredActionListInput.vue'
@@ -78,28 +81,12 @@ const listLabel = computed(() =>
 )
 const descriptionId = `${generatedId}-description`
 const active = shallowRef<HTMLElement>()
+let rememberedVirtualElement: HTMLElement | undefined
+let rememberedVirtualKey: string | undefined
 const focused = shallowRef(false)
 const usingRoving = computed(() => props._PrivateFocusManagement === 'roving-tabindex')
 const virtualized = computed(() => props.virtualized && !props.groupMetadata?.length)
-const selectionVariant = computed(() => {
-  const variant =
-    props.actionListProps && 'selectionVariant' in props.actionListProps
-      ? props.actionListProps.selectionVariant
-      : props.selectionVariant
-  return usingRoving.value ? variant || props.selectionVariant : variant
-})
-const listVariant = computed(() =>
-  props.actionListProps && 'variant' in props.actionListProps
-    ? (props.actionListProps.variant ?? 'inset')
-    : props.variant,
-)
 const mergedRefs = useFeatureFlag('primer_react_merged_forwarded_refs')
-const mixedDescriptions = computed(
-  () =>
-    (usingRoving.value || mergedRefs.value) &&
-    props.items.some((item) => item.description) &&
-    props.items.some((item) => !item.description),
-)
 const selectableItems = computed(() =>
   props.groupMetadata?.length
     ? props.groupMetadata.flatMap((group) =>
@@ -152,6 +139,22 @@ function setInput(element: HTMLInputElement | null) {
 }
 watch(scrollContainer, (element) => assignElementRef(props.scrollContainerRef, element))
 watch(
+  () => props.inputRef,
+  (current, previous) => {
+    assignElementRef(previous, null)
+    assignElementRef(current, input.value)
+  },
+  { flush: 'post' },
+)
+watch(
+  () => props.scrollContainerRef,
+  (current, previous) => {
+    assignElementRef(previous, null)
+    assignElementRef(current, scrollContainer.value)
+  },
+  { flush: 'post' },
+)
+watch(
   list,
   (element) => {
     if (!usingRoving.value) emitRefChanged('list-container-ref-changed', element)
@@ -179,8 +182,8 @@ onBeforeUnmount(() => {
 })
 function onFilter(event: Event) {
   const text = (event.target as HTMLInputElement).value
-  ownFilterValue.value = text
   emit('filter-change', text, event)
+  ownFilterValue.value = text
   emit('update:filterValue', text)
   void nextTick(() => {
     if (input.value && input.value.value !== value.value) input.value.value = value.value
@@ -268,12 +271,23 @@ watch(
   () => announceResults(),
   { flush: 'post' },
 )
+function rememberVirtualFocus(element: HTMLElement) {
+  const index = element.getAttribute('data-index')
+  const item = index === null ? undefined : props.items[Number(index)]
+  if (item) {
+    rememberedVirtualElement = element
+    rememberedVirtualKey = String(item.key ?? item.id ?? index)
+  }
+}
 function onActive(
   current: HTMLElement | undefined,
   previous: HTMLElement | undefined,
   directlyActivated: boolean,
 ) {
+  if (rebuildingVirtualZone) return
+  activeWasDirectlyActivated = directlyActivated
   active.value = current
+  if (virtualized.value && current) rememberVirtualFocus(current)
   if (!usingRoving.value && virtualized.value && current) {
     const index = current.getAttribute('data-index')
     const range = virtualizer.value.range
@@ -294,22 +308,107 @@ function onActive(
   }
   if (!usingRoving.value) emit('active-descendant-changed', current, previous, directlyActivated)
 }
-useFocusZone(() => ({
-  containerRef: list,
-  activeDescendantFocus: usingRoving.value ? false : input,
-  bindKeys:
-    FocusKeys.ArrowVertical | FocusKeys.PageUpDown | (usingRoving.value ? FocusKeys.HomeAndEnd : 0),
-  focusOutBehavior: usingRoving.value
-    ? 'wrap'
-    : virtualized.value
-      ? 'stop'
-      : props.focusOutBehavior,
-  focusableElementFilter: (element) => !(element instanceof HTMLInputElement),
-  onActiveDescendantChanged: onActive,
-  focusInStrategy: usingRoving.value ? 'previous' : props.setInitialFocus ? 'initial' : 'previous',
-  ignoreHoverEvents: props.disableSelectOnHover,
-  focusPrependedElements: usingRoving.value ? false : props.focusPrependedElements,
-}))
+function focusZoneSettings(): FocusZoneHookSettings {
+  return {
+    containerRef: list,
+    activeDescendantFocus: usingRoving.value ? false : input,
+    bindKeys:
+      FocusKeys.ArrowVertical |
+      FocusKeys.PageUpDown |
+      (usingRoving.value ? FocusKeys.HomeAndEnd : 0),
+    focusOutBehavior: usingRoving.value
+      ? 'wrap'
+      : virtualized.value
+        ? 'stop'
+        : props.focusOutBehavior,
+    focusableElementFilter: (element) => !(element instanceof HTMLInputElement),
+    onActiveDescendantChanged: onActive,
+    focusInStrategy: usingRoving.value
+      ? 'previous'
+      : props.setInitialFocus
+        ? 'initial'
+        : 'previous',
+    ignoreHoverEvents: props.disableSelectOnHover,
+    focusPrependedElements: usingRoving.value ? false : props.focusPrependedElements,
+  }
+}
+useFocusZone(() => ({ ...focusZoneSettings(), disabled: usingRoving.value || virtualized.value }))
+let rebuildingVirtualZone = false
+let activeWasDirectlyActivated = false
+watch(
+  () => ({
+    enabled: virtualized.value,
+    list: list.value,
+    input: input.value,
+    entries: entries.value.map(({ item, index }) => ({
+      key: String(item.key ?? item.id ?? index),
+      index,
+    })),
+    settings: focusZoneSettings(),
+  }),
+  (current, previous, onCleanup) => {
+    if (!current.enabled || !current.list || !current.input) {
+      rebuildingVirtualZone = false
+      return
+    }
+    const priorAnnounced = usingRoving.value
+      ? document.activeElement instanceof HTMLElement &&
+        current.list.contains(document.activeElement)
+        ? document.activeElement
+        : undefined
+      : active.value
+    const priorActive = priorAnnounced ?? rememberedVirtualElement
+    const priorDirect = activeWasDirectlyActivated
+    const priorIndex = priorActive?.getAttribute('data-index')
+    const priorKey =
+      rememberedVirtualKey ??
+      previous?.entries.find((entry) => String(entry.index) === priorIndex)?.key
+    const keys = new Set(current.entries.map((entry) => entry.key))
+    const desiredKey = props.focusPrependedElements
+      ? current.entries[0]?.key
+      : priorKey && keys.has(priorKey)
+        ? priorKey
+        : (previous?.entries.find((entry) => keys.has(entry.key))?.key ?? current.entries[0]?.key)
+    const desiredIndex = current.entries.find((entry) => entry.key === desiredKey)?.index
+    const desired =
+      current.list.querySelector<HTMLElement>(`[data-index="${desiredIndex}"]`) ?? undefined
+    if (priorActive || !props.setInitialFocus) {
+      rememberedVirtualElement = desired
+      rememberedVirtualKey = desiredKey
+    }
+    let restored: HTMLElement | undefined
+    rebuildingVirtualZone = true
+    // Vue inserts keyed additions in reverse mutation order. Re-read the completed
+    // DOM instead of giving behaviors an unsorted batch of added elements. Preserve
+    // its remove-before-add choice of the active item when a window changes.
+    const controller = focusZone(current.list, {
+      ...current.settings,
+      activeDescendantControl: usingRoving.value ? undefined : current.input,
+      focusInStrategy: priorActive
+        ? () => {
+            const remembered = rememberedVirtualElement
+            return remembered && current.list!.contains(remembered) ? remembered : desired
+          }
+        : current.settings.focusInStrategy,
+      onActiveDescendantChanged: (element, previous, directlyActivated) => {
+        if (rebuildingVirtualZone) restored = element
+        else onActive(element, previous, directlyActivated)
+      },
+    })
+    rebuildingVirtualZone = false
+    if (!usingRoving.value) {
+      if (restored === priorAnnounced && restored && priorDirect) {
+        restored.setAttribute('data-is-active-descendant', 'activated-directly')
+      } else if (restored !== priorAnnounced) onActive(restored, priorAnnounced, false)
+    }
+    onCleanup(() => {
+      rebuildingVirtualZone = true
+      controller.abort()
+    })
+  },
+  { flush: 'post' },
+)
+
 watch(
   () => [props.items, props.scrollBehavior] as const,
   () => {
@@ -323,10 +422,26 @@ watch(
   },
   { flush: 'post' },
 )
-function activate(item: ItemInput | undefined, event: MouseEvent | KeyboardEvent) {
-  if (!item || item.disabled || item.inactiveText || item.loading) return
-  item.onAction?.(item, event)
+function focusIn(event: FocusEvent) {
+  if (
+    virtualized.value &&
+    event.target instanceof HTMLElement &&
+    list.value?.contains(event.target)
+  )
+    rememberVirtualFocus(event.target)
+  if (
+    usingRoving.value &&
+    (event.target === input.value || list.value?.contains(event.target as Node))
+  )
+    focused.value = document.activeElement === input.value
 }
+watch(
+  () => [props.loading, usingRoving.value],
+  () => {
+    if (usingRoving.value && !props.loading) focused.value = document.activeElement === input.value
+  },
+  { flush: 'post' },
+)
 function inputFocus() {
   focused.value = usingRoving.value
   announceResults(true)
@@ -358,306 +473,175 @@ function renderVisual(value: Visual | undefined): VNodeChild {
     ? h(value as Component)
     : (value as VNodeChild)
 }
+function renderChildren(children: VNodeChild): VNodeChild[] {
+  return Array.isArray(children) ? children.flatMap(renderChildren) : [children]
+}
 function renderItem(item: ItemInput, index: number, start?: number): VNodeChild {
-  const id = `${listId.value}-item-${item.id ?? index}`
-  const labelId = `${id}--label`
-  const descriptionId = item.description
-    ? `${id}--${item.descriptionVariant ?? 'inline'}-description`
-    : undefined
-  const inactiveId = item.inactiveText ? `${id}--warning-message` : undefined
-  const trailing =
-    item.trailingVisual ??
-    (item.trailingIcon || item.trailingText
-      ? [item.trailingText, renderVisual(item.trailingIcon)]
-      : undefined)
-  const trailingId = trailing ? `${id}--trailing-visual` : undefined
-  const style = normalizeReactStyle(
-    'style' in item
-      ? item.style
-      : start === undefined
-        ? undefined
-        : { position: 'absolute', left: 0, right: 0, top: 0, transform: `translateY(${start}px)` },
-  )
-  const { key: _key, ...itemProps } = item
+  const { key, ...itemProps } = item
   const mapped = {
-    className:
-      [styles['filtered-action-list__item'], 'className' in item ? item.className : undefined]
-        .filter(Boolean)
-        .join(' ') || undefined,
+    className: [styles['filtered-action-list__item'], item.className].filter(Boolean).join(' '),
     'data-input-focused': focused.value ? '' : undefined,
     'data-first-child': index === 0 ? '' : undefined,
-    ...(start !== undefined ? { 'data-index': index, style } : {}),
+    ...(start === undefined
+      ? {}
+      : {
+          'data-index': index,
+          style: {
+            position: 'absolute' as const,
+            left: 0,
+            right: 0,
+            top: 0,
+            transform: `translateY(${start}px)`,
+          },
+        }),
     ...itemProps,
     renderItem: props.renderItem,
   }
-  const { id: _consumedId, style: _consumedStyle, ...consumerProps } = itemProps
-  const common = {
-    onClick: (event: MouseEvent) => activate(mapped, event),
-    onKeypress: (event: KeyboardEvent) => {
-      if (event.key === 'Enter' || event.key === ' ') {
-        activate(mapped, event)
-        if (event.key === ' ') event.preventDefault()
-      }
-    },
-    'aria-disabled': item.disabled || undefined,
-    'data-inactive': Boolean(item.inactiveText) || undefined,
-    'data-loading': (item.loading && !item.inactiveText) || undefined,
-    tabindex: 0,
-    'aria-labelledby': [labelId, trailingId].filter(Boolean).join(' '),
-    'aria-describedby': [descriptionId, inactiveId].filter(Boolean).join(' ') || undefined,
-    'aria-selected': item.selected,
-    role: item.role ?? 'option',
-    id,
-    // FAL 显式属性层（{...item} 之前）：
-    'data-input-focused': focused.value ? '' : undefined,
-    'data-first-child': index === 0 ? '' : undefined,
-    'data-index': virtualized.value ? index : undefined,
-    'data-id': item.id,
-    style,
-    // 消费者 item 属性（后置获胜）：
-    ...consumerProps,
-    // li 显式属性层（恒胜）：
-    'data-component': 'ActionList.Item',
-    'data-is-disabled': item.disabled || undefined,
-    'data-has-description': Boolean(item.description),
-    class: [styles['filtered-action-list__item'], mapped.className],
-    onFocus: () => {
-      if (usingRoving.value) focused.value = false
-    },
-  }
-  // MappedActionListItem receives renderItem after spreading each item. Group
-  // renderers and item renderers are therefore replaced, even by undefined.
   if (props.renderItem) return props.renderItem(mapped)
   const {
-    text: _text,
-    description: _description,
-    descriptionVariant: _descriptionVariant,
-    leadingVisual: _leadingVisual,
-    trailingVisual: _trailingVisual,
-    trailingIcon: _trailingIcon,
-    trailingText: _trailingText,
-    children: _children,
-    renderItem: _renderItem,
-    onAction: _onAction,
-    groupId: _groupId,
-    selected: _selected,
-    disabled: _disabled,
-    inactiveText: _inactiveText,
-    loading: _loading,
-    size: _size,
-    item: _item,
-    className: _className,
-    variant: itemVariant,
-    ...domProps
-  } = common
-  const children: VNodeChild[] = [h('span', { class: styles['filtered-action-list__spacer'] })]
-  if (selectionVariant.value)
-    children.push(
-      h(
-        'span',
-        {
-          'data-component': 'ActionList.Selection',
-          class: [
-            styles['filtered-action-list__selection'],
-            styles['filtered-action-list__visual'],
-          ],
-        },
-        [
-          selectionVariant.value === 'radio'
-            ? h(Radio, {
-                checked: item.selected,
-                value: 'unused',
-                ariaHidden: true,
-                'aria-hidden': 'true',
-                tabindex: -1,
-              })
-            : selectionVariant.value === 'multiple'
-              ? h('div', { class: styles['filtered-action-list__checkbox'] })
-              : h(CheckIcon, {
-                  class: styles['filtered-action-list__checkmark'],
-                  'data-component': 'Octicon',
-                }),
-        ],
-      ),
-    )
-  else if (item.selected && import.meta.env.DEV)
-    console.warn(
-      'FilteredActionList: For Item to be selected, ActionList or ActionList.Group should have a selectionVariant defined.',
-    )
-  if (item.leadingVisual)
-    children.push(
-      h(
-        'span',
-        {
-          class: [styles['filtered-action-list__visual'], styles['filtered-action-list__leading']],
-          'data-component': 'ActionList.LeadingVisual',
-        },
-        [item.loading ? h(Spinner, { size: 'small' }) : renderVisual(item.leadingVisual)],
-      ),
-    )
-  const content: VNodeChild[] = []
-  const label = h(
-    'span',
-    {
-      id: labelId,
-      class: styles['filtered-action-list__label'],
-      'data-component': 'ActionList.Item.Label',
-    },
-    [
-      item.children,
-      item.text,
-      item.loading === true && !item.inactiveText
-        ? h('span', { class: styles['filtered-action-list__loading-label'] }, 'Loading')
-        : null,
-    ],
-  )
-  content.push(
-    item.description
-      ? h(
-          'div',
-          {
-            class: styles['filtered-action-list__description-wrap'],
-            'data-description-variant': item.descriptionVariant ?? 'inline',
-          },
-          [
-            label,
-            h(
-              'span',
-              {
-                id: descriptionId,
-                class: styles['filtered-action-list__description'],
-                'data-component': 'ActionList.Description',
-              },
-              item.description,
-            ),
-          ],
-        )
-      : label,
-  )
-  if ((item.loading && !item.leadingVisual) || trailing)
-    content.push(
-      h(
-        'span',
-        {
-          id: trailingId,
-          class: [styles['filtered-action-list__trailing'], styles['filtered-action-list__visual']],
-          'data-component': 'ActionList.TrailingVisual',
-        },
-        [
-          item.loading && !item.leadingVisual
-            ? h(Spinner, { size: 'small' })
-            : renderVisual(trailing),
-        ],
-      ),
-    )
-  if (inactiveId)
-    content.push(
-      h(
-        'span',
-        { id: inactiveId, class: styles['filtered-action-list__inactive'] },
-        item.inactiveText,
-      ),
-    )
-  children.push(
-    h(
-      'span',
-      {
-        class: styles['filtered-action-list__content'],
-        'data-component': 'ActionList.Item--DividerContainer',
-      },
-      content,
-    ),
-  )
+    id,
+    description,
+    descriptionVariant,
+    text,
+    trailingVisual,
+    leadingVisual,
+    trailingText,
+    trailingIcon,
+    onAction,
+    children,
+    ...rest
+  } = mapped
   return h(
-    'li',
+    ActionList.Item as Component,
     {
-      ...domProps,
-      key: item.key ?? item.id ?? index,
-      'data-variant': itemVariant === 'danger' ? itemVariant : undefined,
+      role: 'option',
+      onSelect: (event: MouseEvent | KeyboardEvent) => onAction?.(mapped, event),
+      'data-id': id,
+      ...rest,
+      key: key ?? id ?? index,
       ref: virtualized.value
-        ? (element: unknown) => {
-            if (element instanceof HTMLElement) virtualizer.value.measureElement(element)
+        ? (node: unknown) => {
+            const element = (node as { element?: HTMLElement } | null)?.element
+            if (element) virtualizer.value.measureElement(element)
           }
         : undefined,
     },
-    [
-      h(
-        'div',
-        { class: styles['filtered-action-list__row'], 'data-size': item.size ?? 'medium' },
-        children,
-      ),
-    ],
+    {
+      default: () => [
+        leadingVisual
+          ? h(ActionList.LeadingVisual, null, { default: () => renderVisual(leadingVisual) })
+          : null,
+        ...renderChildren(children),
+        text,
+        description
+          ? h(
+              ActionList.Description,
+              { variant: descriptionVariant },
+              { default: () => description },
+            )
+          : null,
+        trailingVisual
+          ? h(ActionList.TrailingVisual, null, { default: () => renderVisual(trailingVisual) })
+          : trailingIcon || trailingText
+            ? h(ActionList.TrailingVisual, null, {
+                default: () => [trailingText, renderVisual(trailingIcon)],
+              })
+            : null,
+      ],
+    },
   )
 }
-const RenderItems = () => {
+function renderItems() {
   if (props.groupMetadata?.length)
-    return props.groupMetadata.map((group, index) => {
-      const children = props.items
-        .filter((item) => item.groupId === group.groupId)
-        .map((item) => renderItem(item, selectableItems.value.indexOf(item)))
-      const title = group.header?.title
-      const ariaLabel = title
-        ? typeof title === 'string'
-          ? title
-          : '[object Object]'
-        : `Group ${group.groupId}`
-      return h(
-        'li',
+    return props.groupMetadata.map((group, index) =>
+      h(
+        ActionList.Group,
+        { key: index },
         {
-          role: 'none',
-          'data-component': 'ActionList.Group',
-          key: index,
-          class: styles['filtered-action-list__group'],
+          default: () => [
+            h(
+              ActionList.GroupHeading,
+              { variant: group.header?.variant },
+              {
+                default: () => group.header?.title || `Group ${group.groupId}`,
+              },
+            ),
+            ...props.items
+              .filter((item) => item.groupId === group.groupId)
+              .map((item) => renderItem(item, selectableItems.value.indexOf(item))),
+          ],
         },
-        [
-          h(
-            'div',
-            {
-              role: 'presentation',
-              'aria-hidden': 'true',
-              class: styles['filtered-action-list__group-heading'],
-              'data-component': 'GroupHeadingWrap',
-              'data-variant': group.header?.variant ?? 'subtle',
-            },
-            [
-              h(
-                'span',
-                {
-                  class: styles['filtered-action-list__group-heading-title'],
-                  id: `${listId.value}-group-${group.groupId}`,
-                },
-                [title || `Group ${group.groupId}`],
-              ),
-            ],
-          ),
-          h(
-            'ul',
-            {
-              role: 'group',
-              class: styles['filtered-action-list__group-list'],
-              'aria-label': ariaLabel,
-            },
-            children,
-          ),
-        ],
-      )
-    })
+      ),
+    )
   return entries.value.map(({ item, index, start }) => renderItem(item, index, start))
 }
+function setList(node: unknown) {
+  list.value = (node as { element?: HTMLElement | null } | null)?.element ?? null
+}
+function syncSourceRefBehavior() {
+  // With its callback ref, the source's legacy List cannot read its own DOM ref.
+  if (!usingRoving.value && !mergedRefs.value)
+    list.value?.removeAttribute('data-mixed-descriptions')
+}
+const ListContext = defineComponent({
+  name: 'FilteredActionListContext',
+  setup(_props, { slots }) {
+    if (usingRoving.value)
+      provide(
+        ActionListContainerContext,
+        reactive({
+          container: 'FilteredActionList',
+          listRole: 'listbox' as const,
+          selectionAttribute: 'aria-selected' as const,
+          get selectionVariant() {
+            return props.selectionVariant
+          },
+          get enableFocusZone() {
+            return !virtualized.value
+          },
+        }),
+      )
+    return () => slots.default?.()
+  },
+})
+const RenderList = () =>
+  h(
+    ActionList as Component,
+    {
+      showDividers: props.showItemDividers,
+      selectionVariant: props.selectionVariant,
+      ...attrs,
+      variant: props.variant,
+      'aria-label': listLabel.value,
+      ...props.actionListProps,
+      role: 'listbox',
+      id: listId.value,
+      ref: setList,
+      disableFocusZone: !usingRoving.value || props.actionListProps?.disableFocusZone,
+      className: [styles['filtered-action-list__list'], props.actionListProps?.className]
+        .filter(Boolean)
+        .join(' '),
+      style: virtualized.value
+        ? [
+            normalizeReactStyle(props.actionListProps?.style),
+            { height: `${virtualizer.value.getTotalSize()}px`, position: 'relative' },
+          ]
+        : normalizeReactStyle(props.actionListProps?.style),
+      onVnodeMounted: syncSourceRefBehavior,
+      onVnodeUpdated: syncSourceRefBehavior,
+    },
+    { default: renderItems },
+  )
 const RenderMessage = () => props.message
-const listRestProps = computed(() => {
-  const {
-    as: _as,
-    variant: _variant,
-    selectionVariant: _selectionVariant,
-    showDividers: _showDividers,
-    role: _role,
-    disableFocusZone: _disableFocusZone,
-    disableItemGap: _disableItemGap,
-    className: _className,
-    ...rest
-  } = (props.actionListProps ?? {}) as Record<string, unknown>
-  return rest
+onMounted(() => {
+  const element = scrollContainer.value
+  if (!element) return
+  const frame = requestAnimationFrame(() => {
+    const current = element.scrollTop
+    element.scrollTop = current < 1 ? current + 1 : current - 1
+    element.scrollTop = current
+  })
+  onBeforeUnmount(() => cancelAnimationFrame(frame))
 })
 defineExpose({ element: root, input, list, scrollContainer, focus: () => input.value?.focus() })
 </script>
@@ -667,6 +651,7 @@ defineExpose({ element: root, input, list, scrollContainer, focus: () => input.v
     :class="[className, $style['filtered-action-list']]"
     data-component="FilteredActionList"
     data-testid="filtered-action-list"
+    @focusin="focusIn"
   >
     <FilteredActionListInput
       :value="value"
@@ -681,7 +666,6 @@ defineExpose({ element: root, input, list, scrollContainer, focus: () => input.v
       @input-key-down="inputKeydown"
       @input-key-press="inputKeypress"
       @input-focus="inputFocus"
-      @blur="focused = false"
     />
     <span :id="descriptionId" :class="$style['filtered-action-list__visually-hidden']"
       >Items will be filtered as you type</span
@@ -717,37 +701,7 @@ defineExpose({ element: root, input, list, scrollContainer, focus: () => input.v
         :height="scrollContainer?.clientHeight ?? 0"
       />
       <RenderMessage v-else-if="message" />
-      <ul
-        v-else
-        v-bind="{ ...attrs, ...listRestProps }"
-        :id="listId"
-        ref="list"
-        :class="[$style['filtered-action-list__list'], actionListProps?.className]"
-        :data-variant="listVariant"
-        :data-dividers="
-          (
-            actionListProps && 'showDividers' in actionListProps
-              ? actionListProps.showDividers
-              : showItemDividers
-          )
-            ? 'true'
-            : 'false'
-        "
-        :data-mixed-descriptions="mixedDescriptions || undefined"
-        data-component="ActionList"
-        role="listbox"
-        :aria-label="listLabel"
-        :style="
-          virtualized
-            ? [
-                normalizeReactStyle(actionListProps?.style),
-                { height: `${virtualizer.getTotalSize()}px`, position: 'relative' },
-              ]
-            : normalizeReactStyle(actionListProps?.style)
-        "
-      >
-        <RenderItems />
-      </ul>
+      <ListContext v-else :key="_PrivateFocusManagement"><RenderList /></ListContext>
     </div>
   </div>
 </template>

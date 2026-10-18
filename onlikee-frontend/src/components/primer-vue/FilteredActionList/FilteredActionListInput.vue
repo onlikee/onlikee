@@ -4,6 +4,7 @@ import {
   onBeforeUnmount,
   shallowRef,
   useAttrs,
+  useCssModule,
   watchEffect,
   type ComponentPublicInstance,
 } from 'vue'
@@ -13,7 +14,7 @@ import { assignElementRef } from '../internal/assignElementRef'
 defineOptions({ name: 'FilteredActionListInput', inheritAttrs: false })
 const props = withDefaults(
   defineProps<{
-    value?: string
+    value?: string | number | null
     placeholderText?: string
     listId: string
     inputDescriptionTextId: string
@@ -37,6 +38,7 @@ const emit = defineEmits<{
   'input-key-press': [event: KeyboardEvent]
 }>()
 const attrs = useAttrs()
+const styles = useCssModule()
 function textInputBindings() {
   const { onFocus, className, ...rest } = attrs
   return {
@@ -53,7 +55,12 @@ function textInputBindings() {
     'aria-describedby': props.inputDescriptionTextId,
     loaderPosition: 'leading' as const,
     loading: props.loading,
-    className: typeof className === 'string' ? className : undefined,
+    className: [
+      className,
+      props.fullScreenOnNarrow ? styles['filtered-action-list__fullscreen-input'] : undefined,
+    ]
+      .filter(Boolean)
+      .join(' '),
     onChange: (event: Event) => emit('input-change', event),
     onKeydown: (event: KeyboardEvent) => emit('input-key-down', event),
     onKeypress: (event: KeyboardEvent) => emit('input-key-press', event),

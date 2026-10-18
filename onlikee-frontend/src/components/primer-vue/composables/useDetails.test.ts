@@ -263,4 +263,19 @@ describe('useDetails source behavior and compositions', () => {
     expect(outer.controls.open.value).toBe(false)
     expect(outer.element.open).toBe(false)
   })
+
+  it('synchronizes the outer state when a nested disclosure toggles programmatically', async () => {
+    const outer = render({ defaultOpen: true })
+    await settle()
+    const nested = document.createElement('details')
+    nested.open = true
+    nested.append(document.createElement('summary'))
+    outer.element.append(nested)
+    await settle()
+    nested.open = false
+    await settle()
+    expect(outer.controls.open.value).toBe(false)
+    expect(outer.element.open).toBe(false)
+    expect(outer.wrapper.get('summary').text()).toBe('Closed')
+  })
 })

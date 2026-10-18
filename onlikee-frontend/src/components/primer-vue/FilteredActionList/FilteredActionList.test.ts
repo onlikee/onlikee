@@ -6,6 +6,7 @@ import { renderToString } from '@vue/server-renderer'
 import { FilteredActionList, FilteredActionListLoadingTypes } from './index'
 import type { ItemInput } from './types'
 import { FeatureFlags } from '../FeatureFlags'
+import { ActionList } from '../ActionList'
 
 const wrappers: VueWrapper[] = []
 const scrollToDescriptor = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'scrollTo')
@@ -299,6 +300,78 @@ describe('FilteredActionList behavior', () => {
       }
     },
   )
+  it('preserves virtual navigation order and previous focus across windows, replacement and blur', async () => {
+    vi.stubGlobal(
+      'requestAnimationFrame',
+      vi.fn(() => 1),
+    )
+    vi.stubGlobal('cancelAnimationFrame', vi.fn())
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+      x: 0,
+      y: 0,
+      top: 0,
+      left: 0,
+      right: 320,
+      bottom: 160,
+      width: 320,
+      height: 160,
+      toJSON: () => ({}),
+    })
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(160)
+    vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(320)
+    vi.spyOn(HTMLElement.prototype, 'scrollHeight', 'get').mockReturnValue(32)
+    const changed = vi.fn()
+    const wrapper = render({
+      items: Array.from({ length: 500 }, (_, id) => ({ id, text: `Option ${id}` })),
+      virtualized: true,
+      announcementsEnabled: false,
+      onActiveDescendantChanged: changed,
+    })
+    await settle()
+    const input = wrapper.get('input').element as HTMLInputElement
+    const list = wrapper.get('[role="listbox"]').element
+    const scroll = list.parentElement!
+    const activeElement = () =>
+      document.getElementById(input.getAttribute('aria-activedescendant')!)!
+    const activeIndex = () => Number(activeElement().getAttribute('data-index'))
+    input.focus()
+    scroll.scrollTop = 1200
+    scroll.dispatchEvent(new Event('scroll'))
+    await settle()
+    await wrapper.setProps({
+      items: Array.from({ length: 500 }, (_, index) => ({
+        id: 1000 + index,
+        text: `Replacement ${index}`,
+      })),
+    })
+    await settle()
+    const before = activeIndex()
+    keyboard(input, 'ArrowDown')
+    await settle()
+    expect(activeIndex()).toBe(before + 1)
+    const selected = activeElement()
+    input.blur()
+    input.focus()
+    await settle()
+    expect(activeElement()).toBe(selected)
+    keyboard(input, 'ArrowDown')
+    await settle()
+    const next = activeElement()
+    changed.mockClear()
+    scroll.scrollTop = 1232
+    scroll.dispatchEvent(new Event('scroll'))
+    await settle()
+    expect(activeElement()).toBe(next)
+    expect(activeElement().getAttribute('data-is-active-descendant')).toBe('activated-directly')
+    expect(changed).not.toHaveBeenCalled()
+    input.blur()
+    scroll.scrollTop = 1264
+    scroll.dispatchEvent(new Event('scroll'))
+    await settle()
+    input.focus()
+    await settle()
+    expect(activeElement()).toBe(next)
+  })
   it('textInputProps keydown replaces internal roving activation', async () => {
     const action = vi.fn(),
       keydown = vi.fn()
@@ -410,7 +483,7 @@ describe('FilteredActionList behavior', () => {
     expect(options[1]!.text()).toContain('Loading')
     expect(options[1]!.find('[data-component="Spinner"]').exists()).toBe(true)
   })
-  it('consumer item attrs override computed props and item class token is duplicated like source clsx chain', async () => {
+  it('consumer item attrs override computed props and preserve both ActionList and FilteredActionList styles', async () => {
     const wrapper = render({ items: [{ text: 'Alpha', tabindex: -1, 'aria-selected': false }] })
     await settle()
     const option = wrapper.get('[role="option"]')
@@ -418,8 +491,8 @@ describe('FilteredActionList behavior', () => {
     expect(option.attributes('aria-selected')).toBe('false')
     const itemClasses = option.attributes('class')!.split(/\s+/)
     expect(itemClasses).toHaveLength(2)
-    expect(itemClasses[0]).toBe(itemClasses[1])
-    expect(itemClasses[0]).toContain('filtered-action-list__item_')
+    expect(itemClasses[0]).toContain('action-list-item_')
+    expect(itemClasses[1]).toContain('filtered-action-list__item_')
   })
   it('fullScreenOnNarrow marks the header for its narrow-screen styles', async () => {
     const wrapper = render({ items: [], fullScreenOnNarrow: true })
@@ -428,6 +501,161 @@ describe('FilteredActionList behavior', () => {
     expect(header.attributes('data-full-screen-on-narrow')).toBe('true')
     expect(header.attributes('class')).toMatch(/filtered-action-list__header_/)
   })
+  it.each(['active-descendant', 'roving-tabindex'] as const)(
+    'custom ActionList renderers receive list and group context with %s focus',
+    async (mode) => {
+      const onAction = vi.fn()
+      const wrapper = render({
+        items: [{ text: 'Alpha', selected: true, groupId: 'one', onAction }],
+        groupMetadata: [{ groupId: 'one', header: { title: 'Group' } }],
+        selectionVariant: 'multiple',
+        _PrivateFocusManagement: mode,
+        renderItem: (item) =>
+          h(
+            ActionList.Item,
+            {
+              selected: item.selected,
+              role: 'option',
+              onSelect: (event) => item.onAction?.(item, event),
+            },
+            {
+              default: () => [
+                item.text,
+                h(ActionList.Description, { variant: 'block' }, { default: () => 'Description' }),
+                h(ActionList.TrailingVisual, null, { default: () => 'Hint' }),
+              ],
+            },
+          ),
+      })
+      await settle()
+      const option = wrapper.get('[role="option"]')
+      expect(wrapper.get('[role="group"]').attributes('aria-label')).toBe('Group')
+      expect(option.attributes('aria-selected')).toBe('true')
+      expect(option.find('[data-component="ActionList.Selection"]').exists()).toBe(true)
+      const descriptions = option.attributes('aria-describedby')!.split(' ')
+      expect(descriptions.map((id) => document.getElementById(id)?.textContent)).toEqual([
+        'Description',
+      ])
+      const labels = option.attributes('aria-labelledby')!.split(' ')
+      expect(labels.map((id) => document.getElementById(id)?.textContent)).toEqual([
+        'Alpha',
+        'Hint',
+      ])
+      const input = wrapper.get('input').element as HTMLInputElement
+      input.focus()
+      if (mode === 'roving-tabindex') keyboard(input, 'ArrowDown')
+      keyboard(
+        mode === 'roving-tabindex' ? (option.element as HTMLElement) : input,
+        'Enter',
+        'keypress',
+      )
+      expect(onAction).toHaveBeenCalledOnce()
+    },
+  )
+  it('mapped children compose ActionList slots and onSelect replaces onAction', async () => {
+    const onAction = vi.fn(),
+      onSelect = vi.fn()
+    const wrapper = render({
+      items: [
+        {
+          text: 'Alpha',
+          active: true,
+          onAction,
+          onSelect,
+          children: [
+            h(ActionList.Description, { variant: 'block' }, { default: () => 'Child description' }),
+            h(ActionList.LeadingVisual, null, {
+              default: () => h('svg', { 'data-child-icon': '' }),
+            }),
+          ],
+        },
+      ],
+      actionListProps: { as: 'ol', disableFocusZone: true, disableItemGap: true },
+    })
+    await settle()
+    expect(wrapper.get('[role="listbox"]').element.tagName).toBe('OL')
+    const option = wrapper.get('[role="option"]')
+    expect(option.attributes('data-active')).toBe('true')
+    expect(option.get('[data-component="ActionList.Item.Label"]').text()).toBe('Alpha')
+    expect(option.find('[data-child-icon]').exists()).toBe(true)
+    expect(document.getElementById(option.attributes('aria-describedby')!)?.textContent).toBe(
+      'Child description',
+    )
+    await option.trigger('click')
+    expect(onSelect).toHaveBeenCalledOnce()
+    expect(onAction).not.toHaveBeenCalled()
+  })
+  it('roving input indicator follows focus into list items and returns after loading', async () => {
+    const wrapper = render({
+      items: [{ text: 'Alpha' }, { text: 'Beta' }],
+      _PrivateFocusManagement: 'roving-tabindex',
+    })
+    await settle()
+    const input = wrapper.get('input').element as HTMLInputElement
+    input.focus()
+    await settle()
+    expect(wrapper.findAll('[data-input-focused]')).toHaveLength(2)
+    keyboard(input, 'ArrowDown')
+    await settle()
+    expect(wrapper.findAll('[data-input-focused]')).toHaveLength(0)
+    input.focus()
+    await wrapper.setProps({ loading: true })
+    await wrapper.setProps({ loading: false })
+    await settle()
+    expect(wrapper.findAll('[data-input-focused]')).toHaveLength(2)
+  })
+  it('reassigns external element refs while mounted and cleans up the previous refs', async () => {
+    const previousInput = vi.fn(),
+      nextInput = vi.fn()
+    const previousScroll = vi.fn(),
+      nextScroll = vi.fn()
+    const wrapper = render({ inputRef: previousInput, scrollContainerRef: previousScroll })
+    await settle()
+    await wrapper.setProps({ inputRef: nextInput, scrollContainerRef: nextScroll })
+    await settle()
+    expect(previousInput).toHaveBeenLastCalledWith(null)
+    expect(previousScroll).toHaveBeenLastCalledWith(null)
+    expect(nextInput).toHaveBeenLastCalledWith(wrapper.get('input').element)
+    expect(nextScroll).toHaveBeenLastCalledWith(
+      wrapper.get('[data-component="FilteredActionList.ScrollContainer"]').element,
+    )
+  })
+  it.each(['active-descendant', 'roving-tabindex'] as const)(
+    'hydrates grouped ActionList composition without changing accessible IDs with %s focus',
+    async (mode) => {
+      const App = () =>
+        h(FilteredActionList, {
+          items: [
+            { id: 'one', text: 'Alpha', description: 'Details', selected: true, groupId: 'g' },
+          ],
+          groupMetadata: [{ groupId: 'g', header: { title: 'Group' } }],
+          selectionVariant: 'multiple',
+          _PrivateFocusManagement: mode,
+          announcementsEnabled: false,
+        })
+      const host = document.createElement('div')
+      host.innerHTML = await renderToString(createSSRApp(App))
+      document.body.append(host)
+      const ids = Array.from(host.querySelectorAll('[id]'), (element) => element.id)
+      const warn = vi.spyOn(console, 'warn')
+      const error = vi.spyOn(console, 'error')
+      const app = createSSRApp(App)
+      app.mount(host)
+      try {
+        await settle()
+        expect(Array.from(host.querySelectorAll('[id]'), (element) => element.id)).toEqual(ids)
+        expect(warn).not.toHaveBeenCalled()
+        expect(error).not.toHaveBeenCalled()
+        const option = host.querySelector<HTMLElement>('[role="option"]')!
+        expect(document.getElementById(option.getAttribute('aria-describedby')!)?.textContent).toBe(
+          'Details',
+        )
+      } finally {
+        app.unmount()
+        host.remove()
+      }
+    },
+  )
   it('body loader dispatches on enum identity, not the name string', async () => {
     const wrapper = render({
       items: [{ text: 'Alpha' }],

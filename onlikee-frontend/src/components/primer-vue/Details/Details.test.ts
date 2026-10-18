@@ -144,4 +144,87 @@ describe('Details', () => {
     wrappers.push(mount(Details))
     expect(warning).toHaveBeenCalledOnce()
   })
+
+  it.each(['native', 'component'] as const)(
+    'bubbles a %s child toggle after its handler with the ancestor currentTarget',
+    async (root) => {
+      const calls: Array<{
+        id: string
+        currentTarget: EventTarget | null
+        target: EventTarget | null
+      }> = []
+      const onToggle = (event: Event) => {
+        calls.push({
+          id: (event.currentTarget as HTMLElement).id,
+          currentTarget: event.currentTarget,
+          target: event.target,
+        })
+      }
+      const wrapper = mount(Details, {
+        attrs: { id: 'outer', onToggle },
+        slots: {
+          default: () => [
+            h('summary', 'Outer'),
+            root === 'native'
+              ? h('details', { id: 'inner', onToggle }, [h('summary', 'Inner')])
+              : h(Details, { id: 'inner', onToggle }, { default: () => h('summary', 'Inner') }),
+          ],
+        },
+      })
+      wrappers.push(wrapper)
+      const inner = wrapper.get('#inner').element
+      await wrapper.get('#inner').trigger('toggle', { bubbles: false })
+      expect(calls.map((call) => call.id)).toEqual(['inner', 'outer'])
+      expect(calls.map((call) => call.target)).toEqual([inner, inner])
+      expect(calls[1]!.currentTarget).toBe(wrapper.element)
+    },
+  )
+
+  it.each(['native', 'component'] as const)(
+    'preserves cancellation and stopPropagation from a %s child toggle',
+    async (root) => {
+      const outerToggle = vi.fn()
+      let stop = false
+      const childProps = {
+        id: 'inner',
+        onToggle: (event: Event) => {
+          event.preventDefault()
+          if (stop) event.stopPropagation()
+        },
+      }
+      const wrapper = mount(Details, {
+        attrs: { onToggle: outerToggle },
+        slots: {
+          default: () => [
+            h('summary', 'Outer'),
+            root === 'native'
+              ? h('details', childProps, [h('summary', 'Inner')])
+              : h(Details, childProps, { default: () => h('summary', 'Inner') }),
+          ],
+        },
+      })
+      wrappers.push(wrapper)
+      await wrapper.get('#inner').trigger('toggle', { bubbles: false, cancelable: true })
+      expect(outerToggle).toHaveBeenCalledOnce()
+      const event = outerToggle.mock.calls[0]![0] as Event
+      expect(event.defaultPrevented).toBe(true)
+      expect(event.currentTarget).toBeNull()
+      stop = true
+      await wrapper.get('#inner').trigger('toggle', { bubbles: false, cancelable: true })
+      expect(outerToggle).toHaveBeenCalledOnce()
+    },
+  )
+
+  it('handles the same Event when a consumer dispatches it again', async () => {
+    const onToggle = vi.fn()
+    const wrapper = mount(Details, {
+      attrs: { onToggle },
+      slots: { default: () => h('summary', 'Summary') },
+    })
+    wrappers.push(wrapper)
+    await wrapper.trigger('toggle')
+    const event = onToggle.mock.calls[0]![0] as Event
+    wrapper.element.dispatchEvent(event)
+    expect(onToggle).toHaveBeenCalledTimes(2)
+  })
 })

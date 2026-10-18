@@ -419,6 +419,21 @@ describe('Dialog source contract', () => {
     expect(element()).not.toBeNull()
     expect(document.activeElement).toBe(anchor.value!.element)
   })
+  it('dispatches Escape to the innermost dialog when both dialogs initially mount together', async () => {
+    const outerClose = vi.fn()
+    const innerClose = vi.fn()
+    render({ onClose: outerClose }, () =>
+      h(Dialog, { title: 'Inner', onClose: innerClose }, () => h('input')),
+    )
+    await settle()
+    document
+      .querySelector('input')!
+      .dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+      )
+    expect(innerClose).toHaveBeenCalledWith('escape')
+    expect(outerClose).not.toHaveBeenCalled()
+  })
   it('overwrites autofocus button refs and focuses only the first autofocus action', async () => {
     const provided = shallowRef<HTMLButtonElement | null>(null)
     const buttons: NonNullable<DialogProps['footerButtons']> = [
