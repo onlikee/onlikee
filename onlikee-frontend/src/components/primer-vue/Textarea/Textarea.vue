@@ -44,11 +44,10 @@ const counter = useCharacterCounter(
 const validation = computed(() => (counter.value?.isOverLimit ? 'error' : props.validationStatus))
 const counterId = useId()
 const staticMessageId = useId()
-const describedBy = computed(
-  () =>
-    [props.characterLimit && staticMessageId, attrs['aria-describedby']]
-      .filter(Boolean)
-      .join(' ') || undefined,
+const describedBy = computed(() =>
+  props.characterLimit
+    ? [staticMessageId, attrs['aria-describedby']].filter(Boolean).join(' ') || undefined
+    : (attrs['aria-describedby'] as TextareaHTMLAttributes['aria-describedby']),
 )
 function nativeAttrs() {
   const { class: _class, style: _style, ...native } = attrs

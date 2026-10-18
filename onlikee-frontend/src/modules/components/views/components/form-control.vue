@@ -62,7 +62,9 @@
     <ComponentDocsSection title="灵活组合">
       <template #description>
         输入控件应作为直接子组件。通过 leadingVisual 和 trailingVisual
-        添加前后缀；自定义包装组件使用 asSlot 和 useFormControlForwardedProps 接入。
+        添加前后缀；自定义包装组件使用 asSlot 和 useFormControlForwardedProps 接入。 Autocomplete
+        仅自动关联输入 ID；禁用、必填、校验状态和描述关联需传给
+        Autocomplete.Input。普通元素包装后的输入不会自动继承表单属性。
       </template>
       <ComponentDocsDemoBlock :code="compositionDemoCode">
         <FormControl required>

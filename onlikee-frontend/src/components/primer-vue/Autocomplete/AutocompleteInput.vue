@@ -10,7 +10,6 @@ import {
   type PropType,
 } from 'vue'
 import { TextInput } from '../TextInput'
-import { useFormControlForwardedProps } from '../FormControl/context'
 import { useAutocompleteContext } from './context'
 import { normalizeReactStyle } from '../internal/style'
 
@@ -46,7 +45,6 @@ export default defineComponent({
     const component = ref<
       { input?: HTMLInputElement; element?: HTMLInputElement } | HTMLInputElement | null
     >(null)
-    const forwarded = useFormControlForwardedProps(() => ({ id: context.id.value, ...attrs }))
     const timeouts = new Set<ReturnType<typeof setTimeout>>()
     const handledChanges = new WeakSet<Event>()
     let compositionCommittedValue: string | undefined
@@ -163,8 +161,9 @@ export default defineComponent({
           'aria-haspopup': 'listbox',
           'aria-owns': `${context.id.value}-listbox`,
           autocomplete: 'off',
-          ...forwarded.value,
-          style: normalizeReactStyle(forwarded.value.style),
+          id: context.id.value,
+          ...attrs,
+          style: normalizeReactStyle(attrs.style),
           'data-component': 'Autocomplete.Input',
           onInput: change,
           onFocus: (event: FocusEvent) => {

@@ -29,13 +29,13 @@ function removeToken(id: string | number) {
 const singleCode = `<FormControl id="language">
   <FormControl.Label id="language-label">语言</FormControl.Label>
   <Autocomplete>
-    <Autocomplete.Input v-model:value="value" />
+    <Autocomplete.Input v-model:value="value" aria-describedby="language-caption" />
     <Autocomplete.Overlay>
       <Autocomplete.Menu :items="items" v-model:selected-item-ids="selectedIds"
         aria-labelledby="language-label" @selected-change="select" />
     </Autocomplete.Overlay>
   </Autocomplete>
-  <FormControl.Caption>输入文字筛选，方向键选择，Enter 确认。</FormControl.Caption>
+  <FormControl.Caption id="language-caption">输入文字筛选，方向键选择，Enter 确认。</FormControl.Caption>
 </FormControl>`
 const multipleCode = `<Autocomplete>
   <Autocomplete.Input :as="TextInputWithTokens" :tokens="tokens"
@@ -56,13 +56,18 @@ const multipleCode = `<Autocomplete>
     <ComponentDocsSection title="单选与 FormControl">
       <template #description>
         输入文字后显示建议，ArrowUp / ArrowDown 移动选项，Home / End 跳到首尾，Enter 选择，Escape
-        清空并关闭。焦点始终保留在输入框。
+        清空并关闭。焦点始终保留在输入框。 FormControl 自动关联输入 ID；描述关联、disabled、required
+        和 validationStatus 需显式传给 Autocomplete.Input。
       </template>
       <ComponentDocsDemoBlock :code="singleCode">
         <FormControl id="docs-language">
           <FormControl.Label id="docs-language-label"> 语言 </FormControl.Label>
           <Autocomplete>
-            <Autocomplete.Input v-model:value="value" placeholder="输入语言名称" />
+            <Autocomplete.Input
+              v-model:value="value"
+              placeholder="输入语言名称"
+              aria-describedby="docs-language-caption"
+            />
             <Autocomplete.Overlay>
               <Autocomplete.Menu
                 v-model:selected-item-ids="selectedIds"
@@ -72,7 +77,9 @@ const multipleCode = `<Autocomplete>
               />
             </Autocomplete.Overlay>
           </Autocomplete>
-          <FormControl.Caption>例如输入 “Ru” 查找 Rust 和 Ruby。</FormControl.Caption>
+          <FormControl.Caption id="docs-language-caption"
+            >例如输入 “Ru” 查找 Rust 和 Ruby。</FormControl.Caption
+          >
         </FormControl>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -90,6 +97,7 @@ const multipleCode = `<Autocomplete>
               :as="TextInputWithTokens"
               :tokens="tokens"
               placeholder="添加语言"
+              aria-describedby="docs-languages-caption"
               @token-remove="removeToken"
             />
             <Autocomplete.Overlay>
@@ -101,7 +109,7 @@ const multipleCode = `<Autocomplete>
               />
             </Autocomplete.Overlay>
           </Autocomplete>
-          <FormControl.Caption
+          <FormControl.Caption id="docs-languages-caption"
             >已选择：{{ tokens.map((token) => token.text).join('、') || '无' }}</FormControl.Caption
           >
         </FormControl>

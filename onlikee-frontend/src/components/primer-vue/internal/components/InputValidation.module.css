@@ -1,6 +1,25 @@
-.input-validation { display: flex; font-size: var(--text-body-size-small, 12px); font-weight: var(--base-text-weight-semibold, 600); color: var(--inputValidation-fgColor, currentColor); }
-.input-validation a { color: currentColor; text-decoration: underline; }
-.input-validation[data-validation-status='success'] { --inputValidation-fgColor: var(--fgColor-success, #1a7f37); }
-.input-validation[data-validation-status='error'] { --inputValidation-fgColor: var(--fgColor-danger, #d1242f); }
-.input-validation__icon { display: flex; margin-top: var(--base-size-2, 2px); margin-inline-end: var(--base-size-4, 4px); min-height: var(--inputValidation-iconSize, 16px); }
-.input-validation__text { line-height: var(--inputValidation-lineHeight, 1.3333333333333333); }
+.input-validation {
+  display: flex;
+  font-size: var(--text-body-size-small, 0.75rem);
+  font-weight: var(--base-text-weight-semibold, 600);
+  color: var(--inputValidation-fgColor);
+}
+.input-validation :where(a) {
+  color: currentColor;
+  text-decoration: underline;
+}
+.input-validation:where([data-validation-status='success']) {
+  --inputValidation-fgColor: var(--fgColor-success);
+}
+.input-validation:where([data-validation-status='error']) {
+  --inputValidation-fgColor: var(--fgColor-danger);
+}
+.input-validation__icon {
+  display: flex;
+  margin-top: var(--base-size-2, 0.125rem);
+  margin-inline-end: var(--base-size-4, 0.25rem);
+  min-height: var(--inputValidation-iconSize);
+}
+.input-validation__text {
+  line-height: var(--inputValidation-lineHeight);
+}

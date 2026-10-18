@@ -16,7 +16,6 @@ import {
 import { FocusKeys, focusZone } from '@primer/behaviors'
 import { isFocusable } from '@primer/behaviors/utils'
 import TextInputWrapper from '../internal/components/TextInputWrapper.vue'
-import { useFormControlForwardedProps } from '../FormControl/context'
 import { renderNode, type NodeProp } from '../internal/renderNode'
 import { normalizeReactStyle } from '../internal/style'
 import Token, { type TokenSizeKeys } from '../Token'
@@ -103,15 +102,6 @@ export default defineComponent({
       focus: (options?: FocusOptions) => input.value?.focus(options),
       blur: () => input.value?.blur(),
     })
-    const forwarded = useFormControlForwardedProps(() => ({
-      ...Object.fromEntries(
-        Object.entries({ id: props.id, disabled: props.disabled, required: props.required }).filter(
-          ([, v]) => v !== undefined,
-        ),
-      ),
-      ...attrs,
-    }))
-    const disabled = computed(() => !!forwarded.value.disabled)
     const visibleTokens = computed(() =>
       truncated.value ? props.tokens.slice(0, props.visibleTokenCount) : props.tokens,
     )
@@ -201,7 +191,10 @@ export default defineComponent({
       form?.removeEventListener('reset', reset)
     })
     return () => {
-      const allAttrs = { ...forwarded.value } as Record<string, unknown>
+      const allAttrs = { id: props.id, required: props.required, ...attrs } as Record<
+        string,
+        unknown
+      >
       delete allAttrs.class
       delete allAttrs.style
       const descriptionVisible = attrs.role === 'combobox' && !!description.value
@@ -227,7 +220,7 @@ export default defineComponent({
         {
           block: props.block,
           contrast: props.contrast,
-          disabled: disabled.value,
+          disabled: props.disabled,
           size: inputSize,
           variant: props.variant,
           validationStatus: props.validationStatus,
@@ -275,7 +268,7 @@ export default defineComponent({
                     ref: input,
                     type: attrs.type ?? 'text',
                     value: value.value,
-                    disabled: disabled.value,
+                    disabled: props.disabled,
                     class: styles['tokens-input__input'],
                     'aria-invalid': Object.prototype.hasOwnProperty.call(allAttrs, 'aria-invalid')
                       ? allAttrs['aria-invalid']
@@ -283,10 +276,7 @@ export default defineComponent({
                         ? 'true'
                         : 'false',
                     'aria-describedby':
-                      [
-                        forwarded.value['aria-describedby'],
-                        descriptionVisible ? descriptionId : undefined,
-                      ]
+                      [attrs['aria-describedby'], descriptionVisible ? descriptionId : undefined]
                         .filter(Boolean)
                         .join(' ') || undefined,
                     'data-component':
@@ -317,7 +307,7 @@ export default defineComponent({
                       emit('keydown', event)
                       const last = props.tokens[props.tokens.length - 1]
                       if (
-                        !disabled.value &&
+                        !props.disabled &&
                         !composing.value &&
                         !(event.isComposing || event.keyCode === 229) &&
                         !input.value?.value &&
@@ -339,14 +329,14 @@ export default defineComponent({
                 ...visibleTokens.value.map(({ id, ...tokenRest }, index) =>
                   h(props.tokenComponent, {
                     key: id,
-                    disabled: disabled.value,
+                    disabled: props.disabled,
                     size: props.size,
-                    hideRemoveButton: disabled.value || props.hideTokenRemoveButtons,
+                    hideRemoveButton: props.disabled || props.hideTokenRemoveButtons,
                     isSelected: selectedTokenIndex.value === index,
                     tabindex: 0,
                     'data-component': 'TextInputWithTokens.Token',
                     onFocus: () => {
-                      if (!disabled.value) selectedTokenIndex.value = index
+                      if (!props.disabled) selectedTokenIndex.value = index
                     },
                     onBlur: () => {
                       selectedTokenIndex.value = undefined

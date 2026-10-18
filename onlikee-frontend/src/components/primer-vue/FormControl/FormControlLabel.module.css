@@ -1,13 +1,13 @@
 .form-control__label {
   display: block;
-  font-size: var(--text-body-size-medium, 14px);
+  font-size: var(--text-body-size-medium, 0.875rem);
   font-weight: var(--base-text-weight-semibold, 600);
-  color: var(--fgColor-default, #1f2328);
+  color: var(--fgColor-default);
   cursor: pointer;
   align-self: flex-start;
 
   &:where([data-control-disabled]) {
-    color: var(--control-fgColor-disabled, #818b98);
+    color: var(--control-fgColor-disabled);
     cursor: not-allowed;
   }
 
@@ -29,5 +29,5 @@
 
 .form-control__required-text {
   display: flex;
-  column-gap: var(--base-size-4, 4px);
+  column-gap: var(--base-size-4, 0.25rem);
 }

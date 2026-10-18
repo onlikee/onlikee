@@ -125,7 +125,9 @@ describe.each([
     expect(wrapper.get(selector).attributes('aria-describedby')).toBe('validation caption')
     description.value = ''
     await nextTick()
-    expect(wrapper.get(selector).attributes('aria-describedby')).toBeUndefined()
+    expect(wrapper.get(selector).attributes('aria-describedby')).toBe(
+      component === Textarea ? '' : undefined,
+    )
   })
   it('restores native form defaults without emitting change on reset', async () => {
     const wrapper = mount(

@@ -220,35 +220,72 @@ test('both choice groups propagate disabled and keep option labels clickable', a
     expect(wrapper.get<HTMLInputElement>('input').element.checked).toBe(true)
   }
 })
-test('Autocomplete and token inputs inherit form associations', async () => {
-  for (const [name, input] of [
-    ['Autocomplete', Autocomplete],
-    ['TextInputWithTokens', TextInputWithTokens],
-  ] as const) {
-    const id = `composite-${name}`
-    const wrapper = mount(FormControl, {
-      attachTo: host,
-      props: { id, disabled: true, required: true },
-      slots: {
-        default: () => [
-          h(FormControl.Label, null, () => name),
-          input === Autocomplete
-            ? h(Autocomplete, null, () => h(Autocomplete.Input))
-            : h(TextInputWithTokens, { tokens: [{ id: 1, text: 'One' }] }),
-          h(FormControl.Caption, null, () => 'Help'),
-          h(FormControl.Validation, { variant: 'error' }, () => 'Invalid'),
-        ],
-      },
-    })
-    wrappers.push(wrapper)
-    const native = wrapper.get<HTMLInputElement>(`#${id}`)
-    expect(native.element.disabled).toBe(true)
-    expect(native.attributes('aria-describedby')).toBe(`${id}-validationMessage ${id}-caption`)
-    expect(wrapper.get('label').attributes('for')).toBe(id)
-    expect(native.attributes('aria-invalid')).toBe(input === Autocomplete ? undefined : 'true')
-    await wrapper.setProps({ disabled: false })
-    expect(native.element.disabled).toBe(false)
+test('direct token inputs inherit cloned form associations', async () => {
+  const wrapper = control(
+    TextInputWithTokens,
+    { tokens: [{ id: 1, text: 'One' }] },
+    { disabled: true, required: true },
+  )
+  const native = wrapper.get<HTMLInputElement>('#field')
+  expect(native.element.disabled).toBe(true)
+  expect(native.element.required).toBe(true)
+  expect(native.attributes('aria-describedby')).toBe('field-validationMessage field-caption')
+  expect(native.attributes('aria-invalid')).toBe('true')
+  await wrapper.setProps({ disabled: false })
+  expect(native.element.disabled).toBe(false)
+})
+
+test('Autocomplete wires its id but leaves other input attributes explicit', async () => {
+  const inputProps = ref<Record<string, unknown>>({})
+  const wrapper = mount(FormControl, {
+    props: { id: 'autocomplete', disabled: true, required: true },
+    slots: {
+      default: () => [
+        h(FormControl.Label, null, () => 'Name'),
+        h(Autocomplete, null, () => h(Autocomplete.Input, inputProps.value)),
+        h(FormControl.Caption, null, () => 'Help'),
+        h(FormControl.Validation, { variant: 'error' }, () => 'Invalid'),
+      ],
+    },
+  })
+  wrappers.push(wrapper)
+  const native = wrapper.get<HTMLInputElement>('#autocomplete')
+  expect(wrapper.get('label').attributes('for')).toBe('autocomplete')
+  expect(native.element.disabled).toBe(false)
+  expect(native.attributes('aria-required')).toBeUndefined()
+  expect(native.attributes('aria-describedby')).toBeUndefined()
+  expect(native.attributes('aria-invalid')).toBeUndefined()
+
+  inputProps.value = {
+    disabled: true,
+    required: true,
+    'aria-describedby': 'autocomplete-caption',
+    validationStatus: 'error',
   }
+  await nextTick()
+  expect(native.element.disabled).toBe(true)
+  expect(native.attributes('aria-required')).toBe('true')
+  expect(native.attributes('aria-describedby')).toBe('autocomplete-caption')
+  expect(native.attributes('aria-invalid')).toBe('true')
+})
+
+test('token inputs inside an unmarked wrapper do not inherit form associations', () => {
+  const wrapper = mount(FormControl, {
+    props: { id: 'wrapped', disabled: true, required: true },
+    slots: {
+      default: () => [
+        h(FormControl.Label, null, () => 'Tags'),
+        h('div', [h(TextInputWithTokens, { tokens: [] })]),
+        h(FormControl.Caption, null, () => 'Help'),
+      ],
+    },
+  })
+  wrappers.push(wrapper)
+  const native = wrapper.get<HTMLInputElement>('input')
+  expect(native.attributes('id')).toBeUndefined()
+  expect(native.element.disabled).toBe(false)
+  expect(native.element.required).toBe(false)
+  expect(native.attributes('aria-describedby')).toBeUndefined()
 })
 test('SelectPanel associates custom label id and selected text without htmlFor', () => {
   const wrapper = mount(FormControl, {
