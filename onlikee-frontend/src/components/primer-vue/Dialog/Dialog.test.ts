@@ -1,8 +1,14 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
-import { h, nextTick, shallowRef, type VNodeChild } from 'vue'
-import { Dialog, type DialogProps } from './index'
+import { computed, defineComponent, h, nextTick, shallowRef, type VNodeChild } from 'vue'
+import { XIcon } from '@onlikee/octicons-vue'
+import { Dialog, type DialogFocusTarget, type DialogProps } from './index'
+import { Button, IconButton } from '../Button'
+import type { ButtonInstance } from '../Button/types'
+import { ActionList } from '../ActionList'
+import { TextInput } from '../TextInput'
+import { AnchoredOverlay } from '../AnchoredOverlay'
 
 const wrappers: VueWrapper[] = []
 const observers: Array<{ callback: ResizeObserverCallback; target: Element }> = []
@@ -141,7 +147,6 @@ describe('Dialog source contract', () => {
     expect(renderHeader).not.toHaveBeenCalled()
     expect(renderBody).not.toHaveBeenCalled()
     expect(renderFooter).not.toHaveBeenCalled()
-    console.log(element().outerHTML)
     expect(element().querySelectorAll('[data-component="Dialog.Body"]')).toHaveLength(1)
     expect(element().querySelector('[data-component="Dialog.Footer"]')?.textContent).toBe('Footer')
   })
@@ -216,6 +221,203 @@ describe('Dialog source contract', () => {
     wrapper.unmount()
     wrappers.pop()
     expect(document.activeElement).toBe(returnTarget)
+  })
+
+  it.each(['Button', 'IconButton', 'TextInput', 'ActionList.LinkItem'] as const)(
+    'focuses the native element exposed by %s without passing a component instance to the trap',
+    async (component) => {
+      const initialFocusRef = shallowRef<DialogFocusTarget | null>(null)
+      render({ initialFocusRef }, () => {
+        const attrs = { ref: initialFocusRef, 'data-requested-focus': '' }
+        if (component === 'Button') return h(Button, attrs, () => 'Requested')
+        if (component === 'IconButton')
+          return h(IconButton, { ...attrs, icon: XIcon, 'aria-label': 'Requested' })
+        if (component === 'TextInput') return h(TextInput, { ...attrs, 'aria-label': 'Requested' })
+        return h(ActionList, null, {
+          default: () =>
+            h(ActionList.LinkItem, { ...attrs, href: '#requested' }, () => 'Requested'),
+        })
+      })
+      await settle()
+      const requested = element().querySelector('[data-requested-focus]')!
+      expect(requested).not.toBeNull()
+      expect(document.activeElement).toBe(requested)
+      expect(initialFocusRef.value).not.toBe(requested)
+    },
+  )
+
+  it.each(['component', 'computed DOM'] as const)(
+    'returns focus to a Button through its %s ref on close and reopen',
+    async (mode) => {
+      const open = shallowRef(false)
+      const target = shallowRef<ButtonInstance | null>(null)
+      const returnFocusRef =
+        mode === 'component' ? target : computed(() => target.value?.element ?? null)
+      const wrapper = mount(
+        defineComponent({
+          setup: () => () => [
+            h(
+              Button,
+              {
+                onClick: () => {
+                  open.value = true
+                },
+              },
+              () => 'Open',
+            ),
+            h(Button, { ref: target }, () => 'Return target'),
+            open.value
+              ? h(
+                  Dialog,
+                  {
+                    returnFocusRef,
+                    onClose: () => {
+                      open.value = false
+                    },
+                  },
+                  () => 'Body',
+                )
+              : null,
+          ],
+        }),
+        { attachTo: document.body },
+      )
+      wrappers.push(wrapper)
+      const [trigger, destination] = wrapper.findAll('button')
+      for (let attempt = 0; attempt < 2; attempt++) {
+        ;(trigger!.element as HTMLElement).focus()
+        await trigger!.trigger('click')
+        await settle()
+        element().querySelector<HTMLButtonElement>('[data-component="Dialog.CloseButton"]')!.click()
+        await settle()
+        expect(element()).toBeNull()
+        expect(document.activeElement).toBe(destination!.element)
+      }
+    },
+  )
+
+  it('uses the latest return target and falls back when an exposed element is unavailable', async () => {
+    const first = document.createElement('button')
+    const second = document.createElement('button')
+    first.textContent = 'First target'
+    second.textContent = 'Second target'
+    document.body.append(first, second)
+    first.focus()
+    const returnFocusRef = shallowRef({ element: first })
+    const { wrapper } = render({ returnFocusRef })
+    await settle()
+    returnFocusRef.value = { element: second }
+    await settle()
+    wrapper.unmount()
+    wrappers.pop()
+    expect(document.activeElement).toBe(second)
+
+    first.focus()
+    const fallback = render({
+      returnFocusRef: shallowRef({ element: null }),
+      initialFocusRef: shallowRef({ element: null }),
+    })
+    await settle()
+    expect(document.activeElement).toBe(
+      element().querySelector('[data-component="Dialog.CloseButton"]'),
+    )
+    fallback.wrapper.unmount()
+    wrappers.pop()
+    expect(document.activeElement).toBe(first)
+  })
+
+  it('keeps focus in the inner dialog and restores the parent Button when the inner closes', async () => {
+    const outerClose = vi.fn()
+    const innerOpen = shallowRef(false)
+    const trigger = shallowRef<ButtonInstance | null>(null)
+    const requested = shallowRef<ButtonInstance | null>(null)
+    render({ title: 'Outer', onClose: outerClose }, () => [
+      h(
+        Button,
+        {
+          ref: trigger,
+          onClick: () => {
+            innerOpen.value = true
+          },
+        },
+        () => 'Open inner',
+      ),
+      innerOpen.value
+        ? h(
+            Dialog,
+            {
+              title: 'Inner',
+              initialFocusRef: requested,
+              returnFocusRef: trigger,
+              onClose: () => {
+                innerOpen.value = false
+              },
+            },
+            () => h(Button, { ref: requested }, () => 'Inner target'),
+          )
+        : null,
+    ])
+    await settle()
+    trigger.value!.element!.click()
+    await settle()
+    expect(document.querySelectorAll('[role="dialog"]')).toHaveLength(2)
+    expect(document.activeElement).toBe(requested.value!.element)
+    requested.value!.element!.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    )
+    await settle()
+    expect(document.querySelectorAll('[role="dialog"]')).toHaveLength(1)
+    expect(outerClose).not.toHaveBeenCalled()
+    expect(document.activeElement).toBe(trigger.value!.element)
+    expect(document.body.hasAttribute('data-dialog-scroll-disabled')).toBe(true)
+  })
+
+  it('hands focus to a nested AnchoredOverlay component target and returns it without closing Dialog', async () => {
+    const open = shallowRef(false)
+    const anchor = shallowRef<ButtonInstance | null>(null)
+    const requested = shallowRef<ButtonInstance | null>(null)
+    const onClose = vi.fn()
+    render({ onClose }, () =>
+      h(
+        AnchoredOverlay,
+        {
+          open: open.value,
+          onOpen: () => {
+            open.value = true
+          },
+          onClose: () => {
+            open.value = false
+          },
+          renderAnchor: (bindings) =>
+            h(
+              Button,
+              {
+                ...bindings,
+                ref: (value) => {
+                  bindings.ref(value)
+                  anchor.value = value as ButtonInstance | null
+                },
+              },
+              () => 'Open overlay',
+            ),
+          overlayProps: { preventFocusOnOpen: true },
+          focusTrapSettings: { initialFocusRef: requested, returnFocusRef: anchor },
+        },
+        () => h(Button, { ref: requested }, () => 'Overlay target'),
+      ),
+    )
+    await settle()
+    anchor.value!.element!.click()
+    await settle()
+    expect(document.activeElement).toBe(requested.value!.element)
+    requested.value!.element!.dispatchEvent(
+      new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }),
+    )
+    await settle()
+    expect(open.value).toBe(false)
+    expect(onClose).not.toHaveBeenCalled()
+    expect(element()).not.toBeNull()
+    expect(document.activeElement).toBe(anchor.value!.element)
   })
   it('overwrites autofocus button refs and focuses only the first autofocus action', async () => {
     const provided = shallowRef<HTMLButtonElement | null>(null)

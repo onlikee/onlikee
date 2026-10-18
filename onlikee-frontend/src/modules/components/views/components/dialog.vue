@@ -123,12 +123,12 @@
     <ComponentDocsSection title="自定义渲染与焦点">
       <template #description>
         renderHeader 可替换默认标题区域，通过 dialogLabelId 关联可访问名称。 initialFocusRef 和
-        returnFocusRef 指定打开与关闭时的焦点。
+        returnFocusRef 指定打开与关闭时的焦点，支持原生元素以及
+        Button、TextInput、ActionList.LinkItem 等暴露 element 的组件引用。通过 v-bind 传入包含 ref
+        的对象，保留引用本身。
       </template>
       <ComponentDocsDemoBlock :code="renderDemoCode">
-        <button ref="returnTarget" type="button" @click="customOpen = true">
-          打开自定义 Dialog
-        </button>
+        <Button ref="returnTarget" @click="customOpen = true"> 打开自定义 Dialog </Button>
         <Dialog
           v-if="customOpen"
           v-bind="focusProps"
@@ -136,7 +136,7 @@
           title="自定义标题"
           :render-header="renderHeader"
         >
-          <input ref="initialTarget" aria-label="名称" placeholder="初始焦点" />
+          <TextInput ref="initialTarget" aria-label="名称" placeholder="初始焦点" />
         </Dialog>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -177,6 +177,8 @@ import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
 
 import { h, ref, shallowRef } from 'vue'
 import { Button } from '@/components/primer-vue/Button'
+import type { ButtonInstance } from '@/components/primer-vue/Button/types'
+import { TextInput } from '@/components/primer-vue/TextInput'
 import {
   Dialog,
   type DialogButtonProps,
@@ -207,8 +209,8 @@ const responsiveButtons: DialogButtonProps[] = [
   { content: '继续', buttonType: 'primary', autoFocus: true, onClick: closeResponsive },
 ]
 const customOpen = ref(false)
-const returnTarget = shallowRef<HTMLElement | null>(null)
-const initialTarget = shallowRef<HTMLElement | null>(null)
+const returnTarget = shallowRef<ButtonInstance | null>(null)
+const initialTarget = shallowRef<InstanceType<typeof TextInput> | null>(null)
 const focusProps: Pick<DialogProps, 'initialFocusRef' | 'returnFocusRef'> = {
   initialFocusRef: initialTarget,
   returnFocusRef: returnTarget,
@@ -247,9 +249,12 @@ const buttons: DialogButtonProps[] = [
 const renderDemoCode = `<script setup lang="ts">
 import { h, ref, shallowRef } from 'vue'
 import { Dialog, type DialogHeaderProps, type DialogProps } from '@/components/primer-vue/Dialog'
+import { Button } from '@/components/primer-vue/Button'
+import type { ButtonInstance } from '@/components/primer-vue/Button/types'
+import { TextInput } from '@/components/primer-vue/TextInput'
 const open = ref(false)
-const initialTarget = shallowRef<HTMLElement | null>(null)
-const returnTarget = shallowRef<HTMLElement | null>(null)
+const initialTarget = shallowRef<InstanceType<typeof TextInput> | null>(null)
+const returnTarget = shallowRef<ButtonInstance | null>(null)
 const focusProps: Pick<DialogProps, 'initialFocusRef' | 'returnFocusRef'> = {
   initialFocusRef: initialTarget, returnFocusRef: returnTarget,
 }
@@ -258,10 +263,10 @@ const renderHeader = (props: DialogHeaderProps) => h(Dialog.Header<'div'>, null,
 })
 <\/script>
 <template>
-  <button ref="returnTarget" @click="open = true">打开</button>
+  <Button ref="returnTarget" @click="open = true">打开</Button>
   <Dialog v-if="open" v-bind="focusProps" :on-close="() => (open = false)"
     title="自定义标题" :render-header="renderHeader">
-    <input ref="initialTarget" aria-label="名称" />
+    <TextInput ref="initialTarget" aria-label="名称" />
   </Dialog>
 </template>`
 
@@ -437,15 +442,15 @@ const dialogPropsRows = [
     id: 'initialFocusRef',
     name: 'initialFocusRef',
     default: 'autoFocus 操作按钮或首个可聚焦元素',
-    type: 'Ref<HTMLElement | null>',
-    description: '指定初始焦点；通过包含 ref 的对象 v-bind 传入，避免模板自动解包。',
+    type: 'Ref<DialogFocusTarget | null>',
+    description: '指定原生元素或暴露 element 的组件作为初始焦点；通过包含 ref 的对象 v-bind 传入。',
   },
   {
     id: 'returnFocusRef',
     name: 'returnFocusRef',
     default: '打开前的焦点',
-    type: 'Ref<HTMLElement | null>',
-    description: '关闭时将焦点还给指定元素；通过包含 ref 的对象 v-bind 传入。',
+    type: 'Ref<DialogFocusTarget | null>',
+    description: '关闭时将焦点还给指定原生元素或组件的 element；通过包含 ref 的对象 v-bind 传入。',
   },
   {
     id: 'className / style',

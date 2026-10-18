@@ -9,6 +9,7 @@ import type {
   CSSProperties,
 } from 'vue'
 import type { ButtonProps } from '../Button/types'
+import type { FocusTarget } from '../internal/focusTarget'
 
 type NativeProps<T> = {
   [Key in keyof T as string extends Key ? never : Key]: T[Key]
@@ -70,8 +71,8 @@ export interface DialogProps {
     | 'right'
     | { narrow?: DialogPosition; regular?: DialogPosition; wide?: DialogPosition }
   align?: 'top' | 'center' | 'bottom'
-  returnFocusRef?: Ref<HTMLElement | null>
-  initialFocusRef?: Ref<HTMLElement | null>
+  returnFocusRef?: Ref<FocusTarget | null>
+  initialFocusRef?: Ref<FocusTarget | null>
   className?: string
   style?: CSSProperties
 }

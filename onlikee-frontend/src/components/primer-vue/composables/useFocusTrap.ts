@@ -2,6 +2,7 @@ import { nextTick, shallowRef, toValue, watch, type MaybeRefOrGetter } from 'vue
 import { focusTrap } from '@primer/behaviors'
 import type { FocusTrapSettings } from '../internal/components/overlayTypes'
 import { registerOutsideClickHandler } from '../internal/documentRegistries'
+import { resolveFocusTarget } from '../internal/focusTarget'
 
 export function useFocusTrap(settings: MaybeRefOrGetter<FocusTrapSettings> = {}) {
   const first = toValue(settings)
@@ -10,13 +11,13 @@ export function useFocusTrap(settings: MaybeRefOrGetter<FocusTrapSettings> = {})
   let controller: AbortController | undefined
   let previousFocusedElement: Element | null = null
   let outsideClicked = false
-  const container = () => (toValue(settings).containerRef ?? containerRef).value
+  const container = () => resolveFocusTarget((toValue(settings).containerRef ?? containerRef).value)
   function disableTrap() {
     controller?.abort()
     const current = toValue(settings)
     if (current.allowOutsideClick && outsideClicked) return
-    const returnTo = current.returnFocusRef?.value
-    if (returnTo instanceof HTMLElement) returnTo.focus()
+    const returnTo = resolveFocusTarget(current.returnFocusRef?.value)
+    if (returnTo) returnTo.focus()
     else if (current.restoreFocusOnCleanUp && previousFocusedElement instanceof HTMLElement) {
       previousFocusedElement.focus()
       previousFocusedElement = null
@@ -30,7 +31,7 @@ export function useFocusTrap(settings: MaybeRefOrGetter<FocusTrapSettings> = {})
       () => toValue(settings).containerRef,
     ],
     async ([element, disabled], _previous, onCleanup) => {
-      if (!(element instanceof HTMLElement)) return
+      if (!element) return
       if (disabled) {
         disableTrap()
         return
@@ -48,7 +49,8 @@ export function useFocusTrap(settings: MaybeRefOrGetter<FocusTrapSettings> = {})
       if (cancelled) return
       controller = focusTrap(
         element,
-        (toValue(settings).initialFocusRef ?? initialFocusRef).value ?? undefined,
+        resolveFocusTarget((toValue(settings).initialFocusRef ?? initialFocusRef).value) ??
+          undefined,
       )
     },
     { flush: 'sync', immediate: true },

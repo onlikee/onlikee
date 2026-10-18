@@ -23,6 +23,7 @@ import VisuallyHidden from '../VisuallyHidden/VisuallyHidden.vue'
 import AriaStatus from '../internal/components/AriaStatus.vue'
 import type { ButtonBaseComponentProps, ButtonVisual } from './types'
 import classes from './ButtonBase.module.css'
+import { useFeatureFlag } from '../FeatureFlags'
 
 defineOptions({ name: 'ButtonBase', inheritAttrs: false })
 
@@ -41,6 +42,7 @@ const attrs = useAttrs()
 const slots = useSlots()
 const instance = getCurrentInstance()!
 const element = shallowRef<HTMLElement | null>(null)
+const loadingDisabledStyles = useFeatureFlag('primer_react_button_loading_disabled_styles')
 let skipSemanticValidation = false
 const generatedId = useId()
 const uuid = computed(() => props.id || generatedId)
@@ -193,6 +195,7 @@ const Render = () => {
       'data-block': props.block ? 'block' : null,
       'data-inactive': props.inactive ? true : undefined,
       'data-loading': Boolean(loading),
+      'data-loading-disabled-styles': loadingDisabledStyles.value ? true : undefined,
       'data-no-visuals': !leadingVisual && !trailingVisual && !trailingAction ? true : undefined,
       'data-size': props.size,
       'data-variant': props.variant,

@@ -29,6 +29,7 @@ import { useFocusTrap } from '../composables/useFocusTrap'
 import { useSlots as extractSlots } from '../composables/useSlots'
 import { registerEscapeHandler } from '../internal/documentRegistries'
 import { normalizeReactStyle } from '../internal/style'
+import { resolveFocusTarget } from '../internal/focusTarget'
 import { Portal } from '../Portal'
 
 defineOptions({ name: 'PrimerDialog', displayName: 'Dialog', inheritAttrs: false })
@@ -50,7 +51,7 @@ defineExpose({ element: dialog })
 useFocusTrap(() => ({
   containerRef: dialog,
   initialFocusRef: props.initialFocusRef ?? autoFocusedFooterButtonRef,
-  restoreFocusOnCleanUp: !props.returnFocusRef?.value,
+  restoreFocusOnCleanUp: !resolveFocusTarget(props.returnFocusRef?.value),
   returnFocusRef: props.returnFocusRef,
 }))
 

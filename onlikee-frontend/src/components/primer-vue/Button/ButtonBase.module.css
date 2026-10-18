@@ -72,13 +72,29 @@
   top: calc(var(--base-size-4) * -1);
 }
 .ButtonBase:disabled,
-.ButtonBase[aria-disabled='true']:not([data-loading='true']) {
+.ButtonBase[aria-disabled='true']:is(
+    :not([data-loading='true']),
+    [data-loading-disabled-styles='true']
+  ) {
   box-shadow: none;
   cursor: not-allowed;
 }
-:is(.ButtonBase:disabled, .ButtonBase[aria-disabled='true']:not([data-loading='true']))
+:is(
+    .ButtonBase:disabled,
+    .ButtonBase[aria-disabled='true']:is(
+        :not([data-loading='true']),
+        [data-loading-disabled-styles='true']
+      )
+  )
   .CounterLabel,
-:is(.ButtonBase:disabled, .ButtonBase[aria-disabled='true']:not([data-loading='true'])) .Visual {
+:is(
+    .ButtonBase:disabled,
+    .ButtonBase[aria-disabled='true']:is(
+        :not([data-loading='true']),
+        [data-loading-disabled-styles='true']
+      )
+  )
+  .Visual {
   color: inherit;
 }
 @media (forced-colors: active) {
@@ -244,7 +260,10 @@
   border-color: var(--button-default-borderColor-active);
 }
 .ButtonBase:where([data-variant='default']):disabled,
-.ButtonBase[aria-disabled='true']:where([data-variant='default']):not([data-loading='true']) {
+.ButtonBase[aria-disabled='true']:where([data-variant='default']):is(
+    :not([data-loading='true']),
+    [data-loading-disabled-styles='true']
+  ) {
   background-color: var(--button-default-bgColor-disabled);
   border-color: var(--button-default-borderColor-disabled);
   box-shadow: none;
@@ -252,7 +271,10 @@
 }
 :is(
     .ButtonBase:where([data-variant='default']):disabled,
-    .ButtonBase[aria-disabled='true']:where([data-variant='default']):not([data-loading='true'])
+    .ButtonBase[aria-disabled='true']:where([data-variant='default']):is(
+        :not([data-loading='true']),
+        [data-loading-disabled-styles='true']
+      )
   )
   [data-kbd-chord] {
   background: var(--buttonKeybindingHint-default-bgColor-disabled);
@@ -294,7 +316,10 @@
   box-shadow: var(--button-primary-shadow-selected);
 }
 .ButtonBase:where([data-variant='primary']):disabled,
-.ButtonBase[aria-disabled='true']:where([data-variant='primary']):not([data-loading='true']) {
+.ButtonBase[aria-disabled='true']:where([data-variant='primary']):is(
+    :not([data-loading='true']),
+    [data-loading-disabled-styles='true']
+  ) {
   background-color: var(--button-primary-bgColor-disabled);
   border-color: var(--button-primary-borderColor-disabled);
   box-shadow: none;
@@ -302,7 +327,10 @@
 }
 :is(
     .ButtonBase:where([data-variant='primary']):disabled,
-    .ButtonBase[aria-disabled='true']:where([data-variant='primary']):not([data-loading='true'])
+    .ButtonBase[aria-disabled='true']:where([data-variant='primary']):is(
+        :not([data-loading='true']),
+        [data-loading-disabled-styles='true']
+      )
   )
   [data-kbd-chord] {
   background: var(--buttonKeybindingHint-primary-bgColor-disabled);
@@ -374,7 +402,10 @@
   color: var(--button-danger-iconColor-hover);
 }
 .ButtonBase:where([data-variant='danger']):disabled,
-.ButtonBase[aria-disabled='true']:where([data-variant='danger']):not([data-loading='true']) {
+.ButtonBase[aria-disabled='true']:where([data-variant='danger']):is(
+    :not([data-loading='true']),
+    [data-loading-disabled-styles='true']
+  ) {
   background-color: var(--button-danger-bgColor-disabled);
   border-color: var(--button-default-borderColor-disabled);
   box-shadow: none;
@@ -382,7 +413,10 @@
 }
 :is(
     .ButtonBase:where([data-variant='danger']):disabled,
-    .ButtonBase[aria-disabled='true']:where([data-variant='danger']):not([data-loading='true'])
+    .ButtonBase[aria-disabled='true']:where([data-variant='danger']):is(
+        :not([data-loading='true']),
+        [data-loading-disabled-styles='true']
+      )
   )
   .CounterLabel {
   background-color: var(--buttonCounter-danger-bgColor-disabled) !important;
@@ -390,7 +424,10 @@
 }
 :is(
     .ButtonBase:where([data-variant='danger']):disabled,
-    .ButtonBase[aria-disabled='true']:where([data-variant='danger']):not([data-loading='true'])
+    .ButtonBase[aria-disabled='true']:where([data-variant='danger']):is(
+        :not([data-loading='true']),
+        [data-loading-disabled-styles='true']
+      )
   )
   [data-kbd-chord] {
   background: var(--buttonKeybindingHint-danger-bgColor-disabled);
@@ -439,7 +476,10 @@
   transition: 80ms ease-out;
 }
 .ButtonBase:where([data-variant='invisible']):disabled,
-.ButtonBase[aria-disabled='true']:where([data-variant='invisible']):not([data-loading='true']) {
+.ButtonBase[aria-disabled='true']:where([data-variant='invisible']):is(
+    :not([data-loading='true']),
+    [data-loading-disabled-styles='true']
+  ) {
   background-color: var(--button-invisible-bgColor-disabled);
   border-color: var(--button-invisible-borderColor-disabled);
   box-shadow: none;
@@ -447,7 +487,10 @@
 }
 :is(
     .ButtonBase:where([data-variant='invisible']):disabled,
-    .ButtonBase[aria-disabled='true']:where([data-variant='invisible']):not([data-loading='true'])
+    .ButtonBase[aria-disabled='true']:where([data-variant='invisible']):is(
+        :not([data-loading='true']),
+        [data-loading-disabled-styles='true']
+      )
   )
   [data-kbd-chord] {
   background: var(--buttonKeybindingHint-invisible-bgColor-disabled);
@@ -496,7 +539,10 @@
   outline-offset: 2px;
 }
 .ButtonBase:where([data-variant='link']):disabled,
-.ButtonBase[aria-disabled='true']:where([data-variant='link']):not([data-loading='true']) {
+.ButtonBase[aria-disabled='true']:where([data-variant='link']):is(
+    :not([data-loading='true']),
+    [data-loading-disabled-styles='true']
+  ) {
   background-color: transparent;
   border-color: transparent;
   color: var(--control-fgColor-disabled);

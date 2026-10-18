@@ -21,6 +21,7 @@ import { useFeatureFlag } from '../../FeatureFlags'
 import { registerEscapeHandler, registerOutsideClickHandler } from '../documentRegistries'
 import type { OverlayProps, OverlayCloseGesture } from './overlayTypes'
 import { normalizeReactStyle } from '../style'
+import { resolveFocusTarget } from '../focusTarget'
 import { ensureDefaultPortal, getPortalRoot, usePortalContext } from '../../Portal'
 
 defineOptions({ name: 'Overlay', inheritAttrs: false })
@@ -163,7 +164,7 @@ watch(
     // Anchored surfaces wait for visibility; ActionMenu owns its initial-focus ordering.
     if (dataComponent.value === 'AnchoredOverlay') await nextTick()
     if (cancelled) return
-    const initialFocus = toValue(props.focusTrapSettings?.initialFocusRef)
+    const initialFocus = resolveFocusTarget(toValue(props.focusTrapSettings?.initialFocusRef))
     outsideClicked = false
     controller = focusTrap(overlay, initialFocus ?? undefined)
     trapController = controller
@@ -189,7 +190,7 @@ watch(
       cancelled = true
       if (outsideClicked && props.focusTrapSettings?.allowOutsideClick) return
       const returnTo =
-        toValue(props.focusTrapSettings?.returnFocusRef) ??
+        resolveFocusTarget(toValue(props.focusTrapSettings?.returnFocusRef)) ??
         (dataComponent.value === 'ActionMenu.Overlay'
           ? menuReturnFocus
           : (openingReturnFocus ?? previousFocus))
@@ -206,7 +207,8 @@ watch(
     if (cancelled) return
     if (!props.preventFocusOnOpen && overlayVisibility.value !== 'hidden') {
       const initialFocus =
-        toValue(props.focusTrapSettings?.initialFocusRef) ?? toValue(props.initialFocusRef)
+        resolveFocusTarget(toValue(props.focusTrapSettings?.initialFocusRef)) ??
+        toValue(props.initialFocusRef)
       if (initialFocus) {
         initialFocus.focus()
       } else {

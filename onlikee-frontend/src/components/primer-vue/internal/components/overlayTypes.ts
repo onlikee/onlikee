@@ -1,6 +1,7 @@
 import type { AnchorAlignment, AnchorPosition, AnchorSide } from '@primer/behaviors'
 import type { Component, HTMLAttributes, Ref, StyleValue } from 'vue'
 import type { FocusZoneHookSettings } from '../../composables/useFocusZone'
+import type { FocusTarget } from '../focusTarget'
 export type OverlayWidth = 'auto' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge'
 export type OverlayHeight =
   'auto' | 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'initial' | 'fit-content'
@@ -11,10 +12,10 @@ export interface CSSAnchorPositioningSettings {
 }
 export interface FocusTrapSettings {
   containerRef?: Ref<HTMLElement | null>
-  initialFocusRef?: Ref<HTMLElement | null>
+  initialFocusRef?: Ref<FocusTarget | null>
   disabled?: boolean
   restoreFocusOnCleanUp?: boolean
-  returnFocusRef?: Ref<HTMLElement | null>
+  returnFocusRef?: Ref<FocusTarget | null>
   allowOutsideClick?: boolean
 }
 export interface OverlayProps extends /* @vue-ignore */ HTMLAttributes {

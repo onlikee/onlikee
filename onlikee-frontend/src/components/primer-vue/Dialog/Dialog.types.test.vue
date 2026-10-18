@@ -8,6 +8,10 @@ import {
   type DialogProps,
   type DialogInstance,
 } from './index'
+import { Button } from '../Button'
+import type { ButtonInstance } from '../Button/types'
+import { ActionList } from '../ActionList'
+import { AnchoredOverlay, type FocusTrapSettings } from '../AnchoredOverlay'
 
 const body = shallowRef<DialogSectionInstance | null>(null)
 void body.value
@@ -21,6 +25,21 @@ void invalidTitle
 type ActualProps = InstanceType<typeof Dialog>['$props']
 const onClose: DialogProps['onClose'] = () => {}
 const root = shallowRef<DialogInstance | null>(null)
+const componentTarget = shallowRef<ButtonInstance | null>(null)
+const itemTarget = shallowRef<InstanceType<typeof ActionList.LinkItem> | null>(null)
+const focusProps: Pick<DialogProps, 'initialFocusRef' | 'returnFocusRef'> = {
+  initialFocusRef: itemTarget,
+  returnFocusRef: componentTarget,
+}
+const focusTrapSettings: FocusTrapSettings = focusProps
+// @ts-expect-error A focus method alone does not identify the DOM element for containment checks.
+const invalidFocus: DialogProps = { onClose, initialFocusRef: shallowRef({ focus() {} }) }
+const invalidDirectFocus: DialogProps = {
+  onClose,
+  // @ts-expect-error A direct element must be wrapped in a ref.
+  returnFocusRef: document.createElement('button'),
+}
+void [invalidFocus, invalidDirectFocus]
 void root.value
 const valid: ActualProps = {
   onClose,
@@ -41,6 +60,19 @@ void [missingClose, invalidOpen, invalidPosition, invalidClose]
 
 <template>
   <Dialog ref="root" v-bind="valid">Body</Dialog>
+  <Button ref="componentTarget">Return focus</Button>
+  <Dialog :on-close="onClose" v-bind="focusProps">
+    <ActionList
+      ><ActionList.LinkItem ref="itemTarget" href="#item"
+        >Initial focus</ActionList.LinkItem
+      ></ActionList
+    >
+  </Dialog>
+  <AnchoredOverlay
+    :open="true"
+    :render-anchor="() => null"
+    :focus-trap-settings="focusTrapSettings"
+  />
   <!-- @vue-expect-error onClose is required. -->
   <Dialog title="Missing close" />
   <Dialog.Header id="header" as="section"><Dialog.Title>Title</Dialog.Title></Dialog.Header>

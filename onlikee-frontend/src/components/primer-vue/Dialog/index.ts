@@ -19,6 +19,7 @@ export const Dialog = Object.assign(DialogRoot, {
 })
 
 export { DialogBody, DialogFooter }
+export type { FocusTarget as DialogFocusTarget } from '../internal/focusTarget'
 export type {
   DialogButtonProps,
   DialogSectionProps,

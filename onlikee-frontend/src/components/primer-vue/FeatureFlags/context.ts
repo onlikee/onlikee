@@ -10,6 +10,7 @@ export const DefaultFeatureFlags = FeatureFlagScope.create({
   primer_react_action_list_item_gap: false,
   primer_react_timeline_list_semantics: false,
   primer_react_merged_forwarded_refs: false,
+  primer_react_button_loading_disabled_styles: false,
 })
 export const featureFlagContextKey: InjectionKey<ComputedRef<FeatureFlagScope>> =
   Symbol('FeatureFlagContext')
