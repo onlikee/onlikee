@@ -1,9 +1,9 @@
-import type { Component, HTMLAttributes } from 'vue'
+import type { Component, NativeElements } from 'vue'
 
 export interface LabelGroupOptions {
-  as?: string | Component
+  as?: keyof NativeElements | Component
   overflowStyle?: 'inline' | 'overlay'
   visibleChildCount?: 'auto' | number
   className?: string
 }
-export type LabelGroupProps = LabelGroupOptions & HTMLAttributes
+export type LabelGroupProps = LabelGroupOptions

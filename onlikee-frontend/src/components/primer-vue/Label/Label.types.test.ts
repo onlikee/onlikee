@@ -33,7 +33,6 @@ const group: LabelGroupProps = {
   as: 'ol',
   visibleChildCount: 'auto',
   overflowStyle: 'inline',
-  id: 'labels',
 }
 
 describe('table dependency public types', () => {
@@ -61,7 +60,7 @@ describe('table dependency public types', () => {
       h(ScrollableRegion, { 'aria-label': 'Data', id: 'scroll' }),
       h(SkeletonBox, { delay: 'long', id: 'box' }),
       h(SkeletonText, { size: 'bodySmall', id: 'text' }),
-      h(LabelGroup, { visibleChildCount: 2, id: 'labels' }),
+      h(LabelGroup, { visibleChildCount: 2 }),
     ]).toHaveLength(7)
   })
 })

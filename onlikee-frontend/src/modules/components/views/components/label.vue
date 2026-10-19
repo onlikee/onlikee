@@ -42,7 +42,7 @@ import { Label } from '@/components/primer-vue/Label'
 <Label size="large" variant="accent">大尺寸</Label>`,
   elements: `<Label>静态标签</Label>
 <Label as="a" href="#属性" variant="accent">查看属性</Label>`,
-  compositions: `<LabelGroup :visible-child-count="1" overflow-style="inline" aria-label="仓库标签">
+  compositions: `<LabelGroup :visible-child-count="1" overflow-style="inline">
   <Label>公开</Label>
   <Label as="a" href="#属性" variant="accent">查看属性</Label>
   <Label variant="success">已通过</Label>
@@ -201,7 +201,7 @@ const slotRows: DocumentationRow[] = [
       </template>
       <ComponentDocsDemoBlock :code="codes.compositions">
         <div class="composition-examples">
-          <LabelGroup :visible-child-count="1" overflow-style="inline" aria-label="仓库标签">
+          <LabelGroup :visible-child-count="1" overflow-style="inline">
             <Label>公开</Label>
             <Label as="a" href="#属性" variant="accent">查看属性</Label>
             <Label variant="success">已通过</Label>

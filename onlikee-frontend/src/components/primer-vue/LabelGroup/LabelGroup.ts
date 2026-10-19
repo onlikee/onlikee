@@ -1,8 +1,7 @@
 import {
   Comment,
   Fragment,
-  Text,
-  cloneVNode,
+  computed,
   defineComponent,
   h,
   nextTick,
@@ -11,6 +10,7 @@ import {
   onUpdated,
   ref,
   shallowRef,
+  watch,
   type Component,
   type PropType,
   type VNode,
@@ -19,14 +19,15 @@ import { getFocusableChild } from '@primer/behaviors/utils'
 import XIcon from '@onlikee/octicons-vue/icons/x'
 import { AnchoredOverlay, type AnchorRenderProps } from '../AnchoredOverlay'
 import { Button, IconButton } from '../Button'
-import { VisuallyHidden } from '../VisuallyHidden'
+import VisuallyHidden from '../internal/components/VisuallyHidden.vue'
 import classes from './LabelGroup.module.css'
 
-function flatten(nodes: VNode[]): VNode[] {
+function childrenArray(nodes: VNode[]): (VNode | null)[] {
   return nodes.flatMap((node) => {
-    if (node.type === Fragment && Array.isArray(node.children))
-      return flatten(node.children as VNode[])
-    if (node.type === Comment || (node.type === Text && !String(node.children).trim())) return []
+    // Compiler fragments represent template lists; explicit fragments remain one child.
+    if (node.type === Fragment && node.patchFlag & (64 | 128 | 256) && Array.isArray(node.children))
+      return childrenArray(node.children as VNode[])
+    if (node.type === Comment) return [null]
     return [node]
   })
 }
@@ -55,7 +56,8 @@ export default defineComponent({
     className: { type: String, default: undefined },
   },
   setup(props, { slots, attrs, expose }) {
-    const container = shallowRef<HTMLElement | null>(null)
+    const containerTarget = shallowRef<unknown>(null)
+    const container = computed(() => toElement(containerTarget.value))
     const expandButton = shallowRef<HTMLElement | null>(null)
     const collapseButton = shallowRef<HTMLElement | null>(null)
     const isOverflowShown = ref(false)
@@ -67,6 +69,7 @@ export default defineComponent({
     let mounted = false
     let disposed = false
     let firstHiddenIndex: number | undefined
+    let focusTimer: ReturnType<typeof setTimeout> | undefined
 
     function measureButton() {
       const rect = expandButton.value?.getBoundingClientRect()
@@ -89,18 +92,29 @@ export default defineComponent({
     function updateObserver() {
       if (!mounted) return
       measureButton()
-      if (
-        props.visibleChildCount !== 'auto' ||
-        isOverflowShown.value ||
-        !container.value ||
-        typeof IntersectionObserver === 'undefined'
-      ) {
+      if (!props.visibleChildCount || isOverflowShown.value || !container.value) {
         stopObserver()
         return
       }
       const nodes = Array.from(container.value.children).filter((child) =>
         child.hasAttribute('data-index'),
       )
+      if (typeof props.visibleChildCount === 'number') {
+        const truncateAfter = props.visibleChildCount
+        stopObserver()
+        const updated = Object.fromEntries(
+          nodes.map((node) => {
+            const index = node.getAttribute('data-index')!
+            return [index, Number(index) < truncateAfter]
+          }),
+        )
+        if (
+          Object.keys(updated).length !== Object.keys(visibility.value).length ||
+          Object.keys(updated).some((index) => updated[index] !== visibility.value[index])
+        )
+          visibility.value = updated
+        return
+      }
       if (
         observer &&
         reservedWidth === buttonRect.value.width &&
@@ -131,12 +145,11 @@ export default defineComponent({
     }
 
     function isHidden(index: number) {
-      if (props.overflowStyle === 'inline' && isOverflowShown.value) return false
-      if (typeof props.visibleChildCount === 'number') return index >= props.visibleChildCount
-      return props.visibleChildCount === 'auto' && visibility.value[String(index)] === false
+      return visibility.value[String(index)] === false
     }
     async function expandInline(hiddenIndices: number[]) {
       firstHiddenIndex = hiddenIndices[0]
+      visibility.value = {}
       isOverflowShown.value = true
       await nextTick()
       if (disposed) return
@@ -149,9 +162,11 @@ export default defineComponent({
     async function close() {
       isOverflowShown.value = false
       await nextTick()
-      if (!disposed) expandButton.value?.focus()
+      if (!disposed && props.overflowStyle === 'inline')
+        focusTimer = setTimeout(() => expandButton.value?.focus(), 10)
     }
-    function moreLabel(count: number) {
+    function moreLabel() {
+      const count = Object.values(visibility.value).filter((visible) => !visible).length
       return [
         h(VisuallyHidden, null, { default: () => `Show +${count} more` }),
         h('span', { 'aria-hidden': 'true' }, `+${count}`),
@@ -162,18 +177,22 @@ export default defineComponent({
       updateObserver()
     })
     onUpdated(updateObserver)
+    watch(container, updateObserver, { flush: 'post' })
     onBeforeUnmount(() => {
       disposed = true
+      clearTimeout(focusTimer)
       stopObserver()
     })
-    expose({ element: container })
+    expose({})
 
     return () => {
-      const children = flatten(slots.default?.() ?? [])
+      const children = childrenArray(slots.default?.() ?? [])
       const isList = props.as === 'ul' || props.as === 'ol'
       const truncating = Boolean(props.visibleChildCount)
       const item = isList ? 'li' : 'span'
-      const hiddenIndices = children.flatMap((_child, index) => (isHidden(index) ? [index] : []))
+      const hiddenIndices = children.flatMap((child, index) =>
+        child && isHidden(index) ? [index] : [],
+      )
       const hiddenCount = hiddenIndices.length
       let toggle: VNode | null = null
       if (truncating && props.overflowStyle === 'inline') {
@@ -197,7 +216,7 @@ export default defineComponent({
               size: 'small',
               onClick: () => expandInline(hiddenIndices),
             },
-            { default: () => moreLabel(hiddenCount) },
+            { default: moreLabel },
           )
         }
       } else if (truncating && hiddenCount) {
@@ -228,12 +247,12 @@ export default defineComponent({
                     setExpandButton(value)
                   },
                 },
-                { default: () => moreLabel(hiddenCount) },
+                { default: moreLabel },
               ),
             focusZoneSettings: { disabled: true },
             overlayProps: {
               role: 'dialog',
-              'aria-label': `All ${children.length} labels`,
+              'aria-label': `All ${children.filter(Boolean).length} labels`,
               'aria-modal': true,
             },
           },
@@ -246,11 +265,7 @@ export default defineComponent({
                   style: { width: `${overlayWidth}px`, padding: '8px' },
                 },
                 [
-                  h(
-                    'div',
-                    { class: classes.OverlayInner },
-                    children.map((node) => cloneVNode(node)),
-                  ),
+                  h('div', { class: classes.OverlayInner }, childrenArray(slots.default?.() ?? [])),
                   h(IconButton, {
                     icon: XIcon,
                     'aria-label': 'Close',
@@ -265,37 +280,37 @@ export default defineComponent({
       }
       const content = truncating
         ? [
-            ...children.map((child, index) =>
-              h(
-                item,
-                {
-                  key: child.key ?? index,
-                  'data-index': index,
-                  class: [classes.ItemWrapper, isHidden(index) && classes['ItemWrapper--hidden']],
-                },
-                [child],
-              ),
+            ...children.map(
+              (child, index) =>
+                child &&
+                h(
+                  item,
+                  {
+                    key: index,
+                    'data-index': index,
+                    class: [classes.ItemWrapper, isHidden(index) && classes['ItemWrapper--hidden']],
+                  },
+                  [child],
+                ),
             ),
             h(item, { 'data-component': 'LabelGroup.Toggle' }, toggle ? [toggle] : []),
           ]
         : isList
-          ? children.map((child, index) => h('li', { key: child.key ?? index }, [child]))
+          ? children.map((child, index) => child && h('li', { key: index }, [child]))
           : children
-      return h(
-        props.as,
-        {
-          ...attrs,
-          ref: container,
-          'data-overflow':
-            !truncating || (props.overflowStyle === 'inline' && isOverflowShown.value)
-              ? 'inline'
-              : undefined,
-          'data-list': isList || undefined,
-          class: [props.className, classes.Container, attrs.class],
-          'data-component': 'LabelGroup',
-        },
-        content,
-      )
+      const rootAttrs = {
+        ref: truncating ? containerTarget : undefined,
+        'data-overflow':
+          !truncating || (props.overflowStyle === 'inline' && isOverflowShown.value)
+            ? 'inline'
+            : undefined,
+        'data-list': isList || undefined,
+        class: [props.className, classes.Container, attrs.class],
+        'data-component': 'LabelGroup',
+      }
+      return typeof props.as === 'string'
+        ? h(props.as, rootAttrs, content)
+        : h(props.as, rootAttrs, { default: () => content })
     }
   },
 })

@@ -2,6 +2,7 @@
 import { ref, useId } from 'vue'
 import { Label, type LabelColorOptions } from '@/components/primer-vue/Label'
 import { LabelGroup } from '@/components/primer-vue/LabelGroup'
+import { Token } from '@/components/primer-vue/Token'
 import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
 import ComponentDocsTable, {
   type DocumentationColumn,
@@ -35,18 +36,18 @@ import { LabelGroup } from '@/components/primer-vue/LabelGroup'
 <\/script>
 
 <template>
-  <LabelGroup aria-label="议题标签">
+  <LabelGroup>
 ${labelMarkup.replace(/^/gm, '  ')}
   </LabelGroup>
 </template>`,
-  overlay: `<LabelGroup :visible-child-count="2" overflow-style="overlay" aria-label="议题标签">
+  overlay: `<LabelGroup :visible-child-count="2" overflow-style="overlay">
 ${labelMarkup}
 </LabelGroup>`,
-  inline: `<LabelGroup :visible-child-count="2" overflow-style="inline" aria-label="标签链接">
+  inline: `<LabelGroup :visible-child-count="2" overflow-style="inline">
 ${linkedLabelMarkup}
 </LabelGroup>`,
   auto: `<div class="label-container">
-  <LabelGroup visible-child-count="auto" aria-label="议题标签">
+  <LabelGroup visible-child-count="auto">
 ${labelMarkup.replace(/^/gm, '  ')}
   </LabelGroup>
 </div>
@@ -57,11 +58,23 @@ ${labelMarkup.replace(/^/gm, '  ')}
   max-width: 100%;
 }
 </style>`,
-  elements: `<LabelGroup as="ol" aria-label="有序标签">
+  tokens: `<div class="label-container">
+  <LabelGroup visible-child-count="auto" overflow-style="inline">
+    <Token v-for="text in ['One', 'Two', 'Three', 'Four', 'Five', 'Six']" :key="text" as="button" :text="text" />
+  </LabelGroup>
+</div>
+
+<style scoped>
+.label-container {
+  width: 180px;
+  max-width: 100%;
+}
+</style>`,
+  elements: `<LabelGroup as="ol">
 ${labelMarkup}
 </LabelGroup>
 
-<LabelGroup as="div" role="group" aria-label="项目标签" class="spaced-labels">
+<LabelGroup as="div" class-name="spaced-labels">
 ${labelMarkup}
 </LabelGroup>
 
@@ -82,9 +95,9 @@ const rows: DocumentationRow[] = [
   {
     id: 'as',
     name: 'as',
-    type: 'string | Component',
+    type: 'keyof NativeElements | Component',
     default: 'ul',
-    description: '根元素或组件；ul / ol 会自动为每个子项生成 li 包装。',
+    description: '根元素或组件；ul / ol 自动生成 li 包装。自定义组件启用折叠时须转发根 DOM 引用。',
   },
   {
     id: 'visibleChildCount',
@@ -106,16 +119,7 @@ const rows: DocumentationRow[] = [
     name: 'className',
     type: 'string',
     default: '—',
-    description: '根容器的附加样式类，与 Vue class 和内置类合并。',
-  },
-]
-const instanceRows: DocumentationRow[] = [
-  {
-    id: 'element',
-    name: 'element',
-    type: 'HTMLElement | null',
-    default: 'null',
-    description: '通过组件模板 ref 访问根容器；as 为自定义组件时，引用取决于该组件暴露的实例接口。',
+    description: '根容器的附加样式类，与内置类合并；也支持 Vue class。',
   },
 ]
 const slotRows: DocumentationRow[] = [
@@ -124,7 +128,8 @@ const slotRows: DocumentationRow[] = [
     name: 'default',
     type: '—',
     default: '—',
-    description: '标签子项，通常直接放置 Label；支持 v-for 和 Fragment，无插槽参数。',
+    description:
+      '标签子项，支持 Label、Token 和 v-for；显式 Fragment 作为一个折叠单位，无插槽参数。',
   },
 ]
 </script>
@@ -142,7 +147,7 @@ const slotRows: DocumentationRow[] = [
         visibleChildCount 时显示全部标签，空间不足时自动换行。
       </template>
       <ComponentDocsDemoBlock :code="codes.basic">
-        <LabelGroup aria-label="基础用法的议题标签">
+        <LabelGroup>
           <Label v-for="label in labels" :key="label.text" :variant="label.variant">
             {{ label.text }}
           </Label>
@@ -157,11 +162,7 @@ const slotRows: DocumentationRow[] = [
         关闭后，焦点返回展开按钮。
       </template>
       <ComponentDocsDemoBlock :code="codes.overlay">
-        <LabelGroup
-          :visible-child-count="2"
-          overflow-style="overlay"
-          aria-label="浮层示例的议题标签"
-        >
+        <LabelGroup :visible-child-count="2" overflow-style="overlay">
           <Label v-for="label in labels" :key="label.text" :variant="label.variant">
             {{ label.text }}
           </Label>
@@ -176,11 +177,7 @@ const slotRows: DocumentationRow[] = [
         收起后焦点返回 +N 按钮。以下示例使用链接标签展示焦点移动。
       </template>
       <ComponentDocsDemoBlock :code="codes.inline">
-        <LabelGroup
-          :visible-child-count="2"
-          overflow-style="inline"
-          aria-label="行内展开的标签链接"
-        >
+        <LabelGroup :visible-child-count="2" overflow-style="inline">
           <Label
             v-for="label in labels"
             :key="label.text"
@@ -213,7 +210,7 @@ const slotRows: DocumentationRow[] = [
             step="20"
           />
           <div class="auto-preview" :style="{ width: `${previewWidth}px` }">
-            <LabelGroup visible-child-count="auto" aria-label="自动折叠的议题标签">
+            <LabelGroup visible-child-count="auto">
               <Label v-for="label in labels" :key="label.text" :variant="label.variant">
                 {{ label.text }}
               </Label>
@@ -223,19 +220,38 @@ const slotRows: DocumentationRow[] = [
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
+    <ComponentDocsSection title="交互式 Token 组合">
+      <template #description>
+        Token 使用 as="button" 保留键盘交互。自动折叠后，行内展开会聚焦第一个新增的 Token；
+        收起后焦点返回 +N 按钮。自定义根组件需通过 expose({ element }) 转发根 DOM 引用。
+      </template>
+      <ComponentDocsDemoBlock :code="codes.tokens">
+        <div class="auto-preview label-container">
+          <LabelGroup visible-child-count="auto" overflow-style="inline">
+            <Token
+              v-for="text in ['One', 'Two', 'Three', 'Four', 'Five', 'Six']"
+              :key="text"
+              as="button"
+              :text="text"
+            />
+          </LabelGroup>
+        </div>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
     <ComponentDocsSection title="语义元素与自定义样式">
       <template #description>
-        使用 as="ol" 保留有序列表语义，或使用 as="div" 与 role="group" 表达一个具名分组。
-        class、className 和 style 可定制根容器样式；每个标签的颜色与尺寸由 Label 自身设置。
+        使用 as="ol" 保留有序列表语义，或使用 as="div" 渲染普通容器。 className 或 Vue class
+        可定制根容器样式；每个标签的颜色与尺寸由 Label 自身设置。
       </template>
       <ComponentDocsDemoBlock :code="codes.elements">
         <div class="demo-stack">
-          <LabelGroup as="ol" aria-label="有序标签">
+          <LabelGroup as="ol">
             <Label v-for="label in labels" :key="label.text" :variant="label.variant">
               {{ label.text }}
             </Label>
           </LabelGroup>
-          <LabelGroup as="div" role="group" aria-label="项目标签" class="spaced-labels">
+          <LabelGroup as="div" class-name="spaced-labels">
             <Label v-for="label in labels" :key="label.text" :variant="label.variant">
               {{ label.text }}
             </Label>
@@ -246,36 +262,27 @@ const slotRows: DocumentationRow[] = [
 
     <ComponentDocsSection title="使用说明">
       <template #description>
-        使用 aria-label 或 aria-labelledby 为标签组命名。默认插槽的每个直接子项作为一个折叠单位，
-        v-for 生成的 Fragment 会展开计数，注释与空白文本不计入；请将每个 Label 直接放入插槽。
+        默认插槽的每个直接子项作为一个折叠单位；v-for 生成的列表会展开计数，显式 Fragment
+        作为一个子项，注释不计入总数。需要具名分组时，在外层容器设置 role 和 aria-label。
         数量应传入正整数；未设置或设为 0 表示不折叠。
       </template>
       <p class="usage-note">
-        auto 模式在挂载后依赖 IntersectionObserver 测量，服务端渲染或缺少该 API
-        时不会自动计算隐藏项。 内置按钮与浮层名称目前使用英文（Show +N more、Show less、Close、All N
-        labels），未提供自定义文案属性。
+        数字折叠和 auto 模式均在挂载后计算，服务端初始输出完整子项。auto 模式依赖
+        IntersectionObserver，运行环境需提供该 API。内置按钮与浮层名称目前使用英文（Show +N
+        more、Show less、Close、All N labels），未提供自定义文案属性。
       </p>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="属性" variant="api">
       <template #description>
-        原生属性和事件监听器透传给根容器。展开状态由组件内部管理，没有自定义事件或受控展开属性。
-        导出类型为 LabelGroupOptions 和 LabelGroupProps。
+        仅接收下列属性，不透传原生属性或事件，也不公开 DOM ref。展开状态由组件内部管理，
+        没有自定义事件或受控展开属性。 导出类型为 LabelGroupOptions 和 LabelGroupProps。
       </template>
       <VisuallyHidden :id="`${documentationId}-props`">LabelGroup 标签组属性</VisuallyHidden>
       <ComponentDocsTable
         :aria-labelledby="`${documentationId}-props`"
         :columns="columns"
         :data="rows"
-      />
-    </ComponentDocsSection>
-
-    <ComponentDocsSection title="组件实例" variant="api">
-      <VisuallyHidden :id="`${documentationId}-instance`">LabelGroup 标签组组件实例</VisuallyHidden>
-      <ComponentDocsTable
-        :aria-labelledby="`${documentationId}-instance`"
-        :columns="columns"
-        :data="instanceRows"
       />
     </ComponentDocsSection>
 
@@ -319,5 +326,10 @@ const slotRows: DocumentationRow[] = [
 
 .spaced-labels {
   gap: 8px;
+}
+
+.label-container {
+  width: 180px;
+  max-width: 100%;
 }
 </style>

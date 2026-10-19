@@ -4,7 +4,7 @@ import type { LabelGroupProps } from './types'
 
 export const LabelGroup = LabelGroupComponent as unknown as {
   new (): Omit<InstanceType<typeof LabelGroupComponent>, '$props'> & {
-    $props: LabelGroupProps & AllowedComponentProps & VNodeProps
+    $props: LabelGroupProps & Pick<AllowedComponentProps, 'class'> & VNodeProps
   }
 }
 export default LabelGroup

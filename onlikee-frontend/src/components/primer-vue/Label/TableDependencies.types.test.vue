@@ -14,10 +14,10 @@ const date = new Date('2024-03-07T00:30:00.000Z')
   <Heading id="heading" as="h3" variant="small" tabindex="0">Repositories</Heading>
   <Label id="label" variant="accent" size="large">Public</Label>
   <Label as="a" href="/labels" target="_blank">View labels</Label>
-  <LabelGroup as="ol" visible-child-count="auto" overflow-style="inline" aria-label="Labels">
+  <LabelGroup as="ol" visible-child-count="auto" overflow-style="inline">
     <Label>Public</Label>
   </LabelGroup>
-  <LabelGroup :visible-child-count="2" data-testid="labels" />
+  <LabelGroup :visible-child-count="2" />
   <ScrollableRegion id="scroll" aria-label="Repositories" tabindex="0" />
   <ScrollableRegion aria-labelledby="heading" />
   <RelativeTime
