@@ -16,6 +16,7 @@ import {
   type VNodeChild,
 } from 'vue'
 import { Button, IconButton } from '../Button'
+import { Heading } from '../Heading'
 import { useFormControlContext } from '../FormControl/context'
 import { useFeatureFlag } from '../FeatureFlags'
 import FilteredActionList from '../FilteredActionList/FilteredActionList.vue'
@@ -551,8 +552,9 @@ defineExpose({
         data-component="SelectPanel.Header"
       >
         <div>
-          <h1
+          <Heading
             :id="titleId"
+            as="h1"
             :class="$style['select-panel__title']"
             data-component="SelectPanel.Title"
           >
@@ -560,7 +562,7 @@ defineExpose({
             <slot v-else name="title">
               <RenderTitle />
             </slot>
-          </h1>
+          </Heading>
           <div
             v-if="subtitle !== undefined ? !!subtitle : !!$slots.subtitle"
             :id="subtitleId"

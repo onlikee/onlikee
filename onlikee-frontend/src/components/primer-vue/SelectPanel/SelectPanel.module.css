@@ -417,5 +417,4 @@
   width: 1px;
 }
 
-.select-panel__title { margin-block: 0; font-weight: var(--base-text-weight-semibold, 600); }
 .select-panel svg[data-component='Octicon'] { display: inline-block; vertical-align: text-bottom; }

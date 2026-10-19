@@ -193,6 +193,7 @@ const navSections = ref([
       { path: '/component/link', label: 'Link 链接' },
       { path: '/component/header', label: 'Header 页头' },
       { path: '/component/heading', label: 'Heading 标题' },
+      { path: '/component/hidden', label: 'Hidden 响应式隐藏' },
       { path: '/component/label', label: 'Label 标签' },
       { path: '/component/label-group', label: 'LabelGroup 标签组' },
       { path: '/component/relative-time', label: 'RelativeTime 相对时间' },
@@ -238,6 +239,7 @@ const navSections = ref([
   {
     title: 'Feedback 反馈组件',
     items: [
+      { path: '/component/inline-message', label: 'InlineMessage 行内提示' },
       { path: '/component/progress-bar', label: 'ProgressBar 进度条' },
       { path: '/component/spinner', label: 'Spinner 加载指示器' },
       { path: '/component/skeleton', label: 'Skeleton 骨架屏' },

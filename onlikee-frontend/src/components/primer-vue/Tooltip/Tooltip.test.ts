@@ -4,19 +4,23 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mount, flushPromises, type VueWrapper } from '@vue/test-utils'
 import {
   Comment,
+  createSSRApp,
   defineComponent,
   Fragment,
   h,
   nextTick,
   onMounted,
   onBeforeUnmount,
+  ref,
   useTemplateRef,
 } from 'vue'
+import { renderToString } from '@vue/server-renderer'
 import { FeatureFlags } from '../FeatureFlags'
 import * as tooltipExports from './index'
 import { registerEscapeHandler } from '../internal/documentRegistries'
 import Tooltip from './Tooltip.vue'
 import { IconButton } from '../Button'
+import { PLATFORM_OVERRIDE_KEY, type Platform } from '../KeybindingHint/platform'
 
 const wrappers: VueWrapper[] = []
 async function settle() {
@@ -228,6 +232,86 @@ describe('Tooltip (Tooltip public component)', () => {
     expect(container.findAll('[data-component="KeybindingHint"]')).toHaveLength(2)
     expect(container.text()).toContain('or')
   })
+
+  it.each(['Tooltip', 'IconButton'] as const)(
+    'updates visible and accessible shortcuts together through %s',
+    async (component) => {
+      const platform = ref<Platform | null>('apple')
+      const options = {
+        global: { provide: { [PLATFORM_OVERRIDE_KEY as symbol]: platform } },
+        attachTo: document.body,
+      }
+      const wrapper = track(
+        component === 'Tooltip'
+          ? mount(Tooltip, {
+              ...options,
+              props: { text: 'Open', type: 'label', keybindingHint: ['Mod+K', 'Meta+K'] },
+              slots: { default: () => h('button', { type: 'button' }, 'Trigger') },
+            })
+          : mount(IconButton, {
+              ...options,
+              props: { icon: IconStub, 'aria-label': 'Open', keybindingHint: ['Mod+K', 'Meta+K'] },
+            }),
+      )
+      await settle()
+      const button = wrapper.get('button')
+      const labelId = button.attributes('aria-labelledby')!
+      const label = () => document.getElementById(labelId)!.textContent
+      const symbols = () =>
+        wrapper.findAll('[data-kbd-chord] span[aria-hidden]').map((node) => node.text())
+      expect(label()).toContain('(command k or command k)')
+      expect(symbols()).toEqual(['⌘', 'K', '⌘', 'K'])
+      platform.value = 'windows'
+      await settle()
+      expect(label()).toContain('(control k or Windows k)')
+      expect(symbols()).toEqual(['⌃', 'K', 'Win', 'K'])
+      platform.value = 'other'
+      await settle()
+      expect(label()).toContain('(control k or meta k)')
+      expect(symbols()).toEqual(['⌃', 'K', 'Meta', 'K'])
+      expect(button.attributes('aria-labelledby')).toBe(labelId)
+      expect(wrapper.findAll('[data-component="Tooltip"]')).toHaveLength(1)
+    },
+  )
+
+  it.each(['Tooltip', 'IconButton'] as const)(
+    'hydrates %s shortcuts and labels together without mismatches',
+    async (component) => {
+      const platformGetter = vi.spyOn(navigator, 'platform', 'get').mockReturnValue('Linux')
+      const render = () =>
+        component === 'Tooltip'
+          ? h(Tooltip, { text: 'Open', type: 'label', keybindingHint: 'Mod+K' }, () =>
+              h('button', { type: 'button' }, 'Trigger'),
+            )
+          : h(IconButton, { icon: IconStub, 'aria-label': 'Open', keybindingHint: 'Mod+K' })
+      const host = document.createElement('div')
+      document.body.append(host)
+      host.innerHTML = await renderToString(createSSRApp({ render }))
+      expect(host.textContent).toContain('(control k)')
+      const trigger = host.querySelector('button')!
+      const labelId = trigger.getAttribute('aria-labelledby')!
+      platformGetter.mockReturnValue('iPhone')
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const app = createSSRApp({ render })
+      try {
+        app.mount(host)
+        await settle()
+        expect(host.querySelector('button')).toBe(trigger)
+        expect(trigger.getAttribute('aria-labelledby')).toBe(labelId)
+        expect(document.getElementById(labelId)!.textContent).toContain('(command k)')
+        expect(
+          Array.from(host.querySelectorAll('[data-kbd-chord] span[aria-hidden]')).map(
+            (node) => node.textContent,
+          ),
+        ).toEqual(['⌘', 'K'])
+        expect(warn).not.toHaveBeenCalled()
+        expect(error).not.toHaveBeenCalled()
+      } finally {
+        app.unmount()
+      }
+    },
+  )
 
   it('keeps the outer span id when the tooltip itself carries an aria-label', async () => {
     const wrapper = track(

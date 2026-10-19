@@ -104,6 +104,50 @@ describe('ActionList complete source contracts', () => {
     expect(wrapper.get('ol').attributes('style')).toContain('margin-top: 5px')
     expect(wrapper.get('ol').attributes('aria-label')).toBe('Actions')
   })
+  it('keeps composed heading attrs, size and DOM refs current across updates', async () => {
+    const props = reactive({
+      as: 'h2' as 'h2' | 'h3',
+      size: 'small' as 'small' | 'medium',
+      id: 'before',
+      class: 'before',
+      style: { fontSize: 18, marginTop: 4 },
+    })
+    const live = mount(
+      defineComponent({
+        setup: () => () =>
+          h(
+            ActionList,
+            {},
+            {
+              default: () => h(ActionList.Heading, props, { default: () => 'Title' }),
+            },
+          ),
+      }),
+      { attachTo: document.body },
+    )
+    wrappers.push(live)
+    const heading = live.findComponent(ActionList.Heading).vm as unknown as {
+      element: HTMLHeadingElement | null
+      focus: () => void
+    }
+    expect(live.get('h2').attributes('data-variant')).toBe('small')
+    expect(heading.element?.style.fontSize).toBe('18px')
+    props.id = 'after'
+    props.class = 'after'
+    props.style = { fontSize: 22, marginTop: 8 }
+    await nextTick()
+    expect(live.get('h2').attributes('id')).toBe('after')
+    expect(live.get('ul').attributes('aria-labelledby')).toBe('after')
+    expect(live.get('h2').classes()).toContain('after')
+    expect(live.get('h2').classes()).not.toContain('before')
+    expect(heading.element?.style.fontSize).toBe('22px')
+    expect(heading.element?.style.marginTop).toBe('8px')
+    props.as = 'h3'
+    props.size = 'medium'
+    await nextTick()
+    expect(live.get('h3').attributes('data-variant')).toBe('medium')
+    expect(heading.element).toBe(live.get('h3').element)
+  })
   it('supports Vue components for root and link polymorphism with native element refs', async () => {
     const List = defineComponent({
       inheritAttrs: false,

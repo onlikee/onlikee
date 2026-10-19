@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, shallowRef, useAttrs } from 'vue'
 import type { HeadingOptions } from './types'
+import { normalizeReactStyle } from '../internal/style'
 
 defineOptions({ name: 'Heading', inheritAttrs: false })
 withDefaults(defineProps<HeadingOptions>(), { as: 'h2' })
@@ -26,6 +27,7 @@ defineExpose({ element })
     :data-variant="variant"
     data-component="Heading"
     v-bind="attrs"
+    :style="normalizeReactStyle(attrs.style)"
     ><slot
   /></component>
 </template>

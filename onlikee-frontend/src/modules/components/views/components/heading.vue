@@ -169,7 +169,8 @@ const slotRows: DocumentationRow[] = [
 
     <ComponentDocsSection title="自定义样式与内容">
       <template #description>
-        使用 class、className 或 style 定制样式，默认插槽可以组合内联内容。
+        使用 class、className 或 style 定制样式，默认插槽可以组合内联内容。 style
+        中需要长度单位的数字会按 px 处理，lineHeight 等无单位属性和 CSS 自定义属性保留原值。
         标题应保留清晰、简洁的文字，便于屏幕阅读器用户通过标题导航。
       </template>
       <ComponentDocsDemoBlock :code="codes.custom">

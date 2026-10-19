@@ -6,6 +6,7 @@ import { defineComponent, h, nextTick, reactive, shallowRef, toRaw, type Compone
 import { LiveRegionElement } from '@primer/live-region-element'
 import { SelectPanel } from './index'
 import { FeatureFlags } from '../FeatureFlags'
+import { Label } from '../Label'
 import type { ItemInput } from './index'
 
 globalThis.Element.prototype.scrollTo = vi.fn()
@@ -66,6 +67,22 @@ afterEach(() => {
   vi.useRealTimers()
 })
 describe('SelectPanel behavior', () => {
+  it('keeps a composed semantic heading as the dialog accessible name when the title changes', async () => {
+    const wrapper = render(SelectPanel, {
+      title: () => h(Label, {}, { default: () => 'Repositories' }),
+    })
+    await settle()
+    const title = document.querySelector<HTMLElement>('[data-component="SelectPanel.Title"]')!
+    const dialog = document.querySelector('[role="dialog"]')!
+    expect(title.tagName).toBe('H1')
+    expect(title.querySelector('[data-component="Label"]')?.textContent).toBe('Repositories')
+    expect(dialog.getAttribute('aria-labelledby')).toBe(title.id)
+    expect(title.hasAttribute('data-variant')).toBe(false)
+    await wrapper.setProps({ title: 'Projects' })
+    await settle()
+    expect(title.textContent).toBe('Projects')
+    expect(dialog.getAttribute('aria-labelledby')).toBe(title.id)
+  })
   it.each(['same', 'copy', 'proxy'] as const)(
     'anchored toggle uses reference identity with %s selection',
     async (kind) => {

@@ -3,7 +3,7 @@ import { computed, type ComponentPublicInstance } from 'vue'
 import VisuallyHidden from '../internal/components/VisuallyHidden.vue'
 import KeybindingHint from '../KeybindingHint/KeybindingHint.vue'
 import { getAccessibleKeybindingHintString } from '../KeybindingHint/utils'
-import { usePlatform } from '../KeybindingHint/platform'
+import { usePlatformRef } from '../KeybindingHint/platform'
 import type { TooltipDirection, TooltipType } from './types'
 
 defineOptions({ name: 'TooltipElement', inheritAttrs: false })
@@ -21,10 +21,10 @@ const props = withDefaults(
   { type: 'description', keybindingHints: () => [], hasAriaLabel: false, className: undefined },
 )
 defineEmits<{ mouseenter: []; mouseleave: [] }>()
-const platform = usePlatform()
+const platform = usePlatformRef()
 const accessibleHintString = computed(() =>
   props.keybindingHints
-    .map((hint) => getAccessibleKeybindingHintString(hint, platform))
+    .map((hint) => getAccessibleKeybindingHintString(hint, platform.value))
     .join(' or '),
 )
 </script>

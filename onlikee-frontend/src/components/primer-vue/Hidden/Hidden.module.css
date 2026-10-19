@@ -1,0 +1,17 @@
+@media screen and (max-width: calc(48rem - 0.02px)) {
+  .Hidden {
+    display: var(--hiddenDisplay-narrow, block);
+  }
+}
+
+@media screen and (min-width: 48rem) {
+  .Hidden {
+    display: var(--hiddenDisplay-regular, block);
+  }
+}
+
+@media screen and (min-width: 87.5rem) {
+  .Hidden {
+    display: var(--hiddenDisplay-wide, block);
+  }
+}

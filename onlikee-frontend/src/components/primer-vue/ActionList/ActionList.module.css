@@ -739,33 +739,15 @@
 }
 
 .action-list-header {
-  margin-block-end: var(--base-size-8, 0.5rem);
+  margin-block-end: var(--base-size-8);
 }
 
 .action-list-header:where([data-list-variant='full']) {
-  margin-inline-start: var(--base-size-8, 0.5rem);
+  margin-inline-start: var(--base-size-8);
 }
 
 .action-list-header:where([data-list-variant='inset'], [data-list-variant='horizontal-inset']) {
-  margin-inline-start: calc(var(--control-medium-paddingInline-condensed, 0.5rem) + var(--base-size-8, 0.5rem));
-}
-
-:where(.action-list-heading) {
-  margin: 0;
-  font-size: var(--text-title-size-large, var(--base-text-size-xl, 2rem));
-  font-weight: var(--base-text-weight-semibold, 600);
-}
-
-:where(.action-list-heading):where([data-variant='large']) {
-  font: var(--text-title-shorthand-large, var(--text-title-weight-large, var(--base-text-weight-semibold, 600)) var(--text-title-size-large, var(--base-text-size-xl, 2rem)) / var(--text-title-lineHeight-large, var(--base-text-lineHeight-normal, 1.5)) var(--fontStack-sansSerifDisplay, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"));
-}
-
-:where(.action-list-heading):where([data-variant='medium']) {
-  font: var(--text-title-shorthand-medium, var(--text-title-weight-medium, var(--base-text-weight-semibold, 600)) var(--text-title-size-medium, var(--base-text-size-lg, 1.25rem)) / var(--text-title-lineHeight-medium, var(--base-text-lineHeight-relaxed, 1.625)) var(--fontStack-sansSerifDisplay, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"));
-}
-
-:where(.action-list-heading):where([data-variant='small']) {
-  font: var(--text-title-shorthand-small, var(--text-title-weight-small, var(--base-text-weight-semibold, 600)) var(--text-title-size-small, var(--base-text-size-md, 1rem)) / var(--text-title-lineHeight-small, var(--base-text-lineHeight-normal, 1.5)) var(--fontStack-sansSerif, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"));
+  margin-inline-start: calc(var(--control-medium-paddingInline-condensed) + var(--base-size-8));
 }
 
 .action-list-truncate {

@@ -58,6 +58,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/stack.vue'),
       },
       {
+        path: 'hidden',
+        name: 'Hidden',
+        component: () => import('../views/components/hidden.vue'),
+      },
+      {
         path: 'container',
         name: 'Container',
         component: () => import('../views/components/container.vue'),
@@ -256,6 +261,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/underline-panels.vue'),
       },
       // Feedback 反馈组件
+      {
+        path: 'inline-message',
+        name: 'InlineMessage',
+        component: () => import('../views/components/inline-message.vue'),
+      },
       {
         path: 'progress-bar',
         name: 'ProgressBar',

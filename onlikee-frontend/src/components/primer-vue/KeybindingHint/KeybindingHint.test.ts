@@ -1,11 +1,18 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mount, type VueWrapper } from '@vue/test-utils'
-import { nextTick, ref } from 'vue'
+import { createSSRApp, h, nextTick, ref } from 'vue'
+import { renderToString } from '@vue/server-renderer'
 import KeybindingHint from './KeybindingHint.vue'
 import { getAccessibleKeybindingHintString } from './utils'
 import { PLATFORM_OVERRIDE_KEY, type Platform } from './platform'
 import { accessibleChordString, accessibleSequenceString, splitChord } from './chordUtils'
+
+// The behavior caches the first OS result; let each fixture simulate its own platform.
+vi.mock('@primer/behaviors/utils', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@primer/behaviors/utils')>()
+  return { ...actual, isMacOS: () => /^mac/i.test(navigator.platform) }
+})
 
 const wrappers: VueWrapper[] = []
 afterEach(() => {
@@ -100,6 +107,60 @@ describe('KeybindingHint', () => {
     await nextTick()
     expect(visibleKeys()).toContain('Meta')
     expect(hiddenTexts(wrapper.get('[data-kbd-chord]')).join(' ')).toBe('meta k')
+  })
+
+  it.each([
+    ['MacIntel', 'Mod+K', 'command k', '⌘'],
+    ['iPhone', 'Alt+K', 'option k', '⌥'],
+    ['Win32', 'Meta+K', 'Windows k', 'Win'],
+  ])('detects %s immediately during client rendering', (platform, keys, spoken, symbol) => {
+    vi.spyOn(navigator, 'platform', 'get').mockReturnValue(platform)
+    const wrapper = track(mount(KeybindingHint, { props: { keys } }))
+    expect(hiddenTexts(wrapper).join(' ')).toBe(spoken)
+    expect(wrapper.findAll('span[aria-hidden]').map((node) => node.text())).toContain(symbol)
+  })
+
+  it.each([
+    ['MacIntel', 'Mod+K', 'control k', 'command k'],
+    ['iPhone', 'Alt+K', 'alt k', 'option k'],
+    ['Win32', 'Meta+K', 'meta k', 'Windows k'],
+  ])(
+    'hydrates %s hints without replacing server nodes or reporting mismatches',
+    async (platform, keys, serverSpoken, clientSpoken) => {
+      const platformGetter = vi.spyOn(navigator, 'platform', 'get').mockReturnValue('Linux')
+      const render = () => h('div', [h(KeybindingHint, { keys })])
+      const host = document.createElement('div')
+      document.body.append(host)
+      host.innerHTML = await renderToString(createSSRApp({ render }))
+      expect(hiddenTexts({ element: host }).join(' ')).toBe(serverSpoken)
+      const serverKbd = host.querySelector('kbd')
+      platformGetter.mockReturnValue(platform)
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+      const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+      const app = createSSRApp({ render })
+      try {
+        app.mount(host)
+        await nextTick()
+        expect(host.querySelector('kbd')).toBe(serverKbd)
+        expect(hiddenTexts({ element: host }).join(' ')).toBe(clientSpoken)
+        expect(warn).not.toHaveBeenCalled()
+        expect(error).not.toHaveBeenCalled()
+      } finally {
+        app.unmount()
+      }
+    },
+  )
+
+  it('uses the server platform default even when browser globals are present', async () => {
+    vi.spyOn(navigator, 'platform', 'get').mockReturnValue('MacIntel')
+    const html = await renderToString(
+      createSSRApp({ render: () => h(KeybindingHint, { keys: 'Mod+K' }) }),
+    )
+    const host = document.createElement('div')
+    host.innerHTML = html
+    expect(hiddenTexts({ element: host }).join(' ')).toBe('control k')
+    expect(html).toContain('>⌃</span>')
+    expect(html).not.toContain('command')
   })
 
   it('does not forward unknown attrs to the root kbd (source drops rest in Chord)', () => {

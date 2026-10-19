@@ -1,4 +1,15 @@
-import { computed, inject, unref, type ComputedRef, type InjectionKey, type MaybeRef } from 'vue'
+import {
+  computed,
+  getCurrentInstance,
+  inject,
+  onMounted,
+  shallowRef,
+  ssrContextKey,
+  unref,
+  type ComputedRef,
+  type InjectionKey,
+  type MaybeRef,
+} from 'vue'
 import { isMacOS } from '@primer/behaviors/utils'
 
 /**
@@ -44,8 +55,20 @@ export const PLATFORM_OVERRIDE_KEY: InjectionKey<MaybeRef<Platform | null>> =
 
 export function usePlatformRef(): ComputedRef<Platform> {
   const override = inject(PLATFORM_OVERRIDE_KEY, null)
-  const detected = typeof window === 'undefined' ? getServerSnapshot() : getSnapshot()
-  return computed(() => unref(override) ?? detected)
+  const serverRendering = inject(ssrContextKey, null) !== null
+  // During hydration the public instance already has a root DOM node.
+  const hydrating = getCurrentInstance()?.proxy?.$el != null
+  const detected = shallowRef(
+    serverRendering || typeof window === 'undefined' || hydrating
+      ? getServerSnapshot()
+      : getSnapshot(),
+  )
+  if (hydrating) {
+    onMounted(() => {
+      detected.value = getSnapshot()
+    })
+  }
+  return computed(() => unref(override) ?? detected.value)
 }
 
 export function usePlatform(): Platform {
