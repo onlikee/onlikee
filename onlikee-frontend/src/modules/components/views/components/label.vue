@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useId } from 'vue'
 import { Label, type LabelColorOptions } from '@/components/primer-vue/Label'
+import { LabelGroup } from '@/components/primer-vue/LabelGroup'
+import { ActionList } from '@/components/primer-vue/ActionList'
 import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
 import ComponentDocsTable, {
   type DocumentationColumn,
@@ -40,6 +42,18 @@ import { Label } from '@/components/primer-vue/Label'
 <Label size="large" variant="accent">大尺寸</Label>`,
   elements: `<Label>静态标签</Label>
 <Label as="a" href="#属性" variant="accent">查看属性</Label>`,
+  compositions: `<LabelGroup :visible-child-count="1" overflow-style="inline" aria-label="仓库标签">
+  <Label>公开</Label>
+  <Label as="a" href="#属性" variant="accent">查看属性</Label>
+  <Label variant="success">已通过</Label>
+</LabelGroup>
+
+<ActionList>
+  <ActionList.Item>
+    推荐仓库
+    <ActionList.TrailingVisual><Label variant="success">推荐</Label></ActionList.TrailingVisual>
+  </ActionList.Item>
+</ActionList>`,
   custom: `<Label variant="accent" class="custom-label">
   <span aria-hidden="true">★</span>
   推荐
@@ -63,7 +77,7 @@ const rows: DocumentationRow[] = [
   {
     id: 'as',
     name: 'as',
-    type: 'string | Component',
+    type: 'keyof NativeElements | Component',
     default: 'span',
     description: '渲染的元素或组件；属性与事件透传给该元素或组件。',
   },
@@ -93,10 +107,10 @@ const instanceRows: DocumentationRow[] = [
   {
     id: 'element',
     name: 'element',
-    type: 'HTMLElement | null',
+    type: 'HTMLElement | SVGElement | ComponentPublicInstance | null',
     default: 'null',
     description:
-      '通过模板 ref 访问根元素；as 为自定义组件时，运行时引用遵循该组件的 ref 暴露行为。',
+      '通过模板 ref 访问根元素；Primer 组件的 element 会继续转发，其他自定义组件保留其暴露的实例。',
   },
 ]
 const slotRows: DocumentationRow[] = [
@@ -180,6 +194,30 @@ const slotRows: DocumentationRow[] = [
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
+    <ComponentDocsSection title="组件组合">
+      <template #description>
+        LabelGroup 管理标签的折叠与展开；展开后，第一个新增的可聚焦标签会接收焦点。 在
+        ActionList.TrailingVisual 中使用时，标签文本会成为列表项可访问名称的一部分。
+      </template>
+      <ComponentDocsDemoBlock :code="codes.compositions">
+        <div class="composition-examples">
+          <LabelGroup :visible-child-count="1" overflow-style="inline" aria-label="仓库标签">
+            <Label>公开</Label>
+            <Label as="a" href="#属性" variant="accent">查看属性</Label>
+            <Label variant="success">已通过</Label>
+          </LabelGroup>
+          <ActionList>
+            <ActionList.Item>
+              推荐仓库
+              <ActionList.TrailingVisual
+                ><Label variant="success">推荐</Label></ActionList.TrailingVisual
+              >
+            </ActionList.Item>
+          </ActionList>
+        </div>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
     <ComponentDocsSection title="使用建议">
       <template #description>
         Label 用于展示元信息。表单字段的关联标签应使用原生 label 或表单组件提供的标签。
@@ -190,8 +228,8 @@ const slotRows: DocumentationRow[] = [
     <ComponentDocsSection title="属性" variant="api">
       <template #description>
         支持原生属性与事件，id、class、style、aria-*、data-* 和事件监听器会透传给根元素。
-        组件没有自定义事件。导出 LabelOptions、LabelColorOptions、LabelSizeKeys 和泛型
-        LabelProps；例如 LabelProps&lt;'a'&gt; 包含链接属性。
+        组件没有自定义事件。导出 LabelOptions、LabelColorOptions、LabelSizeKeys 和泛型 LabelProps 和
+        LabelInstance；例如 LabelProps&lt;'a'&gt; 包含链接属性，as 为自定义组件时保留其必填属性。
       </template>
       <VisuallyHidden :id="`${documentationId}-props`">Label 标签属性</VisuallyHidden>
       <ComponentDocsTable
@@ -203,8 +241,9 @@ const slotRows: DocumentationRow[] = [
 
     <ComponentDocsSection title="组件实例" variant="api">
       <template #description>
-        使用组件模板 ref 的 element 读取根元素，挂载前为 null。公开类型声明为 HTMLElement | null；as
-        为自定义组件时，应先确认该组件暴露的实例接口再访问 DOM 方法。
+        使用组件模板 ref 的 element 读取根元素，挂载前和卸载后为 null；as 为原生标签时返回 HTML 或
+        SVG 元素；Primer 组件的 element 会继续转发，其他自定义组件返回其暴露的实例。可使用
+        LabelInstance 标注模板引用，访问 DOM 方法前需确认引用类型。
       </template>
       <VisuallyHidden :id="`${documentationId}-instance`">Label 标签组件实例</VisuallyHidden>
       <ComponentDocsTable
@@ -249,5 +288,10 @@ const slotRows: DocumentationRow[] = [
 .custom-label {
   gap: 4px;
   border-style: dashed;
+}
+
+.composition-examples {
+  display: grid;
+  gap: 16px;
 }
 </style>

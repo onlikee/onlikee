@@ -1,25 +1,15 @@
 import LabelComponent from './Label.vue'
-import type {
-  AllowedComponentProps,
-  Component,
-  HTMLAttributes,
-  NativeElements,
-  VNodeProps,
-} from 'vue'
-import type { LabelOptions, LabelProps } from './types'
+import type { AllowedComponentProps, Component, NativeElements, VNodeProps } from 'vue'
+import type { LabelComponentProps } from './types'
 
-type NativeLabelProps = {
-  [As in keyof NativeElements]: LabelProps<As> & { as: As }
-}[keyof NativeElements]
-type LabelComponentProps =
-  | (LabelProps & { as?: 'span' })
-  | NativeLabelProps
-  | (Omit<LabelOptions, 'as'> & { as: Component } & HTMLAttributes & Record<string, unknown>)
-
-export const Label = LabelComponent as unknown as {
-  new (): Omit<InstanceType<typeof LabelComponent>, '$props'> & {
-    $props: LabelComponentProps & AllowedComponentProps & VNodeProps
-  }
-}
+export const Label = LabelComponent as <As extends keyof NativeElements | Component = 'span'>(
+  props: LabelComponentProps<As> & VNodeProps & AllowedComponentProps,
+) => ReturnType<typeof LabelComponent<As>>
 export default Label
-export type { LabelProps, LabelOptions, LabelColorOptions, LabelSizeKeys } from './types'
+export type {
+  LabelProps,
+  LabelOptions,
+  LabelColorOptions,
+  LabelSizeKeys,
+  LabelInstance,
+} from './types'

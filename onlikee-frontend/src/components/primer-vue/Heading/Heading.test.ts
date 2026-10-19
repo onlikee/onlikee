@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { createSSRApp, h, nextTick } from 'vue'
 import { renderToString } from '@vue/server-renderer'
 import { Heading } from './index'
-import { Label } from '../Label'
+import { Label, type LabelInstance } from '../Label'
 import { Link } from '../Link'
 import { VisuallyHidden } from '../VisuallyHidden'
 import { Tooltip } from '../Tooltip'
@@ -164,7 +164,7 @@ describe('Label', () => {
     expect(wrapper.attributes('data-size')).toBe('large')
     expect(wrapper.attributes('data-variant')).toBe('accent')
     expect(wrapper.classes()).toEqual(expect.arrayContaining(['custom', 'extra']))
-    expect(wrapper.vm.element).toBe(wrapper.element)
+    expect((wrapper.vm as unknown as LabelInstance).element).toBe(wrapper.element)
     wrapper.unmount()
   })
 })

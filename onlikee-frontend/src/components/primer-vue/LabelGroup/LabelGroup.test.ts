@@ -99,7 +99,7 @@ describe('LabelGroup', () => {
   it('focuses the first newly revealed focusable child', async () => {
     const wrapper = fixture({ visibleChildCount: 1, overflowStyle: 'inline' }, () => [
       h(Label, null, { default: () => 'Plain' }),
-      h('a', { href: '#issue', id: 'hidden-link' }, 'Issue'),
+      h(Label, { as: 'a', href: '#issue', id: 'hidden-link' }, () => 'Issue'),
       h(Label, null, { default: () => 'Last' }),
     ])
     await wrapper.get('button').trigger('click')

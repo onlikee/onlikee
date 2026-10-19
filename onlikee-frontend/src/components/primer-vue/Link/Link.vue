@@ -2,6 +2,7 @@
 import { onMounted, shallowRef, useAttrs, useCssModule } from 'vue'
 import type { Component, ComponentPublicInstance, NativeElements } from 'vue'
 import type { LinkComponentProps } from './types'
+import { normalizeReactStyle } from '../internal/style'
 
 // eslint-disable-next-line vue/no-reserved-component-names -- Keep the public component name.
 defineOptions({ name: 'Link', inheritAttrs: false })
@@ -34,6 +35,7 @@ function getRootAttrs() {
     'data-muted': props.muted,
     'data-inline': props.inline,
     ...rest,
+    style: normalizeReactStyle(attrs.style),
   }
 }
 
