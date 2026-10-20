@@ -1,0 +1,16 @@
+.Heading {
+  margin-block-end: var(--base-size-8, 0.5rem);
+  margin-inline-start: calc(
+    var(--control-medium-paddingInline-condensed, 0.5rem) + var(--base-size-8, 0.5rem)
+  );
+}
+
+.GroupHeading > a {
+  color: var(--fgColor-default);
+  text-decoration: inherit;
+}
+
+.GroupHeading > a:hover {
+  -webkit-text-decoration: underline;
+  text-decoration: underline;
+}

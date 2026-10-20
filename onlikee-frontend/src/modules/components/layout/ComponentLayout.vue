@@ -230,6 +230,7 @@ const navSections = ref([
   {
     title: 'Navigation 导航',
     items: [
+      { path: '/component/nav-list', label: 'NavList 导航列表' },
       { path: '/component/breadcrumbs', label: 'Breadcrumbs 面包屑' },
       { path: '/component/steps', label: 'Steps 步骤条' },
       { path: '/component/underline-nav', label: 'UnderlineNav 下划线导航' },

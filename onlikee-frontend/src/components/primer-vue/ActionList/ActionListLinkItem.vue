@@ -58,7 +58,7 @@ export default defineComponent({
                 ...linkAttrs,
                 ref: setElement,
                 class: [rest.class, classes['action-list-link']],
-                style: normalizeReactStyle(style),
+                style: typeof props.as === 'string' ? normalizeReactStyle(style) : style,
                 onClick: (event: MouseEvent) => {
                   ;(onClick as ((event: MouseEvent) => void) | undefined)?.(event)
                   const handlers = attrs.onClick

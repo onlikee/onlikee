@@ -241,6 +241,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
       },
       // Navigation
       {
+        path: 'nav-list',
+        name: 'NavList',
+        component: () => import('../views/components/nav-list.vue'),
+      },
+      {
         path: 'breadcrumbs',
         name: 'Breadcrumbs',
         component: () => import('../views/components/breadcrumbs.vue'),

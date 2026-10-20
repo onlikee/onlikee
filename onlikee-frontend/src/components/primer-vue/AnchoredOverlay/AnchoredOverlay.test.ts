@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+/* eslint-disable vue/one-component-per-file -- Test fixtures exercise overlay composition with multiple wrapper components. */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'

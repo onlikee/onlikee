@@ -126,9 +126,8 @@ function setTriggerEl(node: Element | ComponentPublicInstance | null) {
   triggerTarget.value = node
 }
 
-const Render = (): VNode | VNode[] => {
+const Render = ({ children: nodes }: { children: VNode[] }): VNode | VNode[] => {
   const hasAriaLabel = 'aria-label' in attrs
-  const nodes = slots.default?.() ?? []
   if (nodes.length !== 1) {
     tooltipContextValue.tooltipId = parentTooltipContext?.tooltipId
     throw new Error('React.Children.only expected to receive a single React element child.')
@@ -195,4 +194,4 @@ const Render = (): VNode | VNode[] => {
   ]
 }
 </script>
-<template><Render /></template>
+<template><Render :children="slots.default?.() ?? []" /></template>

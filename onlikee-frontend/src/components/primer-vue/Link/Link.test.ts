@@ -1,9 +1,13 @@
 // @vitest-environment jsdom
+/* eslint-disable vue/one-component-per-file -- Independent polymorphic Link test fixtures. */
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mount, type VueWrapper } from '@vue/test-utils'
-import { defineComponent, h, nextTick } from 'vue'
+import { createSSRApp, defineComponent, h, markRaw, nextTick } from 'vue'
+import { renderToString } from '@vue/server-renderer'
 import { Link } from './index'
 import type { LinkInstance } from './types'
+import { Tooltip } from '../Tooltip'
+import { FeatureFlags } from '../FeatureFlags'
 
 const wrappers: VueWrapper[] = []
 function render(props: Record<string, unknown> = {}, content?: () => unknown): VueWrapper {
@@ -150,6 +154,98 @@ describe('Link', () => {
     expect(wrapper.attributes('aria-label')).toBe('Custom')
     expect((wrapper.vm as unknown as LinkInstance).element).toBe(wrapper.element)
     expect(error).not.toHaveBeenCalled()
+  })
+
+  it('passes numeric styles unchanged to a custom component before it transforms them', async () => {
+    const receivedStyle = vi.fn()
+    const CustomLink = markRaw(
+      defineComponent({
+        inheritAttrs: false,
+        setup:
+          (_props, { attrs, slots }) =>
+          () => {
+            const style = attrs.style as { marginLeft: number }
+            receivedStyle(style)
+            return h(
+              'a',
+              { ...attrs, style: { marginLeft: `${style.marginLeft * 2}px` } },
+              slots.default?.(),
+            )
+          },
+      }),
+    )
+    const wrapper = render({ as: CustomLink, href: '#custom', style: { marginLeft: 8 } })
+    expect(receivedStyle).toHaveBeenLastCalledWith({ marginLeft: 8 })
+    expect((wrapper.element as HTMLElement).style.marginLeft).toBe('16px')
+    await wrapper.setProps({ style: { marginLeft: 12 } })
+    expect(receivedStyle).toHaveBeenLastCalledWith({ marginLeft: 12 })
+    expect((wrapper.element as HTMLElement).style.marginLeft).toBe('24px')
+  })
+
+  it.each([false, true])(
+    'forwards a single trigger to Tooltip as its root with merged refs=%s',
+    async (mergedRefs) => {
+      const error = vi.spyOn(console, 'error')
+      const warn = vi.spyOn(console, 'warn')
+      const onClick = vi.fn((event: Event) => event.preventDefault())
+      const wrapper = mount(FeatureFlags, {
+        props: { flags: { primer_react_merged_forwarded_refs: mergedRefs } },
+        slots: {
+          default: () =>
+            h(
+              Link,
+              { as: Tooltip, text: 'Link help' },
+              {
+                default: () =>
+                  h('a', { href: '#target', 'aria-describedby': 'existing', onClick }, 'Target'),
+              },
+            ),
+        },
+        attachTo: document.body,
+      })
+      wrappers.push(wrapper)
+      await nextTick()
+      const anchor = wrapper.get('a')
+      const tooltip = wrapper.get('[role="tooltip"]')
+      const instance = wrapper.findComponent(Link).vm as unknown as LinkInstance
+      expect(anchor.attributes('aria-describedby')).toBe(`existing ${tooltip.attributes('id')}`)
+      expect(instance.element).toBe(anchor.element)
+      instance.element?.focus()
+      expect(document.activeElement).toBe(anchor.element)
+      await anchor.trigger('click')
+      expect(onClick).toHaveBeenCalledOnce()
+      expect(warn).not.toHaveBeenCalled()
+      expect(error).not.toHaveBeenCalled()
+      wrapper.unmount()
+      wrappers.splice(wrappers.indexOf(wrapper), 1)
+      expect(instance.element).toBeNull()
+    },
+  )
+
+  it('hydrates native styles and slot content without changing the anchor', async () => {
+    const options = {
+      render: () =>
+        h(Link, { href: '#target', inline: true, style: { marginLeft: 8, lineHeight: 1.5 } }, () =>
+          h('strong', 'Target'),
+        ),
+    }
+    const host = document.createElement('div')
+    document.body.append(host)
+    host.innerHTML = await renderToString(createSSRApp(options))
+    expect(host.innerHTML).toContain('margin-left:8px;line-height:1.5;')
+    const anchor = host.firstElementChild
+    const error = vi.spyOn(console, 'error')
+    const warn = vi.spyOn(console, 'warn')
+    const app = createSSRApp(options)
+    try {
+      app.mount(host)
+      expect(host.firstElementChild).toBe(anchor)
+      expect(host.querySelector('a > strong')?.textContent).toBe('Target')
+      expect(error).not.toHaveBeenCalled()
+      expect(warn).not.toHaveBeenCalled()
+    } finally {
+      app.unmount()
+    }
   })
 
   it('reports inaccessible roots in development', () => {

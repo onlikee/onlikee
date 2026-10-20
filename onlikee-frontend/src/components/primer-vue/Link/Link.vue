@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="As extends keyof NativeElements | Component = 'a'">
-import { onMounted, shallowRef, useAttrs, useCssModule } from 'vue'
+import { h, onMounted, shallowRef, useAttrs, useCssModule, useSlots } from 'vue'
 import type { Component, ComponentPublicInstance, NativeElements } from 'vue'
 import type { LinkComponentProps } from './types'
 import { normalizeReactStyle } from '../internal/style'
@@ -12,6 +12,7 @@ const props = withDefaults(defineProps<LinkComponentProps<As>>(), {
   inline: undefined,
 })
 defineSlots<{ default?: () => unknown }>()
+const slots = useSlots()
 const attrs = useAttrs()
 const styles = useCssModule()
 const element = shallowRef<HTMLElement | SVGElement | null>(null)
@@ -35,7 +36,10 @@ function getRootAttrs() {
     'data-muted': props.muted,
     'data-inline': props.inline,
     ...rest,
-    style: normalizeReactStyle(attrs.style),
+    style:
+      typeof props.as === 'string' || props.as === undefined
+        ? normalizeReactStyle(attrs.style)
+        : attrs.style,
   }
 }
 
@@ -55,13 +59,20 @@ if (import.meta.env.DEV) {
   })
 }
 
+const Render = () => {
+  const component = props.as ?? 'a'
+  return h(
+    component,
+    { ...getRootAttrs(), ref: setElement },
+    typeof component === 'string' ? slots.default?.() : { default: slots.default },
+  )
+}
+
 defineExpose({ element })
 </script>
 
 <template>
-  <component :is="as ?? 'a'" :ref="setElement" v-bind="getRootAttrs()">
-    <slot />
-  </component>
+  <Render />
 </template>
 
 <style module src="./Link.module.css" />
