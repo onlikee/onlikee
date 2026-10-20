@@ -1,7 +1,7 @@
-:global(.primer-overlay).select-panel__overlay[data-component] {
+.select-panel__overlay[data-component] {
   z-index: auto;
 }
-:global(.primer-overlay).select-panel__overlay[data-css-anchor] {
+.select-panel__overlay[data-anchor-position='true'] {
   z-index: 100;
 }
 .select-panel svg[data-component='Octicon'] {

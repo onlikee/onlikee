@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, provide, shallowRef, toValue, watch, type Ref } from 'vue'
-import Overlay from '../internal/components/Overlay.vue'
+import { Overlay } from '../Overlay'
+import { useAnchoredPosition } from '../composables/useAnchoredPosition'
 import { ActionList, ActionListContainerContext } from '../ActionList'
 import MenuItem from './ActionBarMenuItem.vue'
 import { actionBarMenuKey, type MenuEntry, type RegisteredItem } from './context'
@@ -27,9 +28,22 @@ const menuEntries = computed(() =>
     : (props.items ?? []),
 )
 const parentClose = inject(actionBarMenuKey, undefined)
-const overlay = shallowRef<{ element: HTMLElement | null; visibility?: string } | null>(null)
+const overlay = shallowRef<{ element: HTMLElement | null } | null>(null)
 const returnFocus = computed(() => toValue(props.returnFocusRef) ?? props.anchor)
-const ignoreClickRefs = computed(() => [computed(() => props.anchor)])
+const anchorElement = computed(() => props.anchor)
+const floatingElement = computed(() => overlay.value?.element ?? null)
+const overlayBindings = {
+  returnFocusRef: returnFocus,
+  ignoreClickRefs: [anchorElement],
+}
+const { position } = useAnchoredPosition(() => ({
+  anchorElementRef: anchorElement,
+  floatingElementRef: floatingElement,
+  side: props.submenu ? 'outside-right' : 'outside-bottom',
+  align: 'start',
+  enabled: props.open,
+}))
+const visibility = computed(() => (position.value ? 'visible' : 'hidden'))
 function closeAll() {
   emit('close')
   parentClose?.()
@@ -42,7 +56,7 @@ provide(ActionListContainerContext, {
   afterSelect: closeAll,
 })
 watch(
-  () => [overlay.value?.element, overlay.value?.visibility, props.last, props.focusAnchor] as const,
+  () => [overlay.value?.element, visibility.value, props.last, props.focusAnchor] as const,
   ([element, visibility]) => {
     if (!element || visibility === 'hidden') return
     if (props.focusAnchor) {
@@ -90,16 +104,17 @@ function keydown(event: KeyboardEvent) {
 
 <template>
   <Overlay
+    v-if="open"
     ref="overlay"
-    :open="open"
-    :anchor="anchor"
-    :side="submenu ? 'outside-right' : 'outside-bottom'"
-    align="start"
-    :return-focus-ref="returnFocus"
-    :ignore-click-refs="ignoreClickRefs"
+    v-bind="overlayBindings"
+    :top="position?.top"
+    :left="position?.left"
+    :anchor-side="position?.anchorSide"
+    :visibility="visibility"
     :prevent-focus-on-open="true"
     data-component="ActionBar.MenuOverlay"
-    @close="emit('close')"
+    @escape="emit('close')"
+    @click-outside="emit('close')"
     @keydown="keydown"
   >
     <ActionList

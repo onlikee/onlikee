@@ -1,8 +1,17 @@
-import { nextTick, shallowRef, toValue, watch, type MaybeRefOrGetter } from 'vue'
+import { nextTick, shallowRef, toValue, watch, type Ref, type MaybeRefOrGetter } from 'vue'
 import { focusTrap } from '@primer/behaviors'
-import type { FocusTrapSettings } from '../internal/components/overlayTypes'
+import type { FocusTarget } from '../internal/focusTarget'
 import { registerOutsideClickHandler } from '../internal/documentRegistries'
 import { resolveFocusTarget } from '../internal/focusTarget'
+
+export interface FocusTrapSettings {
+  containerRef?: Ref<HTMLElement | null>
+  initialFocusRef?: Ref<FocusTarget | null>
+  disabled?: boolean
+  restoreFocusOnCleanUp?: boolean
+  returnFocusRef?: Ref<FocusTarget | null>
+  allowOutsideClick?: boolean
+}
 
 export function useFocusTrap(settings: MaybeRefOrGetter<FocusTrapSettings> = {}) {
   const first = toValue(settings)

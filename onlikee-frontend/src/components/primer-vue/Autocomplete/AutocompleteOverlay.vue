@@ -14,7 +14,7 @@ import {
   type PropType,
   type Ref,
 } from 'vue'
-import Overlay from '../internal/components/Overlay.vue'
+import { Overlay } from '../Overlay'
 import { useAnchoredPosition } from '../composables/useAnchoredPosition'
 import { useAutocompleteContext } from './context'
 import { normalizeReactStyle } from '../internal/style'

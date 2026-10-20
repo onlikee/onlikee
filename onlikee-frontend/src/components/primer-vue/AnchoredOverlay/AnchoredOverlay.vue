@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, shallowRef, useAttrs, useId, watch, useCssModule, toRaw, type VNode } from 'vue'
 import type { AnchorPosition } from '@primer/behaviors'
-import Overlay from '../internal/components/Overlay.vue'
+import { Overlay } from '../Overlay'
+import { widthMap } from '../Overlay/constants'
 import { IconButton as Button } from '../Button'
 import type { ButtonA11yProps } from '../Button/types'
 import XIcon from '@onlikee/octicons-vue/icons/x'
@@ -38,11 +39,7 @@ const anchor = shallowRef<HTMLElement | null>(null)
 const anchorTarget = shallowRef<
   HTMLElement | { element?: HTMLElement | null; $el?: unknown } | null
 >(null)
-const overlay = shallowRef<{
-  element: HTMLElement | null
-  position?: AnchorPosition
-  cssAnchor?: boolean
-} | null>(null)
+const overlay = shallowRef<{ element: HTMLElement | null } | null>(null)
 const cssAnchorFlag = useFeatureFlag('primer_react_css_anchor_positioning')
 const supportsCssAnchorPositioning =
   typeof document !== 'undefined' &&
@@ -218,15 +215,7 @@ watch(
       frame = requestAnimationFrame(() => {
         const anchorRect = currentAnchor.getBoundingClientRect()
         const overlayRect = currentOverlay.getBoundingClientRect()
-        const widths = {
-          auto: 'auto',
-          small: '256px',
-          medium: '320px',
-          large: '480px',
-          xlarge: '640px',
-          xxlarge: '960px',
-        }
-        const fallbackWidth = parseInt(widths[props.width ?? 'small'])
+        const fallbackWidth = parseInt(widthMap[props.width ?? 'small'])
         const width = overlayRect.width || fallbackWidth
         const spaceLeft = anchorRect.left
         const spaceRight = window.innerWidth - anchorRect.right
@@ -286,13 +275,14 @@ watch(
 const overlayBindings = computed(() => {
   const { ref: _ref, className, class: overlayClass, ...rest } = props.overlayProps ?? {}
   return {
-    open: props.open,
     width: props.width,
     height: props.height,
     preventOverflow,
     responsiveVariant: narrowVariant.value === 'fullscreen' ? ('fullscreen' as const) : undefined,
     returnFocusRef: props.anchorRef ?? anchor,
     ignoreClickRefs: [props.anchorRef ?? anchor],
+    onEscape: () => emit('close', 'escape'),
+    onClickOutside: () => emit('close', 'click-outside'),
     role: 'none',
     visibility: cssAnchor.value || position.value ? ('visible' as const) : ('hidden' as const),
     top: cssAnchor.value ? undefined : position.value?.top || 0,
@@ -334,20 +324,12 @@ useFocusTrap(() => ({
   disabled: !props.open || (!position.value && !cssAnchor.value),
   ...toRaw(props.focusTrapSettings ?? {}),
 }))
-function close(_event: Event, gesture: AnchoredOverlayCloseGesture) {
-  if (
-    (gesture === 'escape' && props.overlayProps?.onEscape) ||
-    (gesture === 'click-outside' && props.overlayProps?.onClickOutside)
-  )
-    return
-  emit('close', gesture)
-}
 defineExpose({ anchor, element: overlayElement, position })
 </script>
 
 <template>
   <RenderAnchor v-if="renderAnchor" />
-  <Overlay v-if="open" v-bind="overlayBindings" ref="overlay" @close="close">
+  <Overlay v-if="open" v-bind="overlayBindings" ref="overlay">
     <div v-if="showCloseButton" :class="$style.closeButtonContainer">
       <Button
         v-bind="closeButtonBindings"
@@ -356,7 +338,7 @@ defineExpose({ anchor, element: overlayElement, position })
         variant="invisible"
         :icon="XIcon"
         :class="$style.closeButton"
-        @click="close($event, 'close')"
+        @click="emit('close', 'close')"
       />
     </div>
     <slot />

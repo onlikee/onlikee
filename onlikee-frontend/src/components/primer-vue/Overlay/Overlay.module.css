@@ -8,7 +8,7 @@
   }
 }
 
-.primer-overlay {
+.Overlay {
   position: absolute;
   max-width: calc(100vw - 2rem);
   width: auto;
@@ -16,14 +16,9 @@
   height: auto;
   max-height: 100vh;
   overflow: auto;
-  background-color: var(--overlay-bgColor, #fff);
-  border-radius: var(--borderRadius-large, 12px);
-  box-shadow: var(
-    --shadow-floating-small,
-    0 0 0 1px #d1d9e080,
-    0 6px 12px -3px #25292e0a,
-    0 6px 18px 0 #25292e1f
-  );
+  background-color: var(--overlay-bgColor);
+  border-radius: var(--borderRadius-large, 0.75rem);
+  box-shadow: var(--shadow-floating-small);
 
   &[data-anchor-position='false'],
   &:not([data-anchor-position]):not([data-variant='modal']) {
@@ -34,7 +29,7 @@
 
     /* stylelint-disable-next-line selector-max-specificity */
     &[data-responsive='fullscreen']:not([data-variant]) {
-      @media screen and (max-width: calc(768px - 0.02px)) {
+      @media screen and (max-width: calc(48rem - 0.02px)) {
         top: 0;
         left: 0;
       }
@@ -208,7 +203,7 @@
   &:where([data-responsive='fullscreen']),
   &[data-responsive='fullscreen'][data-anchor-position='true'],
   &[data-component='AnchoredOverlay'][data-responsive='fullscreen'][data-anchor-position='true'] {
-    @media screen and (max-width: calc(768px - 0.02px)) {
+    @media screen and (max-width: calc(48rem - 0.02px)) {
       position: fixed;
       top: 0;
       left: 0;
@@ -237,103 +232,7 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .primer-overlay {
+  .Overlay {
     animation: overlay-appear 200ms cubic-bezier(0.33, 1, 0.68, 1);
   }
-}
-
-.primer-overlay[data-css-anchor] {
-  position: fixed;
-  position-visibility: anchors-visible;
-  z-index: 100;
-}
-.primer-overlay[data-css-anchor][popover] {
-  inset: auto;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  max-width: none;
-}
-.primer-overlay[data-css-anchor][data-side='outside-bottom'],
-.primer-overlay[data-css-anchor][data-side='inside-bottom'] {
-  top: calc(anchor(bottom) + var(--primer-overlay-anchor-offset, 4px));
-  left: calc(anchor(left) - var(--primer-overlay-inline-offset, 0px));
-}
-.primer-overlay[data-css-anchor][data-side='outside-top'],
-.primer-overlay[data-css-anchor][data-side='inside-top'] {
-  bottom: anchor(top);
-  margin-bottom: var(--primer-overlay-anchor-offset, 4px);
-  left: calc(anchor(left) - var(--primer-overlay-inline-offset, 0px));
-}
-.primer-overlay[data-css-anchor][data-css-align='left']:is(
-    [data-side='outside-bottom'],
-    [data-side='inside-bottom'],
-    [data-side='outside-top'],
-    [data-side='inside-top']
-  ) {
-  left: auto;
-  right: calc(anchor(right) - var(--anchored-overlay-anchor-offset-left, 0px));
-}
-.primer-overlay[data-css-anchor][data-side='outside-left'],
-.primer-overlay[data-css-anchor][data-side='inside-left'] {
-  right: anchor(left);
-  top: var(--anchored-overlay-top-override, anchor(top));
-  margin-right: var(--primer-overlay-anchor-offset, 4px);
-}
-.primer-overlay[data-css-anchor][data-side='outside-right'],
-.primer-overlay[data-css-anchor][data-side='inside-right'] {
-  left: anchor(right);
-  top: var(--anchored-overlay-top-override, anchor(top));
-  margin-left: var(--primer-overlay-anchor-offset, 4px);
-}
-.primer-overlay[data-css-anchor][data-side='inside-center'] {
-  position-area: center;
-}
-@media screen and (max-width: calc(768px - 0.02px)) {
-  .primer-overlay[data-css-anchor][data-responsive='fullscreen'][data-component='AnchoredOverlay'] {
-    top: 0;
-    left: 0;
-    right: auto;
-    bottom: auto;
-    margin: 0;
-  }
-}
-@position-try --inline-end-center {
-  left: anchor(right);
-  top: auto;
-  bottom: auto;
-  margin-left: var(--base-size-4, 4px);
-  align-self: anchor-center;
-}
-@position-try --inline-start-center {
-  right: anchor(left);
-  left: auto;
-  top: auto;
-  bottom: auto;
-  margin-right: var(--base-size-4, 4px);
-  align-self: anchor-center;
-}
-@position-try --fit-block-bottom {
-  top: calc(anchor(bottom) + var(--base-size-4, 4px));
-  bottom: var(--base-size-8, 8px);
-  height: auto;
-  max-height: none;
-}
-@position-try --fit-block-top {
-  top: var(--base-size-8, 8px);
-  bottom: calc(100vh - anchor(top) + var(--base-size-4, 4px));
-  height: auto;
-  max-height: none;
-}
-@position-try --outside-left-to-bottom {
-  right: anchor(right);
-  top: calc(anchor(bottom) + var(--base-size-4, 4px));
-  margin: 0;
-  width: auto;
-}
-@position-try --outside-right-to-bottom {
-  left: anchor(left);
-  top: calc(anchor(bottom) + var(--base-size-4, 4px));
-  margin: 0;
-  width: auto;
 }

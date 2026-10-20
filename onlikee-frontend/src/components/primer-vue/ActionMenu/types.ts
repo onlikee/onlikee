@@ -1,6 +1,7 @@
 import type { ButtonHTMLAttributes, Component, HTMLAttributes, Ref } from 'vue'
 import type { AnchorPosition } from '@primer/behaviors'
-import type { OverlayProps } from '../internal/components/overlayTypes'
+import type { OverlayOptions } from '../Overlay/types'
+import type { AnchoredOverlayBaseProps } from '../AnchoredOverlay/types'
 
 export type MenuCloseGesture =
   'anchor-click' | 'click-outside' | 'escape' | 'tab' | 'item-select' | 'arrow-left' | 'close'
@@ -38,10 +39,11 @@ export type ActionMenuVariant = {
   narrow?: 'anchored' | 'fullscreen'
   wide?: 'anchored'
 }
-export interface ActionMenuOverlayProps extends Omit<
-  OverlayProps,
-  'open' | 'anchor' | 'onPositionChange'
-> {
+export interface ActionMenuOverlayProps
+  extends
+    Partial<OverlayOptions>,
+    /* @vue-ignore */ HTMLAttributes,
+    Pick<AnchoredOverlayBaseProps, 'side' | 'align' | 'displayInViewport' | 'pinPosition'> {
   variant?: ActionMenuVariant
   onPositionChange?: (event: { position: AnchorPosition }) => void
 }

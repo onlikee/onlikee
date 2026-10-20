@@ -26,11 +26,9 @@ defineOptions({
 const props = withDefaults(defineProps<ActionMenuOverlayProps>(), {
   variant: () => ({ regular: 'anchored', narrow: 'anchored' }),
   displayInViewport: undefined,
-  allowOutOfBounds: undefined,
   pinPosition: undefined,
   preventOverflow: undefined,
   preventFocusOnOpen: undefined,
-  trapFocus: undefined,
 })
 const attrs = useAttrs()
 const isInsideDialog = inject(dialogContextKey, undefined) !== undefined

@@ -38,6 +38,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/details.vue'),
       },
       {
+        path: 'overlay',
+        name: 'Overlay',
+        component: () => import('../views/components/overlay.vue'),
+      },
+      {
         path: 'anchored-overlay',
         name: 'AnchoredOverlay',
         component: () => import('../views/components/anchored-overlay.vue'),

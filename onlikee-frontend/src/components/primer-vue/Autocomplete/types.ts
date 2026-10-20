@@ -1,7 +1,7 @@
 import type { Component, Ref } from 'vue'
 import type { NodeProp } from '../internal/renderNode'
 import type { TextInputProps } from '../TextInput'
-import type { OverlayProps } from '../internal/components/overlayTypes'
+import type { OverlayProps } from '../Overlay'
 
 export interface AutocompleteProps {
   id?: string

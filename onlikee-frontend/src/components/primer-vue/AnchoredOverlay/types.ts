@@ -2,48 +2,22 @@ import type { AnchorAlignment, AnchorPosition, AnchorSide } from '@primer/behavi
 import type { HTMLAttributes, Ref, VNodeChild } from 'vue'
 import type { IconButtonProps } from '../Button'
 import type { FocusZoneHookSettings } from '../composables/useFocusZone'
-import type {
-  CSSAnchorPositioningSettings,
-  FocusTrapSettings,
-  OverlayProps as InternalOverlayProps,
-  OverlayWidth,
-  OverlayHeight,
-} from '../internal/components/overlayTypes'
+import type { OverlayWidth, OverlayHeight } from '../Overlay'
+import type { OverlayOptions } from '../Overlay/types'
+import type { FocusTrapSettings } from '../composables/useFocusTrap'
 
-export type OverlayProps = Pick<
-  InternalOverlayProps,
-  | 'as'
-  | 'portalContainerName'
-  | '_PrivateDisablePortal'
-  | 'preventOverflow'
-  | 'top'
-  | 'left'
-  | 'right'
-  | 'bottom'
-  | 'position'
-  | 'overflow'
-  | 'visibility'
-  | 'maxHeight'
-  | 'maxWidth'
-  | 'width'
-  | 'height'
-  | 'preventFocusOnOpen'
-  | 'initialFocusRef'
-  | 'returnFocusRef'
-  | 'ignoreClickRefs'
-  | 'onEscape'
-  | 'onClickOutside'
-  | 'className'
-  | 'style'
-  | 'anchorSide'
-  | 'responsiveVariant'
-  | 'role'
-> &
+export interface CSSAnchorPositioningSettings {
+  disable?: boolean
+  fallbackStrategy?: 'default' | 'none' | 'opposite-side'
+}
+
+export type OverlayProps = Partial<OverlayOptions> &
   HTMLAttributes & {
     'data-component'?: string
     'data-test-id'?: unknown
     ref?: Ref<HTMLElement | null> | ((element: HTMLElement | null) => void) | null
   }
+
 type CloseButtonProps = Partial<IconButtonProps>
 
 export type AnchoredOverlayOpenGesture = 'anchor-click' | 'anchor-key-press'
@@ -96,4 +70,4 @@ export type AnchoredOverlayComponentProps = AnchoredOverlayBaseProps &
     | { renderAnchor: null; anchorRef: Ref<HTMLElement | null>; anchorId?: string }
   )
 export type AnchoredOverlayProps = AnchoredOverlayComponentProps
-export type { CSSAnchorPositioningSettings, FocusTrapSettings, OverlayWidth, OverlayHeight }
+export type { FocusTrapSettings, OverlayWidth, OverlayHeight }
