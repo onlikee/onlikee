@@ -193,6 +193,9 @@ const navSections = ref([
       { path: '/component/details', label: 'Details 详情折叠' },
       { path: '/component/link', label: 'Link 链接' },
       { path: '/component/header', label: 'Header 页头' },
+      { path: '/component/pagehead', label: 'Pagehead 页面头部' },
+      { path: '/component/page-header', label: 'PageHeader 页面标题' },
+      { path: '/component/page-layout', label: 'PageLayout 页面布局' },
       { path: '/component/heading', label: 'Heading 标题' },
       { path: '/component/hidden', label: 'Hidden 响应式隐藏' },
       { path: '/component/label', label: 'Label 标签' },
@@ -232,6 +235,7 @@ const navSections = ref([
     title: 'Navigation 导航',
     items: [
       { path: '/component/nav-list', label: 'NavList 导航列表' },
+      { path: '/component/pagination', label: 'Pagination 分页导航' },
       { path: '/component/breadcrumbs', label: 'Breadcrumbs 面包屑' },
       { path: '/component/steps', label: 'Steps 步骤条' },
       { path: '/component/underline-nav', label: 'UnderlineNav 下划线导航' },

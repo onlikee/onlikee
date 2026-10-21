@@ -123,6 +123,26 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/header.vue'),
       },
       {
+        path: 'pagehead',
+        name: 'Pagehead',
+        component: () => import('../views/components/pagehead.vue'),
+      },
+      {
+        path: 'page-header',
+        name: 'PageHeader',
+        component: () => import('../views/components/page-header.vue'),
+      },
+      {
+        path: 'page-layout',
+        name: 'PageLayout',
+        component: () => import('../views/components/page-layout.vue'),
+      },
+      {
+        path: 'pagination',
+        name: 'Pagination',
+        component: () => import('../views/components/pagination.vue'),
+      },
+      {
         path: 'heading',
         name: 'Heading',
         component: () => import('../views/components/heading.vue'),

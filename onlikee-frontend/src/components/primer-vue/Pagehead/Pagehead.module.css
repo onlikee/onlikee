@@ -1,0 +1,7 @@
+.Pagehead {
+  border-bottom: 1px solid var(--borderColor-default);
+  margin-bottom: var(--base-size-24, 1.5rem);
+  padding-bottom: var(--base-size-24, 1.5rem);
+  padding-top: var(--base-size-24, 1.5rem);
+  position: relative;
+}
