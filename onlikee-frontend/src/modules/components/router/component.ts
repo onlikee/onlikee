@@ -274,6 +274,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         name: 'Timeline',
         component: () => import('../views/components/timeline.vue'),
       },
+      {
+        path: 'segmented-control',
+        name: 'SegmentedControl',
+        component: () => import('../views/components/segmented-control.vue'),
+      },
       // Navigation
       {
         path: 'nav-list',

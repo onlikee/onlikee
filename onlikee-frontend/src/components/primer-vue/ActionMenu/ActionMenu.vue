@@ -10,7 +10,6 @@ import {
   shallowRef,
   toValue,
   useId,
-  useSlots,
   watch,
   type VNode,
 } from 'vue'
@@ -29,7 +28,6 @@ const props = withDefaults(defineProps<ActionMenuProps>(), {
   anchorRef: undefined,
 })
 const emit = defineEmits<{ 'update:open': [open: boolean]; openChange: [open: boolean] }>()
-const slots = useSlots()
 const parent = inject(actionMenuContextKey, undefined)
 const internalOpen = shallowRef(false)
 const internalAnchor = shallowRef<HTMLElement | null>(null)
@@ -137,8 +135,7 @@ provide(actionMenuContextKey, {
 })
 defineExpose({ open, anchor, focus: () => anchor.value?.focus() })
 // 提取的锚点在 Overlay 所在的插槽位置渲染。
-const RenderContents = () => {
-  const children = slots.default?.() ?? []
+const RenderContents = ({ children }: { children: VNode[] }) => {
   const isAnchor = (child: VNode) => {
     if (isSlot(child, Anchor) || isSlot(child, Button)) return true
     if (!isSlot(child, Tooltip)) return false
@@ -158,5 +155,5 @@ const RenderContents = () => {
 </script>
 
 <template>
-  <RenderContents />
+  <RenderContents :children="$slots.default?.() ?? []" />
 </template>

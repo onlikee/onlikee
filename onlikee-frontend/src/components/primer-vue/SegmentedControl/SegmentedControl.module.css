@@ -1,0 +1,603 @@
+.SegmentedControl {
+  --segmented-control-icon-width: 32px;
+  --segmented-control-outer-radius: var(--borderRadius-medium, 0.375rem);
+  background-color: var(--controlTrack-bgColor-rest);
+  border: var(--borderWidth-thin, 0.0625rem) solid var(--controlTrack-borderColor-rest, transparent);
+  border-radius: var(--borderRadius-medium, 0.375rem);
+  display: inline-flex;
+  font-size: var(--text-body-size-medium, 0.875rem);
+  height: -moz-fit-content;
+  height: fit-content;
+  margin: 0;
+  min-height: 32px;
+  padding: 0;
+  position: relative;
+}
+@supports (anchor-name: --value) {
+  .SegmentedControl:before {
+    position-anchor: --segmented-control-current-item;
+    background-color: var(--controlKnob-bgColor-rest);
+    border: var(--borderWidth-thin, 0.0625rem) solid var(--controlKnob-borderColor-rest);
+    border-radius: var(--segmented-control-outer-radius);
+    content: '';
+    inset: anchor(top) anchor(right) anchor(bottom) anchor(left);
+    position: absolute;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .SegmentedControl:before {
+      transition: inset var(--base-duration-200, [ object Object])
+        var(--base-easing-easeInOut, 0.6, 0, 0.2, 1);
+    }
+  }
+  .SegmentedControl[data-disable-knob-transition]:before {
+    transition: none;
+  }
+}
+.SegmentedControl[data-full-width='true'] {
+  display: flex;
+  width: 100%;
+  --segmented-control-icon-width: 100%;
+}
+.SegmentedControl[data-full-width='false'] {
+  display: inline-flex;
+  width: auto;
+  --segmented-control-icon-width: 32px;
+}
+.SegmentedControl > [data-component='SegmentedControl.Divider'] {
+  align-self: stretch;
+  background-color: var(--borderColor-default);
+  display: none;
+  list-style: none;
+  margin-block: var(--base-size-8, 0.5rem);
+  margin-inline-end: calc(var(--base-size-8, 0.5rem) - 1px);
+  margin-inline-start: var(--base-size-8, 0.5rem);
+  width: 1px;
+}
+@media (max-width: calc(48rem - 0.02px)) {
+  .SegmentedControl[data-full-width-narrow='true'] {
+    display: flex;
+    width: 100%;
+    --segmented-control-icon-width: 100%;
+  }
+  .SegmentedControl[data-full-width-narrow='false'] {
+    display: inline-flex;
+    width: auto;
+    --segmented-control-icon-width: 32px;
+  }
+}
+@media (min-width: 48rem) {
+  .SegmentedControl[data-full-width-regular='true'] {
+    display: flex;
+    width: 100%;
+    --segmented-control-icon-width: 100%;
+  }
+  .SegmentedControl[data-full-width-regular='false'] {
+    display: inline-flex;
+    width: auto;
+    --segmented-control-icon-width: 32px;
+  }
+}
+@media (min-width: 87.5rem) {
+  .SegmentedControl[data-full-width-wide='true'] {
+    display: flex;
+    width: 100%;
+    --segmented-control-icon-width: 100%;
+  }
+  .SegmentedControl[data-full-width-regular='true']:not([data-full-width-wide='true']),
+  .SegmentedControl[data-full-width-wide='false'] {
+    display: inline-flex;
+    width: auto;
+    --segmented-control-icon-width: 32px;
+  }
+}
+.SegmentedControl[data-variant='dropdown'] {
+  display: none;
+}
+.SegmentedControl:where([data-variant='subtle']) {
+  --segmented-control-outer-radius: var(--borderRadius-large, 0.75rem);
+  --segmented-control-button-bg-inset: 0px;
+  background-color: transparent;
+  border: 0;
+}
+.SegmentedControl:where([data-variant='subtle']):before {
+  display: none;
+}
+.SegmentedControl:where([data-variant='subtle']) .Item:not(:last-child):after {
+  background-color: transparent;
+}
+.SegmentedControl:where([data-variant='subtle']) > [data-component='SegmentedControl.Divider'] {
+  display: block;
+}
+.SegmentedControl:where([data-variant='subtle']) .Button {
+  border: 0;
+  border-radius: var(--borderRadius-large, 0.75rem);
+  color: var(--fgColor-muted);
+  padding: 0;
+}
+.SegmentedControl:where([data-variant='subtle']) .Button .Content {
+  border: 0;
+  padding-inline: var(--base-size-12, 0.75rem);
+}
+.SegmentedControl:where([data-variant='subtle']) .Button[aria-pressed='true'] {
+  color: var(--fgColor-default);
+}
+.SegmentedControl:where([data-variant='subtle']) .Button[aria-pressed='true'] .Content {
+  background-color: var(--bgColor-muted);
+}
+.SegmentedControl:where([data-variant='subtle'])
+  .Button:where(:not([aria-pressed='true'], [aria-disabled='true'])):hover
+  .Content {
+  background-color: var(--bgColor-muted);
+}
+@supports (color: color-mix(in lch, red, blue)) {
+  .SegmentedControl:where([data-variant='subtle'])
+    .Button:where(:not([aria-pressed='true'], [aria-disabled='true'])):hover
+    .Content {
+    background-color: color-mix(in srgb, var(--bgColor-muted) 50%, transparent);
+  }
+}
+.SegmentedControl[data-variant='hideLabels'] .Text {
+  display: none;
+}
+@media (max-width: calc(48rem - 0.02px)) {
+  .SegmentedControl[data-variant-narrow='dropdown'],
+  .SegmentedControl[data-variant-narrow='hideLabels'] .Text {
+    display: none;
+  }
+  .SegmentedControl:where([data-variant-narrow='subtle']) {
+    --segmented-control-outer-radius: var(--borderRadius-large, 0.75rem);
+    --segmented-control-button-bg-inset: 0px;
+    background-color: transparent;
+    border: 0;
+  }
+  .SegmentedControl:where([data-variant-narrow='subtle']):before {
+    display: none;
+  }
+  .SegmentedControl:where([data-variant-narrow='subtle']) .Item:not(:last-child):after {
+    background-color: transparent;
+  }
+  .SegmentedControl:where([data-variant-narrow='subtle'])
+    > [data-component='SegmentedControl.Divider'] {
+    display: block;
+  }
+  .SegmentedControl:where([data-variant-narrow='subtle']) .Button {
+    border: 0;
+    border-radius: var(--borderRadius-large, 0.75rem);
+    color: var(--fgColor-muted);
+    padding: 0;
+  }
+  .SegmentedControl:where([data-variant-narrow='subtle']) .Button .Content {
+    border: 0;
+    padding-inline: var(--base-size-12, 0.75rem);
+  }
+  .SegmentedControl:where([data-variant-narrow='subtle']) .Button[aria-pressed='true'] {
+    color: var(--fgColor-default);
+  }
+  .SegmentedControl:where([data-variant-narrow='subtle']) .Button[aria-pressed='true'] .Content {
+    background-color: var(--bgColor-muted);
+  }
+  .SegmentedControl:where([data-variant-narrow='subtle'])
+    .Button:where(:not([aria-pressed='true'], [aria-disabled='true'])):hover
+    .Content {
+    background-color: var(--bgColor-muted);
+  }
+  @supports (color: color-mix(in lch, red, blue)) {
+    .SegmentedControl:where([data-variant-narrow='subtle'])
+      .Button:where(:not([aria-pressed='true'], [aria-disabled='true'])):hover
+      .Content {
+      background-color: color-mix(in srgb, var(--bgColor-muted) 50%, transparent);
+    }
+  }
+}
+@media (min-width: 48rem) {
+  .SegmentedControl[data-variant-regular='dropdown'],
+  .SegmentedControl[data-variant-regular='hideLabels'] .Text {
+    display: none;
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']) {
+    --segmented-control-outer-radius: var(--borderRadius-large, 0.75rem);
+    --segmented-control-button-bg-inset: 0px;
+    background-color: transparent;
+    border: 0;
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']):before {
+    display: none;
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']) .Item:not(:last-child):after {
+    background-color: transparent;
+  }
+  .SegmentedControl:where([data-variant-regular='subtle'])
+    > [data-component='SegmentedControl.Divider'] {
+    display: block;
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']) .Button {
+    border: 0;
+    border-radius: var(--borderRadius-large, 0.75rem);
+    color: var(--fgColor-muted);
+    padding: 0;
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']) .Button .Content {
+    border: 0;
+    padding-inline: var(--base-size-12, 0.75rem);
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']) .Button[aria-pressed='true'] {
+    color: var(--fgColor-default);
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']) .Button[aria-pressed='true'] .Content {
+    background-color: var(--bgColor-muted);
+  }
+  .SegmentedControl:where([data-variant-regular='subtle'])
+    .Button:where(:not([aria-pressed='true'], [aria-disabled='true'])):hover
+    .Content {
+    background-color: var(--bgColor-muted);
+  }
+  @supports (color: color-mix(in lch, red, blue)) {
+    .SegmentedControl:where([data-variant-regular='subtle'])
+      .Button:where(:not([aria-pressed='true'], [aria-disabled='true'])):hover
+      .Content {
+      background-color: color-mix(in srgb, var(--bgColor-muted) 50%, transparent);
+    }
+  }
+}
+@media (min-width: 87.5rem) {
+  .SegmentedControl[data-variant-wide='dropdown'],
+  .SegmentedControl[data-variant-wide='hideLabels'] .Text {
+    display: none;
+  }
+  .SegmentedControl:where([data-variant-wide='subtle']) {
+    --segmented-control-outer-radius: var(--borderRadius-large, 0.75rem);
+    --segmented-control-button-bg-inset: 0px;
+    background-color: transparent;
+    border: 0;
+  }
+  .SegmentedControl:where([data-variant-wide='subtle']):before {
+    display: none;
+  }
+  .SegmentedControl:where([data-variant-wide='subtle']) .Item:not(:last-child):after {
+    background-color: transparent;
+  }
+  .SegmentedControl:where([data-variant-wide='subtle'])
+    > [data-component='SegmentedControl.Divider'] {
+    display: block;
+  }
+  .SegmentedControl:where([data-variant-wide='subtle']) .Button {
+    border: 0;
+    border-radius: var(--borderRadius-large, 0.75rem);
+    color: var(--fgColor-muted);
+    padding: 0;
+  }
+  .SegmentedControl:where([data-variant-wide='subtle']) .Button .Content {
+    border: 0;
+    padding-inline: var(--base-size-12, 0.75rem);
+  }
+  .SegmentedControl:where([data-variant-wide='subtle']) .Button[aria-pressed='true'] {
+    color: var(--fgColor-default);
+  }
+  .SegmentedControl:where([data-variant-wide='subtle']) .Button[aria-pressed='true'] .Content {
+    background-color: var(--bgColor-muted);
+  }
+  .SegmentedControl:where([data-variant-wide='subtle'])
+    .Button:where(:not([aria-pressed='true'], [aria-disabled='true'])):hover
+    .Content {
+    background-color: var(--bgColor-muted);
+  }
+  @supports (color: color-mix(in lch, red, blue)) {
+    .SegmentedControl:where([data-variant-wide='subtle'])
+      .Button:where(:not([aria-pressed='true'], [aria-disabled='true'])):hover
+      .Content {
+      background-color: color-mix(in srgb, var(--bgColor-muted) 50%, transparent);
+    }
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']):not([data-variant-wide='subtle']) {
+    --segmented-control-outer-radius: var(--borderRadius-medium, 0.375rem);
+    --segmented-control-button-bg-inset: 4px;
+    background-color: var(--controlTrack-bgColor-rest);
+    border: var(--borderWidth-thin, 0.0625rem) solid
+      var(--controlTrack-borderColor-rest, transparent);
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']):not(
+      [data-variant-wide='subtle']
+    ):before {
+    display: block;
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']):not([data-variant-wide='subtle'])
+    .Item:not(:last-child):after {
+    background-color: var(--borderColor-default);
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']):not([data-variant-wide='subtle'])
+    > [data-component='SegmentedControl.Divider'] {
+    display: none;
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']):not([data-variant-wide='subtle'])
+    .Button {
+    border-radius: var(--segmented-control-outer-radius);
+    color: currentColor;
+    padding: var(--segmented-control-button-bg-inset);
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']):not([data-variant-wide='subtle'])
+    .Button
+    .Content {
+    border: var(--borderWidth-thin, 0.0625rem) solid transparent;
+    padding-inline: calc(
+      var(--segmented-control-button-inner-padding) - var(--segmented-control-button-bg-inset)
+    );
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']):not([data-variant-wide='subtle'])
+    .Button[aria-pressed='true'] {
+    color: currentColor;
+    padding: 0;
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']):not([data-variant-wide='subtle'])
+    .Button[aria-pressed='true']
+    .Content {
+    background-color: transparent;
+    padding-inline: var(--segmented-control-button-inner-padding);
+  }
+  .SegmentedControl:where([data-variant-regular='subtle']):not([data-variant-wide='subtle'])
+    .Button:where(:not([aria-pressed='true'], [aria-disabled='true'])):hover
+    .Content {
+    background-color: var(--controlTrack-bgColor-hover);
+  }
+}
+.SegmentedControl:where([data-size='small']) {
+  font-size: var(--text-body-size-small, 0.75rem);
+  min-height: 28px;
+}
+.DropdownGroup {
+  --segmented-control-action-size: 32px;
+  --segmented-control-list-flex: 0 1 auto;
+  align-items: center;
+  display: inline-flex;
+  gap: var(--base-size-4, 0.25rem);
+}
+.DropdownGroup[data-full-width='true'] {
+  width: 100%;
+  --segmented-control-list-flex: 1 1 auto;
+}
+.DropdownGroup[data-full-width='false'] {
+  width: auto;
+}
+@media (max-width: calc(48rem - 0.02px)) {
+  .DropdownGroup[data-full-width-narrow='true'] {
+    width: 100%;
+    --segmented-control-list-flex: 1 1 auto;
+  }
+  .DropdownGroup[data-full-width-narrow='false'] {
+    width: auto;
+  }
+}
+@media (min-width: 48rem) {
+  .DropdownGroup[data-full-width-regular='true'] {
+    width: 100%;
+    --segmented-control-list-flex: 1 1 auto;
+  }
+  .DropdownGroup[data-full-width-regular='false'] {
+    width: auto;
+  }
+}
+@media (min-width: 87.5rem) {
+  .DropdownGroup[data-full-width-wide='true'] {
+    width: 100%;
+    --segmented-control-list-flex: 1 1 auto;
+  }
+  .DropdownGroup[data-full-width-wide='false'] {
+    width: auto;
+  }
+  .DropdownGroup[data-full-width-regular='true']:not([data-full-width-wide='true']) {
+    width: auto;
+    --segmented-control-list-flex: 0 1 auto;
+  }
+}
+.DropdownGroup[data-size='small'] {
+  --segmented-control-action-size: 28px;
+}
+.DropdownGroup > .SegmentedControl {
+  flex: var(--segmented-control-list-flex);
+  min-width: 0;
+}
+.InlineAction {
+  display: flex;
+}
+.InlineAction[data-variant='dropdown'] {
+  display: none;
+}
+@media (max-width: calc(48rem - 0.02px)) {
+  .InlineAction[data-variant-narrow='dropdown'] {
+    display: none;
+  }
+}
+@media (min-width: 48rem) {
+  .InlineAction[data-variant-regular='dropdown'] {
+    display: none;
+  }
+}
+@media (min-width: 87.5rem) {
+  .InlineAction[data-variant-wide='dropdown'] {
+    display: none;
+  }
+}
+.DropdownContainer {
+  display: none;
+}
+.DropdownContainer[data-variant='dropdown'] {
+  display: block;
+}
+@media (max-width: calc(48rem - 0.02px)) {
+  .DropdownContainer[data-variant-narrow='dropdown'] {
+    display: block;
+  }
+}
+@media (min-width: 48rem) {
+  .DropdownContainer[data-variant-regular='dropdown'] {
+    display: block;
+  }
+}
+@media (min-width: 87.5rem) {
+  .DropdownContainer[data-variant-wide='dropdown'] {
+    display: block;
+  }
+}
+.Item {
+  display: block;
+  flex-grow: 1;
+  margin-bottom: -1px;
+  margin-top: -1px;
+  position: relative;
+}
+.Item:not(:last-child) {
+  margin-right: 1px;
+}
+.Item:not(:last-child):after {
+  background-color: var(--borderColor-default);
+  bottom: var(--base-size-8, 0.5rem);
+  content: '';
+  position: absolute;
+  right: calc(var(--base-size-2, 0.125rem) * -1);
+  top: var(--base-size-8, 0.5rem);
+  width: 1px;
+}
+.Item:not(:last-child):has(
+    + :where([data-component='SegmentedControl.Divider']) + :where([data-selected])
+  ):after,
+.Item:not(:last-child):has(+ [data-selected]):after,
+.Item:not(:last-child):where([data-selected]):after {
+  background-color: transparent;
+}
+.Item:first-child {
+  margin-left: -1px;
+}
+.Item:last-child {
+  margin-right: -1px;
+}
+.Item .Counter {
+  margin-inline-start: var(--base-size-8, 0.5rem);
+}
+.ActionItem,
+.Item .Counter {
+  align-items: center;
+  display: flex;
+}
+.ActionItem {
+  margin-inline-start: 0;
+}
+.ActionButton {
+  height: var(--segmented-control-action-size);
+  padding: 0;
+  width: var(--segmented-control-action-size);
+}
+.Button {
+  --segmented-control-button-inner-padding: 12px;
+  --segmented-control-button-bg-inset: 4px;
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: var(--segmented-control-outer-radius);
+  border-width: 0;
+  color: currentColor;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: var(--base-text-weight-normal, 400);
+  height: 100%;
+  padding: var(--segmented-control-button-bg-inset);
+  width: 100%;
+}
+.Button svg {
+  fill: var(--fgColor-muted);
+  color: var(--fgColor-muted);
+}
+.Button:focus:not(:disabled) {
+  box-shadow: none;
+  outline: var(--base-size-2, 0.125rem) solid var(--fgColor-accent);
+  outline-offset: -1px;
+}
+.Button:focus:not(:disabled):not(:focus-visible) {
+  outline: 1px solid transparent;
+}
+.Button:focus-visible:not(:disabled) {
+  box-shadow: none;
+  outline: var(--base-size-2, 0.125rem) solid var(--fgColor-accent);
+  outline-offset: -1px;
+}
+.Button:focus:focus-visible:not(:last-child):after {
+  width: 0;
+}
+.Button[aria-disabled='true']:not([aria-pressed='true']) {
+  background-color: transparent;
+  color: var(--fgColor-disabled);
+  cursor: not-allowed;
+}
+.Button[aria-disabled='true']:not([aria-pressed='true']) svg {
+  fill: var(--fgColor-disabled);
+  color: var(--fgColor-disabled);
+}
+@media (pointer: coarse) {
+  .Button:before {
+    content: '';
+    left: 0;
+    min-height: 44px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+.IconButton {
+  width: var(--segmented-control-icon-width, 32px);
+}
+.Content {
+  align-items: center;
+  background-color: transparent;
+  border-color: transparent;
+  border-radius: calc(
+    var(--segmented-control-outer-radius) - var(--segmented-control-button-bg-inset) / 2
+  );
+  border-style: solid;
+  border-width: var(--borderWidth-thin, 0.0625rem);
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  padding-left: calc(
+    var(--segmented-control-button-inner-padding) - var(--segmented-control-button-bg-inset)
+  );
+  padding-right: calc(
+    var(--segmented-control-button-inner-padding) - var(--segmented-control-button-bg-inset)
+  );
+  transition: background-color var(--base-duration-200, [ object Object])
+    var(--base-easing-easeInOut, 0.6, 0, 0.2, 1);
+}
+.Button[aria-pressed='true'] {
+  font-weight: var(--base-text-weight-semibold, 600);
+  padding: 0;
+}
+.Button[aria-pressed='true'] .Content {
+  padding-left: var(--segmented-control-button-inner-padding);
+  padding-right: var(--segmented-control-button-inner-padding);
+  anchor-name: --segmented-control-current-item;
+}
+@supports not (anchor-name: --value) {
+  .Button[aria-pressed='true'] .Content {
+    background-color: var(--controlKnob-bgColor-rest);
+    border-color: var(--controlKnob-borderColor-rest);
+    border-radius: var(--segmented-control-outer-radius);
+  }
+}
+.Button:not([aria-pressed='true'], [aria-disabled='true']):hover .Content {
+  background-color: var(--controlTrack-bgColor-hover);
+}
+.Button:not([aria-pressed='true'], [aria-disabled='true']):active .Content {
+  background-color: var(--controlTrack-bgColor-active);
+}
+.Text:after {
+  content: attr(data-text);
+  display: block;
+  font-weight: var(--base-text-weight-semibold, 600);
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+  visibility: hidden;
+}
+.LeadingIcon {
+  margin-right: var(--base-size-4, 0.25rem);
+}

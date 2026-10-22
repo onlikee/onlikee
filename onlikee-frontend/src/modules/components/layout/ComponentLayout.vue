@@ -188,6 +188,7 @@ const navSections = ref([
       { path: '/component/branch-name', label: 'BranchName 分支名' },
       { path: '/component/button', label: 'Button 按钮' },
       { path: '/component/button-group', label: 'ButtonGroup 按钮组' },
+      { path: '/component/segmented-control', label: 'SegmentedControl 分段控件' },
       { path: '/component/counter-label', label: 'CounterLabel 计数标签' },
       { path: '/component/container', label: 'Container 布局容器' },
       { path: '/component/stack', label: 'Stack 堆叠布局' },
