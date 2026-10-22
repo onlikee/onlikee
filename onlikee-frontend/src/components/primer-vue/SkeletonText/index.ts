@@ -7,5 +7,4 @@ export const SkeletonText = SkeletonTextComponent as unknown as {
     $props: SkeletonTextProps & AllowedComponentProps & VNodeProps
   }
 }
-export default SkeletonText
 export type { SkeletonTextProps, SkeletonTextOptions, SkeletonTextSize } from './types'

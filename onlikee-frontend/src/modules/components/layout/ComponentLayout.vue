@@ -253,6 +253,7 @@ const navSections = ref([
       { path: '/component/progress-bar', label: 'ProgressBar 进度条' },
       { path: '/component/spinner', label: 'Spinner 加载指示器' },
       { path: '/component/skeleton', label: 'Skeleton 骨架屏' },
+      { path: '/component/skeleton-avatar', label: 'SkeletonAvatar 头像骨架' },
       { path: '/component/skeleton-text', label: 'SkeletonText 文本骨架' },
       { path: '/component/admonition', label: 'Admonition 提示块' },
       { path: '/component/blankslate', label: 'Blankslate 空状态' },

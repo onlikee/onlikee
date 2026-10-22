@@ -10,9 +10,9 @@ import {
   toRaw,
   useAttrs,
   useId,
-  useSlots,
   watch,
   type ComponentPublicInstance,
+  type VNode,
   type VNodeChild,
 } from 'vue'
 import { Button, IconButton } from '../Button'
@@ -72,7 +72,14 @@ const emit = defineEmits<{
 // updates when only these listeners change. The instance still emits native events.
 const emitRefChanged = getCurrentInstance()!.emit
 const attrs = useAttrs()
-const slots = useSlots()
+const slots = defineSlots<{
+  anchor?: (props: { anchorProps: AnchorRenderProps }) => VNode[]
+  title?: () => VNode[]
+  subtitle?: () => VNode[]
+  notice?: () => VNode[]
+  secondaryAction?: () => VNode[]
+  footer?: () => VNode[]
+}>()
 const formControl = useFormControlContext()
 const generatedId = useId()
 const id = computed(() => props.id)
@@ -160,6 +167,7 @@ const items = computed(() => {
     .map((item) => ({
       ...item,
       role: 'option',
+      id: item.id,
       selected:
         'selected' in item && item.selected === undefined
           ? undefined
@@ -281,7 +289,6 @@ const selectedValue = computed(() =>
     : props.placeholder,
 )
 const RenderAnchor = (anchorProps: AnchorRenderProps): VNodeChild => {
-  if (slots.anchor && props.renderAnchor === undefined) return slots.anchor({ anchorProps })
   const children = autoLabel.value
     ? h('span', { id: `${id.value}-selected-value` }, selectedValue.value)
     : selectedValue.value
@@ -292,6 +299,7 @@ const RenderAnchor = (anchorProps: AnchorRenderProps): VNodeChild => {
       : {}),
     children,
   }
+  if (slots.anchor && props.renderAnchor === undefined) return slots.anchor({ anchorProps: wired })
   if (props.renderAnchor) return props.renderAnchor(wired)
   const { children: _children, ...buttonProps } = wired
   return h(

@@ -9,6 +9,7 @@ import {
   type WatchStopHandle,
 } from 'vue'
 import type { SkeletonBoxOptions } from './types'
+import { normalizeReactStyle } from '../internal/style'
 
 defineOptions({ name: 'SkeletonBox', inheritAttrs: false })
 const props = defineProps<SkeletonBoxOptions>()
@@ -31,9 +32,6 @@ onMounted(() => {
   )
 })
 onBeforeUnmount(() => stop?.())
-function length(value: string | number | undefined) {
-  return typeof value === 'number' ? `${value}px` : value
-}
 defineExpose({ element })
 </script>
 
@@ -43,8 +41,10 @@ defineExpose({ element })
     ref="element"
     v-bind="attrs"
     :class="[className, $style.SkeletonBox]"
-    :style="[{ height: length(height), width: length(width) }, attrs.style as never]"
-    :data-component="dataComponent ?? 'SkeletonBox'"
+    :style="normalizeReactStyle([{ height, width }, attrs.style])"
+    :data-component="
+      attrs['data-component'] === undefined ? 'SkeletonBox' : attrs['data-component']
+    "
   />
 </template>
 

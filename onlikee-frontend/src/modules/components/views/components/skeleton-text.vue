@@ -225,7 +225,7 @@ const rows: DocumentationRow[] = [
 
     <ComponentDocsSection title="属性" variant="api">
       <template #description>
-        提供 SkeletonText 同名导出与默认导出，导出类型为 SkeletonTextSize、SkeletonTextOptions 和
+        提供 SkeletonText 同名导出，导出类型为 SkeletonTextSize、SkeletonTextOptions 和
         SkeletonTextProps。组件没有自定义事件。
       </template>
       <VisuallyHidden :id="`${documentationId}-props`">SkeletonText 文本骨架属性</VisuallyHidden>

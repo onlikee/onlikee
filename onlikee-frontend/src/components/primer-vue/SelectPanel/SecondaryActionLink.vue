@@ -1,18 +1,14 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue'
-import { LinkButton as Button } from '../Button'
+import { LinkButton } from '../Button'
 defineOptions({ name: 'SelectPanelSecondaryActionLink', inheritAttrs: false })
-const attrs = useAttrs()
-const resolvedAs = computed(() => (attrs.as as string | undefined) ?? 'a')
 </script>
 <template>
-  <Button
+  <LinkButton
     v-bind="$attrs"
-    :as="resolvedAs"
     variant="invisible"
     block
     data-component="SelectPanel.SecondaryActionLink"
   >
     <slot />
-  </Button>
+  </LinkButton>
 </template>

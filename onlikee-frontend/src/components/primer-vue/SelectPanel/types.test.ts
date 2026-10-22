@@ -1,8 +1,23 @@
 import { describe, expect, expectTypeOf, it } from 'vitest'
 import { shallowRef } from 'vue'
+import { SelectPanel } from './index'
 import type { ItemInput } from '../FilteredActionList/types'
 import type { SelectPanelProps } from './types'
 describe('SelectPanel source contracts', () => {
+  it('exposes the Button and LinkButton contracts on its secondary actions', () => {
+    type SecondaryButtonProps = InstanceType<typeof SelectPanel.SecondaryActionButton>['$props']
+    type SecondaryLinkProps = InstanceType<typeof SelectPanel.SecondaryActionLink>['$props']
+    const button: SecondaryButtonProps = { loading: true, count: 2, type: 'submit' }
+    const link: SecondaryLinkProps = { href: '/labels', target: '_blank', loading: false }
+    // @ts-expect-error Loading follows the Button boolean contract.
+    const invalidButton: SecondaryButtonProps = { loading: 'busy' }
+    // @ts-expect-error LinkButton targets use the native string attribute.
+    const invalidLink: SecondaryLinkProps = { href: 42 }
+    expect(button.count).toBe(2)
+    expect(link.href).toBe('/labels')
+    expect(invalidButton.loading).toBe('busy')
+    expect(invalidLink.href).toBe(42)
+  })
   it('ties selection callbacks to their single or multi shape', () => {
     const single: SelectPanelProps = {
       open: false,

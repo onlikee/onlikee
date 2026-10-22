@@ -1,28 +1,27 @@
 <script setup lang="ts">
-import { inject, useAttrs, type OptionHTMLAttributes } from 'vue'
+import { inject, useAttrs } from 'vue'
 import { selectValueKey } from './context'
 import { normalizeReactStyle } from '../internal/style'
 defineOptions({ inheritAttrs: false })
-const props = defineProps<{ value: string }>()
+const props = defineProps<{ value: string; className?: string }>()
 const attrs = useAttrs()
 const selectedValue = inject(selectValueKey, undefined)
-// Only initialize the native default. The select's value controls later changes.
-const initiallySelected = selectedValue?.value === props.value
-const hasInitialValue = selectedValue?.value !== undefined
+// Native selection is initialized by Select; SSR must serialize its selected option.
+const vSelectDefault = {
+  getSSRProps: () =>
+    selectedValue?.value === undefined ? {} : { selected: selectedValue.value === props.value },
+}
 function nativeAttrs() {
-  const { style: _style, ...native } = attrs
+  const { class: _class, style: _style, ...native } = attrs
   return native
 }
 </script>
 <template>
   <option
+    v-select-default
     v-bind="nativeAttrs()"
     :value="value"
-    :selected="
-      hasInitialValue
-        ? initiallySelected || undefined
-        : ($attrs.selected as OptionHTMLAttributes['selected'])
-    "
+    :class="[className, $attrs.class]"
     :style="normalizeReactStyle($attrs.style)"
     data-component="Select.Option"
   >

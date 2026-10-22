@@ -7,6 +7,9 @@ import { LiveRegionElement } from '@primer/live-region-element'
 import { SelectPanel } from './index'
 import { FeatureFlags } from '../FeatureFlags'
 import { Label } from '../Label'
+import { FormControl } from '../FormControl'
+import { Button } from '../Button'
+import type { AnchorRenderProps } from '../AnchoredOverlay'
 import type { ItemInput } from './index'
 
 globalThis.Element.prototype.scrollTo = vi.fn()
@@ -67,6 +70,63 @@ afterEach(() => {
   vi.useRealTimers()
 })
 describe('SelectPanel behavior', () => {
+  it('retains inherited IDs in mapped options and selection callbacks', async () => {
+    const action = vi.fn()
+    const inherited = Object.assign(Object.create({ id: 'inherited-id' }) as ItemInput, {
+      text: 'Inherited ID',
+      onAction: action,
+    })
+    const wrapper = render(SelectPanel, { items: [inherited], selected: inherited })
+    await settle()
+    expect(wrapper.findComponent({ name: 'FilteredActionList' }).props('items')[0].id).toBe(
+      'inherited-id',
+    )
+    expect(option().getAttribute('aria-selected')).toBe('true')
+    option().click()
+    expect(action.mock.calls[0]?.[0].id).toBe('inherited-id')
+    expect(wrapper.emitted('selected-change')?.[0]).toEqual([undefined])
+  })
+  it('gives anchor slots the same selected content and form labeling as renderAnchor', async () => {
+    const wrapper = render(
+      defineComponent({
+        setup: () => () =>
+          h(
+            FormControl,
+            { id: 'slotted-panel' },
+            {
+              default: () => [
+                h(FormControl.Label, {}, () => 'Repository'),
+                h(
+                  SelectPanel,
+                  {
+                    open: false,
+                    selected: options[0],
+                    items: options,
+                  },
+                  {
+                    anchor: ({ anchorProps }: { anchorProps: AnchorRenderProps }) => {
+                      const { children, ...bindings } = anchorProps
+                      return h(Button, bindings, () => children)
+                    },
+                  },
+                ),
+              ],
+            },
+          ),
+      }),
+    )
+    await settle()
+    const button = wrapper.get('button')
+    expect(button.attributes('aria-labelledby')).toBe(
+      'slotted-panel-label slotted-panel-selected-value',
+    )
+    expect(button.get('#slotted-panel-selected-value').text()).toBe('Zero')
+    await button.trigger('click')
+    expect(wrapper.findComponent(SelectPanel).emitted('open-change')?.[0]).toEqual([
+      true,
+      'anchor-click',
+    ])
+  })
   it('keeps a composed semantic heading as the dialog accessible name when the title changes', async () => {
     const wrapper = render(SelectPanel, {
       title: () => h(Label, {}, { default: () => 'Repositories' }),

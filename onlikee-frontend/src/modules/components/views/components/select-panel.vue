@@ -172,7 +172,7 @@ const selected = shallowRef<ItemInput>()
 <\/script>
 
 <template>
-  <!-- modal 变体必须提供 @cancel（类型层面强约束） -->
+  <!-- modal 变体应提供 @cancel；SelectPanelProps 配置类型要求 onCancel -->
   <SelectPanel
     v-model:open="open"
     v-model:selected="selected"
@@ -323,7 +323,7 @@ const selectPanelPropsRows = [
     default: "'anchored'",
     type: "'anchored' | 'modal'",
     description:
-      'anchored 关闭即应用选择；modal 需点击 Save 确认（窄屏 fullscreen 同 modal 语义）。',
+      'anchored 单选与多选均在点选时更新；仅单选 modal 在点击 Save 后提交。窄屏 fullscreen 不改变选择提交时机。',
   },
   {
     id: 'title',
@@ -555,7 +555,7 @@ const inheritedPropsRows = [
     name: 'focusOutBehavior',
     default: "'wrap'",
     type: "'stop' | 'wrap'",
-    description: 'Tab 到达面板边界时循环（wrap）或停止（stop）。',
+    description: '方向键到达列表边界时循环（wrap）或停止（stop）。',
   },
   {
     id: 'announcementsEnabled',
@@ -569,7 +569,7 @@ const inheritedPropsRows = [
     name: 'onSelectAllChange',
     default: '-',
     type: '(checked: boolean) => void',
-    description: '全选框变化回调（不拦截默认全选行为时可不传）。',
+    description: '由面板内部接管；通过 selected-change 或 v-model:selected 接收全选结果。',
   },
   {
     id: 'onActiveDescendantChanged',
@@ -643,7 +643,7 @@ const slotTableRows = [
     id: 'anchor',
     name: 'anchor',
     description:
-      '替换内置触发按钮（仅在未传 renderAnchor 时生效）；自定义触发器应转发 ref、点击/键盘处理与 ARIA 属性。',
+      '替换内置触发按钮（仅在未传 renderAnchor 时生效）；anchorProps 包含选中内容 children、ref、点击/键盘处理与完整表单 ARIA 标签，均需转发。',
   },
   { id: 'subtitle', name: 'subtitle', description: '副标题内容，subtitle prop 优先。' },
   { id: 'notice', name: 'notice', description: '通知条内容，notice.text 优先。' },
@@ -683,7 +683,7 @@ const compoundTableRows = [
   <ComponentDocsPage>
     <ComponentDocsHeader
       title="SelectPanel 选择面板"
-      description="带筛选输入的选择对话框：支持单选/多选、分组、虚拟滚动与可选的主/次操作。anchored 变体在面板关闭时应用变更；modal 与窄屏 fullscreen 变体在点击 Save 确认后才应用。"
+      description="带筛选输入的选择对话框：支持单选/多选、分组、虚拟滚动与可选的主/次操作。anchored 选择与多选即时更新；仅单选 modal 在点击 Save 后提交，窄屏 fullscreen 保持相同的提交时机。"
     />
 
     <ComponentDocsSection title="单选与表单关联">
@@ -747,7 +747,8 @@ const compoundTableRows = [
     <ComponentDocsSection title="模态确认">
       <template #description>
         单选模态面板先保留临时选择，点击 Save 后才写入
-        selected；Cancel、关闭按钮和点击外部丢弃临时选择。类型层面 modal 变体要求必须提供 @cancel。
+        selected；Cancel、关闭按钮和点击外部丢弃临时选择。请提供 @cancel
+        处理取消操作；SelectPanelProps 配置类型要求 modal 提供 onCancel。
       </template>
       <ComponentDocsDemoBlock :code="modalCode">
         <SelectPanel
@@ -871,8 +872,8 @@ const compoundTableRows = [
     <ComponentDocsSection title="使用指南">
       <ul class="select-panel-docs__guide">
         <li>
-          <strong>应用时机</strong>：anchored 关闭即应用；modal / 窄屏 fullscreen 点击 Save
-          才应用，Cancel、关闭按钮与点击外部会丢弃临时选择。
+          <strong>应用时机</strong>：anchored 与多选在点选时立即更新；仅单选 modal 点击 Save
+          才提交临时选择。窄屏 fullscreen 只改变展示方式；多选的取消操作如需回滚，由调用方处理。
         </li>
         <li>
           <strong>锚按钮 label</strong>：锚按钮若代表当前选择，必须有可访问名称——内部（按钮中显示
@@ -887,7 +888,7 @@ const compoundTableRows = [
         </li>
         <li>
           <strong>键盘交互</strong>：↑ ↓ 导航、PageUp / PageDown 翻页、Enter 选择、Esc 关闭；Tab
-          默认在面板内循环（focusOutBehavior）。
+          默认在面板内循环；focusOutBehavior 控制方向键的列表边界行为。
         </li>
         <li>
           <strong>手势追踪</strong>：open-change 的 gesture

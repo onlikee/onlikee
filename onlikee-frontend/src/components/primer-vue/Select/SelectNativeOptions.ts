@@ -5,6 +5,7 @@ import {
   Fragment,
   inject,
   isVNode,
+  withDirectives,
   type VNode,
   type VNodeChild,
 } from 'vue'
@@ -30,7 +31,9 @@ export default defineComponent({
             : text(nodes.children as VNodeChild)
                 .replace(/[\t\n\f\r ]+/g, ' ')
                 .trim()
-        return cloneVNode(nodes, { selected: optionValue === initialValue })
+        return withDirectives(cloneVNode(nodes), [
+          [{ getSSRProps: () => ({ selected: optionValue === initialValue }) }],
+        ])
       }
       if (nodes.type === Fragment || nodes.type === 'optgroup') {
         const cloned = cloneVNode(nodes)

@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, provide, ref, useAttrs } from 'vue'
+import { computed, nextTick, onMounted, onUpdated, provide, ref, useAttrs } from 'vue'
 import TextInputWrapper from '../internal/components/TextInputWrapper.vue'
-import { useInputValue } from '../internal/inputValue'
 import { normalizeReactStyle } from '../internal/style'
 import type { SelectOptions, SelectEmits } from './types'
 import { selectValueKey } from './context'
@@ -11,48 +10,52 @@ defineOptions({ name: 'Select', inheritAttrs: false, __SLOT__: Symbol('Select') 
 const props = withDefaults(defineProps<SelectOptions>(), {
   disabled: undefined,
   required: undefined,
+  monospace: undefined,
+  hasTrailingAction: undefined,
+  isInputFocused: undefined,
 })
 const emit = defineEmits<SelectEmits>()
 const element = ref<HTMLSelectElement>()
 const attrs = useAttrs()
-const { value, commit, setUncontrolledValue } = useInputValue(props, element, (next, event) => {
-  emit('update:value', next)
-  emit('change', event)
-})
+const initialValue = props.value ?? props.defaultValue ?? props.placeholder
 provide(
   selectValueKey,
-  computed(() =>
-    props.value !== undefined || props.defaultValue !== undefined || props.placeholder
-      ? value.value
-      : undefined,
-  ),
+  computed(() => (initialValue == null ? undefined : String(initialValue))),
 )
+const vSelectPlaceholder = {
+  getSSRProps: () => ({ selected: initialValue === '' }),
+}
 function nativeAttrs() {
   const { class: _class, style: _style, ...native } = attrs
-  return { ...native, width: props.width, minWidth: props.minWidth, maxWidth: props.maxWidth }
+  return {
+    ...native,
+    width: props.width,
+    minWidth: props.minWidth,
+    maxWidth: props.maxWidth,
+  }
+}
+function updateSelection(value: string | number | readonly string[], setDefaultSelected = false) {
+  const options = Array.from(element.value!.options)
+  const selected =
+    options.find((option) => option.value === String(value)) ??
+    options.find((option) => !option.disabled)
+  if (selected) {
+    selected.selected = true
+    if (setDefaultSelected && selected.value === String(value)) selected.defaultSelected = true
+  }
 }
 onMounted(() => {
-  // Browser selection defaults to the first option when no default is provided.
-  if (
-    props.value === undefined &&
-    props.defaultValue === undefined &&
-    !props.placeholder &&
-    element.value
-  ) {
-    const options = Array.from(element.value.options)
-    const initial =
-      options.find((option) => option.defaultSelected) ??
-      options.find(
-        (option) =>
-          !option.disabled &&
-          !(option.parentElement instanceof HTMLOptGroupElement && option.parentElement.disabled),
-      )
-    if (initial) {
-      element.value.value = initial.value
-      setUncontrolledValue(initial.value)
-    }
-  }
+  if (initialValue != null) updateSelection(initialValue, props.value == null)
 })
+function syncControlledSelection() {
+  if (element.value && props.value != null) updateSelection(props.value)
+}
+onUpdated(syncControlledSelection)
+function change(event: Event) {
+  emit('update:value', (event.target as HTMLSelectElement).value)
+  emit('change', event)
+  void nextTick(syncControlledSelection)
+}
 defineExpose({
   element,
   input: element,
@@ -63,7 +66,7 @@ defineExpose({
 
 <template>
   <TextInputWrapper
-    :class="[$style['select-wrapper'], className, $attrs.class]"
+    :class="[$style.TextInputWrapper, className, $attrs.class]"
     :block="block"
     :disabled="disabled"
     :size="size"
@@ -72,21 +75,21 @@ defineExpose({
     <select
       ref="element"
       v-bind="nativeAttrs()"
-      :class="[$style['select-native'], disabled && $style['select-disabled']]"
+      :class="[$style.Select, disabled && $style.Disabled]"
       :style="normalizeReactStyle($attrs.style)"
-      :value="value"
       :disabled="disabled"
       :required="required"
       :aria-invalid="validationStatus === 'error' ? 'true' : 'false'"
       :data-hasplaceholder="Boolean(placeholder)"
       data-component="Select"
-      @change="commit"
+      @change="change"
       @input="emit('input', $event)"
       @focus="emit('focus', $event)"
       @blur="emit('blur', $event)"
     >
       <option
         v-if="placeholder"
+        v-select-placeholder
         value=""
         :disabled="required"
         :hidden="required"
@@ -94,7 +97,7 @@ defineExpose({
       >
         {{ placeholder }}
       </option>
-      <SelectNativeOptions><slot /></SelectNativeOptions>
+      <SelectNativeOptions @vue:updated="syncControlledSelection"><slot /></SelectNativeOptions>
     </select>
     <svg
       aria-hidden="true"
@@ -102,7 +105,7 @@ defineExpose({
       height="16"
       fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
-      :class="$style['select-arrow']"
+      :class="$style.ArrowIndicator"
     >
       <path
         d="m4.074 9.427 3.396 3.396a.25.25 0 0 0 .354 0l3.396-3.396A.25.25 0 0 0 11.043 9H4.251a.25.25 0 0 0-.177.427ZM4.074 7.47 7.47 4.073a.25.25 0 0 1 .354 0L11.22 7.47a.25.25 0 0 1-.177.426H4.251a.25.25 0 0 1-.177-.426Z"

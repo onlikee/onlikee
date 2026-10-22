@@ -5,6 +5,5 @@ export interface SkeletonBoxOptions {
   width?: string | number
   className?: string
   delay?: 'short' | 'long' | number
-  dataComponent?: string
 }
 export type SkeletonBoxProps = SkeletonBoxOptions & HTMLAttributes & { 'data-component'?: string }

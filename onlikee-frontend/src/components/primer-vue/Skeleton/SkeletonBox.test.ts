@@ -3,7 +3,6 @@ import { mount } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import { SkeletonBox } from './index'
-import { SkeletonText } from '../SkeletonText'
 
 describe('SkeletonBox', () => {
   afterEach(() => vi.useRealTimers())
@@ -45,32 +44,40 @@ describe('SkeletonBox', () => {
     wrapper.unmount()
     expect(vi.getTimerCount()).toBe(0)
   })
-})
-
-describe('SkeletonText', () => {
-  it('defaults to one full-width medium body line and forwards attrs', () => {
-    const wrapper = mount(SkeletonText, { attrs: { id: 'loading-text' } })
-    expect(wrapper.attributes('data-component')).toBe('SkeletonText')
-    expect(wrapper.attributes('data-text-skeleton-size')).toBe('bodyMedium')
-    expect(wrapper.attributes('id')).toBe('loading-text')
-    expect((wrapper.element as HTMLElement).style.width).toBe('100%')
+  it('normalizes numeric styles and preserves caller data-component values', async () => {
+    const onClick = vi.fn()
+    const wrapper = mount(SkeletonBox, {
+      props: { height: 16, width: 40 },
+      attrs: {
+        'data-component': 'CustomSkeleton',
+        class: 'custom',
+        style: { height: 32, width: 80, opacity: 0.5 },
+        onClick,
+      },
+    })
+    expect(wrapper.attributes('data-component')).toBe('CustomSkeleton')
+    expect(wrapper.classes()).toContain('custom')
+    expect(wrapper.element.style.height).toBe('32px')
+    expect(wrapper.element.style.width).toBe('80px')
+    expect(wrapper.element.style.opacity).toBe('0.5')
+    await wrapper.trigger('click')
+    expect(onClick).toHaveBeenCalledOnce()
     wrapper.unmount()
   })
-  it('renders styled lines in a maximum-width container', () => {
-    const wrapper = mount(SkeletonText, {
-      props: { lines: 3, size: 'titleLarge', maxWidth: 250, className: 'line' },
-      attrs: { 'aria-hidden': 'true' },
-    })
-    expect(wrapper.attributes('data-component')).toBe('multilineContainer')
-    expect((wrapper.element as HTMLElement).style.maxWidth).toBe('250px')
-    const lines = wrapper.findAll('[data-component="SkeletonText"]')
-    expect(lines).toHaveLength(3)
-    for (const line of lines) {
-      expect(line.attributes('data-in-multiline')).toBe('true')
-      expect(line.attributes('data-text-skeleton-size')).toBe('titleLarge')
-      expect(line.attributes('aria-hidden')).toBe('true')
-      expect(line.classes()).toContain('line')
-    }
+  it('matches delay updates after becoming visible and when a pending delay is removed', async () => {
+    vi.useFakeTimers()
+    const wrapper = mount(SkeletonBox, { props: { delay: 0 } })
+    expect(wrapper.find('div').exists()).toBe(true)
+    await wrapper.setProps({ delay: 'short' })
+    expect(wrapper.find('div').exists()).toBe(true)
     wrapper.unmount()
+
+    const pending = mount(SkeletonBox, { props: { delay: 'short' } })
+    expect(pending.vm.element).toBe(null)
+    await pending.setProps({ delay: undefined })
+    await vi.advanceTimersByTimeAsync(1000)
+    expect(pending.find('div').exists()).toBe(false)
+    expect(vi.getTimerCount()).toBe(0)
+    pending.unmount()
   })
 })

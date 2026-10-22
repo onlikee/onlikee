@@ -327,6 +327,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/skeleton.vue'),
       },
       {
+        path: 'skeleton-avatar',
+        name: 'SkeletonAvatar',
+        component: () => import('../views/components/skeleton-avatar.vue'),
+      },
+      {
         path: 'skeleton-text',
         name: 'SkeletonText',
         component: () => import('../views/components/skeleton-text.vue'),

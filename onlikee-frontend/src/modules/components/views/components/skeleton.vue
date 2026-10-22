@@ -154,8 +154,8 @@ const rows: DocumentationRow[] = [
     description: '根元素的附加样式类，与 Vue class 和内置类合并。',
   },
   {
-    id: 'dataComponent',
-    name: 'dataComponent',
+    id: 'data-component',
+    name: 'data-component',
     type: 'string',
     default: 'SkeletonBox',
     description: '设置根元素的 data-component 标识，便于组合组件或定位元素。',

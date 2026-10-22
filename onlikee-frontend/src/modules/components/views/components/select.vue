@@ -95,6 +95,32 @@
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
+    <ComponentDocsSection title="分组、必填与表单验证">
+      <template #description>
+        使用 <code>Select.OptGroup</code> 分组选项，配合
+        <code>FormControl</code> 关联标签、说明和验证信息。 必填选择框需要保留空占位值时，显式设置
+        <code>value=""</code> 或 <code>defaultValue=""</code>。 未指定初值时，按参考实现使用
+        placeholder 文本匹配选项，未匹配则选择首个可用项。 自定义选项组件内部请使用
+        <code>Select.Option</code>，以保留服务端渲染时的初始选中值。
+      </template>
+      <ComponentDocsDemoBlock :code="groupedCode">
+        <FormControl required>
+          <FormControl.Label>水果</FormControl.Label>
+          <Select v-model:value="val6" placeholder="请选择水果" block>
+            <Select.OptGroup label="常见水果">
+              <Select.Option value="apple">苹果</Select.Option>
+              <Select.Option value="banana">香蕉</Select.Option>
+            </Select.OptGroup>
+            <Select.OptGroup label="暂不可选" disabled>
+              <Select.Option value="cherry">樱桃</Select.Option>
+            </Select.OptGroup>
+          </Select>
+          <FormControl.Caption>请选择一种水果。</FormControl.Caption>
+          <FormControl.Validation v-if="!val6" variant="error">请选择水果。</FormControl.Validation>
+        </FormControl>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
     <ComponentDocsSection title="API" variant="api">
       <h3>属性</h3>
       <VisuallyHidden :id="`${documentationId}-api-table-0`">Select 选择器 属性</VisuallyHidden>
@@ -127,6 +153,7 @@ import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
 
 import { ref } from 'vue'
 import { Select } from '@/components/primer-vue/Select'
+import { FormControl } from '@/components/primer-vue/FormControl'
 import ComponentDocsTable, {
   type DocumentationColumn,
 } from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
@@ -146,6 +173,7 @@ const val4a = ref('')
 const val4b = ref('')
 const val4c = ref('')
 const val5 = ref('')
+const val6 = ref('')
 
 const fruitOptions = [
   { value: 'apple', label: '苹果' },
@@ -288,6 +316,31 @@ const options = [
 ]
 <\/script>`
 
+const groupedCode = `<script setup lang="ts">
+import { ref } from 'vue'
+import { Select } from '@/components/primer-vue/Select'
+import { FormControl } from '@/components/primer-vue/FormControl'
+
+const value = ref('')
+<\/script>
+
+<template>
+  <FormControl required>
+    <FormControl.Label>水果</FormControl.Label>
+    <Select v-model:value="value" placeholder="请选择水果" block>
+      <Select.OptGroup label="常见水果">
+        <Select.Option value="apple">苹果</Select.Option>
+        <Select.Option value="banana">香蕉</Select.Option>
+      </Select.OptGroup>
+      <Select.OptGroup label="暂不可选" disabled>
+        <Select.Option value="cherry">樱桃</Select.Option>
+      </Select.OptGroup>
+    </Select>
+    <FormControl.Caption>请选择一种水果。</FormControl.Caption>
+    <FormControl.Validation v-if="!value" variant="error">请选择水果。</FormControl.Validation>
+  </FormControl>
+</template>`
+
 const apiCols: DocumentationColumn[] = [
   { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
   { field: 'default', header: '默认值', minWidth: '100px' },
@@ -300,14 +353,14 @@ const apiRows = [
     id: 'value',
     name: 'value',
     description: '受控绑定值（v-model:value）',
-    type: 'string | number',
+    type: 'string | number | readonly string[]',
     default: '—',
   },
   {
     id: 'defaultValue',
     name: 'defaultValue',
     description: '非受控初始值',
-    type: 'string | number',
+    type: 'string | number | readonly string[]',
     default: '—',
   },
   {
@@ -319,11 +372,54 @@ const apiRows = [
   },
   { id: 'disabled', name: 'disabled', description: '是否禁用', type: 'boolean', default: 'false' },
   {
+    id: 'required',
+    name: 'required',
+    description: '原生必填验证；必填时禁用并隐藏占位选项',
+    type: 'boolean',
+    default: 'false',
+  },
+  { id: 'block', name: 'block', description: '占满可用宽度', type: 'boolean', default: 'false' },
+  {
+    id: 'validationStatus',
+    name: 'validationStatus',
+    description: '验证外观；error 同时设置 aria-invalid',
+    type: `'error' | 'success'`,
+    default: '—',
+  },
+  {
     id: 'size',
     name: 'size',
     description: '选择器尺寸',
     type: `'small' | 'medium' | 'large'`,
     default: `'medium'`,
+  },
+  {
+    id: 'className',
+    name: 'className / class',
+    description: '应用于外层 TextInputWrapper 的类名',
+    type: 'string',
+    default: '—',
+  },
+  {
+    id: 'style',
+    name: 'style',
+    description: '应用于原生 select 的样式；宽度使用 CSS 或 style 设置',
+    type: 'StyleValue',
+    default: '—',
+  },
+  {
+    id: 'native',
+    name: '原生属性',
+    description: 'id、name、form、aria-* 等透传到 select；不支持 multiple',
+    type: 'SelectHTMLAttributes',
+    default: '—',
+  },
+  {
+    id: 'ref',
+    name: 'ref',
+    description: '通过 element / input 访问原生选择框，或调用 focus() / blur()',
+    type: '组件实例',
+    default: '—',
   },
 ]
 
@@ -348,6 +444,9 @@ const eventCols: DocumentationColumn[] = [
 const eventRows = [
   { id: 'update:value', name: 'update:value', description: '选中值变化时触发', type: 'string' },
   { id: 'change', name: 'change', description: '原生选择事件', type: 'Event' },
+  { id: 'input', name: 'input', description: '原生输入事件', type: 'Event' },
+  { id: 'focus', name: 'focus', description: '原生聚焦事件', type: 'FocusEvent' },
+  { id: 'blur', name: 'blur', description: '原生失焦事件', type: 'FocusEvent' },
 ]
 </script>
 

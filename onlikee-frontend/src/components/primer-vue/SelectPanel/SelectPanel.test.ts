@@ -814,6 +814,14 @@ describe('SelectPanel behavior', () => {
       customHost.querySelector('span[data-component="SelectPanel.SecondaryActionLink"]'),
     ).not.toBeNull()
     expect(customHost.querySelector('a')).toBeNull()
+    await custom.setProps({ as: 'button', type: 'button' })
+    await settle()
+    expect(
+      customHost.querySelector('span[data-component="SelectPanel.SecondaryActionLink"]'),
+    ).toBeNull()
+    expect(
+      customHost.querySelector('button[data-component="SelectPanel.SecondaryActionLink"]'),
+    ).not.toBeNull()
     warn.mockRestore()
   })
 })

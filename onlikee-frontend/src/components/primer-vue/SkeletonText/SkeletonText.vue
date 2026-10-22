@@ -1,42 +1,47 @@
 <script setup lang="ts">
-import { useAttrs } from 'vue'
+import { useAttrs, useCssModule } from 'vue'
 import { SkeletonBox } from '../Skeleton'
+import { normalizeReactStyle } from '../internal/style'
 import type { SkeletonTextOptions } from './types'
 
 defineOptions({ name: 'SkeletonText', inheritAttrs: false })
-withDefaults(defineProps<SkeletonTextOptions>(), { lines: 1, size: 'bodyMedium' })
+const props = withDefaults(defineProps<SkeletonTextOptions>(), { lines: 1, size: 'bodyMedium' })
 const attrs = useAttrs()
-function length(value: string | number | undefined) {
-  return typeof value === 'number' ? `${value}px` : value
+const styles = useCssModule()
+
+function getSingleLineAttrs() {
+  const { class: classValue, style, ...rest } = attrs
+  return {
+    'data-text-skeleton-size': props.size,
+    width: '100%',
+    class: [props.className, classValue, styles.SkeletonText],
+    style: normalizeReactStyle([style, { maxWidth: props.maxWidth }]),
+    ...rest,
+    'data-component': 'SkeletonText',
+  }
+}
+
+function getMultilineAttrs() {
+  const { class: classValue, style: _style, ...rest } = attrs
+  return {
+    'data-component': 'SkeletonText',
+    'data-in-multiline': 'true',
+    'data-text-skeleton-size': props.size,
+    class: [props.className, classValue, styles.SkeletonText],
+    ...rest,
+  }
 }
 </script>
 
 <template>
-  <SkeletonBox
-    v-if="lines < 2"
-    v-bind="attrs"
-    :data-text-skeleton-size="size"
-    width="100%"
-    :class="[className, $style.SkeletonText]"
-    :style="[attrs.style as never, { maxWidth: length(maxWidth) }]"
-    data-component="SkeletonText"
-  />
+  <SkeletonBox v-if="lines < 2" v-bind="getSingleLineAttrs()" />
   <div
     v-else
     data-component="multilineContainer"
     :class="$style.SkeletonTextWrapper"
-    :style="[attrs.style as never, { maxWidth: length(maxWidth) }]"
+    :style="normalizeReactStyle([attrs.style, { maxWidth }])"
   >
-    <SkeletonBox
-      v-for="index in Math.floor(lines)"
-      :key="index"
-      v-bind="attrs"
-      data-component="SkeletonText"
-      data-in-multiline="true"
-      :data-text-skeleton-size="size"
-      :class="[className, $style.SkeletonText]"
-      :style="undefined"
-    />
+    <SkeletonBox v-for="index in Math.floor(lines)" :key="index" v-bind="getMultilineAttrs()" />
   </div>
 </template>
 
