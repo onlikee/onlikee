@@ -38,6 +38,16 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/details.vue'),
       },
       {
+        path: 'popover',
+        name: 'Popover',
+        component: () => import('../views/components/popover.vue'),
+      },
+      {
+        path: 'portal',
+        name: 'Portal',
+        component: () => import('../views/components/portal.vue'),
+      },
+      {
         path: 'overlay',
         name: 'Overlay',
         component: () => import('../views/components/overlay.vue'),

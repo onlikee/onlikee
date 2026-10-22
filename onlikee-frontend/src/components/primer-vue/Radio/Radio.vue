@@ -10,31 +10,30 @@ import {
   onBeforeUnmount,
   onMounted,
   onUpdated,
-  ref,
+  shallowRef,
   ssrContextKey,
   useAttrs,
-  useCssModule,
 } from 'vue'
 import type { RadioOptions, RadioEmits } from './types'
+import sharedClasses from '../Checkbox/shared.module.css'
+import classes from './Radio.module.css'
 import { registerRadio, restoreRadioGroup } from './controlled'
 import { useRadioGroupContext } from '../RadioGroup/context'
 import { normalizeReactStyle } from '../internal/style'
 
 defineOptions({ name: 'Radio', __SLOT__: Symbol('Radio'), inheritAttrs: false })
-const styles = useCssModule()
-
 const props = withDefaults(defineProps<RadioOptions>(), {
   name: undefined,
   id: undefined,
   className: undefined,
-  disabled: false,
-  required: false,
+  disabled: undefined,
+  required: undefined,
   checked: undefined,
   defaultChecked: undefined,
   ariaHidden: false,
 })
 const emit = defineEmits<RadioEmits>()
-const input = ref<HTMLInputElement | null>(null)
+const input = shallowRef<HTMLInputElement | null>(null)
 const group = useRadioGroupContext()
 const attrs = useAttrs()
 const serverRendering = inject(ssrContextKey, null) !== null
@@ -64,7 +63,7 @@ function getInputAttrs() {
     ...selectionAttrs.value,
     ...attrs,
     style: normalizeReactStyle(attrs.style),
-    class: [attrs.class, props.className, styles['radio-input'], styles['radio']],
+    class: [props.className, attrs.class, sharedClasses.Input, classes.Radio],
     'data-component': 'Radio',
   }
 }
@@ -103,4 +102,3 @@ defineExpose({
   blur: () => input.value?.blur(),
 })
 </script>
-<style module src="./Radio.module.css" />

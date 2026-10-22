@@ -113,7 +113,9 @@
       />
     </ComponentDocsSection>
     <ComponentDocsSection title="组件实例" variant="api">
-      <template #description> 通过模板 ref 获取组件实例，可访问输入元素或控制焦点。 </template>
+      <template #description>
+        通过模板 ref 获取组件实例，可访问输入元素或控制焦点。实例类型可导入 RadioInstance。
+      </template>
       <VisuallyHidden :id="`${documentationId}-api-table-2`">Radio 单选框 API</VisuallyHidden>
       <ComponentDocsTable
         :aria-labelledby="`${documentationId}-api-table-2`"
@@ -229,8 +231,20 @@ const eventRows = [
     type: '(event: Event) => void',
     description: '选择选项时触发，通过 event.currentTarget 获取输入元素',
   },
+  {
+    id: 'update:checked',
+    name: 'update:checked',
+    type: '(checked: boolean) => void',
+    description: '支持 v-model:checked，在 change 之后通知当前选中状态',
+  },
 ]
 const instanceRows = [
+  {
+    id: 'element',
+    name: 'element',
+    type: 'HTMLInputElement | null',
+    description: '底层原生输入元素',
+  },
   { id: 'input', name: 'input', type: 'HTMLInputElement | null', description: '单选框的输入元素' },
   {
     id: 'focus',

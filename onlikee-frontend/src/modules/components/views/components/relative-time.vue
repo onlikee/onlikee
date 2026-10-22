@@ -125,14 +125,15 @@ const rows: DocumentationRow[] = [
     name: 'date',
     type: 'Date | null',
     default: 'undefined',
-    description: '时间对象；与 datetime 至少提供一种有效输入。',
+    description: '有效的时间对象；设为 null 且未提供非空 datetime 时清空时间输入。',
   },
   {
     id: 'datetime',
     name: 'datetime',
     type: 'string',
     default: 'undefined',
-    description: 'ISO 8601 时间字符串；非空时优先于 date。建议包含 Z 或明确的时区偏移。',
+    description:
+      'ISO 8601 时间字符串；非空时优先于 date，并转换为 UTC ISO 时间戳。建议包含 Z 或时区偏移。',
   },
   {
     id: 'format',
@@ -480,7 +481,7 @@ const slotRows: DocumentationRow[] = [
     <ComponentDocsSection title="初始内容与提示">
       <template #description>
         组件挂载后加载底层自定义元素。升级前使用默认插槽，未提供插槽时使用 UTC
-        英文日期；没有时间输入时为空。
+        英文日期；空模板插槽也回退到该日期，没有时间输入时为空。
         服务端渲染也使用这份初始内容。插槽是初始占位文本，升级后展示内容由底层元素格式化。 noTitle
         可关闭自动生成的 title，完整日期等重要信息应以可见文字或可访问提示提供。
       </template>

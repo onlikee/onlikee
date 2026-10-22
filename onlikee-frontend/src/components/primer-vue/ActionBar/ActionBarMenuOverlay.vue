@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, provide, shallowRef, toValue, watch, type Ref } from 'vue'
+import { computed, inject, nextTick, provide, shallowRef, toValue, watch, type Ref } from 'vue'
 import { Overlay } from '../Overlay'
 import { useAnchoredPosition } from '../composables/useAnchoredPosition'
 import { ActionList, ActionListContainerContext } from '../ActionList'
@@ -57,8 +57,11 @@ provide(ActionListContainerContext, {
 })
 watch(
   () => [overlay.value?.element, visibility.value, props.last, props.focusAnchor] as const,
-  ([element, visibility]) => {
+  async ([element, visibility]) => {
     if (!element || visibility === 'hidden') return
+    // Portal attaches its host in mounted, after post-flush surface refs become available.
+    await nextTick()
+    if (!props.open) return
     if (props.focusAnchor) {
       props.anchor?.focus()
       return

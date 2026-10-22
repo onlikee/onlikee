@@ -50,8 +50,8 @@
 
     <ComponentDocsSection title="多段进度">
       <template #description>
-        使用 <code>ProgressBar.Item</code> 设置各段占比和颜色，并分别提供无障碍标签。
-        默认插槽优先于父级 progress；单段和多段应择一使用。组件不会自动归一化各段数值。
+        使用 <code>ProgressBar.Item</code> 设置各段占比和颜色，并分别提供无障碍标签。 有效子项与真值
+        progress 同时传入会报错（数字 0 除外）；单段和多段应择一使用。 组件不会自动归一化各段数值。
       </template>
       <ComponentDocsDemoBlock :code="multipleCode">
         <div class="progress-examples">
@@ -109,7 +109,8 @@
     </ComponentDocsSection>
     <ComponentDocsSection title="ProgressBar.Item API" variant="api">
       <template #description>
-        也可以具名导入 <code>ProgressBarItem</code>。两种组件均支持原生属性、class 和 style。
+        也可以具名导入 <code>ProgressBarItem</code>。两种组件均支持原生属性、className、class 和
+        style， 通过组件 ref 的 <code>element</code> 可访问对应的 span 元素。
         多段模式下，父级颜色、动画和下列 ARIA 属性不会自动传给子项。
       </template>
       <VisuallyHidden :id="`${documentationId}-api-table-1`">ProgressBar 进度条 API</VisuallyHidden>
@@ -208,7 +209,7 @@ const sharedApiRows = [
     name: 'aria-valuenow',
     type: 'number | string',
     default: '由 progress 计算',
-    description: '覆盖向辅助技术报告的当前数值，支持显式设置 0。',
+    description: '默认解析 progress 的小数并四舍五入；可覆盖当前数值，支持显式设置 0。',
   },
   {
     id: 'aria-valuetext',
@@ -247,7 +248,7 @@ const apiRows = [
     name: 'default 插槽',
     type: 'ProgressBar.Item',
     default: '单段进度',
-    description: '有效内容优先；空插槽回退为单段，多段标签需分别设置。',
+    description: '有效子项与真值 progress 同传会报错；空插槽回退为单段，多段标签需分别设置。',
   },
 ]
 

@@ -297,7 +297,8 @@ const slotRows = [
     id: 'default',
     name: 'default',
     type: '—',
-    description: '放置 Label、Caption、Validation 及单选框选项',
+    description:
+      '放置 Label、Caption、Validation 及选项；通过 FormControl 为单项关联标签和禁用状态',
   },
 ]
 </script>

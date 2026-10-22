@@ -1,10 +1,14 @@
 // @vitest-environment jsdom
+/* eslint-disable vue/one-component-per-file -- Fixtures cover slot wrappers and group hydration. */
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import { mount, type VueWrapper } from '@vue/test-utils'
-import { h, nextTick, ref } from 'vue'
+import { Fragment, createSSRApp, createVNode, defineComponent, h, nextTick, ref } from 'vue'
+import { renderToString } from '@vue/server-renderer'
 import { RadioGroup } from './index'
 import { FormControl } from '../FormControl'
 import { Radio } from '../Radio'
+import { CheckboxGroup } from '../CheckboxGroup'
+import { asSlot } from '../composables/useSlots'
 
 let host: HTMLElement
 const wrappers: VueWrapper[] = []
@@ -165,4 +169,145 @@ test('a direct Radio respects its disabled prop in a RadioGroup', async () => {
   await nextTick()
   expect(second.element.checked).toBe(false)
   expect(wrapper.emitted('change')).toBeUndefined()
+})
+
+test('caption uses Text and compound helpers are shared with CheckboxGroup', () => {
+  expect(RadioGroup.Label).toBe(CheckboxGroup.Label)
+  expect(RadioGroup.Caption).toBe(CheckboxGroup.Caption)
+  expect(RadioGroup.Validation).toBe(CheckboxGroup.Validation)
+  const wrapper = mount(RadioGroup, {
+    props: { name: 'contract', id: 'contract', required: true, 'data-component': 'CustomGroup' },
+    slots: {
+      default: () => [
+        h(RadioGroup.Label, null, () => 'Choices'),
+        h(RadioGroup.Caption, { className: 'caption' }, () => 'Help'),
+        h(RadioGroup.Validation, { variant: 'error' }, () => 'Choose one'),
+        h(Radio, { value: 'one' }),
+      ],
+    },
+  })
+  wrappers.push(wrapper)
+  const caption = wrapper.get('[data-component="CustomGroup.Caption"]')
+  expect(caption.classes()).toContain('caption')
+  expect(caption.classes().some((name) => name.includes('text'))).toBe(true)
+  expect(caption.attributes('id')).toBe('contract-caption')
+  expect(wrapper.get('legend').text()).toContain('Choose one')
+  expect(wrapper.get('[data-component="CustomGroup.Label"]').attributes('title')).toBe(
+    'required field',
+  )
+  expect(wrapper.get('[aria-hidden="true"] [data-component="CustomGroup.Validation"]').text()).toBe(
+    'Choose one',
+  )
+})
+
+test('external labeling links caption, validation and required descriptions without forwarding input props', () => {
+  const wrapper = mount(RadioGroup, {
+    props: {
+      name: 'external',
+      id: 'external',
+      required: true,
+      disabled: true,
+      'aria-labelledby': 'title',
+    },
+    attrs: { title: 'ignored', style: { color: 'red' } },
+    slots: {
+      default: () => [
+        h(RadioGroup.Caption, null, () => 'Help'),
+        h(RadioGroup.Validation, { variant: 'error' }, () => 'Choose one'),
+        h(FormControl, { id: 'external-one' }, () => [
+          h(Radio, { value: 'one' }),
+          h(FormControl.Label, null, () => 'One'),
+        ]),
+      ],
+    },
+  })
+  wrappers.push(wrapper)
+  expect(wrapper.find('fieldset').exists()).toBe(false)
+  const group = wrapper.get('[role="group"]')
+  expect(group.attributes('aria-labelledby')).toBe('title')
+  expect(group.attributes('aria-describedby')).toBe(
+    'external-validationMessage external-caption external-requiredMessage',
+  )
+  expect(wrapper.get('#external-one').element).toHaveProperty('disabled', true)
+  expect(wrapper.find('[name="external"]').exists()).toBe(true)
+  expect(wrapper.find('[title="ignored"]').exists()).toBe(false)
+  expect(wrapper.find('[style*="color: red"]').exists()).toBe(false)
+})
+
+test('recognizes structural template groups and slot wrappers without traversing explicit Fragments', () => {
+  const Label = asSlot(
+    defineComponent({
+      setup:
+        (_, { slots }) =>
+        () =>
+          h(RadioGroup.Label, null, slots),
+    }),
+    RadioGroup.Label,
+  )
+  const wrapper = mount(RadioGroup, {
+    props: { name: 'slots' },
+    slots: {
+      default: () => [
+        createVNode(Fragment, null, [h(Label, null, () => 'Wrapped title')], 64),
+        h(Fragment, null, [h(RadioGroup.Caption, null, () => 'Nested caption')]),
+        'ignored text',
+        h(Radio, { value: 'one' }),
+      ],
+    },
+  })
+  wrappers.push(wrapper)
+  expect(wrapper.get('legend').text()).toBe('Wrapped title')
+  expect(
+    wrapper.get('[class*="radio-group__body"] [data-component="RadioGroup.Caption"]').text(),
+  ).toBe('Nested caption')
+  expect(wrapper.text()).not.toContain('ignored text')
+})
+
+test('runs group change before input change and remembers the last checked event value', async () => {
+  const order: string[] = []
+  const onChange = vi.fn((_value: string | null) => {
+    order.push('group')
+  })
+  const wrapper = mount(RadioGroup, {
+    props: { name: 'order', 'aria-labelledby': 'title', onChange },
+    slots: { default: () => h(Radio, { value: 'one', onChange: () => order.push('radio') }) },
+    attachTo: host,
+  })
+  wrappers.push(wrapper)
+  const input = wrapper.get<HTMLInputElement>('input')
+  input.element.click()
+  await nextTick()
+  expect(order).toEqual(['group', 'radio'])
+  expect(onChange.mock.calls[0]?.[0]).toBe('one')
+  input.element.checked = false
+  input.element.dispatchEvent(new Event('change', { bubbles: true }))
+  expect(onChange.mock.calls[1]?.[0]).toBe('one')
+})
+
+test('hydrates group label, caption and validation IDs without changing default selection', async () => {
+  const App = defineComponent({
+    render: () =>
+      h(RadioGroup, { name: 'hydration' }, () => [
+        h(RadioGroup.Label, null, () => 'Choose one'),
+        h(RadioGroup.Caption, null, () => 'Help'),
+        h(RadioGroup.Validation, { variant: 'error' }, () => 'Required'),
+        h(Radio, { value: 'one', defaultChecked: true }),
+      ]),
+  })
+  host.innerHTML = await renderToString(createSSRApp(App))
+  const original = host.querySelector('input')!
+  const captionId = host.querySelector('[data-component="RadioGroup.Caption"]')!.id
+  const warn = vi.spyOn(console, 'warn')
+  const error = vi.spyOn(console, 'error')
+  const app = createSSRApp(App)
+  app.mount(host)
+  await nextTick()
+  expect(host.querySelector('input')).toBe(original)
+  expect(original.checked).toBe(true)
+  expect(host.querySelector('[data-component="RadioGroup.Caption"]')!.id).toBe(captionId)
+  expect(warn).not.toHaveBeenCalled()
+  expect(error).not.toHaveBeenCalled()
+  app.unmount()
+  warn.mockRestore()
+  error.mockRestore()
 })

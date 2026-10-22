@@ -14,6 +14,7 @@ export type {
   RadioGroupProps,
   RadioGroupEmits,
   RadioGroupLabelProps,
+  RadioGroupCaptionProps,
   RadioGroupValidationProps,
 } from './types'
 export default RadioGroup

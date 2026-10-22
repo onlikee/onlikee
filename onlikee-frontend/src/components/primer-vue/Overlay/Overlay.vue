@@ -1,5 +1,14 @@
 <script setup lang="ts" generic="As extends keyof NativeElements | Component = 'div'">
-import { computed, h, nextTick, shallowRef, toValue, watch } from 'vue'
+import {
+  computed,
+  h,
+  nextTick,
+  onBeforeMount,
+  onBeforeUnmount,
+  shallowRef,
+  toValue,
+  watch,
+} from 'vue'
 import type { Component, NativeElements, SetupContext } from 'vue'
 import { iterateFocusableElements } from '@primer/behaviors/utils'
 import BaseOverlay from './BaseOverlay.vue'
@@ -71,28 +80,25 @@ watch(
   { flush: 'sync' },
 )
 
-watch(
-  element,
-  (overlay, _previous, onCleanup) => {
-    if (!overlay) return
-    const unregisterEscape = registerEscapeHandler((event) => {
-      props.onEscape(event)
-      event.preventDefault()
-    })
-    const unregisterOutside = registerOutsideClickHandler((event) => {
-      if (event.button > 0 || overlay.contains(event.target as Node)) return true
-      if (props.ignoreClickRefs?.some((ref) => ref.value?.contains(event.target as Node)))
-        return true
-      props.onClickOutside(event)
-      return undefined
-    })
-    onCleanup(() => {
-      unregisterEscape()
-      unregisterOutside()
-    })
-  },
-  { flush: 'post' },
-)
+let unregisterEscape: (() => void) | undefined
+let unregisterOutside: (() => void) | undefined
+// Register parents before their synchronously mounted portaled descendants.
+onBeforeMount(() => {
+  unregisterEscape = registerEscapeHandler((event) => {
+    props.onEscape(event)
+    event.preventDefault()
+  })
+  unregisterOutside = registerOutsideClickHandler((event) => {
+    if (event.button > 0 || element.value?.contains(event.target as Node)) return true
+    if (props.ignoreClickRefs?.some((ref) => ref.value?.contains(event.target as Node))) return true
+    props.onClickOutside(event)
+    return undefined
+  })
+})
+onBeforeUnmount(() => {
+  unregisterEscape?.()
+  unregisterOutside?.()
+})
 
 watch(
   [element, () => height],

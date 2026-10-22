@@ -16,7 +16,18 @@ export interface RadioOptions {
   defaultChecked?: boolean
 }
 
-export type RadioProps = RadioOptions & Omit<InputHTMLAttributes, keyof RadioOptions>
+type NativeAttributes = {
+  [Key in keyof InputHTMLAttributes as string extends Key ? never : Key]: InputHTMLAttributes[Key]
+} & { [Name in `data-${string}`]?: string | number | boolean }
+
+export type RadioProps = RadioOptions & Omit<NativeAttributes, keyof RadioOptions>
+
+export interface RadioInstance {
+  element: HTMLInputElement | null
+  input: HTMLInputElement | null
+  focus: (options?: FocusOptions) => void
+  blur: () => void
+}
 
 export interface RadioEmits {
   'update:checked': [checked: boolean]

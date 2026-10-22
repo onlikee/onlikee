@@ -23,7 +23,11 @@ export interface RelativeTimeOptions {
   className?: string
   onRelativeTimeUpdated?: RelativeTimeElement['onRelativeTimeUpdated']
 }
-export type RelativeTimeProps = RelativeTimeOptions & HTMLAttributes
+type NativeAttributes = {
+  [Key in keyof HTMLAttributes as string extends Key ? never : Key]: HTMLAttributes[Key]
+} & { [Name in `data-${string}`]?: string | number | boolean }
+
+export type RelativeTimeProps = RelativeTimeOptions & NativeAttributes
 export interface RelativeTimeInstance {
   element: RelativeTimeElement | null
   update: () => ReturnType<RelativeTimeElement['update']> | undefined

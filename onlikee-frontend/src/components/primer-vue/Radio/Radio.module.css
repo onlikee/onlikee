@@ -1,27 +1,4 @@
-.radio-input {
-  position: relative;
-  display: grid;
-  width: var(--base-size-16, 16px);
-  height: var(--base-size-16, 16px);
-  margin: 0;
-
-  /* 2px to center align with label (20px line-height) */
-  margin-top: var(--base-size-2, 2px);
-  cursor: pointer;
-  background-color: var(--bgColor-default, #ffffff);
-  border-color: var(--control-borderColor-emphasis, #818b98);
-  border-style: solid;
-  border-width: var(--borderWidth-thin, 1px);
-  appearance: none;
-  place-content: center;
-
-  &:disabled {
-    background-color: var(--control-bgColor-disabled, #eff2f5);
-    border-color: var(--control-borderColor-disabled, #818b981a);
-  }
-}
-
-.radio {
+.Radio {
   border-radius: var(--borderRadius-full, 100vh);
   transition:
     background-color,
@@ -29,24 +6,24 @@
 
   &:where(:checked) {
     /* stylelint-disable-next-line primer/colors */
-    background-color: var(--control-checked-fgColor-rest, #ffffff);
+    background-color: var(--control-checked-fgColor-rest);
 
     /* using bgColor here to avoid a border change in dark high contrast */
     /* stylelint-disable-next-line primer/colors */
-    border-color: var(--control-checked-bgColor-rest, #0969da);
-    border-width: var(--borderWidth-thicker, 4px);
+    border-color: var(--control-checked-bgColor-rest);
+    border-width: var(--borderWidth-thicker, 0.25rem);
 
     &:disabled {
       cursor: not-allowed;
       /* stylelint-disable-next-line primer/colors */
-      background-color: var(--control-checked-fgColor-disabled, #ffffff);
+      background-color: var(--control-checked-fgColor-disabled);
       /* stylelint-disable-next-line primer/colors */
-      border-color: var(--control-checked-bgColor-disabled, #818b98);
+      border-color: var(--control-checked-bgColor-disabled);
     }
   }
 
   &:focus-visible {
-    outline: 2px solid var(--focus-outline-color, var(--focus-outlineColor, #0969da));
+    outline: 2px solid var(--focus-outline-color, var(--focus-outlineColor));
     outline-offset: 2px;
     box-shadow: none;
   }

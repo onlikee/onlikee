@@ -13,10 +13,10 @@ export function ensureDefaultPortal(): void {
   const registered = getPortalRoot(DEFAULT_PORTAL_CONTAINER_NAME)
   if (registered && document.body.contains(registered)) return
 
-  let root = document.getElementById('__primerVuePortalRoot__')
+  let root = document.getElementById('__primerPortalRoot__')
   if (!root) {
     root = document.createElement('div')
-    root.id = '__primerVuePortalRoot__'
+    root.id = '__primerPortalRoot__'
     Object.assign(root.style, { position: 'absolute', top: '0', left: '0', width: '100%' })
     ;(document.querySelector('[data-portal-root]') ?? document.body).appendChild(root)
   }

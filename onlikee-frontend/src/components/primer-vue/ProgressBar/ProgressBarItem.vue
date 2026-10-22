@@ -1,46 +1,45 @@
-<template>
-  <span
-    :style="progressStyle"
-    v-bind="$attrs"
-    :class="$style['progress-bar__item']"
-    data-component="ProgressBar.Item"
-    role="progressbar"
-    :aria-valuenow="ariaValueNow"
-    :aria-valuemin="0"
-    :aria-valuemax="100"
-  />
-</template>
-
 <script setup lang="ts">
-import { computed } from 'vue'
+import { useAttrs, useTemplateRef } from 'vue'
+import classes from './ProgressBar.module.css'
+import { normalizeReactStyle } from '../internal/style'
+import type { ProgressBarItemComponentProps, ProgressBarItemProps } from './types'
 
-defineOptions({ inheritAttrs: false })
+defineOptions({ name: 'ProgressBarItem', inheritAttrs: false })
 
-const props = withDefaults(
-  defineProps<{
-    progress?: string | number
-    bg?: string
-    ariaValuenow?: number | string
-  }>(),
-  {
-    progress: undefined,
-    bg: 'success.emphasis',
-    ariaValuenow: undefined,
-  },
-)
+const props = defineProps<ProgressBarItemComponentProps>()
+defineSlots<{ default?: () => unknown }>()
+const attrs = useAttrs() as ProgressBarItemProps
+const element = useTemplateRef<HTMLSpanElement>('element')
 
-const ariaValueNow = computed(() => {
-  const progress =
-    typeof props.progress === 'string' ? parseInt(props.progress, 10) : props.progress
-  return props.ariaValuenow ?? (progress !== undefined && progress >= 0 ? Math.round(progress) : 0)
-})
+function getItemAttrs() {
+  const { class: classValue, style, 'aria-valuenow': ariaValueNow, ...rest } = attrs
+  const progress = typeof props.progress === 'string' ? parseFloat(props.progress) : props.progress
+  const bgType = props.bg && props.bg.split('.')
 
-const progressStyle = computed(() => {
-  const [color, emphasis = 'emphasis'] = (props.bg || 'success.emphasis').split('.')
   return {
-    '--progress-width': props.progress ? `${props.progress}%` : '0%',
-    '--progress-bg': `var(--bgColor-${color}-${emphasis}, var(--bgColor-success-emphasis, #1f883d))`,
+    'data-component': 'ProgressBar.Item',
+    class: [props.className, classValue, classes.ProgressBarItem],
+    ...rest,
+    role: 'progressbar',
+    style: [
+      {
+        '--progress-width': props.progress ? `${props.progress}%` : '0%',
+        '--progress-bg': bgType
+          ? `var(--bgColor-${bgType[0]}-${bgType[1] || 'emphasis'})`
+          : 'var(--bgColor-success-emphasis)',
+      },
+      normalizeReactStyle(style),
+    ],
+    'aria-valuenow':
+      ariaValueNow ?? (progress !== undefined && progress >= 0 ? Math.round(progress) : 0),
+    'aria-valuemin': 0,
+    'aria-valuemax': 100,
   }
-})
+}
+
+defineExpose({ element })
 </script>
-<style module src="./ProgressBarItem.module.css" />
+
+<template>
+  <span ref="element" v-bind="getItemAttrs()"><slot /></span>
+</template>

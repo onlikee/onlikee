@@ -5,6 +5,7 @@ let dialogScrollDisabledCount = 0
 <script setup lang="ts">
 import {
   h,
+  onBeforeMount,
   onBeforeUnmount,
   onMounted,
   provide,
@@ -213,6 +214,13 @@ watch([body, backdrop], ([region, backdropElement], _previous, onCleanup) => {
   })
 })
 let unregisterEscape: (() => void) | undefined
+// Parents register before descendants, including portals mounted in the same commit.
+onBeforeMount(() => {
+  unregisterEscape = registerEscapeHandler((event) => {
+    props.onClose('escape')
+    event.preventDefault()
+  })
+})
 onMounted(() => {
   dialogScrollDisabledCount++
   document.body.style.setProperty(
@@ -220,10 +228,6 @@ onMounted(() => {
     `${window.innerWidth - document.body.clientWidth}px`,
   )
   document.body.setAttribute('data-dialog-scroll-disabled', '')
-  unregisterEscape = registerEscapeHandler((event) => {
-    props.onClose('escape')
-    event.preventDefault()
-  })
 })
 onBeforeUnmount(() => {
   unregisterEscape?.()

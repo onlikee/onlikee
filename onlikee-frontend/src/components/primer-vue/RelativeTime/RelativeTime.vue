@@ -1,7 +1,18 @@
 <script setup lang="ts">
-import { h, onMounted, shallowRef, useAttrs, useSlots } from 'vue'
+import {
+  Comment,
+  Fragment,
+  Text,
+  h,
+  onMounted,
+  shallowRef,
+  useAttrs,
+  useSlots,
+  type VNode,
+} from 'vue'
 import type { RelativeTimeElement } from '@github/relative-time-element'
 import type { RelativeTimeOptions } from './types'
+import { normalizeReactStyle } from '../internal/style'
 
 defineOptions({ name: 'RelativeTime', inheritAttrs: false })
 const props = defineProps<RelativeTimeOptions>()
@@ -15,6 +26,16 @@ onMounted(async () => {
     await import('@github/relative-time-element')
   }
 })
+
+function hasContent(nodes: VNode[]): boolean {
+  return nodes.some((node) => {
+    if (node.type === Comment) return false
+    if (node.type === Fragment && node.patchFlag !== 0 && Array.isArray(node.children))
+      return hasContent(node.children as VNode[])
+    return node.type !== Text || node.children !== ''
+  })
+}
+
 const Render = () => {
   const {
     date: suppliedDate,
@@ -47,13 +68,13 @@ const Render = () => {
       ...Object.fromEntries(Object.entries(attrs).filter(([, value]) => value !== undefined)),
       ref: element,
       class: [className, attrs.class],
-      '^datetime':
-        datetime || (date && !Number.isNaN(date.getTime()) ? date.toISOString() : undefined),
+      style: normalizeReactStyle(attrs.style),
+      '^datetime': date?.toISOString() ?? '',
       '^no-title': noTitle ? '' : undefined,
       onRelativeTimeUpdated,
       'data-component': 'RelativeTime',
     },
-    children?.length ? children : fallback,
+    children && hasContent(children) ? children : fallback,
   )
 }
 defineExpose({ element, update: () => element.value?.update() })

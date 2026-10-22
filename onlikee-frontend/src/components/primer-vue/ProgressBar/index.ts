@@ -6,3 +6,9 @@ export const ProgressBar = Object.assign(ProgressBarRoot, {
 })
 
 export { ProgressBarItem }
+export type {
+  ProgressBarProps,
+  ProgressBarItemProps,
+  ProgressBarInstance,
+  ProgressBarItemInstance,
+} from './types'

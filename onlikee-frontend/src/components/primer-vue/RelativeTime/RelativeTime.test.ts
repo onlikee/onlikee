@@ -2,7 +2,7 @@
 import { flushPromises, mount } from '@vue/test-utils'
 import { renderToString } from '@vue/server-renderer'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { createSSRApp, h, nextTick } from 'vue'
+import { Comment, Fragment, createSSRApp, createVNode, h, nextTick } from 'vue'
 import { RelativeTime } from './index'
 
 afterEach(() => {
@@ -11,6 +11,60 @@ afterEach(() => {
 })
 
 describe('RelativeTime browser wrapper', () => {
+  it('normalizes datetime through the date setter contract and clears removed dates', async () => {
+    const wrapper = mount(RelativeTime, {
+      props: { date: new Date('2020-01-01T00:00:00Z'), datetime: '2024-03-07T08:30:00+08:00' },
+    })
+    expect(wrapper.attributes('datetime')).toBe('2024-03-07T00:30:00.000Z')
+    expect(wrapper.text()).toBe('Mar 7, 2024')
+    await wrapper.setProps({ datetime: '' })
+    expect(wrapper.attributes('datetime')).toBe('2020-01-01T00:00:00.000Z')
+    await wrapper.setProps({ date: null })
+    expect(wrapper.attributes('datetime')).toBe('')
+    expect(wrapper.text()).toBe('')
+    wrapper.unmount()
+  })
+
+  it('uses the date fallback for empty template slots and preserves explicit Fragments', () => {
+    for (const nodes of [[], [h(Comment)], [createVNode(Fragment, null, [], 128)]]) {
+      const wrapper = mount(RelativeTime, {
+        props: { date: new Date('2024-03-07T00:30:00Z') },
+        slots: { default: () => nodes },
+      })
+      expect(wrapper.text()).toBe('Mar 7, 2024')
+      wrapper.unmount()
+    }
+    const fragment = mount(RelativeTime, {
+      props: { date: new Date('2024-03-07T00:30:00Z') },
+      slots: { default: () => h(Fragment, null, []) },
+    })
+    expect(fragment.text()).toBe('')
+    fragment.unmount()
+  })
+
+  it('normalizes native style values and replaces and removes update callbacks', async () => {
+    const first = vi.fn()
+    const second = vi.fn()
+    const wrapper = mount(RelativeTime, {
+      props: { className: 'source', onRelativeTimeUpdated: first },
+      attrs: { class: 'custom', style: { marginLeft: 4 }, 'data-component': 'CustomTime' },
+    })
+    await flushPromises()
+    expect(wrapper.classes()).toEqual(['source', 'custom'])
+    expect((wrapper.element as HTMLElement).style.marginLeft).toBe('4px')
+    expect(wrapper.attributes('data-component')).toBe('RelativeTime')
+    wrapper.element.dispatchEvent(new Event('relative-time-updated'))
+    expect(first).toHaveBeenCalledOnce()
+    await wrapper.setProps({ onRelativeTimeUpdated: second })
+    wrapper.element.dispatchEvent(new Event('relative-time-updated'))
+    expect(first).toHaveBeenCalledOnce()
+    expect(second).toHaveBeenCalledOnce()
+    await wrapper.setProps({ onRelativeTimeUpdated: null })
+    wrapper.element.dispatchEvent(new Event('relative-time-updated'))
+    expect(second).toHaveBeenCalledOnce()
+    wrapper.unmount()
+  })
+
   it('registers the element lazily and forwards formatting, native attributes and updates', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const error = vi.spyOn(console, 'error').mockImplementation(() => {})
