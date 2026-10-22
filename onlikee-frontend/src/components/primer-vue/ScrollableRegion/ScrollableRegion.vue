@@ -1,33 +1,33 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, shallowRef, ref, useAttrs } from 'vue'
+import { onMounted, onBeforeUnmount, shallowRef, useAttrs, type HTMLAttributes } from 'vue'
 import type { ScrollableRegionOptions } from './types'
+import { normalizeReactStyle } from '../internal/style'
 
 defineOptions({ name: 'ScrollableRegion', inheritAttrs: false })
 const props = defineProps<ScrollableRegionOptions>()
-const attrs = useAttrs()
+const attrs = useAttrs() as HTMLAttributes & { tabIndex?: HTMLAttributes['tabindex'] }
 const element = shallowRef<HTMLDivElement | null>(null)
-const hasOverflow = ref(false)
+const hasOverflow = shallowRef(false)
 let observer: ResizeObserver | undefined
-function measure() {
-  const target = element.value
-  hasOverflow.value = Boolean(
-    target &&
-    (target.scrollHeight > target.clientHeight || target.scrollWidth > target.clientWidth),
-  )
-}
 onMounted(() => {
   if (!element.value) return
-  measure()
-  if (typeof ResizeObserver !== 'undefined') {
-    observer = new ResizeObserver(measure)
-    observer.observe(element.value)
-  }
+  observer = new ResizeObserver((entries) => {
+    hasOverflow.value = entries.some(
+      ({ target }) =>
+        target.scrollHeight > target.clientHeight || target.scrollWidth > target.clientWidth,
+    )
+  })
+  observer.observe(element.value)
 })
 onBeforeUnmount(() => observer?.disconnect())
 function bindings() {
-  const { class: _class, ...rest } = attrs
+  const { class: _class, tabIndex, tabindex, ...rest } = attrs
   return {
     ...rest,
+    ...(tabindex !== undefined || tabIndex !== undefined
+      ? { tabindex: tabindex !== undefined ? tabindex : tabIndex }
+      : {}),
+    style: normalizeReactStyle(attrs.style),
     ...(hasOverflow.value
       ? {
           role: 'region',

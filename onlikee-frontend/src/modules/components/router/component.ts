@@ -78,6 +78,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/hidden.vue'),
       },
       {
+        path: 'scrollable-region',
+        name: 'ScrollableRegion',
+        component: () => import('../views/components/scrollable-region.vue'),
+      },
+      {
         path: 'container',
         name: 'Container',
         component: () => import('../views/components/container.vue'),

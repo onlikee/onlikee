@@ -201,6 +201,7 @@ const navSections = ref([
       { path: '/component/page-layout', label: 'PageLayout 页面布局' },
       { path: '/component/heading', label: 'Heading 标题' },
       { path: '/component/hidden', label: 'Hidden 响应式隐藏' },
+      { path: '/component/scrollable-region', label: 'ScrollableRegion 滚动区域' },
       { path: '/component/label', label: 'Label 标签' },
       { path: '/component/label-group', label: 'LabelGroup 标签组' },
       { path: '/component/relative-time', label: 'RelativeTime 相对时间' },

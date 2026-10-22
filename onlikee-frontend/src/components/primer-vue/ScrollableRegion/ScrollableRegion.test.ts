@@ -36,13 +36,13 @@ describe('ScrollableRegion', () => {
       scrollWidth: { configurable: true, value: 500 },
       clientWidth: { configurable: true, value: 100 },
     })
-    callback([], {} as ResizeObserver)
+    callback([{ target: wrapper.element } as ResizeObserverEntry], {} as ResizeObserver)
     await nextTick()
     expect(wrapper.attributes('role')).toBe('region')
     expect(wrapper.attributes('tabindex')).toBe('0')
     expect(wrapper.attributes('aria-label')).toBe('Repository list')
     Object.defineProperty(wrapper.element, 'scrollWidth', { configurable: true, value: 100 })
-    callback([], {} as ResizeObserver)
+    callback([{ target: wrapper.element } as ResizeObserverEntry], {} as ResizeObserver)
     await nextTick()
     expect(wrapper.attributes('role')).toBeUndefined()
     expect(wrapper.attributes('tabindex')).toBeUndefined()
@@ -52,12 +52,12 @@ describe('ScrollableRegion', () => {
   })
 
   it('handles vertical overflow and labelledby', async () => {
-    let notify = () => {}
+    let notify = (_entries: ResizeObserverEntry[]) => {}
     vi.stubGlobal(
       'ResizeObserver',
       class {
-        constructor(callback: () => void) {
-          notify = callback
+        constructor(callback: ResizeObserverCallback) {
+          notify = (entries) => callback(entries, {} as ResizeObserver)
         }
         observe() {}
         disconnect() {}
@@ -68,7 +68,7 @@ describe('ScrollableRegion', () => {
       scrollHeight: { value: 100 },
       clientHeight: { value: 25 },
     })
-    notify()
+    notify([{ target: wrapper.element } as ResizeObserverEntry])
     await nextTick()
     expect(wrapper.attributes('aria-labelledby')).toBe('title')
     expect(wrapper.attributes('role')).toBe('region')

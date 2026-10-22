@@ -8,4 +8,4 @@ export const ScrollableRegion = ScrollableRegionComponent as unknown as {
   }
 }
 export default ScrollableRegion
-export type { ScrollableRegionProps } from './types'
+export type { ScrollableRegionProps, ScrollableRegionInstance } from './types'

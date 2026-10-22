@@ -5,6 +5,13 @@ import { renderToString } from '@vue/server-renderer'
 import { DataTable, Table, type Column } from './index'
 
 it('hydrates groups, skeleton and pagination with the same IDs and accessible names', async () => {
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      observe() {}
+      disconnect() {}
+    },
+  )
   const columns: Column<{ id: number; name: string }>[] = [
     { field: 'name', header: 'Name', rowHeader: true, sortBy: true },
     { id: 'copy', field: 'name', header: 'Copy' },

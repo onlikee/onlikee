@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 /* eslint-disable vue/one-component-per-file -- Fixtures exercise mixed groups and nested tables. */
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount, type VueWrapper } from '@vue/test-utils'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { DataTable, Table, type Column, type DataTableData, type TableInstance } from './index'
@@ -23,6 +23,15 @@ const data: Repository[] = [
   { id: 3, name: null, count: 1 },
 ]
 const wrappers: VueWrapper[] = []
+beforeEach(() => {
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      observe() {}
+      disconnect() {}
+    },
+  )
+})
 afterEach(() => {
   wrappers.splice(0).forEach((wrapper) => wrapper.unmount())
   document.body.innerHTML = ''
