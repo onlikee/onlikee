@@ -8,7 +8,7 @@ export default defineConfig({
   workers: 1,
   retries: 0,
   timeout: 60000,
-  reporter: [['list'], ['html', { outputFolder: '.tmp/spinner-report', open: 'never' }]],
+  reporter: [['list'], ['html', { outputFolder: '../../.tmp/spinner-report', open: 'never' }]],
   use: {
     browserName: 'chromium',
     launchOptions: { chromiumSandbox: true },

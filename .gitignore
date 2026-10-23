@@ -97,3 +97,6 @@ $RECYCLE.BIN/
 .env.*.local
 
 .spec-workflow
+
+# Browser test reports
+onlikee-frontend/e2e/**/.tmp/
