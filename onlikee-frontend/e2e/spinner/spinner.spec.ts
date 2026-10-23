@@ -20,7 +20,21 @@ async function capture(page: Page, clearFocus = true) {
       '[data-component="Spinner"] svg { animation-delay: 0ms !important; animation-play-state: paused !important; } * { caret-color: transparent !important; }',
   })
   if (clearFocus) await page.locator('h1').click()
-  return page.screenshot({ fullPage: true, animations: 'disabled' })
+  let previous = await page.screenshot({ fullPage: true, animations: 'disabled' })
+  // Wait for asynchronous overlay focus/scroll/layout work to settle. Never accept a
+  // head/base mismatch: this only establishes that each page is stable on its own.
+  for (let attempt = 0; attempt < 10; attempt++) {
+    await page.evaluate(
+      () =>
+        new Promise<void>((resolve) =>
+          requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+        ),
+    )
+    const current = await page.screenshot({ fullPage: true, animations: 'disabled' })
+    if (current.equals(previous)) return current
+    previous = current
+  }
+  throw new Error('Screenshot did not stabilize in 10 consecutive captures')
 }
 async function compare(base: Page, head: Page, info: TestInfo, name: string, clearFocus = true) {
   const expected = await capture(base, clearFocus)
@@ -74,9 +88,28 @@ test('sizes, labels, repeated loading, focus and keyboard compositions', async (
     ['medium', 32],
     ['large', 64],
   ] as const) {
-    const box = await page.locator(`[data-size="${size}"] svg`).boundingBox()
-    expect(box?.width).toBe(pixels)
-    expect(box?.height).toBe(pixels)
+    const dimensions = await page.locator(`[data-size="${size}"] svg`).evaluate((svg) => {
+      const style = getComputedStyle(svg)
+      const wrapper = svg.parentElement!.getBoundingClientRect()
+      const rotated = svg.getBoundingClientRect()
+      const matrix = new DOMMatrix(style.transform)
+      return {
+        width: parseFloat(style.width),
+        height: parseFloat(style.height),
+        wrapperWidth: wrapper.width,
+        wrapperHeight: wrapper.height,
+        rotatedWidth: rotated.width,
+        projectedWidth:
+          Math.abs(matrix.a) * parseFloat(style.width) +
+          Math.abs(matrix.c) * parseFloat(style.height),
+      }
+    })
+    expect(dimensions.width).toBe(pixels)
+    expect(dimensions.height).toBe(pixels)
+    expect(dimensions.wrapperWidth).toBe(pixels)
+    expect(dimensions.wrapperHeight).toBe(pixels)
+    // Confirm the earlier AABB measurement reflects rotation rather than layout growth.
+    expect(dimensions.rotatedWidth).toBeCloseTo(dimensions.projectedWidth, 1)
   }
   await expect(page.locator('#standalone')).toContainText('Saving changes')
   await expect(page.locator('#save')).toHaveAccessibleName('Save')

@@ -5,7 +5,8 @@ export default defineConfig({
   testDir: '.',
   testMatch: '*.spec.ts',
   outputDir: '../../.tmp/spinner-results',
-  snapshotPathTemplate: '{testDir}/../../.tmp/spinner-base/{projectName}/{testFilePath}/{arg}{ext}',
+  snapshotPathTemplate:
+    '{testDir}/../../.tmp/spinner-base/{projectName}/{testFilePath}/{testName}/{arg}{ext}',
   updateSnapshots: 'none',
   workers: 1,
   retries: 0,
