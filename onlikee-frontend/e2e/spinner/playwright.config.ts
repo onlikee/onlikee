@@ -1,4 +1,6 @@
 import { defineConfig } from '@playwright/test'
+import { fileURLToPath } from 'node:url'
+const frontendRoot = fileURLToPath(new URL('../..', import.meta.url))
 export default defineConfig({
   testDir: '.',
   testMatch: '*.spec.ts',
@@ -24,11 +26,13 @@ export default defineConfig({
   ],
   webServer: [
     {
+      cwd: frontendRoot,
       command: 'npx vite --config e2e/spinner/vite.config.ts --port 5174 --strictPort',
       url: 'http://127.0.0.1:5174/e2e/spinner/',
       reuseExistingServer: false,
     },
     {
+      cwd: frontendRoot,
       command: 'npx vite --config e2e/spinner/vite.config.ts --port 5175 --strictPort',
       env: { SPINNER_SOURCE_ROOT: process.env.SPINNER_BASE_ROOT ?? '../../base/onlikee-frontend' },
       url: 'http://127.0.0.1:5175/e2e/spinner/',
