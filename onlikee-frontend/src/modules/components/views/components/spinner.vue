@@ -44,6 +44,10 @@
         <code>delay="short"</code> 延迟 300ms，<code>delay="long"</code> 或 <code>delay</code> 延迟
         1000ms；也可传入自定义毫秒数。点击按钮可重新观察延迟。
       </template>
+      <p>
+        延迟从挂载时开始计算；需要重新开始时请像本例一样更换 key 或重新挂载。 已显示的 Spinner
+        不会因修改 delay 而隐藏。动画基于同一时钟保持同步。
+      </p>
       <ComponentDocsDemoBlock :code="delayCode">
         <div class="spinner-demo-stack">
           <button class="spinner-demo-button" @click="delayKey += 1">重新开始</button>
@@ -65,10 +69,24 @@
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
+    <ComponentDocsSection title="与其他组件组合">
+      <template #description>
+        Button、IconButton 使用 loading 管理禁用和加载视觉；TextInput、TextInputWithTokens 使用
+        loading 与 loaderPosition 管理输入装饰位置。请优先使用组件自带的加载状态， 不必额外嵌套
+        Spinner。FilteredActionList 和 SelectPanel 负责输入或列表区域的加载展示。
+      </template>
+      <p>
+        Spinner 本身不创建实时播报区域，也不报告加载完成。旁边已有状态文字时设置 srText 为
+        null，完成或失败的反馈由业务的状态区域提供。
+      </p>
+    </ComponentDocsSection>
+
     <ComponentDocsSection title="API" variant="api">
       <template #description>
         <code>class</code>、<code>style</code>、<code>aria-*</code> 和
-        <code>data-*</code> 属性会传给 SVG。
+        <code>data-*</code> 属性会传给 SVG，并非外层 span；className 同样作用于 SVG。 透传的 SVG
+        属性可以覆盖默认属性。外层保留 data-component="Spinner"。 与上游相同，不提供 SVG DOM ref
+        转发 API。
       </template>
       <VisuallyHidden :id="`${documentationId}-api-table-0`">Spinner 加载指示器 API</VisuallyHidden>
       <ComponentDocsTable

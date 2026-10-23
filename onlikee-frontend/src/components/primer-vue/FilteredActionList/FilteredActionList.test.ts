@@ -446,7 +446,23 @@ describe('FilteredActionList behavior', () => {
     expect(wrapper.find('[role="option"]').exists()).toBe(true)
     await wrapper.setProps({ loadingType: FilteredActionListLoadingTypes.bodySpinner })
     expect(wrapper.find('[role="option"]').exists()).toBe(false)
-    expect(wrapper.find('[data-testid="filtered-action-list-spinner"]').exists()).toBe(true)
+    const spinner = wrapper.get('[data-testid="filtered-action-list-spinner"]')
+    expect(spinner.element.tagName.toLowerCase()).toBe('svg')
+    expect(spinner.attributes('width')).toBe('32px')
+    expect(wrapper.get(`#${spinner.attributes('aria-labelledby')}`).text()).toBe('Loading')
+    await wrapper.setProps({ loading: false })
+    expect(wrapper.find('[data-component="FilteredActionList.Spinner"]').exists()).toBe(false)
+    expect(wrapper.find('[role="option"]').exists()).toBe(true)
+    await wrapper.setProps({ loading: true })
+    expect(wrapper.get('[data-testid="filtered-action-list-spinner"]').element).not.toBe(
+      spinner.element,
+    )
+    await wrapper.setProps({ loadingType: FilteredActionListLoadingTypes.input })
+    expect(wrapper.find('[data-component="FilteredActionList.Spinner"]').exists()).toBe(false)
+    expect(wrapper.find('[role="option"]').exists()).toBe(true)
+    const inputSpinner = wrapper.get('[data-component="TextInput"] [data-component="Spinner"] svg')
+    expect(inputSpinner.attributes('width')).toBe('16px')
+    expect(inputSpinner.attributes('aria-labelledby')).toBeUndefined()
     const html = await renderToString(
       createSSRApp(() => h(FilteredActionList, { items: [], placeholderText: 'Filter' })),
     )
