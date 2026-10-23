@@ -13,7 +13,7 @@ export default defineConfig({
   reporter: [['list'], ['html', { outputFolder: '../../.tmp/spinner-report', open: 'never' }]],
   use: {
     browserName: 'chromium',
-    launchOptions: { chromiumSandbox: true },
+    launchOptions: { chromiumSandbox: true, args: ['--enable-automation'] },
     locale: 'en-US',
     timezoneId: 'UTC',
     deviceScaleFactor: 1,

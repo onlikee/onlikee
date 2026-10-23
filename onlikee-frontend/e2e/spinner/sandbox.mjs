@@ -1,7 +1,9 @@
 import { chromium } from '@playwright/test'
 import { mkdir, writeFile } from 'node:fs/promises'
-const browser = await chromium.launch({ chromiumSandbox: true })
+await mkdir('.tmp', { recursive: true })
+let browser
 try {
+  browser = await chromium.launch({ chromiumSandbox: true, args: ['--enable-automation'] })
   const session = await browser.newBrowserCDPSession()
   const { arguments: args } = await session.send('Browser.getBrowserCommandLine')
   if (
@@ -27,6 +29,9 @@ try {
     ),
   )
   console.log('Sandbox-enabled Chromium and renderer started:', browser.version())
+} catch (error) {
+  await writeFile('.tmp/spinner-sandbox-failure.txt', String(error))
+  throw error
 } finally {
-  await browser.close()
+  await browser?.close()
 }
