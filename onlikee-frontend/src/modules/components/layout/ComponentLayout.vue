@@ -229,6 +229,8 @@ const navSections = ref([
       { path: '/component/skeleton-text', label: 'SkeletonText 文本骨架' },
       { path: '/component/spinner', label: 'Spinner 加载指示器' },
       { path: '/component/stack', label: 'Stack 堆叠布局' },
+      { path: '/component/split-page-layout', label: 'SplitPageLayout 分栏页面布局' },
+      { path: '/component/state-label', label: 'StateLabel 状态标签' },
       { path: '/component/steps', label: 'Steps 步骤条' },
       { path: '/component/tag', label: 'Tag 标签' },
       { path: '/component/text', label: 'Text 文本' },

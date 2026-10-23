@@ -1,0 +1,115 @@
+.StateLabel {
+  align-items: center;
+  border-radius: var(--borderRadius-full, 624.9375rem);
+  color: var(--fgColor-onEmphasis);
+  display: inline-flex;
+  font-weight: var(--base-text-weight-semibold, 600);
+  line-height: 16px;
+  text-align: center;
+}
+.StateLabel:where([data-size='small']) {
+  font-size: var(--text-body-size-small, 0.75rem);
+  padding: var(--base-size-4, 0.25rem) var(--base-size-8, 0.5rem);
+}
+.StateLabel:where([data-size='medium']) {
+  font-size: var(--text-body-size-medium, 0.875rem);
+  padding: var(--base-size-8, 0.5rem) var(--base-size-12, 0.75rem);
+}
+.StateLabel:where([data-status='issueClosed']) {
+  background-color: var(--bgColor-done-emphasis);
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px) var(--borderColor-done-emphasis, transparent);
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='issueClosedNotPlanned']) {
+  background-color: var(--bgColor-neutral-emphasis);
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px)
+    var(--borderColor-neutral-emphasis, transparent);
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='pullClosed']) {
+  background-color: var(--bgColor-closed-emphasis);
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px) var(--borderColor-closed-emphasis, transparent);
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='pullMerged']) {
+  background-color: var(--bgColor-done-emphasis);
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px) var(--borderColor-done-emphasis, transparent);
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='pullQueued']) {
+  background-color: var(--bgColor-attention-emphasis);
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px)
+    var(--borderColor-attention-emphasis, transparent);
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='issueOpened']) {
+  background-color: var(--bgColor-open-emphasis);
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px) var(--borderColor-open-emphasis, transparent);
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='pullOpened']) {
+  background-color: var(--bgColor-open-emphasis);
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px) var(--borderColor-open-emphasis, transparent);
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='draft']) {
+  background-color: var(--bgColor-draft-emphasis, var(--bgColor-neutral-emphasis));
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px)
+    var(--borderColor-draft-emphasis, var(--borderColor-neutral-emphasis, transparent));
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='issueDraft']) {
+  background-color: var(--bgColor-draft-emphasis, var(--bgColor-neutral-emphasis));
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px)
+    var(--borderColor-draft-emphasis, var(--borderColor-neutral-emphasis, transparent));
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='unavailable']) {
+  background-color: var(--bgColor-neutral-emphasis);
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px)
+    var(--borderColor-neutral-emphasis, transparent);
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='open']) {
+  background-color: var(--bgColor-open-emphasis);
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px) var(--borderColor-open-emphasis, transparent);
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='closed']) {
+  background-color: var(--bgColor-done-emphasis);
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px) var(--borderColor-done-emphasis, transparent);
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='alertOpened']) {
+  background-color: var(--bgColor-open-emphasis);
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px) var(--borderColor-open-emphasis, transparent);
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='alertFixed']) {
+  background-color: var(--bgColor-done-emphasis);
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px) var(--borderColor-done-emphasis, transparent);
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='alertDismissed']) {
+  background-color: var(--bgColor-draft-emphasis, var(--bgColor-neutral-emphasis));
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px)
+    var(--borderColor-draft-emphasis, var(--borderColor-neutral-emphasis, transparent));
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='alertClosed']) {
+  background-color: var(--bgColor-closed-emphasis);
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px) var(--borderColor-closed-emphasis, transparent);
+  color: var(--fgColor-onEmphasis);
+}
+.StateLabel:where([data-status='archived']) {
+  background-color: var(--bgColor-neutral-emphasis);
+  box-shadow: var(--boxShadow-thin, inset 0 0 0 1px)
+    var(--borderColor-neutral-emphasis, transparent);
+  color: var(--fgColor-onEmphasis);
+}
+.Icon {
+  margin-right: var(--base-size-4, 0.25rem);
+}
+.Icon:where([data-size-small]) {
+  width: 1em;
+}

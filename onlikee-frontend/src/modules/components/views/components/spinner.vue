@@ -65,6 +65,26 @@
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
+    <ComponentDocsSection title="加载生命周期">
+      <template #description>
+        使用 Button 触发加载，AriaStatus 播报状态。已有可见加载文字时，将 Spinner 的
+        <code>srText</code> 设为 null，避免重复读出；完成后另行播报结果。
+      </template>
+      <ComponentDocsDemoBlock :code="lifecycleCode">
+        <div class="spinner-demo-stack">
+          <Button @click="loadContent">加载内容</Button>
+          <div class="spinner-demo-row">
+            <Spinner v-if="loading" size="small" :sr-text="null" />
+            <AriaStatus>{{ loading ? '正在加载内容…' : '' }}</AriaStatus>
+          </div>
+          <p>{{ loadedContent }}</p>
+          <VisuallyHidden>
+            <AriaStatus>{{ loadedContent ? '内容加载完成' : '' }}</AriaStatus>
+          </VisuallyHidden>
+        </div>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
     <ComponentDocsSection title="API" variant="api">
       <template #description>
         <code>class</code>、<code>style</code>、<code>aria-*</code> 和
@@ -84,8 +104,10 @@
 import { useId as useDocumentationId } from 'vue'
 import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
 
-import { shallowRef } from 'vue'
+import { onUnmounted, shallowRef } from 'vue'
 import { Spinner } from '@/components/primer-vue/Spinner'
+import { Button } from '@/components/primer-vue/Button'
+import AriaStatus from '@/components/primer-vue/internal/components/AriaStatus.vue'
 import ComponentDocsTable, {
   type DocumentationColumn,
 } from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
@@ -98,6 +120,19 @@ const documentationId = useDocumentationId()
 
 const sizes = ['small', 'medium', 'large'] as const
 const delayKey = shallowRef(0)
+const loading = shallowRef(false)
+const loadedContent = shallowRef('')
+let loadTimeout: ReturnType<typeof setTimeout> | undefined
+
+function loadContent() {
+  if (loading.value || loadedContent.value) return
+  loading.value = true
+  loadTimeout = setTimeout(() => {
+    loadedContent.value = '需要等待加载的内容。'
+    loading.value = false
+  }, 1000)
+}
+onUnmounted(() => clearTimeout(loadTimeout))
 
 const basicCode = `<script setup lang="ts">
 import { Spinner } from '@/components/primer-vue/Spinner'
@@ -119,6 +154,14 @@ const srTextCode = `<Spinner sr-text="正在保存" />
 const delayCode = `<Spinner delay="short" />
 <Spinner :delay="500" />
 <Spinner delay="long" />`
+
+const lifecycleCode = `<Button @click="loadContent">加载内容</Button>
+<Spinner v-if="loading" size="small" :sr-text="null" />
+<AriaStatus>{{ loading ? '正在加载内容…' : '' }}</AriaStatus>
+<p>{{ loadedContent }}</p>
+<VisuallyHidden>
+  <AriaStatus>{{ loadedContent ? '内容加载完成' : '' }}</AriaStatus>
+</VisuallyHidden>`
 
 const apiColumns: DocumentationColumn[] = [
   { field: 'name', header: '属性名', rowHeader: true, minWidth: '140px' },
@@ -148,6 +191,20 @@ const apiRows = [
     type: "boolean | 'short' | 'long' | number",
     default: 'false',
     description: '延迟显示；true/long 为 1000ms，short 为 300ms，数字为自定义毫秒数。',
+  },
+  {
+    id: 'className',
+    name: 'className / class',
+    type: 'string',
+    default: '—',
+    description: '附加到 SVG 的样式类；外层 span 保留 inline-flex 布局。',
+  },
+  {
+    id: 'style',
+    name: 'style',
+    type: 'CSSProperties',
+    default: '—',
+    description: 'SVG 样式。无减少动态效果偏好时，animationDelay 由共享时钟计算以同步旋转。',
   },
   {
     id: 'aria-label',

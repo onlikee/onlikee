@@ -19,12 +19,13 @@ const props = withDefaults(defineProps<SpinnerOptions>(), {
   delay: false,
 })
 
+const normalizedProps = props as typeof props & { ariaLabel?: string }
 const attrs = useAttrs()
 const labelId = useId()
 const isVisible = shallowRef(!props.delay)
 const syncDelay = shallowRef(isVisible.value ? computeSyncDelay() : 0)
 const noMotionPreference = shallowRef(false)
-const hasHiddenLabel = () => props.srText !== null && attrs['aria-label'] === undefined
+const hasHiddenLabel = () => props.srText !== null && normalizedProps.ariaLabel === undefined
 
 let motionQuery: MediaQueryList | undefined
 const updateMotionPreference = () => {
@@ -47,10 +48,20 @@ onMounted(() => {
   )
   motionQuery = window.matchMedia?.('(prefers-reduced-motion: no-preference)')
   updateMotionPreference()
-  motionQuery?.addEventListener('change', updateMotionPreference)
+  if (motionQuery?.addEventListener) {
+    motionQuery.addEventListener('change', updateMotionPreference)
+  } else {
+    motionQuery?.addListener(updateMotionPreference)
+  }
 })
 
-onUnmounted(() => motionQuery?.removeEventListener('change', updateMotionPreference))
+onUnmounted(() => {
+  if (motionQuery?.removeEventListener) {
+    motionQuery.removeEventListener('change', updateMotionPreference)
+  } else {
+    motionQuery?.removeListener(updateMotionPreference)
+  }
+})
 
 function computeSyncDelay(): number {
   return typeof performance === 'undefined' ? 0 : -(performance.now() % ANIMATION_DURATION_MS)
@@ -60,18 +71,19 @@ function computeSyncDelay(): number {
 <template>
   <span v-if="isVisible" :class="$style['spinner']" data-component="Spinner">
     <svg
-      v-bind="$attrs"
-      :class="[$style['spinner__animation'], className]"
-      :style="[
-        normalizeReactStyle(attrs.style),
-        noMotionPreference ? { animationDelay: `${syncDelay}ms` } : undefined,
-      ]"
       :height="sizeMap[size]"
       :width="sizeMap[size]"
       viewBox="0 0 16 16"
       fill="none"
       aria-hidden="true"
+      :aria-label="normalizedProps.ariaLabel ?? undefined"
       :aria-labelledby="hasHiddenLabel() ? labelId : undefined"
+      v-bind="$attrs"
+      :class="[className, $style['spinner__animation']]"
+      :style="[
+        normalizeReactStyle(attrs.style),
+        noMotionPreference ? { animationDelay: `${syncDelay}ms` } : undefined,
+      ]"
     >
       <circle
         cx="8"

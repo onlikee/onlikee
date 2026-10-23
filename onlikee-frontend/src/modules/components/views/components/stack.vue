@@ -2,7 +2,7 @@
 import { useId as useDocumentationId } from 'vue'
 import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
 
-import { Stack, StackItem } from '@/components/primer-vue/Stack'
+import { Stack } from '@/components/primer-vue/Stack'
 import ComponentDocsTable, {
   type DocumentationColumn,
 } from '@/modules/components/components/ComponentDocsPage/ComponentDocsTable.vue'
@@ -18,11 +18,11 @@ const codes = [
   '<template>\n<Stack direction="horizontal" align="center" justify="space-between">\n  <div class="demo-item">左侧</div>\n  <div class="demo-item" style="padding-block: 24px">较高内容</div>\n  <div class="demo-item">右侧</div>\n</Stack>\n</template>',
   '<template>\n<Stack direction="horizontal" gap="cozy" padding="spacious" padding-block="tight" class="demo-outline">\n  <div class="demo-item">水平内边距 24px</div>\n  <div class="demo-item">垂直内边距 4px</div>\n</Stack>\n</template>',
   '<template>\n<Stack direction="horizontal" wrap="wrap" gap="condensed" style="max-width: 320px">\n  <div v-for="n in 6" :key="n" class="demo-item" style="min-width: 100px">项目 {{ n }}</div>\n</Stack>\n</template>',
-  '<template>\n<Stack\n  :direction="{ narrow: \'vertical\', regular: \'horizontal\' }"\n  :gap="{ narrow: \'condensed\', regular: \'normal\', wide: \'spacious\' }"\n  :padding="{ narrow: \'tight\', regular: \'normal\' }"\n  padding-inline="cozy"\n  class="demo-outline"\n>\n  <div class="demo-item">响应式方向</div>\n  <div class="demo-item">响应式间距</div>\n  <div class="demo-item">水平内边距固定 12px</div>\n</Stack>\n</template>',
-  '<template>\n<Stack direction="horizontal" align="center">\n  <StackItem :shrink="false" class="demo-item">固定内容</StackItem>\n  <StackItem :grow="{ narrow: false, regular: true }" class="demo-item">768px 起填充剩余空间</StackItem>\n  <StackItem :shrink="false" class="demo-item">操作</StackItem>\n</Stack>\n</template>',
-  '<template>\n<Stack as="ul" class="demo-list" gap="condensed">\n  <StackItem as="li" class="demo-item">列表项一</StackItem>\n  <StackItem as="li">\n    <Stack direction="horizontal" gap="tight">\n      <span class="demo-item">嵌套项 A</span>\n      <span class="demo-item">嵌套项 B</span>\n    </Stack>\n  </StackItem>\n</Stack>\n</template>',
+  "<template>\n<Stack\n  :direction=\"{ narrow: 'vertical', regular: 'horizontal' }\"\n  :gap=\"{ narrow: 'condensed', regular: 'normal', wide: 'spacious' }\"\n  :padding=\"{ narrow: 'tight', regular: 'normal' }\"\n  :padding-inline=\"{ narrow: 'cozy', regular: 'cozy' }\"\n  class=\"demo-outline\"\n>\n  <div class=\"demo-item\">响应式方向</div>\n  <div class=\"demo-item\">响应式间距</div>\n  <div class=\"demo-item\">水平内边距固定 12px</div>\n</Stack>\n</template>",
+  '<template>\n<Stack direction="horizontal" align="center">\n  <Stack.Item :shrink="false" class="demo-item">固定内容</Stack.Item>\n  <Stack.Item :grow="{ narrow: false, regular: true }" class="demo-item">768px 起填充剩余空间</Stack.Item>\n  <Stack.Item :shrink="false" class="demo-item">操作</Stack.Item>\n</Stack>\n</template>',
+  '<template>\n<Stack as="ul" class="demo-list" gap="condensed">\n  <Stack.Item as="li" class="demo-item">列表项一</Stack.Item>\n  <Stack.Item as="li">\n    <Stack direction="horizontal" gap="tight">\n      <span class="demo-item">嵌套项 A</span>\n      <span class="demo-item">嵌套项 B</span>\n    </Stack>\n  </Stack.Item>\n</Stack>\n</template>',
 ]
-const importCode = "import { Stack, StackItem } from '@/components/primer-vue/Stack'"
+const importCode = "import { Stack } from '@/components/primer-vue/Stack'"
 const columns: DocumentationColumn[] = [
   { field: 'name', header: '属性名', rowHeader: true },
   { field: 'type', header: '类型' },
@@ -78,14 +78,14 @@ const rows = [
     name: 'paddingBlock',
     type: 'StackSpacing',
     default: '—',
-    description: '覆盖块轴内边距。',
+    description: '覆盖同一断点的块轴内边距；响应式 padding 会在对应断点重新设置两轴。',
   },
   {
     id: 'paddingInline',
     name: 'paddingInline',
     type: 'StackSpacing',
     default: '—',
-    description: '覆盖行内轴内边距。',
+    description: '覆盖同一断点的行内轴内边距；需要跨断点保持时，应同步提供响应式值。',
   },
 ]
 const itemRows = [
@@ -121,12 +121,12 @@ const itemRows = [
     />
     <ComponentDocsSection title="引入">
       <ComponentDocsDemoBlock :code="importCode">
-        <code>Stack / StackItem</code>
+        <code>Stack / Stack.Item</code>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
     <ComponentDocsSection title="基础用法">
       <template #description>
-        默认纵向排列，间距为 normal（16px）。普通元素可以直接作为子项，无需包裹 StackItem。
+        默认纵向排列，间距为 normal（16px）。普通元素可以直接作为子项，无需包裹 Stack.Item。
       </template>
       <ComponentDocsDemoBlock :code="codes[0]">
         <Stack>
@@ -184,7 +184,7 @@ const itemRows = [
           :direction="{ narrow: 'vertical', regular: 'horizontal' }"
           :gap="{ narrow: 'condensed', regular: 'normal', wide: 'spacious' }"
           :padding="{ narrow: 'tight', regular: 'normal' }"
-          padding-inline="cozy"
+          :padding-inline="{ narrow: 'cozy', regular: 'cozy' }"
           class="demo-outline"
         >
           <div class="demo-item">响应式方向</div>
@@ -195,16 +195,16 @@ const itemRows = [
     </ComponentDocsSection>
     <ComponentDocsSection title="弹性子项">
       <template #description>
-        StackItem 默认 grow=false、shrink=true，最小行内尺寸为 0。布尔值也支持响应式对象；传入 false
-        时使用 Vue 的 :grow 或 :shrink 绑定。
+        Stack.Item 默认 grow=false、shrink=true，最小行内尺寸为 0。布尔值也支持响应式对象；传入
+        false 时使用 Vue 的 :grow 或 :shrink 绑定。
       </template>
       <ComponentDocsDemoBlock :code="codes[5]">
         <Stack direction="horizontal" align="center">
-          <StackItem :shrink="false" class="demo-item"> 固定内容 </StackItem>
-          <StackItem :grow="{ narrow: false, regular: true }" class="demo-item">
+          <Stack.Item :shrink="false" class="demo-item"> 固定内容 </Stack.Item>
+          <Stack.Item :grow="{ narrow: false, regular: true }" class="demo-item">
             768px 起填充剩余空间
-          </StackItem>
-          <StackItem :shrink="false" class="demo-item"> 操作 </StackItem>
+          </Stack.Item>
+          <Stack.Item :shrink="false" class="demo-item"> 操作 </Stack.Item>
         </Stack>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -215,13 +215,13 @@ const itemRows = [
       </template>
       <ComponentDocsDemoBlock :code="codes[6]">
         <Stack as="ul" class="demo-list" gap="condensed">
-          <StackItem as="li" class="demo-item"> 列表项一 </StackItem>
-          <StackItem as="li">
+          <Stack.Item as="li" class="demo-item"> 列表项一 </Stack.Item>
+          <Stack.Item as="li">
             <Stack direction="horizontal" gap="tight">
               <span class="demo-item">嵌套项 A</span>
               <span class="demo-item">嵌套项 B</span>
             </Stack>
-          </StackItem>
+          </Stack.Item>
         </Stack>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
@@ -238,7 +238,7 @@ const itemRows = [
         :data="rows"
       />
     </ComponentDocsSection>
-    <ComponentDocsSection title="StackItem API" variant="api">
+    <ComponentDocsSection title="Stack.Item API" variant="api">
       <VisuallyHidden :id="`${documentationId}-api-table-1`">Stack 堆叠布局 API</VisuallyHidden>
       <ComponentDocsTable
         :aria-labelledby="`${documentationId}-api-table-1`"

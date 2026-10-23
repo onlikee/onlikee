@@ -73,6 +73,16 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/stack.vue'),
       },
       {
+        path: 'split-page-layout',
+        name: 'SplitPageLayout',
+        component: () => import('../views/components/split-page-layout.vue'),
+      },
+      {
+        path: 'state-label',
+        name: 'StateLabel',
+        component: () => import('../views/components/state-label.vue'),
+      },
+      {
         path: 'hidden',
         name: 'Hidden',
         component: () => import('../views/components/hidden.vue'),

@@ -5,10 +5,10 @@ export interface SpinnerOptions {
   srText?: string | null
   delay?: boolean | 'short' | 'long' | number
   className?: string
+  /** @deprecated Use srText instead. */
+  'aria-label'?: string
 }
 
 export type SpinnerProps = SpinnerOptions & {
   style?: CSSProperties
-  /** @deprecated Use srText instead. */
-  'aria-label'?: string
-} & { [Name in `data-${string}`]?: string | number | boolean }
+} & { [Name in `data-${string}`]?: unknown }
