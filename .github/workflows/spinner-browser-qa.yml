@@ -1,0 +1,66 @@
+name: Spinner browser QA (PR only)
+on:
+  pull_request:
+    paths:
+      - "onlikee-frontend/**"
+      - ".github/workflows/spinner-browser-qa.yml"
+permissions:
+  contents: read
+concurrency:
+  group: spinner-browser-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+jobs:
+  spinner-browser:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: head/onlikee-frontend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: head
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: head/onlikee-frontend/package-lock.json
+      - name: Install head and base dependencies
+        run: |
+          npm ci --no-audit --no-fund
+          npm ci --prefix ../../base/onlikee-frontend --no-audit --no-fund
+      - name: Install official Chromium and runtime libraries
+        run: npx playwright install --with-deps chromium
+      - name: Verify sandboxed browser startup
+        run: node e2e/spinner/sandbox.mjs
+      - name: Record comparison provenance
+        env:
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          printf 'head=%s\nbase=%s\n' "$PR_HEAD_SHA" "$PR_BASE_SHA" > .tmp/spinner-revisions.txt
+          test "$(git rev-parse HEAD)" = "$PR_HEAD_SHA"
+          test "$(git -C ../../base rev-parse HEAD)" = "$PR_BASE_SHA"
+      - name: Lint and typecheck browser harness
+        run: |
+          npx eslint e2e/spinner
+          npm run typecheck:browser
+      - name: Compare PR base and head in real Chromium
+        run: npm run test:browser
+      - name: Upload screenshots, diffs, traces and HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spinner-browser-${{ github.event.pull_request.head.sha }}
+          path: |
+            head/onlikee-frontend/.tmp/spinner-*
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 14

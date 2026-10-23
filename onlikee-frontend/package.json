@@ -13,7 +13,9 @@
     "format:check": "prettier . --check",
     "test": "vitest --watch",
     "test:run": "vitest run",
-    "typecheck:test": "vue-tsc --noEmit -p tsconfig.test.json"
+    "typecheck:test": "vue-tsc --noEmit -p tsconfig.test.json",
+    "test:browser": "playwright test --config e2e/spinner/playwright.config.ts",
+    "typecheck:browser": "vue-tsc --noEmit -p e2e/spinner/tsconfig.json"
   },
   "dependencies": {
     "@github/relative-time-element": "^5.0.0",
@@ -38,6 +40,7 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@playwright/test": "1.64.1",
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^24.3.0",
     "@typescript-eslint/eslint-plugin": "^8.56.1",
