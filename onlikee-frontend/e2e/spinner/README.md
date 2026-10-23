@@ -7,10 +7,13 @@ checks out the exact PR head and base, and never modifies the deployment workflo
 
 ## Run
 
-Install dependencies in both checkouts. In the head frontend directory:
+Install dependencies in both checkouts. CI uses Ubuntu 22.04’s preinstalled browser
+runtime libraries and downloads pinned Chromium; startup fails if libraries are missing.
+On a developer machine with missing libraries, use the official `--with-deps` installer.
+In the head frontend directory:
 
 ```sh
-npx playwright install --with-deps chromium
+npx playwright install chromium
 node e2e/spinner/sandbox.mjs
 SPINNER_BASE_ROOT=/absolute/path/to/base/onlikee-frontend npm run test:browser
 ```

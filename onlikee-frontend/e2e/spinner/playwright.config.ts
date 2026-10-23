@@ -9,6 +9,7 @@ export default defineConfig({
   updateSnapshots: 'none',
   workers: 1,
   retries: 0,
+  maxFailures: 3,
   timeout: 60000,
   reporter: [['list'], ['html', { outputFolder: '../../.tmp/spinner-report', open: 'never' }]],
   use: {

@@ -36,8 +36,9 @@ jobs:
         run: |
           npm ci --no-audit --no-fund
           npm ci --prefix ../../base/onlikee-frontend --no-audit --no-fund
-      - name: Install official Chromium and runtime libraries
-        run: npx playwright install --with-deps chromium
+      - name: Install official Chromium (runner provides runtime libraries)
+        timeout-minutes: 5
+        run: npx playwright install chromium
       - name: Verify sandboxed browser startup
         run: node e2e/spinner/sandbox.mjs
       - name: Record comparison provenance
