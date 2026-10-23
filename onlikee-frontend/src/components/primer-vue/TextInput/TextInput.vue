@@ -3,6 +3,7 @@ import { computed, ref, useAttrs, useId, useSlots, type InputHTMLAttributes } fr
 import TextInputWrapper from '../internal/components/TextInputWrapper.vue'
 import RenderVisual from '../internal/components/RenderVisual'
 import CharacterCounter from '../internal/components/CharacterCounter.vue'
+import VisuallyHidden from '../internal/components/VisuallyHidden.vue'
 import TextInputVisual from './TextInputVisual.vue'
 import { useInputValue } from '../internal/inputValue'
 import { useCharacterCounter } from '../internal/characterCounter'
@@ -27,17 +28,24 @@ const attrs = useAttrs()
 const slots = useSlots()
 const input = ref<HTMLInputElement>()
 const focused = ref(false)
+const uncontrolledLength = ref(String(props.defaultValue ?? '').length)
 const {
   value,
   input: updateInput,
   compositionStart,
   compositionEnd,
-} = useInputValue(props, input, (next, event) => {
-  emit('update:value', next)
-  emit('change', event)
-})
+} = useInputValue(
+  props,
+  input,
+  (next, event) => {
+    if (props.characterLimit && props.value === undefined) uncontrolledLength.value = next.length
+    emit('update:value', next)
+    emit('change', event)
+  },
+  { deferComposition: false },
+)
 const counter = useCharacterCounter(
-  () => (props.value === undefined ? value.value.length : String(props.value).length),
+  () => (props.value === undefined ? uncontrolledLength.value : String(props.value).length),
   () => props.characterLimit,
 )
 const valid = computed(() => (counter.value?.isOverLimit ? 'error' : props.validationStatus))
@@ -46,44 +54,32 @@ const trailingId = useId()
 const loadingId = useId()
 const counterId = useId()
 const staticMessageId = useId()
-const hasLeading = computed(() =>
-  props.leadingVisual !== undefined ? Boolean(props.leadingVisual) : Boolean(slots.leadingVisual),
-)
-const hasTrailing = computed(() =>
-  props.trailingVisual !== undefined
-    ? Boolean(props.trailingVisual)
-    : Boolean(slots.trailingVisual),
-)
-const hasAction = computed(() =>
-  props.trailingAction !== undefined
-    ? Boolean(props.trailingAction)
-    : Boolean(slots.trailingAction),
-)
-const leadingLoading = computed(() =>
+const hasLeading = () =>
+  props.leadingVisual !== undefined ? Boolean(props.leadingVisual) : Boolean(slots.leadingVisual)
+const hasTrailing = () =>
+  props.trailingVisual !== undefined ? Boolean(props.trailingVisual) : Boolean(slots.trailingVisual)
+const hasAction = () =>
+  props.trailingAction !== undefined ? Boolean(props.trailingAction) : Boolean(slots.trailingAction)
+const leadingLoading = () =>
   Boolean(
     props.loading &&
-    (props.loaderPosition === 'leading' ||
-      (hasLeading.value && props.loaderPosition !== 'trailing')),
-  ),
-)
-const trailingLoading = computed(() =>
+    (props.loaderPosition === 'leading' || (hasLeading() && props.loaderPosition !== 'trailing')),
+  )
+const trailingLoading = () =>
   Boolean(
     props.loading &&
-    (props.loaderPosition === 'trailing' || (props.loaderPosition === 'auto' && !hasLeading.value)),
-  ),
-)
-const describedBy = computed(
-  () =>
-    [
-      props.characterLimit && staticMessageId,
-      attrs['aria-describedby'],
-      hasLeading.value && leadingId,
-      hasTrailing.value && trailingId,
-      props.loading && loadingId,
-    ]
-      .filter(Boolean)
-      .join(' ') || undefined,
-)
+    (props.loaderPosition === 'trailing' || (props.loaderPosition === 'auto' && !hasLeading())),
+  )
+const describedBy = () =>
+  [
+    props.characterLimit && staticMessageId,
+    attrs['aria-describedby'],
+    hasLeading() && leadingId,
+    hasTrailing() && trailingId,
+    props.loading && loadingId,
+  ]
+    .filter(Boolean)
+    .join(' ') || undefined
 function nativeAttrs() {
   const { class: _class, style: _style, ...native } = attrs
   return native
@@ -102,7 +98,7 @@ defineExpose({
 
 <template>
   <TextInputWrapper
-    :class="[className, $attrs.class]"
+    :class="[className, $attrs.class, 'TextInput-wrapper']"
     :width="width"
     :min-width="minWidth"
     :max-width="maxWidth"
@@ -113,22 +109,20 @@ defineExpose({
     :size="size"
     :variant="variant"
     :validation-status="valid"
-    :has-leading-visual="hasLeading || leadingLoading"
-    :has-trailing-visual="hasTrailing || trailingLoading"
-    :has-trailing-action="hasAction"
+    :has-leading-visual="hasLeading() || leadingLoading()"
+    :has-trailing-visual="hasTrailing() || trailingLoading()"
+    :has-trailing-action="hasAction()"
     :is-input-focused="focused"
     :aria-busy="Boolean(loading)"
     @click="focusInput"
   >
-    <span v-if="icon" class="TextInput-icon" data-component="TextInput.Icon"
-      ><RenderVisual :visual="icon"
-    /></span>
+    <component :is="icon" v-if="icon" class="TextInput-icon" data-component="TextInput.Icon" />
     <TextInputVisual
       :id="leadingId"
       position="leading"
-      :has-visual="hasLeading"
+      :has-visual="hasLeading()"
       :has-loading="typeof loading === 'boolean'"
-      :show-loading="leadingLoading"
+      :show-loading="leadingLoading()"
     >
       <RenderVisual v-if="leadingVisual !== undefined" :visual="leadingVisual" /><slot
         v-else
@@ -155,7 +149,7 @@ defineExpose({
             : undefined
       "
       :value="value"
-      :aria-describedby="describedBy"
+      :aria-describedby="describedBy()"
       :data-component="$attrs['data-component'] ?? 'input'"
       @input="(emit('input', $event), updateInput($event))"
       @focus="((focused = true), emit('focus', $event))"
@@ -163,16 +157,13 @@ defineExpose({
       @compositionstart="(compositionStart(), emit('compositionstart', $event))"
       @compositionend="(compositionEnd($event), emit('compositionend', $event))"
     />
-    <span v-if="loading" :id="loadingId" :class="$style['text-input-hidden']">{{
-      loaderText
-    }}</span>
+    <VisuallyHidden v-if="loading" :id="loadingId">{{ loaderText }}</VisuallyHidden>
     <TextInputVisual
       :id="trailingId"
       position="trailing"
-      :has-visual="hasTrailing"
+      :has-visual="hasTrailing()"
       :has-loading="typeof loading === 'boolean'"
-      :show-loading="trailingLoading"
-      data-testid="text-input-trailing-visual"
+      :show-loading="trailingLoading()"
     >
       <RenderVisual v-if="trailingVisual !== undefined" :visual="trailingVisual" /><slot
         v-else

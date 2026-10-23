@@ -18,11 +18,9 @@ const slots = useSlots()
 const buttonRef = ref<{ element?: HTMLElement | null } | null>(null)
 
 const ariaLabel = computed(() => attrs['aria-label'] as string | undefined)
-const hasChildren = computed(() => Boolean(slots.default))
+const hasChildren = () => Boolean(slots.default)
 const iconComponent = computed(() => props.icon as Component)
-const useIconButton = computed(() =>
-  Boolean(iconComponent.value && !hasChildren.value && ariaLabel.value),
-)
+const useIconButton = () => Boolean(iconComponent.value && !hasChildren() && ariaLabel.value)
 
 const restAttrs = computed(() => {
   const { 'aria-label': _label, 'aria-labelledby': _labelledBy, ...rest } = attrs
@@ -47,7 +45,7 @@ const buttonClassName = computed(
 onMounted(() => {
   if (
     import.meta.env.DEV &&
-    ((props.icon && !ariaLabel.value) || (!hasChildren.value && !ariaLabel.value))
+    ((props.icon && !ariaLabel.value) || (!hasChildren() && !ariaLabel.value))
   ) {
     console.warn(
       'Use the `aria-label` prop to provide an accessible label for assistive technology',
@@ -72,7 +70,7 @@ defineExpose({
     data-component="TextInput.Action"
   >
     <IconButton
-      v-if="useIconButton"
+      v-if="useIconButton()"
       ref="buttonRef"
       :icon="iconComponent"
       :variant="variant"
@@ -86,7 +84,6 @@ defineExpose({
       <Tooltip
         v-if="ariaLabel"
         :text="ariaLabel"
-        :direction="tooltipDirection"
         :class-name="$style['text-input-action-conditional-tooltip']"
       >
         <Button

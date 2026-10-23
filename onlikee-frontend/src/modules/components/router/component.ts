@@ -83,6 +83,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/state-label.vue'),
       },
       {
+        path: 'sub-nav',
+        name: 'SubNav',
+        component: () => import('../views/components/sub-nav.vue'),
+      },
+      {
         path: 'hidden',
         name: 'Hidden',
         component: () => import('../views/components/hidden.vue'),

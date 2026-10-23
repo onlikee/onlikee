@@ -232,6 +232,7 @@ const navSections = ref([
       { path: '/component/split-page-layout', label: 'SplitPageLayout 分栏页面布局' },
       { path: '/component/state-label', label: 'StateLabel 状态标签' },
       { path: '/component/steps', label: 'Steps 步骤条' },
+      { path: '/component/sub-nav', label: 'SubNav 子导航' },
       { path: '/component/tag', label: 'Tag 标签' },
       { path: '/component/text', label: 'Text 文本' },
       { path: '/component/textarea', label: 'Textarea 文本域' },

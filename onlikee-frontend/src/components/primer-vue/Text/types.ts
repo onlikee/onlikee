@@ -1,17 +1,11 @@
-import type {
-  Component,
-  ComponentPublicInstance,
-  FunctionalComponent,
-  HTMLAttributes,
-  NativeElements,
-} from 'vue'
+import type { Component, FunctionalComponent, HTMLAttributes, NativeElements } from 'vue'
 
 export type TextSize = 'large' | 'medium' | 'small'
 export type TextWeight = 'light' | 'normal' | 'medium' | 'semibold'
 export type TextWhiteSpace = 'pre' | 'normal' | 'nowrap' | 'pre-wrap' | 'pre-line'
 
 export interface TextOptions {
-  as?: string | Component
+  as?: keyof NativeElements | Component
   size?: TextSize
   weight?: TextWeight
   whiteSpace?: TextWhiteSpace
@@ -26,10 +20,19 @@ type ElementProps<As> = As extends keyof NativeElements
       ? Props
       : HTMLAttributes
 
-export type TextProps<As extends string | Component = 'span'> = Omit<TextOptions, 'as'> & {
+export type TextProps<As extends keyof NativeElements | Component = 'span'> = Omit<
+  TextOptions,
+  'as'
+> & {
   as?: As
 } & Omit<ElementProps<As>, keyof TextOptions>
-export type TextElement = HTMLElement | SVGElement | ComponentPublicInstance
+export type TextComponentProps<As extends keyof NativeElements | Component = 'span'> = Omit<
+  TextOptions,
+  'as'
+> & {
+  as?: As
+} & /* @vue-ignore */ Omit<ElementProps<NoInfer<As>>, keyof TextOptions>
+export type TextElement = HTMLElement | SVGElement
 
 export interface TextInstance {
   element: TextElement | null

@@ -387,7 +387,7 @@ const eventRows = [
   {
     id: 'update:value',
     name: 'update:value',
-    description: '输入值变化时触发（IME 组合输入在 compositionend 后更新）',
+    description: '原生 input 修改值时触发，包括 IME 组合输入过程；重复的最终值不重复通知',
     type: 'string',
   },
   {

@@ -5,6 +5,7 @@ export function useInputValue<T extends HTMLInputElement | HTMLTextAreaElement |
   props: { value?: string | number | null; defaultValue?: string | number },
   element: Ref<T | undefined>,
   update: (value: string, event: Event) => void,
+  { deferComposition = true }: { deferComposition?: boolean } = {},
 ) {
   const localValue = ref(String(props.defaultValue ?? ''))
   const value = computed(() =>
@@ -24,6 +25,10 @@ export function useInputValue<T extends HTMLInputElement | HTMLTextAreaElement |
     })
   }
   function input(event: Event) {
+    if (!deferComposition) {
+      if ((event.target as T).value !== value.value) commit(event)
+      return
+    }
     if (composing || (event as InputEvent).isComposing) return
     const next = (event.target as T).value
     if (justComposedValue !== undefined && next === justComposedValue) {
@@ -39,6 +44,7 @@ export function useInputValue<T extends HTMLInputElement | HTMLTextAreaElement |
   function compositionEnd(event: CompositionEvent) {
     if (!composing) return
     composing = false
+    if (!deferComposition) return
     justComposedValue = (event.target as T).value
     commit(event)
   }

@@ -1,25 +1,34 @@
-<script setup lang="ts">
-import { shallowRef, useAttrs, useCssModule } from 'vue'
-import type { TextElement, TextOptions } from './types'
+<script setup lang="ts" generic="As extends keyof NativeElements | Component = 'span'">
+import { computed, shallowRef, useAttrs, useCssModule } from 'vue'
+import type { Component, NativeElements } from 'vue'
+import type { TextComponentProps } from './types'
+import { normalizeReactStyle } from '../internal/style'
+import { resolveFocusTarget } from '../internal/focusTarget'
 
 // eslint-disable-next-line vue/no-reserved-component-names -- Keep the public component name.
 defineOptions({ name: 'Text', inheritAttrs: false })
 
-const props = withDefaults(defineProps<TextOptions>(), { as: 'span' })
+const { as = 'span', className, size, weight, whiteSpace } = defineProps<TextComponentProps<As>>()
 const attrs = useAttrs()
 const styles = useCssModule()
-const element = shallowRef<TextElement | null>(null)
+const root = shallowRef<unknown>(null)
+const element = computed(() =>
+  typeof SVGElement !== 'undefined' && root.value instanceof SVGElement
+    ? root.value
+    : resolveFocusTarget(root.value),
+)
 
 function getRootAttrs() {
   const { class: classValue, ...rest } = attrs
 
   return {
-    class: [props.className, classValue, styles['text']],
+    class: [className, classValue, styles['text']],
     'data-component': 'Text',
-    'data-size': props.size,
-    'data-weight': props.weight,
-    'data-white-space': props.whiteSpace,
+    'data-size': size,
+    'data-weight': weight,
+    'data-white-space': whiteSpace,
     ...rest,
+    style: typeof as === 'string' ? normalizeReactStyle(attrs.style) : attrs.style,
   }
 }
 
@@ -27,7 +36,7 @@ defineExpose({ element })
 </script>
 
 <template>
-  <component :is="as" ref="element" v-bind="getRootAttrs()">
+  <component :is="as" ref="root" v-bind="getRootAttrs()">
     <slot />
   </component>
 </template>

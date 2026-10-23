@@ -97,9 +97,9 @@ const instanceRows = [
   {
     id: 'element',
     name: 'element',
-    type: 'HTMLElement | SVGElement | ComponentPublicInstance | null',
+    type: 'HTMLElement | SVGElement | null',
     default: 'null',
-    description: '通过模板 ref 访问根元素；as 为组件时，返回该组件实例',
+    description: '通过模板 ref 访问根元素；as 为组件时，解析其公开的 element DOM 引用',
   },
 ]
 const slotRows = [
@@ -185,7 +185,8 @@ const slotRows = [
 
     <ComponentDocsSection title="自定义样式">
       <template #description>
-        使用 class 或 className 添加颜色、背景及其他样式，也可以通过 style 设置内联样式。
+        使用 class 或 className 添加颜色、背景及其他样式，也可以通过 style
+        设置内联样式。原生元素的数值长度会转换为 px；as 为组件时保留样式原值交由该组件处理。
       </template>
       <ComponentDocsDemoBlock :code="codes.custom">
         <Text size="small" class="highlight-text"> 自定义颜色与背景 </Text>

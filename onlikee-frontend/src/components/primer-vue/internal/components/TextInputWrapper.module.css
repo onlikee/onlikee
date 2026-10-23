@@ -1,95 +1,186 @@
 .TextInput-base-wrapper {
-  --inner-action-size: var(--base-size-24, 1.5rem);
-  display: inline-flex;
-  min-height: var(--base-size-32, 2rem);
-  overflow: hidden;
-  font-size: var(--text-body-size-medium, 0.875rem);
-  line-height: var(--base-size-20, 1.25rem);
-  color: var(--fgColor-default);
-  vertical-align: middle;
-  cursor: text;
+  align-items: stretch;
   background-color: var(--bgColor-default);
   border: var(--borderWidth-thin, 0.0625rem) solid var(--control-borderColor-rest);
   border-radius: var(--borderRadius-medium, 0.375rem);
-  outline: none;
   box-shadow: var(--shadow-inset);
-  align-items: stretch;
+  color: var(--fgColor-default);
+  cursor: text;
+  display: inline-flex;
+  font-size: var(--text-body-size-medium, 0.875rem);
+  line-height: var(--base-size-20, 1.25rem);
+  min-height: var(--base-size-32, 2rem);
+  outline: none;
+  overflow: hidden;
+  vertical-align: middle;
 }
-.TextInput-base-wrapper input, .TextInput-base-wrapper textarea { cursor: text; }
-.TextInput-base-wrapper select { cursor: pointer; }
-.TextInput-base-wrapper input::placeholder, .TextInput-base-wrapper textarea::placeholder, .TextInput-base-wrapper select::placeholder { color: var(--fgColor-muted); }
-.TextInput-base-wrapper:where([data-trailing-action][data-focused]), .TextInput-base-wrapper:where([data-no-trailing-action]:focus-within) {
+.TextInput-base-wrapper input,
+.TextInput-base-wrapper textarea {
+  cursor: text;
+}
+.TextInput-base-wrapper select {
+  cursor: pointer;
+}
+.TextInput-base-wrapper input::placeholder {
+  color: var(--fgColor-muted);
+}
+.TextInput-base-wrapper textarea::placeholder {
+  color: var(--fgColor-muted);
+}
+.TextInput-base-wrapper select::placeholder {
+  color: var(--fgColor-muted);
+}
+.TextInput-base-wrapper:where([data-no-trailing-action]:focus-within),
+.TextInput-base-wrapper:where([data-trailing-action][data-focused]) {
   border-color: var(--borderColor-accent-emphasis);
   outline: var(--borderWidth-thick, 0.125rem) solid var(--borderColor-accent-emphasis);
   outline-offset: -1px;
 }
-.TextInput-base-wrapper > textarea { padding: var(--base-size-12, 0.75rem); }
-.TextInput-base-wrapper:where([data-contrast]) { background-color: var(--control-bgColor-contrast, var(--bgColor-inset)); }
+.TextInput-base-wrapper > textarea {
+  padding: var(--base-size-12, 0.75rem);
+}
+.TextInput-base-wrapper:where([data-contrast]) {
+  background-color: var(--control-bgColor-contrast, var(--bgColor-inset));
+}
 .TextInput-base-wrapper:where([data-disabled]) {
-  color: var(--fgColor-disabled);
   background-color: var(--control-bgColor-disabled);
   border-color: var(--control-borderColor-disabled);
   box-shadow: none;
+  color: var(--fgColor-disabled);
 }
-.TextInput-base-wrapper:where([data-disabled]) input, .TextInput-base-wrapper:where([data-disabled]) textarea, .TextInput-base-wrapper:where([data-disabled]) select { cursor: not-allowed; }
-.TextInput-base-wrapper:where([data-monospace]) { font-family: var(--fontStack-monospace, ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace); }
-.TextInput-base-wrapper:where([data-validation='error']) { border-color: var(--borderColor-danger-emphasis); }
-.TextInput-base-wrapper:where([data-validation='error']):where([data-trailing-action][data-focused]),
-.TextInput-base-wrapper:where([data-validation='error']):where([data-no-trailing-action]):focus-within {
+.TextInput-base-wrapper:where([data-disabled]) input,
+.TextInput-base-wrapper:where([data-disabled]) select,
+.TextInput-base-wrapper:where([data-disabled]) textarea {
+  cursor: not-allowed;
+}
+.TextInput-base-wrapper:where([data-monospace]) {
+  font-family: var(
+    --fontStack-monospace,
+    ui-monospace,
+    SFMono-Regular,
+    SF Mono,
+    Menlo,
+    Consolas,
+    Liberation Mono,
+    monospace
+  );
+}
+.TextInput-base-wrapper:where([data-validation='error']) {
+  border-color: var(--borderColor-danger-emphasis);
+}
+.TextInput-base-wrapper:where([data-validation='error']):where(
+    [data-no-trailing-action]
+  ):focus-within,
+.TextInput-base-wrapper:where([data-validation='error']):where(
+    [data-trailing-action][data-focused]
+  ) {
   border-color: var(--control-borderColor-danger);
   outline: 2px solid var(--control-borderColor-danger);
   outline-offset: -1px;
 }
-.TextInput-base-wrapper:where([data-validation='success']) { border-color: var(--bgColor-success-emphasis); }
-.TextInput-base-wrapper:where([data-block]) { display: flex; width: 100%; align-self: stretch; }
-@media screen and (min-width: 48rem) { .TextInput-base-wrapper { font-size: var(--text-body-size-medium, 0.875rem); } }
+.TextInput-base-wrapper:where([data-validation='success']) {
+  border-color: var(--bgColor-success-emphasis);
+}
+.TextInput-base-wrapper:where([data-block]) {
+  align-self: stretch;
+  display: flex;
+  width: 100%;
+}
+@media screen and (min-width: 48rem) {
+  .TextInput-base-wrapper {
+    font-size: var(--text-body-size-medium, 0.875rem);
+  }
+}
+.TextInput-base-wrapper {
+  --inner-action-size: var(--base-size-24, 1.5rem);
+}
 .TextInput-base-wrapper:where([data-size='small']) {
   --inner-action-size: var(--base-size-20, 1.25rem);
-  min-height: var(--base-size-28, 1.75rem);
-  padding-top: 3px;
-  padding-right: var(--base-size-8, 0.5rem);
-  padding-bottom: 3px;
-  padding-left: var(--base-size-8, 0.5rem);
   font-size: var(--text-body-size-small, 0.75rem);
   line-height: var(--base-size-20, 1.25rem);
+  min-height: var(--base-size-28, 1.75rem);
+  padding-bottom: 3px;
+  padding-left: var(--base-size-8, 0.5rem);
+  padding-right: var(--base-size-8, 0.5rem);
+  padding-top: 3px;
 }
 .TextInput-base-wrapper:where([data-size='large']) {
   --inner-action-size: var(--base-size-28, 1.75rem);
   height: var(--base-size-40, 2.5rem);
-  padding-top: 10px;
-  padding-right: var(--base-size-8, 0.5rem);
   padding-bottom: 10px;
   padding-left: var(--base-size-8, 0.5rem);
+  padding-right: var(--base-size-8, 0.5rem);
+  padding-top: 10px;
 }
 .TextInput-base-wrapper:where([data-variant='small']) {
+  font-size: (--text-body-size-small);
+  line-height: var(--base-size-20, 1.25rem);
   min-height: 28px;
-  padding-top: 3px;
-  padding-right: var(--base-size-8, 0.5rem);
   padding-bottom: 3px;
   padding-left: var(--base-size-8, 0.5rem);
-  line-height: var(--base-size-20, 1.25rem);
+  padding-right: var(--base-size-8, 0.5rem);
+  padding-top: 3px;
 }
 .TextInput-base-wrapper:where([data-variant='large']) {
-  padding-top: 10px;
-  padding-right: var(--base-size-8, 0.5rem);
+  font-size: var(--text-title-size-medium, 1.25rem);
   padding-bottom: 10px;
   padding-left: var(--base-size-8, 0.5rem);
-  font-size: var(--text-title-size-medium, 1.25rem);
+  padding-right: var(--base-size-8, 0.5rem);
+  padding-top: 10px;
 }
-.TextInput-wrapper { padding-right: 0; padding-left: 0; }
-.TextInput-wrapper > input, .TextInput-wrapper > select { padding-right: 0; padding-left: 0; }
-.TextInput-wrapper { background-repeat: no-repeat; background-position: right 8px center; }
-.TextInput-wrapper > :not(:last-child) { margin-right: var(--base-size-8, 0.5rem); }
-.TextInput-wrapper :global(.TextInput-icon), .TextInput-wrapper :global(.TextInput-action) { align-self: center; color: var(--fgColor-muted); flex-shrink: 0; }
-.TextInput-wrapper:where([data-leading-visual]) { padding-left: var(--base-size-8, 0.5rem); }
-.TextInput-wrapper:where([data-trailing-visual][data-no-trailing-action]) { padding-right: var(--base-size-8, 0.5rem); }
-.TextInput-wrapper:where([data-no-leading-visual][data-trailing-visual]) > input,
-.TextInput-wrapper:where([data-no-leading-visual][data-trailing-visual]) > select,
-.TextInput-wrapper:where([data-no-leading-visual][data-trailing-action]) > input,
-.TextInput-wrapper:where([data-no-leading-visual][data-trailing-action]) > select { padding-left: var(--base-size-8, 0.5rem); }
+.TextInput-wrapper,
+.TextInput-wrapper > input,
+.TextInput-wrapper > select {
+  padding-left: 0;
+  padding-right: 0;
+}
+.TextInput-wrapper {
+  background-position: right 8px center;
+  background-repeat: no-repeat;
+}
+.TextInput-wrapper > :not(:last-child) {
+  margin-right: var(--base-size-8, 0.5rem);
+}
+.TextInput-wrapper :global(.TextInput-action),
+.TextInput-wrapper :global(.TextInput-icon) {
+  align-self: center;
+  color: var(--fgColor-muted);
+  flex-shrink: 0;
+}
+.TextInput-wrapper:where([data-leading-visual]) {
+  padding-left: var(--base-size-8, 0.5rem);
+}
+.TextInput-wrapper:where([data-trailing-visual][data-no-trailing-action]) {
+  padding-right: var(--base-size-8, 0.5rem);
+}
+.TextInput-wrapper:where([data-no-leading-visual][data-trailing-visual]) > input {
+  padding-left: var(--base-size-8, 0.5rem);
+}
+.TextInput-wrapper:where([data-no-leading-visual][data-trailing-action]) > input {
+  padding-left: var(--base-size-8, 0.5rem);
+}
+.TextInput-wrapper:where([data-no-leading-visual][data-trailing-visual]) > select {
+  padding-left: var(--base-size-8, 0.5rem);
+}
+.TextInput-wrapper:where([data-no-leading-visual][data-trailing-action]) > select {
+  padding-left: var(--base-size-8, 0.5rem);
+}
 .TextInput-wrapper:where([data-no-trailing-visual][data-no-trailing-action]) > input,
-.TextInput-wrapper:where([data-no-trailing-visual][data-no-trailing-action]) > select { padding-right: var(--base-size-8, 0.5rem); }
-.TextInput-wrapper:where([data-no-leading-visual][data-no-trailing-visual][data-no-trailing-action]) > input,
-.TextInput-wrapper:where([data-no-leading-visual][data-no-trailing-visual][data-no-trailing-action]) > select { padding-left: var(--base-size-12, 0.75rem); padding-right: var(--base-size-12, 0.75rem); }
-.TextInput-wrapper:where([data-size='large']):where([data-leading-visual]) { padding-left: var(--base-size-12, 0.75rem); }
-.TextInput-wrapper:where([data-size='large']):where([data-trailing-visual][data-no-trailing-action]) { padding-right: var(--base-size-12, 0.75rem); }
+.TextInput-wrapper:where([data-no-trailing-visual][data-no-trailing-action]) > select {
+  padding-right: var(--base-size-8, 0.5rem);
+}
+.TextInput-wrapper:where([data-no-leading-visual][data-no-trailing-visual][data-no-trailing-action])
+  > input,
+.TextInput-wrapper:where([data-no-leading-visual][data-no-trailing-visual][data-no-trailing-action])
+  > select {
+  padding-left: var(--base-size-12, 0.75rem);
+  padding-right: var(--base-size-12, 0.75rem);
+}
+.TextInput-wrapper:where([data-size='large']):where([data-leading-visual]) {
+  padding-left: var(--base-size-12, 0.75rem);
+}
+.TextInput-wrapper:where([data-size='large']):where(
+    [data-trailing-visual][data-no-trailing-action]
+  ) {
+  padding-right: var(--base-size-12, 0.75rem);
+}

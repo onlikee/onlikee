@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import {
   computed,
-  nextTick,
   normalizeStyle,
-  onMounted,
   ref,
   useAttrs,
   useId,
-  watch,
   type CSSProperties,
   type TextareaHTMLAttributes,
 } from 'vue'
@@ -29,16 +26,19 @@ const props = withDefaults(defineProps<TextareaOptions>(), {
 const emit = defineEmits<TextareaEmits>()
 const attrs = useAttrs()
 const element = ref<HTMLTextAreaElement>()
+const uncontrolledLength = ref(String(props.defaultValue ?? '').length)
 const { value, input, compositionStart, compositionEnd } = useInputValue(
   props,
   element,
   (next, event) => {
+    if (props.characterLimit && props.value === undefined) uncontrolledLength.value = next.length
     emit('update:value', next)
     emit('change', event)
   },
+  { deferComposition: false },
 )
 const counter = useCharacterCounter(
-  () => (props.value === undefined ? value.value.length : String(props.value).length),
+  () => (props.value === undefined ? uncontrolledLength.value : String(props.value).length),
   () => props.characterLimit,
 )
 const validation = computed(() => (counter.value?.isOverLimit ? 'error' : props.validationStatus))
@@ -63,43 +63,6 @@ const textareaStyle = computed(
       ]),
     ) as CSSProperties,
 )
-const autoSizeEnabled = computed(() =>
-  'data-auto-size' in attrs
-    ? attrs['data-auto-size'] === true || attrs['data-auto-size'] === 'true'
-    : props.autoSize,
-)
-/* 浏览器不支持 field-sizing 时才使用自动高度计算；关闭自动高度后恢复调用方显式高度，并保留原生拖拽调整。 */
-const supportsFieldSizing =
-  typeof CSS !== 'undefined' &&
-  typeof CSS.supports === 'function' &&
-  CSS.supports('field-sizing', 'content')
-let jsAutoSized = false
-function resizeToContent() {
-  if (!element.value) return
-  if (!autoSizeEnabled.value) {
-    if (!jsAutoSized) return
-    const height = textareaStyle.value.height
-    element.value.style.height = typeof height === 'number' ? `${height}px` : (height ?? '')
-    jsAutoSized = false
-    return
-  }
-  if (supportsFieldSizing) return
-  element.value.style.height = 'auto'
-  jsAutoSized = true
-  const styles = element.value.ownerDocument.defaultView?.getComputedStyle(element.value)
-  const parsedMin = Number.parseFloat(styles?.minHeight ?? '')
-  const parsedMax = Number.parseFloat(styles?.maxHeight ?? '')
-  const min = Number.isFinite(parsedMin) ? parsedMin : (props.minHeight ?? 0)
-  const max = Number.isFinite(parsedMax) ? parsedMax : (props.maxHeight ?? Infinity)
-  const height = Math.max(min, Math.min(max, element.value.scrollHeight))
-  if (height > 0) element.value.style.height = `${height}px`
-}
-watch(
-  [value, autoSizeEnabled, textareaStyle, () => props.minHeight, () => props.maxHeight],
-  resizeToContent,
-  { flush: 'post' },
-)
-onMounted(resizeToContent)
 defineExpose({
   element,
   input: element,
@@ -144,7 +107,7 @@ defineExpose({
       :aria-describedby="describedBy"
       :style="textareaStyle"
       :data-component="'data-component' in $attrs ? $attrs['data-component'] : 'Textarea'"
-      @input="(emit('input', $event), input($event), resizeToContent(), nextTick(resizeToContent))"
+      @input="(emit('input', $event), input($event))"
       @focus="emit('focus', $event)"
       @blur="emit('blur', $event)"
       @compositionstart="(compositionStart(), emit('compositionstart', $event))"

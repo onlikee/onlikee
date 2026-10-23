@@ -73,16 +73,40 @@ describe.each([
     expect(wrapper.text()).toContain('1 character remaining')
     expect(wrapper.find('[data-validation]').exists()).toBe(false)
   })
-  it('keeps composition input until compositionend and commits once', async () => {
-    const wrapper = render()
+  it('updates during native composition input and does not duplicate the final value', async () => {
+    const wrapper = render({ characterLimit: 3 })
     const field = wrapper.get(selector)
     await field.trigger('compositionstart')
     ;(field.element as HTMLInputElement).value = '输入'
     await field.trigger('input', { isComposing: true })
-    expect(wrapper.emitted('update:value')).toBeUndefined()
+    expect(wrapper.emitted('update:value')).toEqual([['输入']])
+    expect(wrapper.text()).toContain('1 character remaining')
     await field.trigger('compositionend')
     await field.trigger('input')
     expect(wrapper.emitted('update:value')).toEqual([['输入']])
+  })
+  it('updates uncontrolled counts only on input while a character limit is enabled', async () => {
+    const wrapper = render({ defaultValue: 'a' })
+    await wrapper.get(selector).setValue('abcd')
+    await wrapper.setProps({ characterLimit: 5 })
+    expect(wrapper.text()).toContain('4 characters remaining')
+    await wrapper.get(selector).setValue('abc')
+    expect(wrapper.text()).toContain('2 characters remaining')
+  })
+  it('preserves the last input-derived count across native form reset', async () => {
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h('form', {}, h(component as Component, { defaultValue: 'a', characterLimit: 5 })),
+      }),
+      { attachTo: document.body },
+    )
+    wrappers.push(wrapper)
+    await wrapper.get(selector).setValue('abc')
+    ;(wrapper.element as HTMLFormElement).reset()
+    await nextTick()
+    expect((wrapper.get(selector).element as HTMLInputElement).value).toBe('a')
+    expect(wrapper.text()).toContain('2 characters remaining')
   })
   it('combines character-limit descriptions with existing accessible hints', () => {
     const wrapper = render(
@@ -163,6 +187,83 @@ describe.each([
 })
 
 describe('TextInput visual and action slots', () => {
+  it('renders the legacy icon directly and preserves the public wrapper class', () => {
+    const icon = defineComponent({
+      setup:
+        (_, { attrs }) =>
+        () =>
+          h('svg', attrs),
+    })
+    const wrapper = mount(TextInput, { props: { icon } })
+    wrappers.push(wrapper)
+    expect(wrapper.get('[data-component="TextInput"]').classes()).toContain('TextInput-wrapper')
+    expect(wrapper.get('[data-component="TextInput.Icon"]').element.tagName).toBe('svg')
+    expect(wrapper.get('svg').element.parentElement).toBe(
+      wrapper.get('[data-component="TextInput"]').element,
+    )
+  })
+  it('updates dynamically supplied visual and action slots', async () => {
+    const visible = ref(false)
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h(
+            TextInput,
+            {},
+            visible.value
+              ? {
+                  leadingVisual: () => '$',
+                  trailingAction: () => h(TextInput.Action, {}, () => 'Clear'),
+                }
+              : {},
+          ),
+      }),
+    )
+    wrappers.push(wrapper)
+    expect(wrapper.find('[data-component="TextInput.LeadingVisual"]').exists()).toBe(false)
+    visible.value = true
+    await nextTick()
+    expect(wrapper.get('[data-component="TextInput.LeadingVisual"]').text()).toBe('$')
+    expect(wrapper.get('[data-component="TextInput"]').attributes('data-trailing-action')).toBe(
+      'true',
+    )
+    visible.value = false
+    await nextTick()
+    expect(wrapper.find('[data-component="TextInput.LeadingVisual"]').exists()).toBe(false)
+    expect(wrapper.get('input').attributes('aria-describedby')).toBeUndefined()
+  })
+  it.each(['date', 'time', 'datetime-local'])(
+    'does not refocus %s input segments on native clicks',
+    async (type) => {
+      const wrapper = mount(TextInput, { props: { type, leadingVisual: '$' } })
+      wrappers.push(wrapper)
+      const focus = vi.spyOn(wrapper.get('input').element, 'focus')
+      await wrapper.get('input').trigger('click')
+      expect(focus).not.toHaveBeenCalled()
+      await wrapper.get('[data-component="TextInput.LeadingVisual"]').trigger('click')
+      expect(focus).toHaveBeenCalledTimes(1)
+    },
+  )
+  it('updates an action label and native attributes after mount', async () => {
+    const label = ref('First')
+    const disabled = ref(false)
+    const icon = defineComponent({ setup: () => () => h('svg') })
+    const wrapper = mount(
+      defineComponent({
+        setup: () => () =>
+          h(TextInput.Action, { icon, 'aria-label': label.value, disabled: disabled.value }),
+      }),
+    )
+    wrappers.push(wrapper)
+    expect(wrapper.find('[data-component="Tooltip"]').text()).toBe('First')
+    label.value = 'Second'
+    await nextTick()
+    expect(wrapper.find('[data-component="Tooltip"]').text()).toBe('Second')
+    disabled.value = true
+    await nextTick()
+    expect(wrapper.get('button').attributes('aria-label')).toBe('Second')
+    expect(wrapper.get('button').attributes('disabled')).toBeDefined()
+  })
   it('uses explicit visual props before slots and connects visible text descriptions', () => {
     const wrapper = mount(TextInput, {
       props: { leadingVisual: '$', trailingVisual: '.com' },
@@ -334,24 +435,27 @@ describe('TextInput visual and action slots', () => {
 })
 
 describe('Textarea sizing', () => {
-  it('lets explicit numeric and array styles override height limits during automatic sizing', async () => {
+  it('uses CSS field sizing without writing a JavaScript height fallback', async () => {
     const wrapper = mount(Textarea, {
       props: {
         autoSize: true,
         minHeight: 10,
         maxHeight: 40,
-        style: ['font-size:16px;', { minHeight: 20, maxHeight: 80, lineHeight: 1.5 }],
+        style: [{ minHeight: 20, maxHeight: 80, height: 60, lineHeight: 1.5 }],
       },
     })
     wrappers.push(wrapper)
     const element = wrapper.get('textarea').element
-    Object.defineProperty(element, 'scrollHeight', { value: 100, configurable: true })
+    Object.defineProperty(element, 'scrollHeight', { value: 200, configurable: true })
     await wrapper.get('textarea').setValue('long content')
     expect(element.style.minHeight).toBe('20px')
     expect(element.style.maxHeight).toBe('80px')
-    expect(element.style.height).toBe('80px')
-    expect(element.style.fontSize).toBe('16px')
+    expect(element.style.height).toBe('60px')
     expect(element.style.lineHeight).toBe('1.5')
+    expect(element.dataset.autoSize).toBe('true')
+    await wrapper.setProps({ autoSize: false })
+    expect(element.dataset.autoSize).toBeUndefined()
+    expect(element.style.height).toBe('60px')
   })
   it('preserves native data attribute priority over generated metadata', () => {
     const wrapper = mount(Textarea, {
@@ -363,57 +467,11 @@ describe('Textarea sizing', () => {
     expect(wrapper.get('textarea').attributes('data-resize')).toBe('none')
     expect(wrapper.get('textarea').attributes('data-auto-size')).toBeUndefined()
   })
-  it('disables automatic height when the native data-auto-size attribute overrides the prop', async () => {
-    const wrapper = mount(Textarea, {
-      props: { autoSize: true, style: { height: 60 } },
-      attrs: { 'data-auto-size': false },
-    })
-    wrappers.push(wrapper)
-    const element = wrapper.get('textarea').element
-    Object.defineProperty(element, 'scrollHeight', { value: 200, configurable: true })
-    await wrapper.get('textarea').setValue('long content')
-    expect(element.style.height).toBe('60px')
-    expect(wrapper.get('textarea').attributes('data-auto-size')).toBe('false')
-  })
-  it('restores content height after a controlled edit is rejected', async () => {
-    const wrapper = mount(Textarea, { props: { value: 'a', autoSize: true } })
-    wrappers.push(wrapper)
-    const element = wrapper.get('textarea').element
-    Object.defineProperty(element, 'scrollHeight', {
-      get: () => element.value.length * 20,
-      configurable: true,
-    })
-    await wrapper.get('textarea').setValue('long rejected edit')
-    expect(element.value).toBe('a')
-    expect(element.style.height).toBe('20px')
-  })
-  it('preserves an explicit native height when automatic sizing is disabled', async () => {
-    const wrapper = mount(Textarea, { props: { style: { height: '120px' } } })
-    wrappers.push(wrapper)
-    expect(wrapper.get('textarea').element.style.height).toBe('120px')
-    await wrapper.setProps({ autoSize: true })
-    const element = wrapper.get('textarea').element
-    Object.defineProperty(element, 'scrollHeight', { value: 200, configurable: true })
-    await wrapper.get('textarea').setValue('long content')
-    expect(element.style.height).toBe('200px')
-    await wrapper.setProps({ autoSize: false })
-    expect(element.style.height).toBe('120px')
-  })
   it('uses reference rows, columns and resize defaults', () => {
     const wrapper = mount(Textarea)
     wrappers.push(wrapper)
     expect(wrapper.get('textarea').attributes('rows')).toBe('7')
     expect(wrapper.get('textarea').attributes('cols')).toBe('30')
     expect(wrapper.get('textarea').attributes('data-resize')).toBe('both')
-  })
-  it('grows within min and max height and removes automatic height when disabled', async () => {
-    const wrapper = mount(Textarea, { props: { autoSize: true, minHeight: 40, maxHeight: 80 } })
-    wrappers.push(wrapper)
-    const element = wrapper.get('textarea').element
-    Object.defineProperty(element, 'scrollHeight', { value: 100, configurable: true })
-    await wrapper.get('textarea').setValue('long content')
-    expect(element.style.height).toBe('80px')
-    await wrapper.setProps({ autoSize: false })
-    expect(element.style.height).toBe('')
   })
 })

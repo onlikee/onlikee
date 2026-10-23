@@ -129,7 +129,10 @@ export default defineComponent({
     const change = (event: Event) => {
       if (handledChanges.has(event)) return
       emit('input', event)
-      if (context.composing.value) return
+      if (context.composing.value) {
+        displayedValue.value = (event.target as HTMLInputElement).value
+        return
+      }
       handledChanges.add(event)
       const value = (event.target as HTMLInputElement).value
       if (event.type === 'input' && compositionCommittedValue !== undefined) {

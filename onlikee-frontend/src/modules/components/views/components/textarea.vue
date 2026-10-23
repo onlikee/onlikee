@@ -58,8 +58,11 @@
 
     <ComponentDocsSection title="自动高度与字符计数">
       <template #description>
-        <code>autoSize</code> 根据内容增长，<code>minHeight</code> 和
-        <code>maxHeight</code> 限制高度。
+        <code>autoSize</code> 使用原生
+        <code>field-sizing: content</code> 根据内容增长，需要浏览器支持该 CSS 属性；<code
+          >minHeight</code
+        >
+        和 <code>maxHeight</code> 限制高度。
         <code>characterLimit</code> 显示剩余字符及超限错误，不阻止继续输入。
       </template>
       <ComponentDocsDemoBlock :code="autoSizeDemoCode">
@@ -296,7 +299,7 @@ const eventRows = [
   {
     id: 'update:value',
     name: 'update:value',
-    description: '输入值变化时触发（IME 组合输入在 compositionend 后更新）',
+    description: '原生 input 修改值时触发，包括 IME 组合输入过程；重复的最终值不重复通知',
     type: 'string',
   },
 ]

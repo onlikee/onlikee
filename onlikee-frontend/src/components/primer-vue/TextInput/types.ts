@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, StyleValue, InputHTMLAttributes } from 'vue'
+import type { ButtonHTMLAttributes, Component, StyleValue, InputHTMLAttributes } from 'vue'
 import type { InputVisual } from '../internal/components/RenderVisual'
 
 export interface TextInputOptions {
@@ -7,7 +7,7 @@ export interface TextInputOptions {
   disabled?: boolean
   required?: boolean
   type?: string
-  icon?: InputVisual
+  icon?: Component | string
   leadingVisual?: InputVisual
   trailingVisual?: InputVisual
   trailingAction?: InputVisual

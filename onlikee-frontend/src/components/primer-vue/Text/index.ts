@@ -1,4 +1,11 @@
-export { default, default as Text } from './Text.vue'
+import TextRoot from './Text.vue'
+import type { AllowedComponentProps, Component, NativeElements, VNodeProps } from 'vue'
+import type { TextComponentProps } from './types'
+
+export const Text = TextRoot as <As extends keyof NativeElements | Component = 'span'>(
+  props: TextComponentProps<As> & VNodeProps & AllowedComponentProps,
+) => ReturnType<typeof TextRoot<As>>
+export default Text
 export type {
   TextOptions,
   TextProps,

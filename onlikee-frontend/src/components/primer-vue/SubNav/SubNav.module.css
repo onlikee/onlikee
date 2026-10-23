@@ -1,0 +1,58 @@
+.SubNav {
+  display: flex;
+  justify-content: space-between;
+}
+.Body {
+  display: flex;
+  margin-bottom: -1px;
+}
+.Body > * {
+  margin-left: var(--base-size-8, 0.5rem);
+}
+.Body > :first-child {
+  margin-left: 0;
+}
+.Actions {
+  align-self: center;
+}
+.Link,
+.Links {
+  display: flex;
+}
+.Link {
+  align-items: center;
+  border-bottom: var(--borderWidth-thin, 0.0625rem) solid var(--borderColor-default);
+  border-right: var(--borderWidth-thin, 0.0625rem) solid var(--borderColor-default);
+  border-top: var(--borderWidth-thin, 0.0625rem) solid var(--borderColor-default);
+  color: var(--fgColor-default);
+  font-size: var(--text-body-size-medium, 0.875rem);
+  font-weight: var(--base-text-weight-medium, 500);
+  line-height: 20px;
+  min-height: 34px;
+  padding-left: var(--base-size-16, 1rem);
+  padding-right: var(--base-size-16, 1rem);
+  text-align: center;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+}
+.Link:first-of-type {
+  border-bottom-left-radius: var(--borderRadius-medium, 0.375rem);
+  border-left: var(--borderWidth-thin, 0.0625rem) solid var(--borderColor-default);
+  border-top-left-radius: var(--borderRadius-medium, 0.375rem);
+}
+.Link:last-of-type {
+  border-bottom-right-radius: var(--borderRadius-medium, 0.375rem);
+  border-top-right-radius: var(--borderRadius-medium, 0.375rem);
+}
+.Link:focus,
+.Link:hover {
+  background-color: var(--bgColor-muted);
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.Link[data-selected='true'] {
+  background-color: var(--bgColor-accent-emphasis);
+  border-color: var(--bgColor-accent-emphasis);
+  color: var(--fgColor-onEmphasis);
+}
