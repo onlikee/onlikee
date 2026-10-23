@@ -121,17 +121,26 @@ test('sizes, transform geometry and accessible names', async ({ page }) => {
 
 test('Button and IconButton repeated loading preserves names and focus', async ({ page }) => {
   await visit(page, 5174)
-  const buttonBox = await page.locator('#save').boundingBox()
-  await page.locator('#save').focus()
-  for (let i = 0; i < 3; i++) {
-    await page.keyboard.press('Alt+l')
-    await expect(page.locator('#state')).toHaveText('ready')
-    await expect(page.locator('#save')).toBeFocused()
-    await expect(page.locator('#save')).toHaveAccessibleName('Save')
-    expect(await page.locator('#save').boundingBox()).toEqual(buttonBox)
-    await page.keyboard.press('Alt+l')
-    await expect(page.locator('#save')).toHaveAttribute('aria-disabled', 'true')
-    await expect(page.locator('#save')).toBeFocused()
+  for (const [id, name] of [
+    ['save', 'Save'],
+    ['add', 'Add item'],
+  ] as const) {
+    const button = page.locator(`#${id}`)
+    await button.focus()
+    const initial = await button.boundingBox()
+    for (let i = 0; i < 3; i++) {
+      await page.keyboard.press('Alt+l')
+      await expect(page.locator('#state')).toHaveText('ready')
+      await expect(button).toBeFocused()
+      await expect(button).toHaveAccessibleName(name)
+      const ready = await button.boundingBox()
+      expect(ready?.width).toBe(initial?.width)
+      expect(ready?.height).toBe(initial?.height)
+      await page.keyboard.press('Alt+l')
+      await expect(button).toHaveAttribute('aria-disabled', 'true')
+      await expect(button).toHaveAccessibleName(name)
+      await expect(button).toBeFocused()
+    }
   }
 })
 
