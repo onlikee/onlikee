@@ -61,7 +61,11 @@ jobs:
         with:
           name: spinner-browser-${{ github.event.pull_request.head.sha }}
           path: |
-            head/onlikee-frontend/.tmp/spinner-*
+            head/onlikee-frontend/.tmp/spinner-report/
+            head/onlikee-frontend/.tmp/spinner-results/
+            head/onlikee-frontend/.tmp/spinner-base/
+            head/onlikee-frontend/.tmp/spinner-sandbox*
+            head/onlikee-frontend/.tmp/spinner-revisions.txt
           include-hidden-files: true
           if-no-files-found: warn
           retention-days: 14

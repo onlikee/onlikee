@@ -81,29 +81,31 @@ for (const theme of ['light', 'dark']) {
   }
 }
 
-test('sizes, labels, repeated loading, focus and keyboard compositions', async ({ page }) => {
+test('sizes, transform geometry and accessible names', async ({ page }) => {
   await visit(page, 5174)
   for (const [size, pixels] of [
     ['small', 16],
     ['medium', 32],
     ['large', 64],
   ] as const) {
-    const dimensions = await page.locator(`[data-size="${size}"] svg`).evaluate((svg) => {
-      const style = getComputedStyle(svg)
-      const wrapper = svg.parentElement!.getBoundingClientRect()
-      const rotated = svg.getBoundingClientRect()
-      const matrix = new DOMMatrix(style.transform)
-      return {
-        width: parseFloat(style.width),
-        height: parseFloat(style.height),
-        wrapperWidth: wrapper.width,
-        wrapperHeight: wrapper.height,
-        rotatedWidth: rotated.width,
-        projectedWidth:
-          Math.abs(matrix.a) * parseFloat(style.width) +
-          Math.abs(matrix.c) * parseFloat(style.height),
-      }
-    })
+    const dimensions = await page
+      .locator(`#standalone [data-size="${size}"] svg`)
+      .evaluate((svg) => {
+        const style = getComputedStyle(svg)
+        const wrapper = svg.parentElement!.getBoundingClientRect()
+        const rotated = svg.getBoundingClientRect()
+        const matrix = new DOMMatrix(style.transform)
+        return {
+          width: parseFloat(style.width),
+          height: parseFloat(style.height),
+          wrapperWidth: wrapper.width,
+          wrapperHeight: wrapper.height,
+          rotatedWidth: rotated.width,
+          projectedWidth:
+            Math.abs(matrix.a) * parseFloat(style.width) +
+            Math.abs(matrix.c) * parseFloat(style.height),
+        }
+      })
     expect(dimensions.width).toBe(pixels)
     expect(dimensions.height).toBe(pixels)
     expect(dimensions.wrapperWidth).toBe(pixels)
@@ -115,6 +117,10 @@ test('sizes, labels, repeated loading, focus and keyboard compositions', async (
   await expect(page.locator('#save')).toHaveAccessibleName('Save')
   await expect(page.locator('#add')).toHaveAccessibleName('Add item')
   await expect(page.locator('#save')).toHaveAttribute('aria-disabled', 'true')
+})
+
+test('Button and IconButton repeated loading preserves names and focus', async ({ page }) => {
+  await visit(page, 5174)
   const buttonBox = await page.locator('#save').boundingBox()
   await page.locator('#save').focus()
   for (let i = 0; i < 3; i++) {
@@ -127,6 +133,10 @@ test('sizes, labels, repeated loading, focus and keyboard compositions', async (
     await expect(page.locator('#save')).toHaveAttribute('aria-disabled', 'true')
     await expect(page.locator('#save')).toBeFocused()
   }
+})
+
+test('input and token loading preserves focus and typed values', async ({ page }) => {
+  await visit(page, 5174)
   for (const id of [
     'input-auto',
     'input-leading',
@@ -147,6 +157,10 @@ test('sizes, labels, repeated loading, focus and keyboard compositions', async (
       await expect(input).toHaveValue('Preserved')
     }
   }
+})
+
+test('list keyboard navigation and panel loading/reopen restores focus', async ({ page }) => {
+  await visit(page, 5174)
   await page.keyboard.press('Alt+l')
   await expect(page.locator('#state')).toHaveText('ready')
   const autocomplete = page.locator('#auto-input')
@@ -185,7 +199,7 @@ test('delayed remount and live reduced-motion preference', async ({ page }) => {
   await expect(page.locator('#delay [data-component="Spinner"]')).toHaveCount(0)
   await page.clock.runFor(1)
   await expect(page.locator('#delay [data-component="Spinner"]')).toBeVisible()
-  const svg = page.locator('[data-size="small"] svg')
+  const svg = page.locator('#standalone [data-size="small"] svg')
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await expect(svg).not.toHaveAttribute('style', /animation-delay/)
   await page.emulateMedia({ reducedMotion: 'no-preference' })
