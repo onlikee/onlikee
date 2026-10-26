@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import { afterEach, expect, it, vi } from 'vitest'
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
-import { h } from 'vue'
+import { createSSRApp, h, nextTick, shallowRef } from 'vue'
+import { renderToString } from '@vue/server-renderer'
 import TimelineDefault, {
   Timeline,
   TimelineActions,
@@ -233,9 +234,111 @@ it.each([false, true])(
     ).toBe('Monalisa')
     expect(root.get('a[href="#actor"]').text()).toBe('Monalisa')
     expect(root.get('a[href="#main"]').text()).toBe('main')
-    expect(root.get('relative-time').attributes('datetime')).toBe('2026-10-17T00:00:00Z')
+    expect(root.get('relative-time').attributes('datetime')).toBe('2026-10-17T00:00:00.000Z')
     expect(root.text()).toContain('Verified')
     await root.get('button').trigger('click')
     expect(clicked).toHaveBeenCalledOnce()
+  },
+)
+
+it.each([false, true])(
+  'updates composed slots and removes source markers with list flag %s',
+  async (enabled) => {
+    const updated = shallowRef(false)
+    const click = vi.fn()
+    const wrapper = mount(FeatureFlags, {
+      props: { flags: { primer_react_timeline_list_semantics: enabled } },
+      slots: {
+        default: () =>
+          h(Timeline, { clipSidebar: updated.value ? false : 'both' }, () => [
+            h(Timeline.Item, { condensed: !updated.value }, () => [
+              h(Timeline.Badge, { variant: updated.value ? undefined : 'done' }, () =>
+                h(GitMergeIcon),
+              ),
+              h(Timeline.Body, null, () =>
+                h(Link, { href: updated.value ? '#next' : '#previous' }, () =>
+                  updated.value ? 'Next event' : 'Previous event',
+                ),
+              ),
+              updated.value
+                ? h(Timeline.Actions, null, () => h(Button, { onClick: click }, () => 'Revert'))
+                : null,
+            ]),
+            updated.value ? h(Timeline.Break) : null,
+          ]),
+      },
+    })
+    wrappers.push(wrapper)
+    const root = wrapper.findComponent(Timeline)
+    const body = root.findComponent(Timeline.Body).element
+    expect(root.get('a').text()).toBe('Previous event')
+    expect(root.findComponent(Timeline.Actions).exists()).toBe(false)
+    updated.value = true
+    await nextTick()
+    expect(root.attributes('data-clip-sidebar')).toBeUndefined()
+    expect(root.findComponent(Timeline.Item).attributes('data-condensed')).toBeUndefined()
+    expect(
+      root.findComponent(Timeline.Badge).get('div > div').attributes('data-variant'),
+    ).toBeUndefined()
+    expect(root.findComponent(Timeline.Body).element).toBe(body)
+    expect(root.get('a').attributes('href')).toBe('#next')
+    expect(root.get('a').text()).toBe('Next event')
+    expect(root.findComponent(Timeline.Break).exists()).toBe(true)
+    await root.get('button').trigger('click')
+    expect(click).toHaveBeenCalledOnce()
+  },
+)
+
+it.each([false, true])(
+  'hydrates composed content and preserves DOM refs and interactions with list flag %s',
+  async (enabled) => {
+    const click = vi.fn()
+    const root = shallowRef<{ element: HTMLElement | null } | null>(null)
+    const body = shallowRef<TimelineSectionInstance | null>(null)
+    const content = () =>
+      h(FeatureFlags, { flags: { primer_react_timeline_list_semantics: enabled } }, () =>
+        h(Timeline, { ref: root, clipSidebar: 'start' }, () => [
+          h(Timeline.Item, null, () => [
+            h(Timeline.Avatar, null, () => h(Avatar, { alt: 'Actor', size: 40 })),
+            h(Timeline.Badge, { variant: 'done' }, () => h(GitMergeIcon)),
+            h(Timeline.Body, { ref: body }, () => [
+              h(Link, { href: '#actor' }, () => 'Actor'),
+              h(BranchName, null, () => 'main'),
+              h(RelativeTime, { datetime: '2026-10-17T00:00:00Z' }),
+              h(Label, null, () => 'Verified'),
+            ]),
+            h(Timeline.Actions, null, () => h(Button, { onClick: click }, () => 'View details')),
+          ]),
+          h(Timeline.Break),
+        ]),
+      )
+    const container = document.createElement('div')
+    container.innerHTML = await renderToString(createSSRApp(content))
+    document.body.append(container)
+    const serverRoot = container.firstElementChild
+    const serverLink = container.querySelector('a')
+    const warn = vi.spyOn(console, 'warn')
+    const error = vi.spyOn(console, 'error')
+    const app = createSSRApp(content)
+    try {
+      app.mount(container)
+      await flushPromises()
+      expect(container.firstElementChild).toBe(serverRoot)
+      expect(container.querySelector('a')).toBe(serverLink)
+      expect(root.value?.element).toBe(serverRoot)
+      expect(body.value?.element?.contains(serverLink)).toBe(true)
+      expect(container.querySelector('relative-time')?.getAttribute('datetime')).toBe(
+        '2026-10-17T00:00:00.000Z',
+      )
+      container.querySelector('button')!.click()
+      expect(click).toHaveBeenCalledOnce()
+      expect(warn).not.toHaveBeenCalled()
+      expect(error).not.toHaveBeenCalled()
+    } finally {
+      app.unmount()
+      container.remove()
+    }
+    expect(root.value).toBeNull()
+    expect(body.value).toBeNull()
   },
 )

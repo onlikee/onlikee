@@ -295,6 +295,11 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/timeline.vue'),
       },
       {
+        path: 'toggle-switch',
+        name: 'ToggleSwitch',
+        component: () => import('../views/components/toggle-switch.vue'),
+      },
+      {
         path: 'segmented-control',
         name: 'SegmentedControl',
         component: () => import('../views/components/segmented-control.vue'),

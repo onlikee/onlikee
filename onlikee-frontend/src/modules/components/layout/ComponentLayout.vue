@@ -239,6 +239,7 @@ const navSections = ref([
       { path: '/component/text-input', label: 'TextInput 输入框' },
       { path: '/component/text-input-with-tokens', label: 'TextInputWithTokens 标签输入' },
       { path: '/component/timeline', label: 'Timeline 时间线' },
+      { path: '/component/toggle-switch', label: 'ToggleSwitch 开关' },
       { path: '/component/tooltip', label: 'Tooltip 文字提示' },
       { path: '/component/truncate', label: 'Truncate 文本截断' },
       { path: '/component/underline-nav', label: 'UnderlineNav 下划线导航' },
