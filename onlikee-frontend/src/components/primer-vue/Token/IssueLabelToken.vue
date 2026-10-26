@@ -14,7 +14,7 @@ import TokenTextContainer from './_TokenTextContainer.vue'
 import RemoveTokenButton from './_RemoveTokenButton.vue'
 import { parseToHsla, parseToRgba } from './color2k'
 import { isTokenInteractive } from './utils'
-import { defaultTokenSize, type TokenSizeKeys } from './types'
+import { defaultTokenSize, type TokenSizeKeys } from './constants'
 
 export default defineComponent({
   name: 'IssueLabelToken',
@@ -31,11 +31,11 @@ export default defineComponent({
     fillColor: { type: String, default: '#999' },
     href: { type: String, default: undefined },
     className: { type: String, default: undefined },
+    onRemove: { type: Function as PropType<() => void>, default: undefined },
   },
-  emits: { remove: () => true },
-  setup(props, { attrs, emit, expose }) {
+  setup(props, { attrs, expose }) {
+    const emitRemove = getCurrentInstance()!.emit
     const classes = useCssModule()
-    const instance = getCurrentInstance()!
     const base = ref<{ element: HTMLElement | null } | null>(null)
     expose({
       element: computed(() => base.value?.element ?? null),
@@ -55,7 +55,7 @@ export default defineComponent({
       }
     })
     return () => {
-      const removable = !!instance.vnode.props?.onRemove
+      const removable = !!props.onRemove
       const tabIndex = Number(attrs.tabindex ?? attrs.tabIndex ?? -1)
       const interactive = isTokenInteractive({
         as: props.as,
@@ -71,7 +71,7 @@ export default defineComponent({
         TokenBase,
         {
           ref: base,
-          ...(removable ? { onRemove: () => emit('remove') } : {}),
+          ...(removable ? { onRemove: () => emitRemove('remove') } : {}),
           id: props.id?.toString(),
           isSelected: props.isSelected,
           className: [classes['issue-label'], props.className, _cls],
@@ -98,7 +98,7 @@ export default defineComponent({
                   borderOffset: 1,
                   onClick: (event: MouseEvent) => {
                     event.stopPropagation()
-                    emit('remove')
+                    emitRemove('remove')
                   },
                   size: props.size,
                   'aria-hidden': multipleTargets ? 'true' : 'false',

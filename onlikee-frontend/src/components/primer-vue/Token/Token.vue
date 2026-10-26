@@ -5,6 +5,8 @@ import {
   getCurrentInstance,
   h,
   ref,
+  type Component,
+  type NativeElements,
   type PropType,
   useCssModule,
 } from 'vue'
@@ -15,7 +17,7 @@ import TokenBase from './TokenBase.vue'
 import TokenTextContainer from './_TokenTextContainer.vue'
 import RemoveTokenButton from './_RemoveTokenButton.vue'
 import { isTokenInteractive } from './utils'
-import { defaultTokenSize, type TokenSizeKeys } from './types'
+import { defaultTokenSize, type TokenSizeKeys } from './constants'
 
 const tokenBorderWidthPx = 1
 
@@ -30,23 +32,27 @@ export default defineComponent({
     disabled: { type: Boolean, default: undefined },
     hideRemoveButton: { type: Boolean, default: undefined },
     isSelected: { type: Boolean, default: undefined },
-    leadingVisual: { type: null as unknown as PropType<NodeProp>, default: undefined },
+    leadingVisual: {
+      type: null as unknown as PropType<keyof NativeElements | Component>,
+      default: undefined,
+    },
+    onRemove: { type: Function as PropType<() => void>, default: undefined },
     href: { type: String, default: undefined },
     className: { type: String, default: undefined },
   },
-  emits: { remove: () => true, keydown: (_event: KeyboardEvent) => true },
-  setup(props, { attrs, slots, emit, expose }) {
+  emits: { keydown: (_event: KeyboardEvent) => true },
+  setup(props, { attrs, emit, expose }) {
+    const emitRemove = getCurrentInstance()!.emit
     const classes = useCssModule()
-    const instance = getCurrentInstance()!
     const base = ref<{ element: HTMLElement | null } | null>(null)
     expose({
       element: computed(() => base.value?.element ?? null),
       focus: (options?: FocusOptions) => base.value?.element?.focus(options),
       blur: () => base.value?.element?.blur(),
     })
-    // Vue listeners for declared emits are not included in attrs. The VNode has the listener.
+    // Keep onRemove as a reactive prop so callback-only changes update the action targets.
     return () => {
-      const removable = !!instance.vnode.props?.onRemove
+      const removable = !!props.onRemove
       const tabIndex = Number(attrs.tabindex ?? attrs.tabIndex ?? -1)
       const interactive = isTokenInteractive({
         as: props.as,
@@ -62,7 +68,7 @@ export default defineComponent({
         TokenBase,
         {
           ref: base,
-          ...(removable ? { onRemove: () => emit('remove') } : {}),
+          ...(removable ? { onRemove: () => emitRemove('remove') } : {}),
           id: props.id?.toString(),
           className: [classes['token'], props.className, _cls],
           text: props.text,
@@ -77,7 +83,7 @@ export default defineComponent({
         },
         {
           default: () => [
-            (props.leadingVisual || slots.leadingVisual) && props.size !== 'small'
+            props.leadingVisual && props.size !== 'small'
               ? h(
                   'div',
                   {
@@ -88,7 +94,7 @@ export default defineComponent({
                         : '',
                     ],
                   },
-                  [props.leadingVisual ? renderNode(props.leadingVisual) : slots.leadingVisual?.()],
+                  [h(props.leadingVisual)],
                 )
               : null,
             h(
@@ -110,7 +116,7 @@ export default defineComponent({
                   borderOffset: tokenBorderWidthPx,
                   onClick: (event: MouseEvent) => {
                     event.stopPropagation()
-                    emit('remove')
+                    emitRemove('remove')
                   },
                   size: props.size,
                   isParentInteractive: interactive,

@@ -1,6 +1,6 @@
 import type { Component, CSSProperties, InputHTMLAttributes } from 'vue'
 import type { NodeProp } from '../internal/renderNode'
-import type Token from '../Token/Token.vue'
+import type Token from '../Token'
 import type { TokenProps, TokenSizeKeys } from '../Token'
 
 export type TokenComponentProps<T extends Component> = T extends new (...args: never[]) => {

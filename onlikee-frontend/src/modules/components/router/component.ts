@@ -208,9 +208,9 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/action-list.vue'),
       },
       {
-        path: 'tag',
-        name: 'Tag',
-        component: () => import('../views/components/tag.vue'),
+        path: 'token',
+        name: 'Token',
+        component: () => import('../views/components/token.vue'),
       },
       // Form
       {

@@ -2,7 +2,8 @@
 import { defineComponent, h, ref, type PropType, useCssModule } from 'vue'
 import type { NodeProp } from '../internal/renderNode'
 import { isTokenInteractive, unknownAttrValue } from './utils'
-import { defaultTokenSize, type TokenSizeKeys } from './types'
+import { normalizeReactStyle } from '../internal/style'
+import { defaultTokenSize, type TokenSizeKeys } from './constants'
 
 export default defineComponent({
   name: 'TokenBase',
@@ -20,9 +21,9 @@ export default defineComponent({
       default: undefined,
     },
     disabled: { type: Boolean as PropType<boolean | undefined>, default: undefined },
+    onRemove: { type: Function as PropType<() => void>, default: undefined },
   },
-  emits: { remove: () => true },
-  setup(props, { attrs, slots, emit, expose }) {
+  setup(props, { attrs, slots, expose }) {
     const classes = useCssModule()
     const element = ref<HTMLElement | null>(null)
     expose({ element })
@@ -42,15 +43,17 @@ export default defineComponent({
           }),
           'data-size': props.size,
           id: props.id?.toString(),
-          text: unknownAttrValue(props.text),
+          // Anchor.text is a DOM setter that replaces children; React forwards an attribute.
+          '^text': unknownAttrValue(props.text),
           disabled: props.disabled ? '' : undefined,
           ...restAttrs,
+          style: normalizeReactStyle(restAttrs.style),
           ref: element,
           class: [classes['token-base'], props.className, restAttrs.class],
           onKeydown: (event: KeyboardEvent) => {
             if (typeof consumerOnKeydown === 'function') consumerOnKeydown(event)
             if (event.key === 'Backspace' || event.key === 'Delete') {
-              emit('remove')
+              props.onRemove?.()
             }
           },
         },

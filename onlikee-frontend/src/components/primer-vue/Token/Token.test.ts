@@ -141,7 +141,7 @@ describe('Token 属性泄漏与覆盖', () => {
 
   test('leadingVisual falsy（null/undefined）不渲染容器；large/xlarge 挂自身修饰类', () => {
     const visual = { render: () => null }
-    const none = track(mount(Token, { props: { text: 'Alpha', leadingVisual: null } }))
+    const none = track(mount(Token, { props: { text: 'Alpha', leadingVisual: null as never } }))
     expect(none.find('[class*="token__leading_"]').exists()).toBe(false)
     const small = track(
       mount(Token, { props: { text: 'Alpha', size: 'small', leadingVisual: visual } }),

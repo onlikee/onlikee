@@ -9,7 +9,7 @@
         @click="selectFramework('html')"
       >
         <div class="option-header">
-          <div class="option-title">HTML<Tag>推荐</Tag></div>
+          <div class="option-title">HTML<Token text="推荐" /></div>
           <p class="option-desc">从一段HTML代码开始！</p>
         </div>
         <img
@@ -60,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { Tag } from '@/components/primer-vue/Tag'
+import { Token } from '@/components/primer-vue/Token'
 import type { FrameworkValue } from './useCreateApplicationForm'
 import { FormControlValidation } from '@/components/primer-vue/FormControl'
 

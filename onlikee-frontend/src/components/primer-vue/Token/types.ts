@@ -1,11 +1,16 @@
-import type { HTMLAttributes } from 'vue'
-import type { NodeProp } from '../internal/renderNode'
+import type {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes,
+  Component,
+  NativeElements,
+  VNodeChild,
+} from 'vue'
+import type { TokenSizeKeys } from './constants'
+export type { TokenSizeKeys } from './constants'
 
-export type TokenSizeKeys = 'small' | 'medium' | 'large' | 'xlarge'
-
-export interface TokenBaseProps extends Omit<HTMLAttributes, 'id'> {
+export interface TokenBaseProps extends Omit<AnchorHTMLAttributes & ButtonHTMLAttributes, 'id'> {
   as?: 'button' | 'a' | 'span'
-  text: NodeProp
+  text: VNodeChild
   id?: number | string
   size?: TokenSizeKeys
   disabled?: boolean
@@ -14,20 +19,21 @@ export interface TokenBaseProps extends Omit<HTMLAttributes, 'id'> {
   href?: string
   className?: string
   onRemove?: () => void
+  tabIndex?: number
+  onResize?: (event: UIEvent) => void
+  onResizeCapture?: (event: UIEvent) => void
 }
 
 export interface TokenProps extends TokenBaseProps {
-  leadingVisual?: NodeProp
+  leadingVisual?: keyof NativeElements | Component
 }
 
 export interface IssueLabelTokenProps extends TokenBaseProps {
   fillColor?: string
 }
 
-export const tokenSizes: Record<TokenSizeKeys, string> = {
-  small: '16px',
-  medium: '20px',
-  large: '24px',
-  xlarge: '32px',
+export interface TokenInstance {
+  element: HTMLSpanElement | HTMLAnchorElement | HTMLButtonElement | null
+  focus: (options?: FocusOptions) => void
+  blur: () => void
 }
-export const defaultTokenSize: TokenSizeKeys = 'medium'
