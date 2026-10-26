@@ -44,6 +44,8 @@
         <AnchoredOverlay
           :open="visibilityOpen"
           :render-anchor="renderVisibilityAnchor"
+          width="medium"
+          align="end"
           :overlay-props="{ role: 'dialog', 'aria-label': '选择可见性' }"
           :close-button-props="{ 'aria-label': '关闭可见性选择' }"
           :focus-zone-settings="{ disabled: true }"
