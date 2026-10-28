@@ -1,0 +1,46 @@
+/* Reset the default link decoration. */
+.prc-TopicTag-TopicTag:where(a) {
+  text-decoration: none;
+}
+
+/* Expanded from Primer's buttonReset mixin. */
+.prc-TopicTag-TopicTag:where(button) {
+  margin: 0;
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  background: none;
+  cursor: pointer;
+  text-align: start;
+  font: inherit;
+  color: inherit;
+  align-items: center;
+
+  &::-moz-focus-inner {
+    border: 0;
+  }
+}
+
+.prc-TopicTag-TopicTag {
+  background-color: var(--bgColor-accent-muted);
+  color: var(--fgColor-accent);
+  font-size: var(--text-body-size-small);
+  font-weight: var(--base-text-weight-semibold);
+  line-height: var(--text-body-lineHeight-small);
+  border-radius: var(--borderRadius-full);
+  padding: var(--base-size-2) var(--base-size-12);
+  border: var(--borderWidth-thin) solid var(--topicTag-borderColor, transparent);
+  display: inline-flex;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: var(--bgColor-accent-emphasis);
+    color: var(--fgColor-onEmphasis);
+  }
+
+  &:where(a, button) {
+    cursor: pointer;
+    user-select: none;
+  }
+}

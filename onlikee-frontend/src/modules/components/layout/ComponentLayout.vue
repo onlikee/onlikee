@@ -241,6 +241,8 @@ const navSections = ref([
       { path: '/component/token', label: 'Token 标签令牌' },
       { path: '/component/toggle-switch', label: 'ToggleSwitch 开关' },
       { path: '/component/tooltip', label: 'Tooltip 文字提示' },
+      { path: '/component/topic-tag', label: 'TopicTag 主题标签' },
+      { path: '/component/tree-view', label: 'TreeView 树视图' },
       { path: '/component/truncate', label: 'Truncate 文本截断' },
       { path: '/component/underline-nav', label: 'UnderlineNav 下划线导航' },
       { path: '/component/underline-panels', label: 'UnderlinePanels 下划线选项卡' },

@@ -208,6 +208,16 @@ export const componentRoutes: Array<RouteRecordRaw> = [
         component: () => import('../views/components/action-list.vue'),
       },
       {
+        path: 'tree-view',
+        name: 'TreeView',
+        component: () => import('../views/components/tree-view.vue'),
+      },
+      {
+        path: 'topic-tag',
+        name: 'TopicTag',
+        component: () => import('../views/components/topic-tag.vue'),
+      },
+      {
         path: 'token',
         name: 'Token',
         component: () => import('../views/components/token.vue'),
