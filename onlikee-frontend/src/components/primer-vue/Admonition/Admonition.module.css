@@ -30,6 +30,12 @@
     --admonition-borderColor: var(--borderColor-success-emphasis);
   }
 
+  &[data-type='unavailable'] {
+    --admonition-fgColor: var(--fgColor-muted);
+    --admonition-bgColor: var(--bgColor-muted);
+    --admonition-borderColor: var(--borderColor-neutral-emphasis);
+  }
+
   &[data-type='upsell'] {
     --admonition-fgColor: var(--fgColor-done);
     --admonition-bgColor: var(--bgColor-done-muted);

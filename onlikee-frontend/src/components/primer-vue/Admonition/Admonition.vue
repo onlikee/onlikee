@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { useAttrs, useTemplateRef } from 'vue'
-import {
-  AlertIcon,
-  CheckCircleIcon,
-  InfoIcon,
-  LightBulbIcon,
-  StopIcon,
-} from '@onlikee/octicons-vue'
+import { AlertIcon, CheckCircleIcon, InfoIcon, StopIcon } from '@onlikee/octicons-vue'
 import { VisuallyHidden } from '../VisuallyHidden'
 import type { AdmonitionComponentProps, AdmonitionType } from './types'
 
@@ -23,16 +17,18 @@ defineSlots<{
 const attrs = useAttrs()
 const element = useTemplateRef<HTMLDivElement>('root')
 const icons = {
-  critical: StopIcon,
+  critical: AlertIcon,
   info: InfoIcon,
   success: CheckCircleIcon,
-  upsell: LightBulbIcon,
-  warning: AlertIcon,
+  unavailable: StopIcon,
+  upsell: InfoIcon,
+  warning: StopIcon,
 }
 const labels: Record<AdmonitionType, string> = {
   critical: 'Critical',
   info: 'Information',
   success: 'Success',
+  unavailable: 'Unavailable',
   upsell: 'Recommendation',
   warning: 'Warning',
 }

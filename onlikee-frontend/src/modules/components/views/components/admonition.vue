@@ -22,10 +22,11 @@ import { Admonition } from '@/components/primer-vue/Admonition'
   </Admonition>
 </template>`
 const variantsCode = `<Admonition type="info" title="提示" type-label="提示">配置会应用到当前项目。</Admonition>
-<Admonition type="success" title="已就绪" type-label="成功">环境检查已通过，可以继续部署。</Admonition>
-<Admonition type="upsell" title="推荐" type-label="推荐">团队版支持共享项目配置。</Admonition>
 <Admonition type="warning" title="请先备份" type-label="警告">迁移前请导出当前配置。</Admonition>
-<Admonition type="critical" title="不可恢复" type-label="重要">删除项目后，相关数据将无法恢复。</Admonition>`
+<Admonition type="critical" title="不可恢复" type-label="重要">删除项目后，相关数据将无法恢复。</Admonition>
+<Admonition type="success" title="已就绪" type-label="成功">环境检查已通过，可以继续部署。</Admonition>
+<Admonition type="unavailable" title="暂不可用" type-label="不可用">服务正在维护，请稍后重试。</Admonition>
+<Admonition type="upsell" title="推荐" type-label="推荐">团队版支持共享项目配置。</Admonition>`
 const richCode = `<script setup lang="ts">
 import { Admonition } from '@/components/primer-vue/Admonition'
 import { Link } from '@/components/primer-vue/Link'
@@ -65,7 +66,7 @@ const propsRows = [
   {
     id: 'type',
     name: 'type',
-    type: 'info | success | upsell | warning | critical',
+    type: 'info | warning | critical | success | unavailable | upsell',
     default: 'info',
     description: '同时决定语义图标、强调色、边框和背景。',
   },
@@ -89,7 +90,7 @@ const propsRows = [
     type: 'string',
     default: '按 type 设置英文说明',
     description:
-      '向读屏用户说明类型。默认依次为 Information、Success、Recommendation、Warning、Critical。可传本地化文本；正文已清楚表达类型时可传空字符串。',
+      '向读屏用户说明类型。默认依次为 Information、Warning、Critical、Success、Unavailable、Recommendation。可传本地化文本；正文已清楚表达类型时可传空字符串。',
   },
   {
     id: 'className',
@@ -153,22 +154,26 @@ const refColumns: DocumentationColumn[] = [
     </ComponentDocsSection>
     <ComponentDocsSection title="语义变体">
       <template #description>
+        提供六种类型。unavailable 使用中性色表示服务中断、功能暂不可用或体验降级。
         根据内容选择类型，并在标题或正文中说明具体原因和下一步操作。避免只靠颜色表达含义。
       </template>
       <ComponentDocsDemoBlock :code="variantsCode">
         <div class="admonition-demo-stack">
           <Admonition type="info" title="提示" type-label="提示">配置会应用到当前项目。</Admonition>
-          <Admonition type="success" title="已就绪" type-label="成功"
-            >环境检查已通过，可以继续部署。</Admonition
-          >
-          <Admonition type="upsell" title="推荐" type-label="推荐"
-            >团队版支持共享项目配置。</Admonition
-          >
           <Admonition type="warning" title="请先备份" type-label="警告"
             >迁移前请导出当前配置。</Admonition
           >
           <Admonition type="critical" title="不可恢复" type-label="重要"
             >删除项目后，相关数据将无法恢复。</Admonition
+          >
+          <Admonition type="success" title="已就绪" type-label="成功"
+            >环境检查已通过，可以继续部署。</Admonition
+          >
+          <Admonition type="unavailable" title="暂不可用" type-label="不可用"
+            >服务正在维护，请稍后重试。</Admonition
+          >
+          <Admonition type="upsell" title="推荐" type-label="推荐"
+            >团队版支持共享项目配置。</Admonition
           >
         </div>
       </ComponentDocsDemoBlock>

@@ -14,6 +14,7 @@ void invalidProps
     正文
   </Admonition>
   <Admonition title="文本标题" title-as="div" class-name="message" />
+  <Admonition type="unavailable" title="暂不可用" type-label="不可用" />
 
   <!-- @vue-expect-error Only the documented semantic types are supported. -->
   <Admonition type="danger" />

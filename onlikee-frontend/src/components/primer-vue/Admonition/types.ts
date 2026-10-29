@@ -1,7 +1,7 @@
 import type { HTMLAttributes } from 'vue'
 import type { HeadingLevels } from '../Heading/types'
 
-export type AdmonitionType = 'critical' | 'info' | 'success' | 'upsell' | 'warning'
+export type AdmonitionType = 'critical' | 'info' | 'success' | 'unavailable' | 'upsell' | 'warning'
 
 interface AdmonitionOptions {
   type?: AdmonitionType
