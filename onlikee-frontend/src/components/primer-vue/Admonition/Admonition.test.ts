@@ -37,12 +37,12 @@ describe('Admonition', () => {
   })
 
   it.each([
-    ['critical', 'alert', 'Critical'],
+    ['critical', 'stop', 'Critical'],
     ['info', 'info', 'Information'],
     ['success', 'check-circle', 'Success'],
-    ['unavailable', 'stop', 'Unavailable'],
+    ['unavailable', 'alert', 'Unavailable'],
     ['upsell', 'info', 'Recommendation'],
-    ['warning', 'stop', 'Warning'],
+    ['warning', 'alert', 'Warning'],
   ] as const)('communicates %s through its icon and accessible text', (type, icon, label) => {
     const wrapper = track(mount(Admonition, { props: { type } }))
     expect(wrapper.get(`svg.octicon-${icon}`).attributes('height')).toBe('16')
@@ -73,13 +73,13 @@ describe('Admonition', () => {
     const wrapper = track(mount(Admonition, { props: { type: 'warning' } as AdmonitionProps }))
     await wrapper.setProps({ type: 'success', typeLabel: '成功' })
     expect(wrapper.attributes('data-type')).toBe('success')
-    expect(wrapper.find('svg.octicon-stop').exists()).toBe(false)
+    expect(wrapper.find('svg.octicon-alert').exists()).toBe(false)
     expect(wrapper.find('svg.octicon-check-circle').exists()).toBe(true)
     expect(wrapper.get('span').text()).toBe('成功:')
     await wrapper.setProps({ type: 'unavailable', typeLabel: undefined })
     expect(wrapper.attributes('data-type')).toBe('unavailable')
     expect(wrapper.find('svg.octicon-check-circle').exists()).toBe(false)
-    expect(wrapper.get('svg.octicon-stop').attributes('height')).toBe('16')
+    expect(wrapper.get('svg.octicon-alert').attributes('height')).toBe('16')
     expect(wrapper.get('span').text()).toBe('Unavailable:')
     await wrapper.setProps({ typeLabel: '' })
     expect(wrapper.find('span').exists()).toBe(false)
@@ -167,7 +167,7 @@ describe('Admonition', () => {
       app.mount(host)
       expect(host.innerHTML).toBe(before)
       expect(host.querySelector('h3')?.textContent).toBe('Before you start')
-      expect(host.querySelector('[data-type="unavailable"] svg.octicon-stop')).not.toBeNull()
+      expect(host.querySelector('[data-type="unavailable"] svg.octicon-alert')).not.toBeNull()
       host.querySelector('button')!.click()
       expect(onClick).toHaveBeenCalledOnce()
       expect(warn).not.toHaveBeenCalled()

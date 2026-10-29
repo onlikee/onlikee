@@ -17,12 +17,12 @@ defineSlots<{
 const attrs = useAttrs()
 const element = useTemplateRef<HTMLDivElement>('root')
 const icons = {
-  critical: AlertIcon,
+  critical: StopIcon,
   info: InfoIcon,
   success: CheckCircleIcon,
-  unavailable: StopIcon,
+  unavailable: AlertIcon,
   upsell: InfoIcon,
-  warning: StopIcon,
+  warning: AlertIcon,
 }
 const labels: Record<AdmonitionType, string> = {
   critical: 'Critical',
