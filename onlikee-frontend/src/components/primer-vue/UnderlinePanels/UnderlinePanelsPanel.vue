@@ -1,21 +1,20 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useUnderlinePanels } from './context'
-import type { UnderlinePanelsPanelProps } from './types'
+import { useAttrs } from 'vue'
+import { useTabPanel } from '../Tabs'
+import { normalizeReactStyle } from '../internal/style'
+import type { UnderlinePanelsPanelComponentProps } from './types'
 
-const props = defineProps<UnderlinePanelsPanelProps>()
-const context = useUnderlinePanels()
-const value = computed(() => props.value ?? '')
-const selected = computed(() => context.selectedValue.value === value.value)
+defineOptions({ name: 'UnderlinePanelsPanel', inheritAttrs: false })
+const props = defineProps<UnderlinePanelsPanelComponentProps>()
+const attrs = useAttrs()
+const { tabPanelProps } = useTabPanel(() => ({ value: props.value ?? '' }))
 </script>
 
 <template>
   <div
-    :id="`${context.id.value}-panel-${value}`"
-    role="tabpanel"
-    :aria-labelledby="`${context.id.value}-tab-${value}`"
-    :data-selected="selected ? '' : undefined"
-    :hidden="!selected"
+    v-bind="{ ...attrs, ...tabPanelProps }"
+    :class="[className, attrs.class]"
+    :style="normalizeReactStyle(attrs.style)"
   >
     <slot />
   </div>

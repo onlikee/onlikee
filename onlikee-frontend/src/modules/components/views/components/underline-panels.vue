@@ -2,7 +2,7 @@
 import { useId as useDocumentationId } from 'vue'
 import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
 
-import { shallowRef } from 'vue'
+import { h, shallowRef } from 'vue'
 import { UnderlinePanels } from '@/components/primer-vue/UnderlinePanels'
 import ComponentDocsTable, {
   type DocumentationColumn,
@@ -15,6 +15,39 @@ import ComponentDocsSection from '@/modules/components/components/ComponentDocsP
 
 const documentationId = useDocumentationId()
 
+import { AnchoredOverlay } from '@/components/primer-vue/AnchoredOverlay'
+import { Button } from '@/components/primer-vue/Button'
+import type { AnchorRenderProps } from '@/components/primer-vue/AnchoredOverlay'
+import TabsActionListExample from '../../components/TabsActionListExample.vue'
+import actionListCode from '../../components/TabsActionListExample.vue?raw'
+
+const open = shallowRef(false)
+const renderAnchor = (props: AnchorRenderProps) =>
+  h(Button, props, { default: () => 'Select ref type' })
+const overlayCode = `<script setup lang="ts">
+import { h, shallowRef } from 'vue'
+import { AnchoredOverlay, type AnchorRenderProps } from '@/components/primer-vue/AnchoredOverlay'
+import { Button } from '@/components/primer-vue/Button'
+import { UnderlinePanels } from '@/components/primer-vue/UnderlinePanels'
+
+const open = shallowRef(false)
+const renderAnchor = (props: AnchorRenderProps) => h(Button, props, { default: () => 'Select ref type' })
+<\/script>
+
+<template>
+  <AnchoredOverlay :open="open" :render-anchor="renderAnchor" :focus-zone-settings="{ disabled: true }"
+    @open="open = true" @close="open = false">
+    <div style="display: flex; flex-direction: column; width: 320px">
+      <UnderlinePanels aria-label="Ref type">
+        <UnderlinePanels.Tab>Branches</UnderlinePanels.Tab>
+        <UnderlinePanels.Tab>Tags</UnderlinePanels.Tab>
+        <UnderlinePanels.Panel>Branch panel</UnderlinePanels.Panel>
+        <UnderlinePanels.Panel>Tag panel</UnderlinePanels.Panel>
+      </UnderlinePanels>
+    </div>
+  </AnchoredOverlay>
+</template>`
+
 const selected = shallowRef('code')
 
 const basicCode = `<script setup lang="ts">
@@ -26,21 +59,25 @@ const selected = shallowRef('code')
 <\/script>
 
 <template>
+  <div style="display: flex; flex-direction: column; width: 100%">
   <UnderlinePanels v-model:value="selected" aria-label="Repository sections">
-    <UnderlinePanels.Tab value="code" :leading-visual="CodeIcon">Code</UnderlinePanels.Tab>
-    <UnderlinePanels.Tab value="issues" :leading-visual="IssueOpenedIcon" :counter="12">Issues</UnderlinePanels.Tab>
+    <UnderlinePanels.Tab value="code" :icon="CodeIcon">Code</UnderlinePanels.Tab>
+    <UnderlinePanels.Tab value="issues" :icon="IssueOpenedIcon" :counter="12">Issues</UnderlinePanels.Tab>
     <UnderlinePanels.Panel value="code">Repository files</UnderlinePanels.Panel>
     <UnderlinePanels.Panel value="issues">Open issues</UnderlinePanels.Panel>
   </UnderlinePanels>
+  </div>
 </template>`
 
 const manualCode = `<template>
+  <div style="display: flex; flex-direction: column; width: 100%">
   <UnderlinePanels aria-label="Settings" activation-mode="manual" default-value="profile">
     <UnderlinePanels.Tab value="profile">Profile</UnderlinePanels.Tab>
     <UnderlinePanels.Tab value="security">Security</UnderlinePanels.Tab>
     <UnderlinePanels.Panel value="profile">Profile settings</UnderlinePanels.Panel>
     <UnderlinePanels.Panel value="security">Security settings</UnderlinePanels.Panel>
   </UnderlinePanels>
+  </div>
 </template>`
 
 const columns: DocumentationColumn[] = [
@@ -86,7 +123,13 @@ const rootRows = [
     default: '自动生成',
     description: 'Tab 与 Panel 关联 ID 的前缀。',
   },
-  { id: 'as', name: 'as', type: 'string', default: 'div', description: '选项卡列表的容器元素。' },
+  {
+    id: 'as',
+    name: 'as',
+    type: 'string | Component',
+    default: 'div',
+    description: '选项卡列表的容器元素。',
+  },
   {
     id: 'change',
     name: 'change',
@@ -112,8 +155,8 @@ const tabRows = [
     description: '标签后的计数。',
   },
   {
-    id: 'leadingVisual',
-    name: 'leadingVisual',
+    id: 'icon',
+    name: 'icon',
     type: 'Component',
     default: '—',
     description: '标签前的图标组件。',
@@ -148,27 +191,67 @@ const panelRows = [
 
     <ComponentDocsSection title="受控选择">
       <ComponentDocsDemoBlock :code="basicCode">
-        <UnderlinePanels v-model:value="selected" aria-label="Repository sections">
-          <UnderlinePanels.Tab value="code" :leading-visual="CodeIcon"> Code </UnderlinePanels.Tab>
-          <UnderlinePanels.Tab value="issues" :counter="12" :leading-visual="IssueOpenedIcon">
-            Issues
-          </UnderlinePanels.Tab>
-          <UnderlinePanels.Panel value="code"> Repository files </UnderlinePanels.Panel>
-          <UnderlinePanels.Panel value="issues"> Open issues </UnderlinePanels.Panel>
-        </UnderlinePanels>
+        <div class="panels-example">
+          <UnderlinePanels v-model:value="selected" aria-label="Repository sections">
+            <UnderlinePanels.Tab value="code" :icon="CodeIcon"> Code </UnderlinePanels.Tab>
+            <UnderlinePanels.Tab value="issues" :counter="12" :icon="IssueOpenedIcon">
+              Issues
+            </UnderlinePanels.Tab>
+            <UnderlinePanels.Panel value="code"> Repository files </UnderlinePanels.Panel>
+            <UnderlinePanels.Panel value="issues"> Open issues </UnderlinePanels.Panel>
+          </UnderlinePanels>
+        </div>
       </ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="手动激活">
       <template #description> 方向键只移动焦点，按 Enter 或 Space 才切换面板。 </template>
       <ComponentDocsDemoBlock :code="manualCode">
-        <UnderlinePanels aria-label="Settings" activation-mode="manual" default-value="profile">
-          <UnderlinePanels.Tab value="profile"> Profile </UnderlinePanels.Tab>
-          <UnderlinePanels.Tab value="security"> Security </UnderlinePanels.Tab>
-          <UnderlinePanels.Panel value="profile"> Profile settings </UnderlinePanels.Panel>
-          <UnderlinePanels.Panel value="security"> Security settings </UnderlinePanels.Panel>
-        </UnderlinePanels>
+        <div class="panels-example">
+          <UnderlinePanels aria-label="Settings" activation-mode="manual" default-value="profile">
+            <UnderlinePanels.Tab value="profile"> Profile </UnderlinePanels.Tab>
+            <UnderlinePanels.Tab value="security"> Security </UnderlinePanels.Tab>
+            <UnderlinePanels.Panel value="profile"> Profile settings </UnderlinePanels.Panel>
+            <UnderlinePanels.Panel value="security"> Security settings </UnderlinePanels.Panel>
+          </UnderlinePanels>
+        </div>
       </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
+    <ComponentDocsSection title="浮层内组合">
+      <template #description
+        >关闭 AnchoredOverlay 的 focus zone，由标签列表管理自己的 roving
+        tabindex；浮层仍处理焦点约束、Escape 和焦点返回。</template
+      >
+      <ComponentDocsDemoBlock :code="overlayCode">
+        <AnchoredOverlay
+          :open="open"
+          :render-anchor="renderAnchor"
+          :focus-zone-settings="{ disabled: true }"
+          @open="open = true"
+          @close="open = false"
+        >
+          <div class="panels-example" style="width: 320px">
+            <UnderlinePanels aria-label="Ref type">
+              <UnderlinePanels.Tab>Branches</UnderlinePanels.Tab>
+              <UnderlinePanels.Tab>Tags</UnderlinePanels.Tab>
+              <UnderlinePanels.Panel>Branch panel</UnderlinePanels.Panel>
+              <UnderlinePanels.Panel>Tag panel</UnderlinePanels.Panel>
+            </UnderlinePanels>
+          </div>
+        </AnchoredOverlay>
+      </ComponentDocsDemoBlock>
+    </ComponentDocsSection>
+
+    <ComponentDocsSection title="Tabs 与 ActionList 组合">
+      <template #description
+        >UnderlinePanels 使用无样式 Tabs 的共享逻辑。自定义外观时，可将 useTabList、useTab 和
+        useTabPanel 返回的 computed 属性绑定到 ActionList
+        等组件；纵向列表使用上下方向键，跳过禁用项。</template
+      >
+      <ComponentDocsDemoBlock :code="actionListCode"
+        ><TabsActionListExample
+      /></ComponentDocsDemoBlock>
     </ComponentDocsSection>
 
     <ComponentDocsSection title="API" variant="api">
@@ -202,3 +285,11 @@ const panelRows = [
     </ComponentDocsSection>
   </ComponentDocsPage>
 </template>
+
+<style scoped>
+.panels-example {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+</style>

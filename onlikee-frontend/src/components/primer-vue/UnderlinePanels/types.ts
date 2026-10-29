@@ -1,21 +1,27 @@
-import type { Component } from 'vue'
+import type { Component, HTMLAttributes, ButtonHTMLAttributes } from 'vue'
 
 export interface UnderlinePanelsProps {
+  'aria-label'?: string
+  'aria-labelledby'?: string
   value?: string
   defaultValue?: string
+  onChange?: (selection: { value: string }) => void
   activationMode?: 'automatic' | 'manual'
   id?: string
   loadingCounters?: boolean
-  as?: string
+  className?: string
+  as?: string | Component
 }
-
-export interface UnderlinePanelsTabProps {
+export type UnderlinePanelsTabProps = {
   value?: string
   counter?: number | string
-  leadingVisual?: Component
-  disabled?: boolean
-}
-
-export interface UnderlinePanelsPanelProps {
+  icon?: Component
+  className?: string
+  'aria-selected'?: boolean
+  onSelect?: (event: MouseEvent | KeyboardEvent) => void
+} & Omit<ButtonHTMLAttributes, 'value' | 'onSelect'>
+export type UnderlinePanelsPanelProps = { value?: string; className?: string } & HTMLAttributes
+export type UnderlinePanelsPanelComponentProps = {
   value?: string
-}
+  className?: string
+} & /* @vue-ignore */ HTMLAttributes

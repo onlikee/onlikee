@@ -1,246 +1,206 @@
-<script setup lang="ts">
+<script lang="ts">
 import {
   cloneVNode,
   computed,
-  Fragment,
-  onBeforeUnmount,
-  onMounted,
-  onUpdated,
+  defineComponent,
+  h,
   provide,
   shallowRef,
-  useAttrs,
   useId,
-  useSlots,
+  watch,
+  type PropType,
   type VNode,
 } from 'vue'
-import UnderlinePanelsTab from './UnderlinePanelsTab.vue'
-import UnderlinePanelsPanel from './UnderlinePanelsPanel.vue'
+import Tab from './UnderlinePanelsTab.vue'
+import Panel from './UnderlinePanelsPanel.vue'
 import { underlinePanelsKey } from './context'
+import { Tabs, useTabList } from '../Tabs'
+import { elementChildren, isSlot } from '../composables/useSlots'
+import { resolveFocusTarget } from '../internal/focusTarget'
+import { normalizeReactStyle } from '../internal/style'
 import type { UnderlinePanelsProps } from './types'
+import classes from './UnderlinePanels.module.css'
+import shared from './UnderlineTabbedInterface.module.css'
 
-defineOptions({ inheritAttrs: false })
-
-const props = withDefaults(defineProps<UnderlinePanelsProps>(), {
-  value: undefined,
-  defaultValue: undefined,
-  activationMode: 'automatic',
-  id: undefined,
-  loadingCounters: false,
-  as: 'div',
-})
-
-const emit = defineEmits<{
-  change: [selection: { value: string }]
-  'update:value': [value: string]
-}>()
-
-const attrs = useAttrs()
-const ariaLabel = computed(() => attrs['aria-label'] as string | undefined)
-const ariaLabelledBy = computed(() => attrs['aria-labelledby'] as string | undefined)
-const wrapperAttrs = computed(() =>
-  Object.fromEntries(
-    Object.entries(attrs).filter(([name]) => name !== 'aria-label' && name !== 'aria-labelledby'),
-  ),
-)
-const slots = useSlots()
-const generatedId = useId()
-const id = computed(() => props.id ?? generatedId)
-const uncontrolledValue = shallowRef(props.defaultValue ?? '0')
-const initialized = shallowRef(false)
-const focusedValue = shallowRef<string>()
-const iconsVisible = shallowRef(true)
-const wrapperRef = shallowRef<HTMLElement>()
-const listRef = shallowRef<HTMLUListElement>()
-let listWidth = 0
-let previousSelectedFromProps: string | undefined
-let listObserver: ResizeObserver | undefined
-let wrapperObserver: ResizeObserver | undefined
-
-const RenderNodes = (props: { nodes: VNode[] }) => props.nodes
-
-function flatten(nodes: VNode[]): VNode[] {
-  return nodes.flatMap((node) =>
-    node.type === Fragment && Array.isArray(node.children)
-      ? flatten(node.children as VNode[])
-      : [node],
-  )
-}
-
-const children = computed(() => {
-  const tabs: VNode[] = []
-  const panels: VNode[] = []
-  let tabIndex = 0
-  let panelIndex = 0
-  let selectedFromProps: string | undefined
-  let selectedCount = 0
-
-  for (const node of flatten(slots.default?.() ?? [])) {
-    if (node.type === UnderlinePanelsTab) {
-      const value = String(node.props?.value ?? tabIndex)
-      tabIndex++
-      if (node.props?.['aria-selected'] === true || node.props?.['aria-selected'] === 'true') {
-        selectedFromProps = value
-        selectedCount++
+export default defineComponent({
+  name: 'UnderlinePanels',
+  inheritAttrs: false,
+  props: {
+    value: { type: String, default: undefined },
+    defaultValue: { type: String, default: undefined },
+    activationMode: {
+      type: String as PropType<UnderlinePanelsProps['activationMode']>,
+      default: 'automatic',
+    },
+    id: { type: String, default: undefined },
+    loadingCounters: { type: Boolean, default: undefined },
+    className: { type: String, default: undefined },
+    as: {
+      type: [String, Object, Function] as PropType<UnderlinePanelsProps['as']>,
+      default: 'div',
+    },
+  },
+  emits: {
+    change: (_selection: { value: string }) => true,
+    'update:value': (_value: string) => true,
+  },
+  setup(props, { slots, attrs, emit }) {
+    const generatedId = useId()
+    const uncontrolledValue = shallowRef<string>()
+    let initialized = false
+    let previousSelectedFromProps: string | undefined
+    const iconsVisible = shallowRef(true)
+    let tabsHaveIcons = false
+    let listWidth = 0
+    const wrapperTarget = shallowRef<unknown>(null)
+    const wrapperRef = computed(() => resolveFocusTarget(wrapperTarget.value))
+    const listRef = shallowRef<HTMLUListElement | null>(null)
+    const { tabListProps } = useTabList(() => ({
+      'aria-label': attrs['aria-label'] as string,
+      'aria-labelledby': attrs['aria-labelledby'] as string | undefined,
+      ref: listRef,
+    }))
+    provide(underlinePanelsKey, {
+      loadingCounters: computed(() => props.loadingCounters),
+    })
+    watch(
+      [wrapperRef, listRef],
+      ([wrapper, list], _previous, onCleanup) => {
+        if (!wrapper || !list || typeof ResizeObserver === 'undefined') return
+        const listObserver = new ResizeObserver((entries) => {
+          if (tabsHaveIcons && iconsVisible.value) listWidth = entries[0]!.contentRect.width
+        })
+        const wrapperObserver = new ResizeObserver((entries) => {
+          if (tabsHaveIcons) iconsVisible.value = entries[0]!.contentRect.width > listWidth
+        })
+        listObserver.observe(list)
+        wrapperObserver.observe(wrapper)
+        onCleanup(() => {
+          listObserver.disconnect()
+          wrapperObserver.disconnect()
+        })
+      },
+      { flush: 'post' },
+    )
+    return () => {
+      const tabs: VNode[] = []
+      const panels: VNode[] = []
+      let selectedFromProps: string | undefined
+      let selectedCount = 0
+      for (const child of elementChildren(slots.default?.())) {
+        if (child.type === Tab || isSlot(child, Tab)) {
+          const value: string = child.props?.value ?? String(tabs.length)
+          const selected = child.props?.['aria-selected']
+          if (selected === true || selected === 'true') {
+            selectedFromProps = value
+            selectedCount++
+          }
+          tabs.push(cloneVNode(child, { value }))
+        } else if (child.type === Panel || isSlot(child, Panel)) {
+          panels.push(cloneVNode(child, { value: child.props?.value ?? String(panels.length) }))
+        }
       }
-      tabs.push(cloneVNode(node, { value }))
-    } else if (node.type === UnderlinePanelsPanel) {
-      panels.push(cloneVNode(node, { value: String(node.props?.value ?? panelIndex) }))
-      panelIndex++
-    }
-  }
-
-  if (import.meta.env.DEV) {
-    const tabValues = tabs.map((tab) => String(tab.props?.value))
-    const panelValues = panels.map((panel) => String(panel.props?.value))
-    if (selectedCount > 1)
-      throw new Error('Only one UnderlinePanels.Tab can be selected at a time.')
-    if (tabs.length !== panels.length)
-      throw new Error(
-        `UnderlinePanels requires equal numbers of tabs and panels. Got ${tabs.length} tabs and ${panels.length} panels.`,
+      const tabValues = tabs.map((tab) => tab.props!.value as string)
+      const panelValues = panels.map((panel) => panel.props!.value as string)
+      tabsHaveIcons = tabs.some((tab) => Boolean(tab.props?.icon))
+      const controlled = props.value !== undefined
+      if (!initialized) {
+        uncontrolledValue.value = props.defaultValue ?? selectedFromProps ?? '0'
+        initialized = true
+        previousSelectedFromProps = selectedFromProps
+      }
+      if (!controlled && selectedFromProps !== previousSelectedFromProps) {
+        previousSelectedFromProps = selectedFromProps
+        if (selectedFromProps !== undefined) uncontrolledValue.value = selectedFromProps
+      }
+      const selected = controlled ? props.value! : uncontrolledValue.value!
+      const effectiveValue = tabValues.includes(selected) ? selected : (tabValues[0] ?? selected)
+      if (import.meta.env.DEV) {
+        if (selectedCount > 1) throw new Error('Only one tab can be selected at a time.')
+        if (tabs.length !== panels.length)
+          throw new Error(
+            `The number of tabs and panels must be equal. Counted ${tabs.length} tabs and ${panels.length} panels.`,
+          )
+        const duplicateTab = tabValues.find((value, index) => tabValues.indexOf(value) !== index)
+        if (duplicateTab !== undefined)
+          throw new Error(
+            `Every tab must have a unique \`value\`. Found duplicate "${duplicateTab}".`,
+          )
+        const duplicatePanel = panelValues.find(
+          (value, index) => panelValues.indexOf(value) !== index,
+        )
+        if (duplicatePanel !== undefined)
+          throw new Error(
+            `Every panel must have a unique \`value\`. Found duplicate "${duplicatePanel}".`,
+          )
+        const unmatched = tabValues.find((value) => !panelValues.includes(value))
+        if (unmatched !== undefined)
+          throw new Error(
+            `Tab with \`value\` "${unmatched}" has no matching panel. Give a \`UnderlinePanels.Panel\` the same \`value\`.`,
+          )
+        if (controlled && selectedCount > 0)
+          console.warn(
+            'UnderlinePanels: do not combine the controlled `value` prop with `aria-selected` on a tab. `value` takes precedence; use `value`/`onChange` (or `defaultValue`) to drive selection.',
+          )
+        if (controlled && props.defaultValue !== undefined)
+          console.warn(
+            'UnderlinePanels: do not combine the controlled `value` prop with `defaultValue`. `value` takes precedence; use one or the other.',
+          )
+        const provided = props.value ?? props.defaultValue
+        if (provided !== undefined && tabValues.length > 0 && !tabValues.includes(provided))
+          console.warn(
+            `UnderlinePanels: the selected value "${provided}" does not match any tab, so the first tab is selected instead. Provide a \`value\`/\`defaultValue\` that matches a \`UnderlinePanels.Tab\` \`value\`.`,
+          )
+      }
+      const {
+        'aria-label': _label,
+        'aria-labelledby': _labelledBy,
+        class: classValue,
+        style,
+        ...rest
+      } = attrs
+      const wrapperProps = {
+        ...rest,
+        id: props.id,
+        ref: wrapperTarget,
+        'data-icons-visible': iconsVisible.value,
+        class: [
+          shared.UnderlineWrapper,
+          classes.StyledUnderlineWrapper,
+          props.className,
+          classValue,
+        ],
+        style: normalizeReactStyle(style),
+      }
+      return h(
+        Tabs,
+        {
+          id: props.id ?? generatedId,
+          value: effectiveValue,
+          activationMode: props.activationMode,
+          onValueChange({ value }) {
+            if (!controlled) uncontrolledValue.value = value
+            emit('update:value', value)
+            emit('change', { value })
+          },
+        },
+        {
+          default: () => [
+            h(
+              props.as,
+              wrapperProps,
+              typeof props.as === 'string'
+                ? [h('ul', { ...tabListProps.value, class: shared.UnderlineItemList }, tabs)]
+                : {
+                    default: () =>
+                      h('ul', { ...tabListProps.value, class: shared.UnderlineItemList }, tabs),
+                  },
+            ),
+            ...panels,
+          ],
+        },
       )
-    if (new Set(tabValues).size !== tabValues.length)
-      throw new Error('Every UnderlinePanels.Tab must have a unique value.')
-    if (new Set(panelValues).size !== panelValues.length)
-      throw new Error('Every UnderlinePanels.Panel must have a unique value.')
-    const unmatched = tabValues.find((value) => !panelValues.includes(value))
-    if (unmatched !== undefined)
-      throw new Error(`UnderlinePanels.Tab value "${unmatched}" has no matching panel.`)
-  }
-
-  return { tabs, panels, selectedFromProps }
-})
-
-const selectedValue = computed(() => {
-  const selected =
-    props.value ??
-    (initialized.value
-      ? uncontrolledValue.value
-      : (props.defaultValue ?? children.value.selectedFromProps ?? '0'))
-  const values = children.value.tabs.map((tab) => String(tab.props?.value))
-  return values.includes(selected) ? selected : (values[0] ?? selected)
-})
-
-function selectTab(value: string) {
-  focusedValue.value = undefined
-  if (value === selectedValue.value) return
-  if (props.value === undefined) {
-    uncontrolledValue.value = value
-    initialized.value = true
-  }
-  emit('update:value', value)
-  emit('change', { value })
-}
-
-provide(underlinePanelsKey, {
-  id,
-  selectedValue,
-  focusedValue,
-  activationMode: computed(() => props.activationMode),
-  loadingCounters: computed(() => props.loadingCounters),
-  selectTab,
-  focusTab: (value) => {
-    focusedValue.value = value
+    }
   },
 })
-
-const tabsHaveIcons = computed(() =>
-  children.value.tabs.some((tab) => Boolean(tab.props?.leadingVisual)),
-)
-
-function updateIconsVisibility() {
-  if (!tabsHaveIcons.value || !wrapperRef.value || !listRef.value) {
-    iconsVisible.value = true
-    return
-  }
-  if (iconsVisible.value) listWidth = listRef.value.getBoundingClientRect().width
-  iconsVisible.value = wrapperRef.value.clientWidth > listWidth
-}
-
-onMounted(() => {
-  previousSelectedFromProps = children.value.selectedFromProps
-  if (!initialized.value) {
-    uncontrolledValue.value = props.defaultValue ?? previousSelectedFromProps ?? '0'
-    initialized.value = true
-  }
-  updateIconsVisibility()
-  if (typeof ResizeObserver === 'undefined') return
-  listObserver = new ResizeObserver(() => {
-    if (iconsVisible.value) updateIconsVisibility()
-  })
-  wrapperObserver = new ResizeObserver(updateIconsVisibility)
-  if (listRef.value) listObserver.observe(listRef.value)
-  if (wrapperRef.value) wrapperObserver.observe(wrapperRef.value)
-})
-
-onBeforeUnmount(() => {
-  listObserver?.disconnect()
-  wrapperObserver?.disconnect()
-})
-
-onUpdated(() => {
-  const nextSelectedFromProps = children.value.selectedFromProps
-  if (
-    props.value === undefined &&
-    nextSelectedFromProps !== previousSelectedFromProps &&
-    nextSelectedFromProps !== undefined
-  ) {
-    uncontrolledValue.value = nextSelectedFromProps
-  }
-  previousSelectedFromProps = nextSelectedFromProps
-  updateIconsVisibility()
-})
-
-function handleKeydown(event: KeyboardEvent) {
-  if (!['ArrowRight', 'ArrowLeft', 'Home', 'End'].includes(event.key)) return
-  const tabs = Array.from(
-    listRef.value?.querySelectorAll<HTMLButtonElement>(
-      '[role="tab"]:not([aria-disabled="true"])',
-    ) ?? [],
-  )
-  if (!tabs.length) return
-  const activeIndex = tabs.indexOf(document.activeElement as HTMLButtonElement)
-  const currentIndex =
-    activeIndex >= 0
-      ? activeIndex
-      : tabs.findIndex((tab) => tab.getAttribute('aria-selected') === 'true')
-  if (currentIndex < 0) return
-
-  event.preventDefault()
-  event.stopPropagation()
-  const nextIndex =
-    event.key === 'Home'
-      ? 0
-      : event.key === 'End'
-        ? tabs.length - 1
-        : (currentIndex + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length
-  tabs[nextIndex]?.focus()
-}
 </script>
-
-<template>
-  <div :class="[$style['underline-panels-group']]">
-    <component
-      :is="as"
-      v-bind="wrapperAttrs"
-      :id="props.id"
-      ref="wrapperRef"
-      :class="[$style['underline-panels']]"
-      :data-icons-visible="iconsVisible"
-    >
-      <ul
-        ref="listRef"
-        :class="[$style['underline-panels__list']]"
-        role="tablist"
-        aria-orientation="horizontal"
-        :aria-label="ariaLabel"
-        :aria-labelledby="ariaLabelledBy"
-        @keydown="handleKeydown"
-      >
-        <RenderNodes :nodes="children.tabs" />
-      </ul>
-    </component>
-    <RenderNodes :nodes="children.panels" />
-  </div>
-</template>
-
-<style module src="./UnderlinePanels.module.css"></style>

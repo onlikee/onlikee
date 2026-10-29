@@ -1,0 +1,5 @@
+export { default as Tabs } from './Tabs.vue'
+export { useTab } from './useTab'
+export { useTabList } from './useTabList'
+export { useTabPanel } from './useTabPanel'
+export type * from './types'
