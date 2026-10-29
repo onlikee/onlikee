@@ -1,79 +1,96 @@
-.admonition {
-  display: flex;
-  gap: 8px;
-  padding: 12px 16px;
-  border-left: 4px solid var(--borderColor-accent-muted, #54aeff66);
-  background: var(--bgColor-accent-muted, #ddf4ff);
-  color: var(--fgColor-default, #1f2328);
-  font-size: 14px;
-}
+.Admonition {
+  --admonition-fgColor: var(--fgColor-accent);
+  --admonition-bgColor: var(--bgColor-accent-muted);
+  --admonition-borderColor: var(--borderColor-accent-emphasis);
 
-.admonition[data-type='critical'] {
-  border-left-color: var(--borderColor-danger-muted, #ff818266);
-  background: var(--bgColor-danger-muted, #ffebe9);
-}
-
-.admonition[data-type='info'] {
-  border-left-color: var(--borderColor-accent-muted, #54aeff66);
-  background: var(--bgColor-accent-muted, #ddf4ff);
-}
-
-.admonition[data-type='success'] {
-  border-left-color: var(--borderColor-success-muted, #4ac26b66);
-  background: var(--bgColor-success-muted, #dafbe1);
-}
-
-.admonition[data-type='upsell'] {
-  border-left-color: var(--borderColor-done-muted, #c297ff66);
-  background: var(--bgColor-done-muted, #fbefff);
-}
-
-.admonition[data-type='warning'] {
-  border-left-color: var(--borderColor-attention-muted, #d4a72c66);
-  background: var(--bgColor-attention-muted, #fff8c5);
-}
-
-.admonition[data-type='critical'] .admonition-icon {
-  color: var(--fgColor-danger, #d1242f);
-}
-
-.admonition[data-type='info'] .admonition-icon {
-  color: var(--fgColor-link, #0969da);
-}
-
-.admonition[data-type='success'] .admonition-icon {
-  color: var(--fgColor-success, #1a7f37);
-}
-
-.admonition[data-type='upsell'] .admonition-icon {
-  color: var(--fgColor-done, #8250df);
-}
-
-.admonition[data-type='warning'] .admonition-icon {
-  color: var(--fgColor-attention, #9a6700);
-}
-
-.admonition-icon {
-  flex-shrink: 0;
-  padding-top: 3px;
-  color: var(--fgColor-link, #0969da);
-}
-
-.admonition-body {
-  flex: 1;
-  min-width: 0;
-}
-
-.admonition-title {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.admonition-content {
-  color: var(--fgColor-muted, #59636e);
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--base-size-8);
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  padding: var(--base-size-12) var(--base-size-16);
+  border-inline-start: var(--borderWidth-thicker) solid var(--admonition-borderColor);
+  /* Composite translucent theme colors over this note's own surface when nested. */
+  background:
+    linear-gradient(var(--admonition-bgColor), var(--admonition-bgColor)), var(--bgColor-default);
+  color: var(--fgColor-default);
+  font: var(--text-body-shorthand-medium);
   overflow-wrap: anywhere;
+
+  &[data-type='critical'] {
+    --admonition-fgColor: var(--fgColor-danger);
+    --admonition-bgColor: var(--bgColor-danger-muted);
+    --admonition-borderColor: var(--borderColor-danger-emphasis);
+  }
+
+  &[data-type='success'] {
+    --admonition-fgColor: var(--fgColor-success);
+    --admonition-bgColor: var(--bgColor-success-muted);
+    --admonition-borderColor: var(--borderColor-success-emphasis);
+  }
+
+  &[data-type='upsell'] {
+    --admonition-fgColor: var(--fgColor-done);
+    --admonition-bgColor: var(--bgColor-done-muted);
+    --admonition-borderColor: var(--borderColor-done-emphasis);
+  }
+
+  &[data-type='warning'] {
+    --admonition-fgColor: var(--fgColor-attention);
+    --admonition-bgColor: var(--bgColor-attention-muted);
+    --admonition-borderColor: var(--borderColor-attention-emphasis);
+  }
 }
 
-.admonition[data-has-title='false'] .admonition-content {
-  color: var(--fgColor-default, #1f2328);
+.Visual {
+  display: grid;
+  align-items: center;
+  block-size: calc(var(--text-body-size-medium) * var(--text-body-lineHeight-medium));
+  color: var(--admonition-fgColor);
+}
+
+.Body {
+  min-inline-size: 0;
+}
+
+.Title {
+  margin: 0 0 var(--base-size-4);
+  color: var(--admonition-fgColor);
+  font: inherit;
+  font-weight: var(--base-text-weight-semibold);
+}
+
+.Content {
+  display: flow-root;
+  min-inline-size: 0;
+
+  > :where(p, ul, ol, pre, blockquote) {
+    margin-block: 0;
+  }
+
+  > :where(*) + :where(*) {
+    margin-block-start: var(--base-size-8);
+  }
+
+  > :where(ul, ol) {
+    padding-inline-start: var(--base-size-24);
+  }
+
+  > :where(pre) {
+    max-inline-size: 100%;
+    overflow-x: auto;
+    overflow-wrap: normal;
+  }
+}
+
+@media (forced-colors: active) {
+  .Admonition {
+    border-inline-start-color: CanvasText;
+  }
+
+  .Visual,
+  .Title {
+    color: CanvasText;
+  }
 }
