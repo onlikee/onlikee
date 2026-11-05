@@ -103,6 +103,57 @@ afterEach(() => {
 })
 
 describe('ActionMenu public behavior', () => {
+  it('positions the overlay without leaking positioning props to its surface', async () => {
+    const align = shallowRef<'start' | 'end'>('end')
+    const displayInViewport = shallowRef(true)
+    const wrapper = render(() => [
+      h(ActionMenu.Button, null, { default: () => 'Account menu' }),
+      h(
+        ActionMenu.Overlay,
+        {
+          align: align.value,
+          side: 'outside-bottom',
+          displayInViewport: displayInViewport.value,
+          width: 'small',
+          className: 'account-menu',
+          'data-testid': 'account-menu',
+          'aria-labelledby': 'account-label',
+        },
+        {
+          default: () => [
+            h('div', { id: 'account-label' }, 'Account'),
+            h(ActionList, null, { default: () => item('Profile') }),
+          ],
+        },
+      ),
+    ])
+    click(wrapper.get('button').element)
+    await settle()
+
+    const surface = document.querySelector<HTMLElement>('[data-testid="account-menu"]')!
+    expect(surface).not.toBeNull()
+    expect(surface.classList.contains('account-menu')).toBe(true)
+    expect(surface.hasAttribute('data-width-small')).toBe(true)
+    expect(menus()[0]!.getAttribute('aria-labelledby')).toBe('account-label')
+    for (const attr of ['align', 'side', 'displayinviewport', 'display-in-viewport']) {
+      expect(surface.hasAttribute(attr), attr).toBe(false)
+    }
+    expect(getAnchoredPosition).toHaveBeenLastCalledWith(
+      expect.any(HTMLElement),
+      expect.any(HTMLElement),
+      expect.objectContaining({ align: 'end', side: 'outside-bottom', displayInViewport: true }),
+    )
+    align.value = 'start'
+    displayInViewport.value = false
+    await settle()
+    expect(getAnchoredPosition).toHaveBeenLastCalledWith(
+      expect.any(HTMLElement),
+      expect.any(HTMLElement),
+      expect.objectContaining({ align: 'start', displayInViewport: false }),
+    )
+    expect(surface.hasAttribute('align')).toBe(false)
+  })
+
   it('does not leak icon-only tooltip props from the text menu button', async () => {
     const wrapper = basic(undefined, {
       description: 'Open menu',

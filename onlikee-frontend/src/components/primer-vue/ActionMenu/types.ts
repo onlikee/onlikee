@@ -44,7 +44,7 @@ export interface ActionMenuOverlayProps
   extends
     Partial<OverlayOptions>,
     /* @vue-ignore */ HTMLAttributes,
-    Pick<AnchoredOverlayBaseProps, 'side' | 'align' | 'displayInViewport' | 'pinPosition'> {
+    Pick<AnchoredOverlayBaseProps, 'side' | 'align' | 'displayInViewport'> {
   variant?: ActionMenuVariant
   onPositionChange?: (event: { position: AnchorPosition }) => void
 }

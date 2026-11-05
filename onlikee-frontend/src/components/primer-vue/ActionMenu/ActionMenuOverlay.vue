@@ -26,7 +26,6 @@ defineOptions({
 const props = withDefaults(defineProps<ActionMenuOverlayProps>(), {
   variant: () => ({ regular: 'anchored', narrow: 'anchored' }),
   displayInViewport: undefined,
-  pinPosition: undefined,
   preventOverflow: undefined,
   preventFocusOnOpen: undefined,
 })
@@ -85,7 +84,14 @@ const label = computed(
 )
 const displayInViewport = computed(() => props.displayInViewport ?? isInsideDialog)
 const overlayProps = computed(() => {
-  const { variant: _variant, onPositionChange: _positionChange, ...rest } = props
+  const {
+    align: _align,
+    side: _side,
+    displayInViewport: _displayInViewport,
+    variant: _variant,
+    onPositionChange: _positionChange,
+    ...rest
+  } = props
   // Absent Vue props still exist as undefined; don't override Overlay's ref defaults.
   const supplied = Object.fromEntries(
     Object.entries(rest).filter(([, value]) => value !== undefined),
