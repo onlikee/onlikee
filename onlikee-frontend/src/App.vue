@@ -5,7 +5,7 @@ import { computed } from 'vue'
 
 const route = useRoute()
 
-// 判断是否需要隐藏 Header（ComponentLayout 页面和登录页面）
+// 判断是否需要隐藏 Header
 const shouldHideHeader = computed(() => {
   return (
     route.path === '/auth/login' ||

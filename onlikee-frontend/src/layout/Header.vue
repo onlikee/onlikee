@@ -1,82 +1,123 @@
 <template>
   <header class="header">
     <div class="header-inner">
-      <div class="logo" @click="navigateToPage('/')">
-        <LogoOnlikeeIcon size="32" />
-        <span>onlikee</span>
+      <div class="top-nav-left">
+        <IconButton
+          :icon="ThreeBarsIcon"
+          aria-label="打开菜单"
+          aria-haspopup="dialog"
+          :aria-expanded="menuDialogOpen"
+          @click="menuDialogOpen = true"
+        />
+        <div class="logo" @click="navigateToPage('/')">
+          <LogoOnlikeeIcon size="32" />
+          <span>onlikee</span>
+        </div>
       </div>
 
-      <div class="nav-list">
+      <div class="top-nav-list">
         <div v-for="item in navigationItems" :key="item.name">
-          <div :class="['nav-link', { active: item.active }]" @click="navigateToPage(item.href)">
+          <div
+            :class="['top-nav-link', { active: item.active }]"
+            @click="navigateToPage(item.href)"
+          >
             {{ item.name }}
           </div>
         </div>
       </div>
 
-      <div class="user-menu">
-        <div v-if="!userStore.userInfo" class="nav-link" @click="goToLogin">登录</div>
-        <ActionMenu v-else>
-          <ActionMenu.Anchor>
-            <button type="button" class="user-menu-trigger" aria-label="账户菜单">
-              <Avatar :src="userStore.userInfo?.avatarUrl" :size="32" />
-            </button>
-          </ActionMenu.Anchor>
-          <ActionMenu.Overlay
-            width="small"
-            align="end"
-            :variant="{ regular: 'anchored', narrow: 'fullscreen' }"
-          >
-            <div class="user-header">
-              <Avatar :src="userStore.userInfo?.avatarUrl" :size="32" />
-              <div class="user-info">
-                <div class="user-name" :title="userStore.userInfo?.nickname">
-                  {{ userStore.userInfo?.nickname }}
-                </div>
-                <div class="user-email" :title="userStore.userInfo?.email">
-                  {{ userStore.userInfo?.email ?? '暂未设置邮箱' }}
+      <div class="top-nav-right">
+        <div class="user-menu">
+          <div v-if="!userStore.userInfo" class="top-nav-link" @click="goToLogin">登录</div>
+          <ActionMenu v-else>
+            <ActionMenu.Anchor>
+              <button type="button" class="user-menu-trigger" aria-label="账户菜单">
+                <Avatar :src="userStore.userInfo?.avatarUrl" :size="32" />
+              </button>
+            </ActionMenu.Anchor>
+            <ActionMenu.Overlay
+              width="small"
+              align="end"
+              :variant="{ regular: 'anchored', narrow: 'fullscreen' }"
+            >
+              <div class="user-header">
+                <Avatar :src="userStore.userInfo?.avatarUrl" :size="32" />
+                <div class="user-info">
+                  <div class="user-name" :title="userStore.userInfo?.nickname">
+                    {{ userStore.userInfo?.nickname }}
+                  </div>
+                  <div class="user-email" :title="userStore.userInfo?.email">
+                    {{ userStore.userInfo?.email ?? '暂未设置邮箱' }}
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="user-menu-content">
-              <ActionList variant="full" role="menu" aria-label="账户操作">
-                <ActionList.Item role="menuitem" @select="goToProfile">
-                  <ActionList.LeadingVisual>
-                    <PersonIcon />
-                  </ActionList.LeadingVisual>
-                  个人资料
-                </ActionList.Item>
-                <ActionList.Item role="menuitem" @select="navigateToPage('/application')">
-                  <ActionList.LeadingVisual>
-                    <AppsIcon />
-                  </ActionList.LeadingVisual>
-                  我的应用
-                </ActionList.Item>
-                <ActionList.Divider />
-                <ActionList.Item role="menuitem" @select="navigateToPage('/auth/logout')">
-                  <ActionList.LeadingVisual>
-                    <SignOutIcon />
-                  </ActionList.LeadingVisual>
-                  退出登录
-                </ActionList.Item>
-              </ActionList>
-            </div>
-          </ActionMenu.Overlay>
-        </ActionMenu>
+              <div class="user-menu-content">
+                <ActionList variant="full" role="menu" aria-label="账户操作">
+                  <ActionList.Item role="menuitem" @select="goToProfile">
+                    <ActionList.LeadingVisual>
+                      <PersonIcon />
+                    </ActionList.LeadingVisual>
+                    个人资料
+                  </ActionList.Item>
+                  <ActionList.Item role="menuitem" @select="navigateToPage('/application')">
+                    <ActionList.LeadingVisual>
+                      <AppsIcon />
+                    </ActionList.LeadingVisual>
+                    我的应用
+                  </ActionList.Item>
+                  <ActionList.Divider />
+                  <ActionList.Item role="menuitem" @select="navigateToPage('/auth/logout')">
+                    <ActionList.LeadingVisual>
+                      <SignOutIcon />
+                    </ActionList.LeadingVisual>
+                    退出登录
+                  </ActionList.Item>
+                </ActionList>
+              </div>
+            </ActionMenu.Overlay>
+          </ActionMenu>
+        </div>
       </div>
     </div>
   </header>
+  <Dialog
+    v-if="menuDialogOpen"
+    :on-close="() => (menuDialogOpen = false)"
+    title="菜单"
+    position="left"
+    width="medium"
+    :render-header="renderMenuDialogHeader"
+  >
+    <Dialog.Body>
+      <NavList aria-label="主导航">
+        <NavList.Item
+          v-for="item in navigationItems"
+          :key="item.href"
+          :href="item.href"
+          :aria-current="item.active ? 'page' : undefined"
+          @click="navigateFromMenu($event, item.href)"
+        >
+          {{ item.name }}
+        </NavList.Item>
+      </NavList>
+    </Dialog.Body>
+  </Dialog>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { h, onMounted, ref, shallowRef, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ActionMenu } from '@/components/primer-vue/ActionMenu'
 import { Avatar } from '@/components/primer-vue/Avatar'
 import { ActionList } from '@/components/primer-vue/ActionList'
-import { PersonIcon, AppsIcon, SignOutIcon } from '@onlikee/octicons-vue'
+import { Dialog, type DialogHeaderProps } from '@/components/primer-vue/Dialog'
+import { NavList } from '@/components/primer-vue/NavList'
+import { Stack } from '@/components/primer-vue/Stack'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
+import { PersonIcon, AppsIcon, SignOutIcon, ThreeBarsIcon } from '@onlikee/octicons-vue'
 import LogoOnlikeeIcon from '@/components/icons/LogoOnlikeeIcon.vue'
+import IconButton from '@/components/primer-vue/Button/IconButton.vue'
 
 interface NavigationItem {
   name: string
@@ -87,6 +128,27 @@ interface NavigationItem {
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
+const menuDialogOpen = shallowRef(false)
+
+const renderMenuDialogHeader = (props: DialogHeaderProps) =>
+  h(
+    Stack,
+    {
+      as: Dialog.Header,
+      direction: 'horizontal',
+      align: 'center',
+      justify: 'space-between',
+      padding: 'normal',
+      style: { boxShadow: 'none' },
+    },
+    {
+      default: () => [
+        h(LogoOnlikeeIcon, { size: 32 }),
+        h(VisuallyHidden, { id: props.dialogLabelId }, { default: () => props.title }),
+        h(Dialog.CloseButton, { onClose: () => props.onClose('close-button') }),
+      ],
+    },
+  )
 
 // 导航队列，确保导航操作按顺序执行，避免重复点击导致的竞态问题
 // 如跳转到登录页后快速返回并切换导航项再次跳转登录会丢失?return_to=...参数
@@ -142,6 +204,13 @@ const navigateToPage = (href: string) => {
   })
 }
 
+const navigateFromMenu = (event: MouseEvent, href: string) => {
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+  event.preventDefault()
+  menuDialogOpen.value = false
+  navigateToPage(href)
+}
+
 onMounted(() => {
   updateActiveState()
 })
@@ -158,42 +227,43 @@ watch(
 .header {
   position: sticky;
   top: 0;
-  z-index: 9999;
+  z-index: 1;
   width: 100%;
+}
+
+.header-inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   background: var(--bgColor-muted);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
   box-shadow: inset 0 calc(var(--borderWidth-thin, 1px) * -1) var(--borderColor-default);
 }
 
-.header-inner {
-  position: relative;
+.top-nav-left {
+  justify-self: start;
+  padding: 16px;
   display: flex;
-  height: 4rem;
-  align-items: center;
-  justify-content: center;
+  gap: 16px;
 }
 
 .logo {
-  position: absolute;
-  left: 2rem;
   color: var(--fgColor-default);
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-weight: bold;
+  gap: 16px;
+  font-weight: var(--base-text-weight-semibold);
   cursor: pointer;
-  font-family: 'Arial Black', sans-serif;
-  font-size: 24px;
-  text-decoration: none;
+  font-size: var(--text-body-size-large);
 }
 
-.nav-list {
+.top-nav-list {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
+  padding: 16px 0;
 }
 
-.nav-link {
+.top-nav-link {
   display: flex;
   align-items: center;
   padding: 8px 10px;
@@ -208,26 +278,28 @@ watch(
     color 0.2s ease;
 }
 
-.nav-link.active {
+.top-nav-link.active {
   background-color: var(--bgColor-neutral-muted);
   color: var(--fgColor-default);
 }
 
-.nav-link:active {
+.top-nav-link:active {
   background-color: var(--bgColor-neutral-muted);
   color: var(--fgColor-default);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .nav-link:hover {
+  .top-nav-link:hover {
     background-color: var(--bgColor-neutral-muted);
     color: var(--fgColor-default);
   }
 }
 
-.user-menu {
-  position: absolute;
-  right: 2rem;
+.top-nav-right {
+  justify-self: end;
+  padding: 16px;
+  gap: 16px;
+  display: flex;
 }
 
 .user-menu-trigger {
@@ -285,42 +357,12 @@ watch(
 }
 
 @media (max-width: 768px) {
-  .header {
-    position: fixed;
-    top: 1rem;
-    left: 0;
-    right: 0;
-    width: max-content;
-    margin-inline: auto;
-    transform: none;
-    border-radius: 24px;
-    box-shadow: none;
-  }
-
   .header-inner {
-    height: auto;
-    padding: 6px 8px;
+    grid-template-columns: auto 1fr auto;
   }
 
-  .logo {
+  .top-nav-list {
     display: none;
-  }
-
-  .nav-list {
-    gap: 0.5rem;
-  }
-
-  .nav-link {
-    padding-left: 12px;
-    padding-right: 12px;
-    border-radius: 16px;
-  }
-
-  .user-menu {
-    position: relative;
-    right: 0;
-    margin-left: 0.5rem;
-    height: 32px;
   }
 }
 </style>

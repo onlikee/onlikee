@@ -415,7 +415,6 @@ const navSections = ref([
 @media (max-width: 768px) {
   .main-content {
     padding: 1.5rem;
-    padding-top: 4rem;
   }
 
   .sidebar {
