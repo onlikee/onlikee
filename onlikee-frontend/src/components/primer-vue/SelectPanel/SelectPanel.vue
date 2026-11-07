@@ -16,6 +16,7 @@ import {
   type VNodeChild,
 } from 'vue'
 import { Button, IconButton } from '../Button'
+import { Banner } from '../Banner'
 import { Heading } from '../Heading'
 import { useFormControlContext } from '../FormControl/context'
 import { useFeatureFlag } from '../FeatureFlags'
@@ -29,9 +30,6 @@ import { renderNode } from '../internal/renderNode'
 import TriangleDownIcon from '@onlikee/octicons-vue/icons/triangle-down'
 import SearchIcon from '@onlikee/octicons-vue/icons/search'
 import XIcon from '@onlikee/octicons-vue/icons/x'
-import InfoIcon from '@onlikee/octicons-vue/icons/info'
-import AlertIcon from '@onlikee/octicons-vue/icons/alert'
-import StopIcon from '@onlikee/octicons-vue/icons/stop'
 defineOptions({ name: 'SelectPanel', inheritAttrs: false, __SLOT__: Symbol('SelectPanel') })
 const props = withDefaults(defineProps<SelectPanelComponentProps>(), {
   selected: undefined,
@@ -84,7 +82,6 @@ const formControl = useFormControlContext()
 const generatedId = useId()
 const id = computed(() => props.id)
 const titleId = `${generatedId}-title`
-const noticeTitleId = `${generatedId}-notice-title`
 const subtitleId = `${generatedId}-subtitle`
 const multi = computed(() => Array.isArray(props.selected))
 const singleModal = computed(() => !multi.value && props.variant === 'modal')
@@ -313,7 +310,6 @@ const SearchVisual = () => h(SearchIcon, { 'data-component': 'Octicon' })
 const RenderSubtitle = () => renderNode(props.subtitle)
 const RenderFooter = () => renderNode(props.footer)
 const RenderSecondary = () => renderNode(props.secondaryAction)
-const RenderNotice = () => renderNode(props.notice?.text)
 const RenderMessage = () =>
   message.value
     ? h(Message, {
@@ -359,13 +355,6 @@ const stretchSave = computed(() =>
   !hasSecondary.value
     ? 'only-small'
     : 'never',
-)
-const noticeIcon = computed(() =>
-  props.notice?.variant === 'error'
-    ? StopIcon
-    : props.notice?.variant === 'warning'
-      ? AlertIcon
-      : InfoIcon,
 )
 function keydown(event: KeyboardEvent) {
   props.overlayProps?.onKeydown?.(event)
@@ -595,44 +584,18 @@ defineExpose({
         />
       </div>
       <div v-if="notice" ref="noticeElement" data-component="SelectPanel.Notice">
-        <section
+        <Banner
           :class="$style['select-panel__notice']"
-          :data-variant="notice.variant === 'error' ? 'critical' : notice.variant"
-          :aria-labelledby="noticeTitleId"
-          data-component="Banner"
-          data-title-hidden=""
-          data-actions-layout="default"
-          data-layout="compact"
+          :variant="notice.variant === 'error' ? 'critical' : notice.variant"
+          :description="renderNode(notice.text)"
+          title="Notice"
+          hide-title
           layout="compact"
-          tabindex="-1"
         >
-          <div :class="$style['select-panel__notice-icon']" data-component="Banner.Icon">
-            <component :is="noticeIcon" :size="16" data-component="Octicon" />
-          </div>
-          <div :class="$style['select-panel__notice-container']">
-            <div :class="$style['select-panel__notice-content']" data-component="Banner.Content">
-              <span :class="$style['select-panel__visually-hidden']"
-                ><h2
-                  :id="noticeTitleId"
-                  :class="$style['select-panel__banner-title']"
-                  data-component="Banner.Title"
-                  data-banner-title=""
-                >
-                  Notice
-                </h2></span
-              >
-              <div
-                v-if="notice.text !== undefined ? !!notice.text : !!$slots.notice"
-                data-component="Banner.Description"
-              >
-                <RenderNotice v-if="notice.text !== undefined" />
-                <slot v-else name="notice">
-                  <RenderNotice />
-                </slot>
-              </div>
-            </div>
-          </div>
-        </section>
+          <template v-if="notice.text === undefined && $slots.notice" #description>
+            <slot name="notice" />
+          </template>
+        </Banner>
       </div>
       <FilteredActionList
         ref="filteredList"

@@ -9,6 +9,7 @@ import { FeatureFlags } from '../FeatureFlags'
 import { Label } from '../Label'
 import { FormControl } from '../FormControl'
 import { Button } from '../Button'
+import { Banner } from '../Banner'
 import type { AnchorRenderProps } from '../AnchoredOverlay'
 import type { ItemInput } from './index'
 
@@ -471,7 +472,7 @@ describe('SelectPanel behavior', () => {
     })
   })
   it('keeps source DOM wrappers and hidden help text before select-all and the scroll body', async () => {
-    render(SelectPanel, {
+    const wrapper = render(SelectPanel, {
       selected: [],
       placeholder: 'Select items',
       showSelectAll: true,
@@ -479,6 +480,15 @@ describe('SelectPanel behavior', () => {
     })
     await settle()
     expect(document.querySelector('[data-component="SelectPanel.Header"]')?.tagName).toBe('DIV')
+    const bannerComponent = wrapper.findComponent(Banner)
+    expect(bannerComponent.exists()).toBe(true)
+    expect(bannerComponent.props()).toMatchObject({
+      title: 'Notice',
+      description: 'Notice body',
+      variant: 'info',
+      hideTitle: true,
+      layout: 'compact',
+    })
     const banner = document.querySelector('[data-component="Banner"]')!
     expect(banner.tagName).toBe('SECTION')
     expect(banner.querySelector('[data-component="Banner.Title"]')?.tagName).toBe('H2')
@@ -501,6 +511,23 @@ describe('SelectPanel behavior', () => {
     const anchor = document.querySelector('[data-component="Button"]')!
     expect(anchor.querySelector('[data-component="buttonContent"]')?.children).toHaveLength(1)
     expect(anchor.children[1]?.getAttribute('data-component')).toBe('trailingAction')
+  })
+  it.each([
+    ['info', 'info'],
+    ['warning', 'warning'],
+    ['error', 'critical'],
+  ] as const)('composes the shared Banner for %s notices', async (variant, bannerVariant) => {
+    const wrapper = render(SelectPanel, { notice: { text: 'Notice body', variant } })
+    await settle()
+    const banner = wrapper.findComponent(Banner)
+    expect(banner.props('variant')).toBe(bannerVariant)
+    const section = document.querySelector('[data-component="Banner"]')!
+    expect(section.getAttribute('aria-labelledby')).toBe(
+      section.querySelector('[data-component="Banner.Title"]')?.id,
+    )
+    expect(section.getAttribute('data-title-hidden')).toBe('')
+    expect(section.getAttribute('data-layout')).toBe('compact')
+    expect(section.querySelector('[aria-label="Dismiss banner"]')).toBeNull()
   })
   it('viewport height survives close/reopen and uses the fractional narrow breakpoint', async () => {
     vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })

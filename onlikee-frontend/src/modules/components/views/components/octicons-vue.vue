@@ -63,6 +63,12 @@
         />
       </div>
 
+      <Banner v-if="copiedIcon" title="复制成功" variant="success" @dismiss="copiedIcon = ''">
+        <template #description>
+          <span role="status">{{ copiedIcon }} SVG 已复制到剪贴板！</span>
+        </template>
+      </Banner>
+
       <div class="icon-grid">
         <div
           v-for="icon in filteredIconEntries"
@@ -195,6 +201,7 @@ const iconEntries: IconEntry[] = Object.entries(octicons)
   }))
   .sort((a, b) => a.name.localeCompare(b.name))
 
+const copiedIcon = ref('')
 const searchQuery = ref('')
 const filteredIconEntries = computed(() => {
   const query = searchQuery.value.trim().toLowerCase()
@@ -213,7 +220,7 @@ const copySVG = (iconName: string, event: MouseEvent) => {
   const svgMarkup = svgElement.outerHTML
   // 将 SVG 文本写入剪贴板，便于直接粘贴到设计稿或代码中。
   navigator.clipboard.writeText(svgMarkup)
-  Banner.success(`${iconName} SVG 已复制到剪贴板！`, { duration: 3000 })
+  copiedIcon.value = iconName
 }
 
 const apiTableColumns: DocumentationColumn[] = [
