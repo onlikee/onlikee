@@ -34,6 +34,7 @@
       </Blankslate>
     </div>
   </div>
+  <VisuallyHidden role="status">{{ markdownStatus }}</VisuallyHidden>
   <Dialog
     v-if="markdownDialogOpen"
     :on-close="() => (markdownDialogOpen = false)"
@@ -43,6 +44,13 @@
   >
     <Dialog.Body>
       <div class="markdown-editor">
+        <Banner
+          v-if="markdownSaveError"
+          ref="markdownErrorBanner"
+          variant="critical"
+          title="README 保存失败"
+          :description="markdownSaveError"
+        />
         <div class="markdown-editor__toolbar">
           <Button
             :variant="markdownMode === 'edit' ? 'primary' : 'default'"
@@ -62,16 +70,21 @@
             {{ markdownDraft.length }} / 20000 字符
           </span>
         </div>
-        <Textarea
-          v-if="markdownMode === 'edit'"
-          v-model:value="markdownDraft"
-          class="markdown-editor__textarea"
-          block
-          resize="vertical"
-          :maxlength="20000"
-          placeholder="用 Markdown 介绍你自己、项目和正在做的事情。"
-          autofocus
-        />
+        <FormControl v-if="markdownMode === 'edit'">
+          <FormControl.Label visually-hidden>README 内容</FormControl.Label>
+          <Textarea
+            v-model:value="markdownDraft"
+            class="markdown-editor__textarea"
+            block
+            resize="vertical"
+            :maxlength="20000"
+            placeholder="用 Markdown 介绍你自己、项目和正在做的事情。"
+            autofocus
+          />
+          <FormControl.Validation v-if="markdownDraftError" variant="error">
+            {{ markdownDraftError }}
+          </FormControl.Validation>
+        </FormControl>
         <div v-else class="markdown-editor__preview">
           <!-- eslint-disable vue/no-v-html -->
           <div
@@ -101,13 +114,15 @@
 <script setup lang="ts">
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import 'github-markdown-css/github-markdown-light.css'
 import { Blankslate } from '@/components/primer-vue/Blankslate'
-import { Banner } from '@/components/primer-vue/Banner'
+import { Banner, type BannerInstance } from '@/components/primer-vue/Banner'
 import { Button } from '@/components/primer-vue/Button'
 import { Dialog } from '@/components/primer-vue/Dialog'
 import { Textarea } from '@/components/primer-vue/Textarea'
+import { FormControl } from '@/components/primer-vue/FormControl'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
 import { RepoTemplateIcon } from '@onlikee/octicons-vue'
 import { getPublicUserMarkdown, saveCurrentUserMarkdown, type UserProfile } from '../api/user'
 
@@ -121,6 +136,12 @@ const markdownDialogOpen = ref(false)
 const markdownDraft = ref('')
 const markdownMode = ref<'edit' | 'preview'>('edit')
 const markdownSaving = ref(false)
+const markdownSaveError = ref('')
+const markdownStatus = ref('')
+const markdownErrorBanner = ref<BannerInstance | null>(null)
+const markdownDraftError = computed(() =>
+  markdownDraft.value.length > 20000 ? 'README 不得超过20000个字符。' : '',
+)
 
 const fetchProfileMarkdown = async () => {
   try {
@@ -149,6 +170,8 @@ const renderedDraftMarkdown = computed(() => {
 })
 
 const openMarkdownDialog = () => {
+  markdownSaveError.value = ''
+  markdownStatus.value = ''
   markdownDraft.value = profileMarkdown.value ?? ''
   markdownMode.value = 'edit'
   markdownDialogOpen.value = true
@@ -159,17 +182,21 @@ const saveMarkdown = async () => {
     return
   }
 
-  if (markdownDraft.value.length > 20000) {
-    Banner.warning('README 不得超过20000个字符。')
-    return
-  }
+  markdownSaveError.value = ''
+  markdownStatus.value = ''
+  if (markdownDraftError.value) return
 
   markdownSaving.value = true
   try {
     await saveCurrentUserMarkdown({ content: markdownDraft.value })
     profileMarkdown.value = markdownDraft.value
     markdownDialogOpen.value = false
-    Banner.success('保存成功。')
+    markdownStatus.value = 'README 已保存。'
+  } catch (error) {
+    markdownSaveError.value =
+      error instanceof Error ? error.message : 'README 保存失败，请稍后重试。'
+    await nextTick()
+    markdownErrorBanner.value?.element?.focus()
   } finally {
     markdownSaving.value = false
   }

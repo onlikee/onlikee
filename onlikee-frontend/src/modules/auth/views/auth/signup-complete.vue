@@ -47,6 +47,9 @@
       </div>
 
       <div class="signup-actions">
+        <InlineMessage v-if="submitError" variant="critical" role="alert">
+          {{ submitError }}
+        </InlineMessage>
         <Button type="submit" :loading="loading" :disabled="!canSubmit"> 完成注册 </Button>
       </div>
     </form>
@@ -55,12 +58,13 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { Avatar } from '@/components/primer-vue/Avatar'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { TextInput } from '@/components/primer-vue/TextInput'
 import { Button } from '@/components/primer-vue/Button'
-import { Banner } from '@/components/primer-vue/Banner'
+import { InlineMessage } from '@/components/primer-vue/InlineMessage'
 import { completeOAuthSignup } from '../../api/login'
 import {
   clearOAuthSignupContext,
@@ -70,10 +74,12 @@ import {
 } from '../../utils/session'
 
 const userStore = useUserStore()
+const router = useRouter()
 const signupContext = ref<OAuthSignupContext | null>(null)
 const nickname = ref('')
 const email = ref('')
 const loading = ref(false)
+const submitError = ref('')
 
 const nicknamePattern = /^[A-Za-z0-9_-]{1,20}$/
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -119,9 +125,9 @@ const canSubmit = computed(() => {
 
 const submit = async () => {
   if (!canSubmit.value || !signupContext.value) {
-    Banner.warning('请检查资料后再提交。')
     return
   }
+  submitError.value = ''
   loading.value = true
   try {
     const response = await completeOAuthSignup({
@@ -134,6 +140,8 @@ const submit = async () => {
     sessionStorage.removeItem(loginReturnToKey)
     clearOAuthSignupContext()
     window.location.href = returnTo
+  } catch (error) {
+    submitError.value = error instanceof Error ? error.message : '注册失败，请稍后重试。'
   } finally {
     loading.value = false
   }
@@ -142,8 +150,8 @@ const submit = async () => {
 onMounted(() => {
   const context = readOAuthSignupContext()
   if (!context) {
-    Banner.warning('注册会话已失效，请重新登录。')
-    window.location.href = '/auth/login'
+    clearOAuthSignupContext()
+    void router.replace({ path: '/auth/login', query: { error: 'signup_expired' } })
     return
   }
   signupContext.value = context
@@ -234,6 +242,12 @@ onMounted(() => {
 
 .signup-fields :deep([data-component='TextInput']) {
   width: 100%;
+}
+
+.signup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .signup-actions :deep(.button) {

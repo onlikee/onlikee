@@ -7,6 +7,9 @@
       </div>
 
       <div class="login-actions">
+        <InlineMessage v-if="loginError" variant="critical" role="alert">
+          {{ loginError }}
+        </InlineMessage>
         <button class="github-button" :disabled="loading" @click="startLogin('github')">
           <MarkGithubIcon :size="20" />
           <span>{{ getButtonLabel('github') }}</span>
@@ -31,7 +34,7 @@
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { Banner } from '@/components/primer-vue/Banner'
+import { InlineMessage } from '@/components/primer-vue/InlineMessage'
 import { MarkGithubIcon } from '@onlikee/octicons-vue'
 import LogoGiteeIcon from '@/components/icons/LogoGiteeIcon.vue'
 import { getOAuthRenderUrl, loginWithOAuthCallback } from '../../api/login'
@@ -42,6 +45,7 @@ const route = useRoute()
 
 const loading = ref(false)
 const currentProvider = ref<string | null>(null)
+const loginError = ref('')
 // 从登录页 query 中读取登录成功后的回跳地址
 const getReturnTo = () => {
   const returnTo = route.query.return_to as string
@@ -53,6 +57,7 @@ const getReturnTo = () => {
 
 // 点击第三方登录时，先缓存 provider 和回跳地址，再跳转授权页
 const startLogin = (provider: string) => {
+  loginError.value = ''
   loading.value = true
   currentProvider.value = provider
   sessionStorage.setItem(oauthProviderKey, provider)
@@ -70,8 +75,11 @@ const login = async () => {
   const url = new URL(window.location.href)
 
   // 第三方授权失败，提示后结束
-  if (url.searchParams.get('error')) {
-    Banner.warning('第三方授权失败')
+  if (route.query.error) {
+    loginError.value =
+      route.query.error === 'signup_expired'
+        ? '注册会话已失效，请重新登录。'
+        : '第三方授权失败，请重新尝试登录。'
     sessionStorage.removeItem(oauthProviderKey)
     return
   }
@@ -100,6 +108,8 @@ const login = async () => {
     const returnTo = sessionStorage.getItem(loginReturnToKey) || '/'
     window.location.href = returnTo
     sessionStorage.removeItem(loginReturnToKey)
+  } catch (error) {
+    loginError.value = error instanceof Error ? error.message : '登录失败，请重新尝试登录。'
   } finally {
     sessionStorage.removeItem(oauthProviderKey)
     loading.value = false

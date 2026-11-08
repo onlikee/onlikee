@@ -26,6 +26,9 @@
               </div>
             </div>
           </div>
+          <InlineMessage v-if="avatarError" variant="critical" role="alert">
+            {{ avatarError }}
+          </InlineMessage>
           <form v-if="profileEditing" class="profile-edit-form" @submit.prevent="saveProfileEdit">
             <FormControl disabled>
               <FormControl.Label>昵称</FormControl.Label>
@@ -111,6 +114,9 @@
                 />
               </div>
             </div>
+            <InlineMessage v-if="profileSaveError" variant="critical" role="alert">
+              {{ profileSaveError }}
+            </InlineMessage>
             <div class="profile-edit-actions">
               <Button type="submit" variant="primary" size="small" :loading="profileSaving">
                 保存
@@ -159,6 +165,7 @@
       </div>
     </div>
   </Container>
+  <VisuallyHidden role="status">{{ profileStatus }}</VisuallyHidden>
   <UserNotFound v-if="profile === null" />
 </template>
 
@@ -167,7 +174,8 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { ImageUpload, type ImageUploadFile } from '@/components/primer-vue/ImageUpload'
 import { Button } from '@/components/primer-vue/Button'
-import { Banner } from '@/components/primer-vue/Banner'
+import { InlineMessage } from '@/components/primer-vue/InlineMessage'
+import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
 import { Container } from '@/components/primer-vue/Container'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { TextInput } from '@/components/primer-vue/TextInput'
@@ -196,6 +204,9 @@ const profileEditing = ref(false)
 const profileSaving = ref(false)
 const avatarFiles = ref<ImageUploadFile[]>([])
 const avatarUploading = ref(false)
+const avatarError = ref('')
+const profileSaveError = ref('')
+const profileStatus = ref('')
 const profileEditDraft = reactive({
   nickname: '',
   bio: '',
@@ -217,11 +228,13 @@ const uploadAvatar = async (files: ImageUploadFile[]) => {
   const file = files[0]?.file
   if (!file || !isOwn.value || avatarUploading.value) return
 
+  avatarError.value = ''
+  profileStatus.value = ''
   const previousFiles = avatarFiles.value
   avatarFiles.value = files
   if (file.size === 0 || file.size > 1048576) {
     avatarFiles.value = [...previousFiles]
-    Banner.error(file.size === 0 ? '文件不能为空。' : '头像大小不能超过 1 MiB。')
+    avatarError.value = file.size === 0 ? '文件不能为空。' : '头像大小不能超过 1 MiB。'
     return
   }
 
@@ -231,10 +244,10 @@ const uploadAvatar = async (files: ImageUploadFile[]) => {
     profile.value = updatedProfile
     userStore.setUserInfo(updatedProfile)
     avatarFiles.value = []
-    Banner.success('头像更新成功。')
+    profileStatus.value = '头像更新成功。'
   } catch (error) {
     avatarFiles.value = [...previousFiles]
-    Banner.error(error instanceof Error ? error.message : '头像上传失败，请重试。')
+    avatarError.value = error instanceof Error ? error.message : '头像上传失败，请重试。'
   } finally {
     avatarUploading.value = false
   }
@@ -256,6 +269,8 @@ const fillProfileEditDraft = () => {
 }
 
 const openProfileEdit = () => {
+  profileSaveError.value = ''
+  profileStatus.value = ''
   fillProfileEditDraft()
   profileEditing.value = true
 }
@@ -269,6 +284,8 @@ const saveProfileEdit = async () => {
     return
   }
 
+  profileSaveError.value = ''
+  profileStatus.value = ''
   profileSaving.value = true
   try {
     const updatedProfile = await saveCurrentUserProfile({
@@ -282,7 +299,9 @@ const saveProfileEdit = async () => {
     profile.value = updatedProfile
     userStore.setUserInfo(updatedProfile)
     profileEditing.value = false
-    Banner.success('保存成功。')
+    profileStatus.value = '个人资料已保存。'
+  } catch (error) {
+    profileSaveError.value = error instanceof Error ? error.message : '资料保存失败，请稍后重试。'
   } finally {
     profileSaving.value = false
   }

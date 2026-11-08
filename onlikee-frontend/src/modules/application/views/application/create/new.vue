@@ -60,6 +60,9 @@
       <Button :leading-visual="RocketIcon" variant="primary" :loading="isUploading" @click="submit">
         创建应用
       </Button>
+      <InlineMessage v-if="submitError" variant="critical" role="alert">
+        {{ submitError }}
+      </InlineMessage>
     </div>
   </Container>
 </template>
@@ -69,7 +72,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Container } from '@/components/primer-vue/Container'
 import { Button } from '@/components/primer-vue/Button'
-import { Banner } from '@/components/primer-vue/Banner'
+import { InlineMessage } from '@/components/primer-vue/InlineMessage'
 import { Timeline } from '@/components/primer-vue/Timeline'
 import { applicationCreateNew } from '@/modules/application/api/create-new'
 import FirstStep from '@/modules/application/components/newForm/FirstStep.vue'
@@ -107,12 +110,14 @@ const {
 } = useCreateApplicationForm()
 
 const isUploading = ref(false)
+const submitError = ref('')
 
 async function submit() {
   if (isUploading.value) {
     return
   }
 
+  submitError.value = ''
   if (!prepareSubmit()) {
     return
   }
@@ -123,11 +128,17 @@ async function submit() {
     try {
       request = await buildRequest()
     } catch {
-      Banner.error('应用打包失败，请重试。')
+      submitError.value = '应用打包失败，请检查文件后重试。'
       return
     }
 
-    const response = await applicationCreateNew(request)
+    let response
+    try {
+      response = await applicationCreateNew(request)
+    } catch (error) {
+      submitError.value = error instanceof Error ? error.message : '应用创建失败，请稍后重试。'
+      return
+    }
     await router.push({
       path: '/application/create/success',
       query: {
@@ -201,6 +212,9 @@ async function submit() {
 
 .submit-actions {
   display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
   justify-content: flex-end;
   margin-top: 1.5rem;
 }
