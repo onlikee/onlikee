@@ -1,11 +1,9 @@
 import axios, { type AxiosRequestConfig } from 'axios'
+import { useSystemStatusStore } from '@/stores/systemStatus'
 
-import { Banner } from '@/components/primer-vue/Banner'
 import { API_BASE_URL } from './config'
 import { unwrapApiResponse } from './response'
 import type { ApiResponse } from './types'
-
-const NETWORK_ERROR_MESSAGE = '网络连接失败，请确认网络连接正常。'
 
 const request = axios.create({
   baseURL: API_BASE_URL,
@@ -19,14 +17,13 @@ request.interceptors.response.use(
   },
   (error) => {
     if (axios.isAxiosError(error)) {
-      if (isNetworkError(error)) {
-        Banner.error(NETWORK_ERROR_MESSAGE)
-        return Promise.reject(new Error(NETWORK_ERROR_MESSAGE))
+      // 无可读取的响应时显示连接故障通知，同时保留调用方的失败处理。
+      if (isConnectionError(error)) {
+        useSystemStatusStore().setConnectionError(true)
       }
 
       const payload = error.response?.data
       if (isApiResponse(payload) && payload.message) {
-        Banner.error(payload.message)
         return Promise.reject(new Error(payload.message))
       }
     }
@@ -40,7 +37,7 @@ const isApiResponse = (payload: unknown): payload is ApiResponse<unknown> => {
   return typeof maybeApiResponse.code === 'string' && typeof maybeApiResponse.message === 'string'
 }
 
-const isNetworkError = (error: unknown) => {
+const isConnectionError = (error: unknown) => {
   return (
     axios.isAxiosError(error) &&
     error.code !== 'ERR_CANCELED' &&

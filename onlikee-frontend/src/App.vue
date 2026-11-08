@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MainHeader from '@/layout/Header.vue'
+import SystemNotice from '@/layout/SystemNotice.vue'
 import { useRoute } from 'vue-router'
 import { computed } from 'vue'
 
@@ -17,6 +18,7 @@ const shouldHideHeader = computed(() => {
 
 <template>
   <div id="app" class="page">
+    <SystemNotice />
     <MainHeader v-if="!shouldHideHeader" />
     <router-view />
   </div>
