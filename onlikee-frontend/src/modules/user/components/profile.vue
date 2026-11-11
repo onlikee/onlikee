@@ -52,20 +52,18 @@
           :description="markdownSaveError"
         />
         <div class="markdown-editor__toolbar">
-          <Button
-            :variant="markdownMode === 'edit' ? 'primary' : 'default'"
+          <SegmentedControl
+            aria-label="README 视图"
             size="small"
-            @click="markdownMode = 'edit'"
+            @change="markdownMode = $event === 0 ? 'edit' : 'preview'"
           >
-            编辑
-          </Button>
-          <Button
-            :variant="markdownMode === 'preview' ? 'primary' : 'default'"
-            size="small"
-            @click="markdownMode = 'preview'"
-          >
-            预览
-          </Button>
+            <SegmentedControl.Button :selected="markdownMode === 'edit'">
+              编辑
+            </SegmentedControl.Button>
+            <SegmentedControl.Button :selected="markdownMode === 'preview'">
+              预览
+            </SegmentedControl.Button>
+          </SegmentedControl>
           <span class="markdown-editor__count" :data-invalid="markdownDraft.length > 20000">
             {{ markdownDraft.length }} / 20000 字符
           </span>
@@ -79,6 +77,7 @@
             resize="vertical"
             :maxlength="20000"
             placeholder="用 Markdown 介绍你自己、项目和正在做的事情。"
+            :min-height="480"
             autofocus
           />
           <FormControl.Validation v-if="markdownDraftError" variant="error">
@@ -86,14 +85,16 @@
           </FormControl.Validation>
         </FormControl>
         <div v-else class="markdown-editor__preview">
-          <!-- eslint-disable vue/no-v-html -->
-          <div
-            v-if="markdownDraft"
-            class="markdown-body markdown-editor__preview-body"
-            v-html="renderedDraftMarkdown"
-          />
-          <!-- eslint-enable vue/no-v-html -->
-          <div v-else class="markdown-editor__empty">暂无可预览内容。</div>
+          <div class="markdown-editor__preview-body">
+            <!-- eslint-disable vue/no-v-html -->
+            <div
+              v-if="markdownDraft"
+              class="markdown-body markdown-editor__preview-content"
+              v-html="renderedDraftMarkdown"
+            />
+            <!-- eslint-enable vue/no-v-html -->
+            <div v-else class="markdown-editor__empty">暂无可预览内容。</div>
+          </div>
         </div>
       </div>
     </Dialog.Body>
@@ -120,6 +121,7 @@ import { Blankslate } from '@/components/primer-vue/Blankslate'
 import { Banner, type BannerInstance } from '@/components/primer-vue/Banner'
 import { Button } from '@/components/primer-vue/Button'
 import { Dialog } from '@/components/primer-vue/Dialog'
+import { SegmentedControl } from '@/components/primer-vue/SegmentedControl'
 import { Textarea } from '@/components/primer-vue/Textarea'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { VisuallyHidden } from '@/components/primer-vue/VisuallyHidden'
@@ -267,23 +269,23 @@ onMounted(async () => {
   width: 100%;
 }
 
-.markdown-editor__textarea :deep(textarea) {
-  height: 480px;
+.markdown-editor__preview {
+  border: 1px solid var(--borderColor-default);
+  border-radius: 6px;
+  background: var(--bgColor-default);
+  overflow: hidden;
+  box-shadow: var(--shadow-inset);
 }
 
-.markdown-editor__preview {
+.markdown-editor__preview-body {
   box-sizing: border-box;
   height: 480px;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 12px;
-  border: 1px solid var(--borderColor-default);
-  border-radius: 6px;
-  background: var(--bgColor-default);
-  scrollbar-color: var(--fgColor-muted, #59636e) transparent;
 }
 
-.markdown-editor__preview-body {
+.markdown-editor__preview-content {
   min-width: 0;
 }
 

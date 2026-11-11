@@ -128,9 +128,9 @@
             <p class="bio">
               {{ profile?.bio || '这个用户还没有填写简介。' }}
             </p>
-            <Button v-if="isOwn" class="edit-profile-button" @click="openProfileEdit">
-              编辑资料
-            </Button>
+            <div v-if="isOwn" class="profile-actions">
+              <Button block @click="openProfileEdit">编辑资料</Button>
+            </div>
             <div class="links">
               <ul>
                 <li v-if="profile?.location">
@@ -373,9 +373,8 @@ onMounted(async () => {
   overflow-wrap: anywhere;
 }
 
-.edit-profile-button {
+.profile-actions {
   margin-bottom: 16px;
-  width: 100%;
 }
 
 .profile-edit-form {
