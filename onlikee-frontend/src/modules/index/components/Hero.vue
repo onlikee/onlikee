@@ -26,6 +26,7 @@
 <style scoped>
 .index-page {
   position: relative;
+  view-timeline-name: --hero;
   height: calc(100svh - var(--header-height));
   min-height: calc(100svh - var(--header-height));
   overflow: hidden;
@@ -50,8 +51,8 @@
   --bg-offset: 48px;
   will-change: transform;
   animation: parallax-background linear both;
-  animation-timeline: scroll(root);
-  animation-range: 0 calc(100svh - var(--header-height));
+  animation-timeline: --hero;
+  animation-range: exit 0% exit 100%;
 }
 
 @keyframes parallax-background {
