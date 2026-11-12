@@ -159,9 +159,27 @@
         </div>
       </div>
       <div class="right-column">
-        <!-- 外层 .layout 已保证 profile 非空；此处的 truthy 守卫仅为向 vue-tsc 传递类型收窄（子组件 prop 为必填 UserProfile） -->
-        <UserApplicationTab v-if="activeTab === 'application' && profile" :profile="profile" />
-        <UserProfileTab v-else-if="profile" :profile="profile" :is-own="isOwn" />
+        <UnderlinePanels :value="activeTab" aria-label="用户页面" @change="selectTab">
+          <UnderlinePanels.Tab value="profile">个人资料</UnderlinePanels.Tab>
+          <UnderlinePanels.Tab value="application">应用</UnderlinePanels.Tab>
+          <UnderlinePanels.Tab value="star">收藏</UnderlinePanels.Tab>
+          <UnderlinePanels.Panel value="profile" class="profile-panel">
+            <UserProfilePanel
+              v-if="activeTab === 'profile' && profile"
+              :profile="profile"
+              :is-own="isOwn"
+            />
+          </UnderlinePanels.Panel>
+          <UnderlinePanels.Panel value="application" class="profile-panel">
+            <UserApplicationPanel
+              v-if="activeTab === 'application' && profile"
+              :profile="profile"
+            />
+          </UnderlinePanels.Panel>
+          <UnderlinePanels.Panel value="star" class="profile-panel">
+            <UserStarPanel v-if="activeTab === 'star' && profile" :profile="profile" />
+          </UnderlinePanels.Panel>
+        </UnderlinePanels>
       </div>
     </div>
   </Container>
@@ -171,7 +189,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ImageUpload, type ImageUploadFile } from '@/components/primer-vue/ImageUpload'
 import { Button } from '@/components/primer-vue/Button'
 import { InlineMessage } from '@/components/primer-vue/InlineMessage'
@@ -180,6 +198,7 @@ import { Container } from '@/components/primer-vue/Container'
 import { FormControl } from '@/components/primer-vue/FormControl'
 import { TextInput } from '@/components/primer-vue/TextInput'
 import { Textarea } from '@/components/primer-vue/Textarea'
+import { UnderlinePanels } from '@/components/primer-vue/UnderlinePanels'
 import { LocationIcon, MailIcon, LinkIcon } from '@onlikee/octicons-vue'
 import { useUserStore } from '@/stores/user'
 import {
@@ -188,15 +207,18 @@ import {
   uploadCurrentUserAvatar,
   type UserProfile,
 } from '../api/user'
-import UserApplicationTab from '../components/application.vue'
-import UserProfileTab from '../components/profile.vue'
+import UserApplicationPanel from '../components/UserApplicationPanel.vue'
+import UserProfilePanel from '../components/UserProfilePanel.vue'
+import UserStarPanel from '../components/UserStarPanel.vue'
 import { useIsOwn } from '@/composables/useIsOwn'
 
 import UserNotFound from '@/modules/error/views/404-user.vue'
 
-type UserTab = 'profile' | 'application'
+const userTabs = ['profile', 'application', 'star'] as const
+type UserTab = (typeof userTabs)[number]
 
 const route = useRoute()
+const router = useRouter()
 const userStore = useUserStore()
 const nickname = String(route.params.nickname ?? '')
 const profile = ref<UserProfile | null | undefined>(undefined)
@@ -219,8 +241,15 @@ const profileEditDraft = reactive({
 })
 
 const activeTab = computed<UserTab>(() => {
-  return route.query.tab === 'application' ? 'application' : 'profile'
+  return userTabs.find((tab) => tab === route.query.tab) ?? 'profile'
 })
+
+const selectTab = ({ value }: { value: string }) => {
+  router.push({
+    path: route.path,
+    query: { ...route.query, tab: value === 'profile' ? undefined : value },
+  })
+}
 
 const isOwn = useIsOwn(profile)
 
@@ -334,6 +363,10 @@ onMounted(async () => {
 .right-column {
   width: 75%;
   min-width: 0;
+}
+
+.profile-panel {
+  margin-top: 16px;
 }
 
 .profile .avatar {

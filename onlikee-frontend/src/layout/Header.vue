@@ -29,53 +29,55 @@
       <div class="top-nav-right">
         <div class="user-menu">
           <div v-if="!userStore.userInfo" class="top-nav-link" @click="goToLogin">登录</div>
-          <ActionMenu v-else>
-            <ActionMenu.Anchor>
-              <button type="button" class="user-menu-trigger" aria-label="账户菜单">
-                <Avatar :src="userStore.userInfo?.avatarUrl" :size="32" />
-              </button>
-            </ActionMenu.Anchor>
-            <ActionMenu.Overlay
-              width="small"
-              align="end"
-              :variant="{ regular: 'anchored', narrow: 'fullscreen' }"
-            >
-              <div class="user-header">
-                <Avatar :src="userStore.userInfo?.avatarUrl" :size="32" />
-                <div class="user-info">
-                  <div class="user-name" :title="userStore.userInfo?.nickname">
-                    {{ userStore.userInfo?.nickname }}
-                  </div>
-                  <div class="user-email" :title="userStore.userInfo?.email">
-                    {{ userStore.userInfo?.email ?? '暂未设置邮箱' }}
-                  </div>
+          <AnchoredOverlay
+            v-else
+            :open="userMenuOpen"
+            :render-anchor="renderUserMenuAnchor"
+            width="small"
+            align="end"
+            :variant="{ regular: 'anchored', narrow: 'fullscreen' }"
+            :overlay-props="{ role: 'dialog', 'aria-labelledby': userMenuTitleId }"
+            :close-button-props="{ 'aria-label': '关闭账户菜单' }"
+            :focus-zone-settings="{ disabled: true }"
+            @open="userMenuOpen = true"
+            @close="userMenuOpen = false"
+          >
+            <div class="user-header">
+              <VisuallyHidden :id="userMenuTitleId">账户菜单</VisuallyHidden>
+              <Avatar :src="userStore.userInfo?.avatarUrl" :size="32" />
+              <div class="user-info">
+                <div class="user-name" :title="userStore.userInfo?.nickname">
+                  {{ userStore.userInfo?.nickname }}
+                </div>
+                <div class="user-email" :title="userStore.userInfo?.email">
+                  {{ userStore.userInfo?.email ?? '暂未设置邮箱' }}
                 </div>
               </div>
-              <div class="user-menu-content">
-                <ActionList variant="full" role="menu" aria-label="账户操作">
-                  <ActionList.Item role="menuitem" @select="goToProfile">
-                    <ActionList.LeadingVisual>
-                      <PersonIcon />
-                    </ActionList.LeadingVisual>
-                    个人资料
-                  </ActionList.Item>
-                  <ActionList.Item role="menuitem" @select="navigateToPage('/application')">
-                    <ActionList.LeadingVisual>
-                      <AppsIcon />
-                    </ActionList.LeadingVisual>
-                    我的应用
-                  </ActionList.Item>
-                  <ActionList.Divider />
-                  <ActionList.Item role="menuitem" @select="navigateToPage('/auth/logout')">
-                    <ActionList.LeadingVisual>
-                      <SignOutIcon />
-                    </ActionList.LeadingVisual>
-                    退出登录
-                  </ActionList.Item>
-                </ActionList>
-              </div>
-            </ActionMenu.Overlay>
-          </ActionMenu>
+            </div>
+            <div class="user-menu-content">
+              <ActionList variant="full">
+                <ActionList.Item @select="selectUserMenuItem(goToProfile)">
+                  <ActionList.LeadingVisual>
+                    <PersonIcon />
+                  </ActionList.LeadingVisual>
+                  个人资料
+                </ActionList.Item>
+                <ActionList.Item @select="selectUserMenuItem(() => navigateToPage('/application'))">
+                  <ActionList.LeadingVisual>
+                    <AppsIcon />
+                  </ActionList.LeadingVisual>
+                  我的应用
+                </ActionList.Item>
+                <ActionList.Divider />
+                <ActionList.Item @select="selectUserMenuItem(() => navigateToPage('/auth/logout'))">
+                  <ActionList.LeadingVisual>
+                    <SignOutIcon />
+                  </ActionList.LeadingVisual>
+                  退出登录
+                </ActionList.Item>
+              </ActionList>
+            </div>
+          </AnchoredOverlay>
         </div>
       </div>
     </div>
@@ -105,10 +107,10 @@
 </template>
 
 <script setup lang="ts">
-import { h, onMounted, ref, shallowRef, watch } from 'vue'
+import { h, onMounted, ref, shallowRef, useId, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { ActionMenu } from '@/components/primer-vue/ActionMenu'
+import { AnchoredOverlay, type AnchorRenderProps } from '@/components/primer-vue/AnchoredOverlay'
 import { Avatar } from '@/components/primer-vue/Avatar'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { Dialog, type DialogHeaderProps } from '@/components/primer-vue/Dialog'
@@ -129,6 +131,23 @@ const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
 const menuDialogOpen = shallowRef(false)
+const userMenuOpen = shallowRef(false)
+const userMenuTitleId = useId()
+
+const renderUserMenuAnchor = (props: AnchorRenderProps) =>
+  h(IconButton, {
+    ...props,
+    icon: () => h(Avatar, { src: userStore.userInfo?.avatarUrl, size: 32 }),
+    variant: 'invisible',
+    'aria-label': userMenuOpen.value ? '关闭账户菜单' : '打开账户菜单',
+    tooltipDirection: 'sw',
+    style: { borderRadius: '50%', outlineOffset: 'var(--base-size-2)' },
+  })
+
+const selectUserMenuItem = (action: () => void) => {
+  userMenuOpen.value = false
+  action()
+}
 
 const renderMenuDialogHeader = (props: DialogHeaderProps) =>
   h(
@@ -235,8 +254,6 @@ watch(
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   background: var(--bgColor-muted);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
   box-shadow: inset 0 calc(var(--borderWidth-thin, 1px) * -1) var(--borderColor-default);
 }
 
@@ -302,28 +319,19 @@ watch(
   display: flex;
 }
 
-.user-menu-trigger {
-  display: inline-flex;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-}
-
-.user-menu-trigger:focus-visible {
-  outline: 2px solid var(--focus-outlineColor);
-  outline-offset: 2px;
+.user-menu {
+  display: flex;
+  align-items: center;
 }
 
 .user-header {
   display: flex;
   align-items: center;
   gap: var(--base-size-8);
-  padding: var(--base-size-16) var(--base-size-16) 0;
+  padding: var(--base-size-12) var(--base-size-12) 0;
 }
 
-.user-header > :first-child {
+.user-header > img {
   flex-shrink: 0;
 }
 
