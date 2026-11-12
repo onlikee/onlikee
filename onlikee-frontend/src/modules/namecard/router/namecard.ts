@@ -4,6 +4,6 @@ export const namecardRoutes: Array<RouteRecordRaw> = [
   {
     path: '/namecard',
     name: 'Namecard',
-    component: () => import('../views/namecard.vue'),
+    component: () => import('../views/Namecard.vue'),
   },
 ]

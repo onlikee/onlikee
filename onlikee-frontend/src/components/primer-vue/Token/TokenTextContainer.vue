@@ -26,4 +26,4 @@ export default defineComponent({
 })
 </script>
 
-<style module src="./_TokenTextContainer.module.css"></style>
+<style module src="./TokenTextContainer.module.css"></style>

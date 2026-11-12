@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import { nextTick } from 'vue'
-import DataTableDocumentation from './data-table.vue'
+import DataTableDocumentation from './DataTable.vue'
 
 let wrapper: VueWrapper | undefined
 async function render() {

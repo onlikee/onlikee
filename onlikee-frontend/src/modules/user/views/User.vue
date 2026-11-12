@@ -212,7 +212,7 @@ import UserProfilePanel from '../components/UserProfilePanel.vue'
 import UserStarPanel from '../components/UserStarPanel.vue'
 import { useIsOwn } from '@/composables/useIsOwn'
 
-import UserNotFound from '@/modules/error/views/404-user.vue'
+import UserNotFound from '@/modules/error/views/UserNotFound.vue'
 
 const userTabs = ['profile', 'application', 'star'] as const
 type UserTab = (typeof userTabs)[number]

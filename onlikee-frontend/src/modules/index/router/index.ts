@@ -5,6 +5,6 @@ export const indexRoutes: Array<RouteRecordRaw> = [
     path: '/',
     alias: '/index',
     name: 'Index',
-    component: () => import('../views/index.vue'),
+    component: () => import('../views/Index.vue'),
   },
 ]

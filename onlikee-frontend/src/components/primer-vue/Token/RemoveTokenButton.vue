@@ -78,4 +78,4 @@ export default defineComponent({
 })
 </script>
 
-<style module src="./_RemoveTokenButton.module.css"></style>
+<style module src="./RemoveTokenButton.module.css"></style>
