@@ -5,7 +5,7 @@ import BannerPrimaryActionRoot from './BannerPrimaryAction.vue'
 import BannerSecondaryActionRoot from './BannerSecondaryAction.vue'
 import type { AllowedComponentProps, VNodeProps } from 'vue'
 import type { Button } from '../Button'
-import type { BannerProps, BannerDescriptionProps } from './types'
+import type { BannerDescriptionProps } from './types'
 
 type WithoutVariant<Props> = Props extends unknown
   ? Omit<Props, 'variant'> & { variant?: never }
@@ -16,11 +16,6 @@ type ActionComponent<Sfc extends abstract new (...args: never[]) => object> = {
   }
 }
 
-const Root = BannerRoot as unknown as {
-  new (): Omit<InstanceType<typeof BannerRoot>, '$props'> & {
-    $props: BannerProps & AllowedComponentProps & VNodeProps
-  }
-}
 export const BannerTitle = BannerTitleRoot
 export const BannerDescription = BannerDescriptionRoot as unknown as {
   new (): Omit<InstanceType<typeof BannerDescriptionRoot>, '$props'> & {
