@@ -126,6 +126,37 @@ describe('Overlay', () => {
     },
   )
 
+  it.each([false, true])(
+    'waits for positioning before applying opening focus (explicit=%s)',
+    async (explicit) => {
+      const trigger = document.createElement('button')
+      document.body.append(trigger)
+      trigger.focus()
+      const returnFocus = vi.spyOn(trigger, 'focus')
+      const requested = shallowRef<HTMLElement | null>(null)
+      const wrapper = mount(Overlay, {
+        props: {
+          ...settings({
+            returnFocusRef: shallowRef(trigger),
+            initialFocusRef: explicit ? requested : undefined,
+          }),
+          visibility: 'hidden',
+        },
+        slots: {
+          default: () => [h('button', 'First'), h('button', { ref: requested }, 'Requested')],
+        },
+        attachTo: document.body,
+      })
+      wrappers.push(wrapper)
+      await settle()
+      expect(document.activeElement).toBe(trigger)
+      await wrapper.setProps({ visibility: 'visible' })
+      await settle()
+      expect(document.activeElement?.textContent).toBe(explicit ? 'Requested' : 'First')
+      expect(returnFocus).not.toHaveBeenCalled()
+    },
+  )
+
   it('keeps opening focus and restores the captured return target on unmount', async () => {
     const trigger = document.createElement('button')
     const replacement = document.createElement('button')

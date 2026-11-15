@@ -66,16 +66,26 @@ watch(
     if (!overlay) return
     const returnTo = toValue(props.returnFocusRef)
     let cancelled = false
+    let stopWaitingForPosition: (() => void) | undefined
     onCleanup(() => {
       cancelled = true
+      stopWaitingForPosition?.()
       // Nested teleports finish removing their focus traps in the same Vue commit.
       nextTick(() => returnTo?.focus())
     })
     await nextTick()
-    if (cancelled || props.preventFocusOnOpen || visibility === 'hidden') return
-    const initialFocus = toValue(props.initialFocusRef)
-    if (initialFocus) initialFocus.focus()
-    else iterateFocusableElements(overlay).next().value?.focus()
+    if (cancelled || props.preventFocusOnOpen) return
+    const applyInitialFocus = () => {
+      const initialFocus = toValue(props.initialFocusRef)
+      if (initialFocus) initialFocus.focus()
+      else iterateFocusableElements(overlay).next().value?.focus()
+    }
+    if (visibility === 'hidden') {
+      stopWaitingForPosition = watch(() => visibility, applyInitialFocus, {
+        flush: 'post',
+        once: true,
+      })
+    } else applyInitialFocus()
   },
   { flush: 'sync' },
 )

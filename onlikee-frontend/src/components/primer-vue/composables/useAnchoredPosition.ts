@@ -1,4 +1,12 @@
-import { onMounted, shallowRef, toValue, watch, type MaybeRefOrGetter, type Ref } from 'vue'
+import {
+  nextTick,
+  onMounted,
+  shallowRef,
+  toValue,
+  watch,
+  type MaybeRefOrGetter,
+  type Ref,
+} from 'vue'
 import { getAnchoredPosition, type AnchorPosition, type PositionSettings } from '@primer/behaviors'
 
 export interface AnchoredPositionHookSettings extends Partial<PositionSettings> {
@@ -102,7 +110,17 @@ export function useAnchoredPosition(settings: MaybeRefOrGetter<AnchoredPositionH
     },
     ({ enabled, floating, anchorEl }, _previous, onCleanup) => {
       if (!enabled || typeof window === 'undefined') return
-      if (floating instanceof Element && anchorEl instanceof Element) updatePosition()
+      let cancelled = false
+      if (floating instanceof Element && anchorEl instanceof Element) {
+        if (floating.isConnected && anchorEl.isConnected) updatePosition()
+        else {
+          // Portal refs can be assigned before its host is attached in onMounted.
+          // Measure after that commit, as React's parent layout effect does.
+          nextTick(() => {
+            if (!cancelled) updatePosition()
+          })
+        }
+      }
 
       let frame = 0
       const schedule = () => {
@@ -153,6 +171,7 @@ export function useAnchoredPosition(settings: MaybeRefOrGetter<AnchoredPositionH
       }
 
       onCleanup(() => {
+        cancelled = true
         for (const scrollable of scrollables) {
           scrollable.removeEventListener('scroll', schedule)
         }

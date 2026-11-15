@@ -101,22 +101,26 @@ function selectFramework(framework: FrameworkValue) {
 }
 
 .option-card {
-  appearance: none;
   width: 100%;
   text-align: left;
-  border: 1px solid var(--borderColor-default);
+  border: 2px solid var(--borderColor-default);
   border-radius: 6px;
   background: var(--bgColor-muted);
   padding: 1rem;
   cursor: pointer;
 }
 
-.option-card:hover,
+.option-card:where(:hover) {
+  border-color: var(--borderColor-neutral-emphasis);
+}
+
 .option-card--active {
-  outline: 2px solid var(--borderColor-accent-emphasis);
-  outline-offset: -1px;
-  box-shadow: 0 4px 14px -4px
-    color-mix(in srgb, var(--fgColor-default) 8%, var(--bgColor-transparent));
+  border-color: var(--borderColor-accent-emphasis);
+}
+
+.option-card:focus-visible {
+  outline: 2px solid var(--focus-outlineColor);
+  outline-offset: 2px;
 }
 
 .option-title {
