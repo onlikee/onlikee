@@ -14,7 +14,7 @@
       <!-- eslint-disable vue/no-v-html -->
       <div
         v-if="typeof profileMarkdown === 'string' && profileMarkdown !== ''"
-        class="markdown-body profile-readme"
+        class="markdown-body"
         v-html="renderedProfileMarkdown"
       />
       <!-- eslint-enable vue/no-v-html -->
@@ -227,18 +227,6 @@ onMounted(async () => {
   justify-content: space-between;
   align-items: center;
   line-height: 20px;
-}
-
-.markdown-content {
-  display: flex;
-  align-items: center;
-  flex: 1;
-}
-
-.profile-readme {
-  align-self: stretch;
-  min-width: 0;
-  width: 100%;
 }
 
 .markdown-editor {
