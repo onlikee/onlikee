@@ -5,9 +5,10 @@
         <div class="profile">
           <div class="profile-header">
             <ImageUpload
+              v-if="isOwn"
               class="avatar"
               :model-value="avatarFiles"
-              :disabled="!isOwn || avatarUploading"
+              :disabled="avatarUploading"
               :aria-busy="avatarUploading"
               :hint="avatarUploading ? '正在上传头像…' : ''"
               :preview-url="profile?.avatarUrl"
@@ -16,6 +17,7 @@
               text="选择头像"
               @update:model-value="uploadAvatar"
             />
+            <Avatar v-else class="avatar" :src="profile.avatarUrl" aria-hidden="true" />
             <div v-if="!profileEditing" class="profile-info">
               <div class="name">
                 {{ profile?.nickname }}
@@ -190,6 +192,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { Avatar } from '@/components/primer-vue/Avatar'
 import { ImageUpload, type ImageUploadFile } from '@/components/primer-vue/ImageUpload'
 import { Button } from '@/components/primer-vue/Button'
 import { InlineMessage } from '@/components/primer-vue/InlineMessage'
@@ -369,11 +372,9 @@ onMounted(async () => {
   margin-top: 16px;
 }
 
-.profile .avatar {
-  width: 100% !important;
-  height: auto !important;
-  aspect-ratio: 1;
-  border-radius: 50%;
+.avatar {
+  width: 100%;
+  height: 100%;
 }
 
 .profile-info {
@@ -395,6 +396,7 @@ onMounted(async () => {
   font-size: 20px;
   overflow-wrap: anywhere;
   font-weight: 300;
+  line-height: 24px;
 }
 
 .bio {
@@ -492,12 +494,9 @@ onMounted(async () => {
     align-items: center;
   }
 
-  .profile .avatar {
-    width: 66.4px !important;
-    height: 66.4px !important;
+  .avatar {
+    width: 64px;
     margin-right: 16px;
-    box-shadow: 0 0 0 1px var(--borderColor-translucent);
-    border: 1px solid var(--borderColor-default);
   }
 
   .profile-info {

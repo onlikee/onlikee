@@ -34,6 +34,18 @@ table {
   }
 }
 
+@layer primer-css-base {
+  a:focus-visible,
+  button:focus-visible,
+  [role='button']:focus-visible,
+  input[type='radio']:focus-visible,
+  input[type='checkbox']:focus-visible {
+    outline: 2px solid var(--focus-outlineColor, var(--color-accent-fg));
+    outline-offset: -2px;
+    box-shadow: none;
+  }
+}
+
 [role='button']:focus:not(:focus-visible):not(.focus-visible),
 [role='tabpanel'][tabindex='0']:focus:not(:focus-visible):not(.focus-visible),
 button:focus:not(:focus-visible):not(.focus-visible),

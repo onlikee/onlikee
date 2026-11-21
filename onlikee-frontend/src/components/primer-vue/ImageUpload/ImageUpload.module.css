@@ -16,7 +16,7 @@
   overflow: hidden;
   border: 2px dashed var(--borderColor-default, #d1d9e0);
   border-radius: 6px;
-  background: var(--bgColor-muted, #f6f8fa);
+  background: var(--bgColor-transparent, #ffffff00);
   color: var(--fgColor-default, #1f2328);
   font: inherit;
   cursor: pointer;
@@ -35,6 +35,11 @@
 
 .upload-drop[data-preview='true'] {
   border-color: var(--bgColor-transparent, #ffffff00);
+}
+
+.upload-drop[data-preview='true'],
+.upload-drop[data-preview='true']:focus:not(:focus-visible) {
+  box-shadow: 0 0 0 1px var(--avatar-borderColor, #1f232826);
 }
 
 .image-upload-preview,
