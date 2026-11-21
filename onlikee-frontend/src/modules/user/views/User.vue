@@ -190,7 +190,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Avatar } from '@/components/primer-vue/Avatar'
 import { ImageUpload, type ImageUploadFile } from '@/components/primer-vue/ImageUpload'
@@ -223,7 +223,6 @@ type UserTab = (typeof userTabs)[number]
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
-const nickname = String(route.params.nickname ?? '')
 const profile = ref<UserProfile | null | undefined>(undefined)
 const profileEditing = ref(false)
 const profileSaving = ref(false)
@@ -339,7 +338,9 @@ const saveProfileEdit = async () => {
   }
 }
 
-const fetchProfile = async () => {
+const fetchProfile = async (nickname: string) => {
+  profile.value = undefined
+
   try {
     profile.value = await getPublicUserProfile(nickname)
   } catch {
@@ -347,8 +348,8 @@ const fetchProfile = async () => {
   }
 }
 
-onMounted(async () => {
-  await fetchProfile()
+watch(() => String(route.params.nickname ?? ''), fetchProfile, {
+  immediate: true,
 })
 </script>
 
