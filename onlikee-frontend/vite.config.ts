@@ -12,7 +12,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@': path.resolve(import.meta.dirname, './src'),
     },
   },
   server: {
@@ -23,7 +23,6 @@ export default defineConfig({
   build: {
     sourcemap: false,
     reportCompressedSize: false,
-    minify: 'esbuild',
     target: 'es2018',
   },
 })
