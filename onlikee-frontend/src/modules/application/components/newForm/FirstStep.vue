@@ -108,6 +108,7 @@ function selectFramework(framework: FrameworkValue) {
   background: var(--bgColor-muted);
   padding: 1rem;
   cursor: pointer;
+  font-family: inherit;
 }
 
 .option-card:where(:hover) {
