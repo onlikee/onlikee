@@ -11,7 +11,10 @@
   background: var(--bgColor-default);
 }
 
-:slotted(.control-group-item:not(:first-child)) {
+.control-group > .control-group-item + :slotted(.control-group-item)::before {
+  display: block;
+  margin-inline: -12px;
   border-block-start: 1px solid var(--borderColor-muted);
+  content: '';
 }
 </style>

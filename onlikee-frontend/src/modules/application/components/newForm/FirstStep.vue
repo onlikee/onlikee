@@ -1,68 +1,9 @@
-<template>
-  <div class="first-step">
-    <div class="options-grid" :class="{ 'options-grid--invalid': invalid }">
-      <button
-        type="button"
-        class="option-card"
-        :class="{ 'option-card--active': selectedFramework === 'html' }"
-        :aria-pressed="selectedFramework === 'html'"
-        @click="selectFramework('html')"
-      >
-        <div class="option-header">
-          <div class="option-title">HTML<Token text="推荐" /></div>
-          <p class="option-desc">从一段HTML代码开始！</p>
-        </div>
-        <img
-          class="create-image"
-          src="@/modules/application/assets/new-html.svg"
-          alt="Create Collect"
-        />
-      </button>
-
-      <button
-        type="button"
-        class="option-card"
-        :class="{ 'option-card--active': selectedFramework === 'vue' }"
-        :aria-pressed="selectedFramework === 'vue'"
-        @click="selectFramework('vue')"
-      >
-        <div class="option-header">
-          <div class="option-title">Vue</div>
-          <p class="option-desc">从一个Vue项目开始！</p>
-        </div>
-        <img class="create-image" src="@/modules/application/assets/new-vue.svg" alt="Create New" />
-      </button>
-
-      <button
-        type="button"
-        class="option-card"
-        :class="{ 'option-card--active': selectedFramework === 'react' }"
-        :aria-pressed="selectedFramework === 'react'"
-        @click="selectFramework('react')"
-      >
-        <div class="option-header">
-          <div class="option-title">React</div>
-          <p class="option-desc">从一个React项目开始！</p>
-        </div>
-        <img
-          class="create-image"
-          src="@/modules/application/assets/new-react.svg"
-          alt="Create Website"
-        />
-      </button>
-    </div>
-    <p v-if="invalid && validation">
-      <FormControlValidation variant="error">
-        {{ validation }}
-      </FormControlValidation>
-    </p>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { Token } from '@/components/primer-vue/Token'
-import type { FrameworkValue } from './useCreateApplicationForm'
+import { useId } from 'vue'
+import { FrameworkSelect } from '@/components/business/ControlGroupControls'
+import { ControlGroup } from '@/components/common/ControlGroup'
 import { FormControlValidation } from '@/components/primer-vue/FormControl'
+import type { FrameworkValue } from './useCreateApplicationForm'
 
 interface Props {
   selectedFramework: FrameworkValue | null
@@ -79,10 +20,30 @@ const emit = defineEmits<{
   'update:selected-framework': [value: FrameworkValue]
 }>()
 
-function selectFramework(framework: FrameworkValue) {
-  emit('update:selected-framework', framework)
-}
+const validationId = useId()
 </script>
+
+<template>
+  <div class="first-step">
+    <ControlGroup :class="{ 'framework-group--invalid': invalid }">
+      <ControlGroup.Item label="前端框架" required>
+        <template #description>所选框架决定下一步的代码上传方式。</template>
+        <template #control>
+          <FrameworkSelect
+            :model-value="selectedFramework"
+            :invalid="invalid"
+            :described-by="invalid && validation ? validationId : undefined"
+            @update:model-value="(value) => emit('update:selected-framework', value)"
+          />
+        </template>
+      </ControlGroup.Item>
+    </ControlGroup>
+
+    <FormControlValidation v-if="invalid && validation" :id="validationId" variant="error">
+      {{ validation }}
+    </FormControlValidation>
+  </div>
+</template>
 
 <style scoped>
 .first-step {
@@ -90,88 +51,7 @@ function selectFramework(framework: FrameworkValue) {
   gap: 8px;
 }
 
-.options-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
-}
-
-.options-grid--invalid .option-card {
+.framework-group--invalid {
   border-color: var(--borderColor-danger-emphasis, #cf222e);
-}
-
-.option-card {
-  width: 100%;
-  text-align: left;
-  border: 2px solid var(--borderColor-default);
-  border-radius: 6px;
-  background: var(--bgColor-muted);
-  padding: 1rem;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.option-card:where(:hover) {
-  border-color: var(--borderColor-neutral-emphasis);
-}
-
-.option-card--active {
-  border-color: var(--borderColor-accent-emphasis);
-}
-
-.option-card:focus-visible {
-  outline: 2px solid var(--focus-outlineColor);
-  outline-offset: 2px;
-}
-
-.option-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--fgColor-default);
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.option-desc {
-  margin: 0;
-  color: var(--fgColor-muted);
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.create-image {
-  width: 50%;
-  height: auto;
-  margin-top: 0.5rem;
-}
-
-.icon-svg {
-  margin-top: 2px;
-  margin-right: 4px;
-  flex-shrink: 0;
-}
-
-@media (max-width: 768px) {
-  .options-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .option-card {
-    display: flex;
-  }
-
-  .option-header {
-    width: 60%;
-  }
-
-  .option-title {
-    margin-bottom: 0.6rem;
-  }
-
-  .create-image {
-    width: 30%;
-    margin-top: 0;
-  }
 }
 </style>

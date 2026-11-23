@@ -12,29 +12,38 @@ defineSlots<{
 
 <template>
   <div class="control-group-item">
-    <div class="control-group-text">
-      <h4 class="control-group-label">{{ label }}<template v-if="required"> *</template></h4>
+    <div class="control-group-content">
+      <div class="control-group-title">
+        <h3 class="control-group-label">{{ label }}<template v-if="required"> *</template></h3>
+      </div>
       <div v-if="$slots.description" class="control-group-description">
         <slot name="description" />
       </div>
-    </div>
-    <div>
-      <slot name="control" />
+      <div class="control-group-control">
+        <slot name="control" />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
 .control-group-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 12px;
+  container-type: inline-size;
+  padding-inline: 16px;
 }
 
-.control-group-text {
-  min-width: 0;
+.control-group-content {
+  display: grid;
+  grid-template:
+    'title control'
+    'description control' / minmax(0, 1fr) auto;
+  align-content: center;
+  padding-block: 12px;
+}
+
+.control-group-title {
+  grid-area: title;
+  align-self: center;
 }
 
 .control-group-label {
@@ -42,19 +51,34 @@ defineSlots<{
   color: var(--fgColor-default);
   font-size: 14px;
   font-weight: 600;
+  line-height: 1.5;
 }
 
 .control-group-description {
-  margin-top: 2px;
+  grid-area: description;
+  margin-block-start: 2px;
   color: var(--fgColor-muted);
   font-size: 12px;
   line-height: 1.5;
 }
 
-@media (max-width: 768px) {
-  .control-group-item {
-    flex-direction: column;
-    align-items: stretch;
+.control-group-control {
+  grid-area: control;
+  align-self: center;
+  padding-inline-start: 16px;
+}
+
+@container (max-width: 320px) {
+  .control-group-content {
+    grid-template:
+      'title'
+      'description'
+      'control' / minmax(0, 1fr);
+  }
+
+  .control-group-control {
+    padding-block-start: 8px;
+    padding-inline-start: 0;
   }
 }
 </style>
