@@ -15,8 +15,6 @@
           <div class="creatForm-heading">点击选择你使用的前端框架</div>
           <FirstStep
             :selected-framework="selectedFramework"
-            :invalid="showFrameworkError"
-            :validation="frameworkError"
             @update:selected-framework="setFramework"
           />
         </Timeline.Body>
@@ -91,12 +89,10 @@ const {
   appSubDomain,
   visibility,
   appDescription,
-  frameworkError,
   uploadError,
   displayedAppNameError,
   displayedAppSubDomainError,
   displayedAppDescriptionError,
-  showFrameworkError,
   showUploadError,
   setFramework,
   setFiles,

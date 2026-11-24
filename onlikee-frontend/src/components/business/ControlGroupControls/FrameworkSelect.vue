@@ -4,64 +4,77 @@ import TriangleDownIcon from '@onlikee/octicons-vue/icons/triangle-down'
 import { ActionList } from '@/components/primer-vue/ActionList'
 import { AnchoredOverlay, type AnchorRenderProps } from '@/components/primer-vue/AnchoredOverlay'
 import { Button } from '@/components/primer-vue/Button'
-import type { FrameworkValue } from '@/modules/application/components/newForm/useCreateApplicationForm'
 
-const props = defineProps<{
-  modelValue: FrameworkValue | null
-  invalid?: boolean
-  describedBy?: string
-}>()
-
+const props = defineProps<{ modelValue: string }>()
 const emit = defineEmits<{
-  'update:modelValue': [value: FrameworkValue]
+  'update:modelValue': [value: string]
 }>()
 
-const frameworkOptions: { value: FrameworkValue; label: string; description: string }[] = [
-  { value: 'html', label: 'HTML', description: '从一段HTML代码开始！' },
-  { value: 'vue', label: 'Vue', description: '从一个Vue项目开始！' },
-  { value: 'react', label: 'React', description: '从一个React项目开始！' },
+const frameworkOptions = [
+  {
+    label: 'HTML',
+    description: '从一段HTML代码开始！',
+  },
+  {
+    label: 'Vue',
+    description: '从一个Vue项目开始！',
+  },
+  {
+    label: 'React',
+    description: '从一个React项目开始！',
+  },
+  {
+    label: 'Svelte',
+    description: '从一个Svelte项目开始！',
+  },
+  {
+    label: 'Astro',
+    description: '从一个Astro项目开始！',
+  },
+  {
+    label: 'Other',
+    description: '任何带有index.html的构建目录',
+  },
 ]
 
-const open = shallowRef(false)
+const frameworkOpen = shallowRef(false)
 
-function selectFramework(value: FrameworkValue) {
+function selectFramework(value: string) {
   emit('update:modelValue', value)
-  open.value = false
+  frameworkOpen.value = false
 }
 
-const renderAnchor = (anchorProps: AnchorRenderProps) =>
+const renderFrameworkAnchor = (anchorProps: AnchorRenderProps) =>
   h(
     Button,
     {
       ...anchorProps,
       type: 'button',
       'aria-haspopup': 'dialog',
-      'aria-invalid': props.invalid || undefined,
-      'aria-describedby': props.describedBy,
       trailingVisual: TriangleDownIcon,
     },
-    () => frameworkOptions.find((option) => option.value === props.modelValue)?.label ?? '请选择',
+    () => props.modelValue,
   )
 </script>
 
 <template>
   <AnchoredOverlay
-    :open="open"
-    :render-anchor="renderAnchor"
+    :open="frameworkOpen"
+    :render-anchor="renderFrameworkAnchor"
     width="medium"
     align="end"
     :overlay-props="{ role: 'dialog', 'aria-label': '选择前端框架' }"
     :close-button-props="{ 'aria-label': '关闭前端框架选择' }"
     :focus-zone-settings="{ disabled: true }"
-    @open="open = true"
-    @close="open = false"
+    @open="frameworkOpen = true"
+    @close="frameworkOpen = false"
   >
     <ActionList role="listbox" aria-label="前端框架" selection-variant="single">
       <ActionList.Item
         v-for="option in frameworkOptions"
-        :key="option.value"
-        :selected="modelValue === option.value"
-        @select="selectFramework(option.value)"
+        :key="option.label"
+        :selected="modelValue === option.label"
+        @select="selectFramework(option.label)"
       >
         {{ option.label }}
         <ActionList.Description variant="block">{{ option.description }}</ActionList.Description>

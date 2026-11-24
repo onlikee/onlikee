@@ -1,23 +1,18 @@
 <template>
   <div class="second-step">
-    <div v-if="selectedFramework === null" class="upload-tip">
-      <LightBulbIcon />
-      请先选择一个框架
-    </div>
-
-    <div v-else class="step-panel" :class="{ 'step-panel--invalid': invalid }">
+    <div class="step-panel" :class="{ 'step-panel--invalid': invalid }">
       <HtmlMonacoEditor
-        v-if="selectedFramework === 'html'"
+        v-if="selectedFramework === 'HTML'"
         :model-value="htmlSource"
         @update:model-value="updateHtmlSource"
       />
 
       <Upload
-        v-if="selectedFramework === 'vue' || selectedFramework === 'react'"
+        v-else
         height="160px"
         :model-value="files"
         directory
-        hint="请上传dist构建包文件夹"
+        hint="请上传包含 index.html 的静态构建产物文件夹"
         @update:model-value="updateFiles"
       />
     </div>
@@ -31,14 +26,12 @@
 
 <script setup lang="ts">
 import { HtmlMonacoEditor } from '@/components/monaco-editor'
-import LightBulbIcon from '@onlikee/octicons-vue/icons/light-bulb'
 import { Upload } from '@/components/primer-vue/Upload'
 import type { UploadFile } from '@/components/primer-vue/Upload'
-import type { FrameworkValue } from './useCreateApplicationForm'
 import { FormControlValidation } from '@/components/primer-vue/FormControl'
 
 interface Props {
-  selectedFramework: FrameworkValue | null
+  selectedFramework: string
   files: UploadFile[]
   htmlSource: string
   invalid?: boolean
@@ -77,18 +70,6 @@ function updateHtmlSource(value: string) {
 
 .step-panel--invalid :deep(.html-editor-wrapper:focus-within) {
   outline-color: var(--borderColor-danger-emphasis, #cf222e);
-}
-
-.upload-tip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  height: 100px;
-  color: var(--fgColor-muted);
-  font-size: 14px;
-  line-height: 1.6;
 }
 
 .icon-svg {

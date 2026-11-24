@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { h, shallowRef } from 'vue'
-import { Button } from '@/components/primer-vue/Button'
-import { AnchoredOverlay, type AnchorRenderProps } from '@/components/primer-vue/AnchoredOverlay'
-import { ActionList } from '@/components/primer-vue/ActionList'
+import LockIcon from '@onlikee/octicons-vue/icons/lock'
 import RepoIcon from '@onlikee/octicons-vue/icons/repo'
 import TriangleDownIcon from '@onlikee/octicons-vue/icons/triangle-down'
-import LockIcon from '@onlikee/octicons-vue/icons/lock'
+import { ActionList } from '@/components/primer-vue/ActionList'
+import { AnchoredOverlay, type AnchorRenderProps } from '@/components/primer-vue/AnchoredOverlay'
+import { Button } from '@/components/primer-vue/Button'
 
 const props = defineProps<{ modelValue: string }>()
 const emit = defineEmits<{
@@ -26,10 +26,12 @@ const visibilityOptions = [
 ]
 
 const visibilityOpen = shallowRef(false)
+
 function selectVisibility(value: string) {
   emit('update:modelValue', value)
   visibilityOpen.value = false
 }
+
 const renderVisibilityAnchor = (anchorProps: AnchorRenderProps) =>
   h(
     Button,
@@ -56,19 +58,17 @@ const renderVisibilityAnchor = (anchorProps: AnchorRenderProps) =>
     @open="visibilityOpen = true"
     @close="visibilityOpen = false"
   >
-    <div class="visibility-options">
-      <ActionList role="listbox" aria-label="选择选项" selection-variant="single">
-        <ActionList.Item
-          v-for="item in visibilityOptions"
-          :key="item.label"
-          :selected="modelValue === item.label"
-          @select="selectVisibility(item.label)"
-        >
-          <ActionList.LeadingVisual><component :is="item.icon" /></ActionList.LeadingVisual>
-          {{ item.label }}
-          <ActionList.Description variant="block">{{ item.description }}</ActionList.Description>
-        </ActionList.Item>
-      </ActionList>
-    </div>
+    <ActionList role="listbox" aria-label="选择选项" selection-variant="single">
+      <ActionList.Item
+        v-for="option in visibilityOptions"
+        :key="option.label"
+        :selected="modelValue === option.label"
+        @select="selectVisibility(option.label)"
+      >
+        <ActionList.LeadingVisual><component :is="option.icon" /></ActionList.LeadingVisual>
+        {{ option.label }}
+        <ActionList.Description variant="block">{{ option.description }}</ActionList.Description>
+      </ActionList.Item>
+    </ActionList>
   </AnchoredOverlay>
 </template>

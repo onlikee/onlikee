@@ -35,6 +35,7 @@ const editorOptions = {
   minimap: { enabled: false },
   scrollBeyondLastLine: false,
   tabSize: 2,
+  placeholder: '<div>hello, world!</div>',
 }
 
 function updateEditorValue(value: string | undefined) {

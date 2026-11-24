@@ -4,12 +4,10 @@ import type { UploadFile } from '@/components/primer-vue/Upload'
 import type { CreateApplicationRequest } from '@/modules/application/api/create-new'
 import { createFolderZip, createHtmlZip } from '@/modules/application/utils/zip-utils'
 
-export type FrameworkValue = 'html' | 'vue' | 'react'
-
 export function useCreateApplicationForm() {
-  const selectedFramework = ref<FrameworkValue | null>(null)
+  const selectedFramework = ref('HTML')
   const files = ref<UploadFile[]>([])
-  const htmlSource = ref('<div>hello, world!</div>')
+  const htmlSource = ref('')
 
   const appName = ref('')
   const appSubDomain = ref('')
@@ -23,16 +21,8 @@ export function useCreateApplicationForm() {
   const touchedAppSubDomain = ref(false)
   const touchedAppDescription = ref(false)
 
-  const frameworkError = computed(() => {
-    return selectedFramework.value === null ? '请选择一个前端框架。' : ''
-  })
-
   const uploadError = computed(() => {
-    if (selectedFramework.value === null) {
-      return ''
-    }
-
-    if (selectedFramework.value === 'html') {
+    if (selectedFramework.value === 'HTML') {
       return htmlSource.value.trim() ? '' : '请输入 HTML 代码。'
     }
 
@@ -109,10 +99,6 @@ export function useCreateApplicationForm() {
     return submitAttempted.value || touchedAppDescription.value ? appDescriptionError.value : ''
   })
 
-  const showFrameworkError = computed(() => {
-    return submitAttempted.value && Boolean(frameworkError.value)
-  })
-
   const showUploadError = computed(() => {
     if (!uploadError.value) {
       return false
@@ -122,12 +108,11 @@ export function useCreateApplicationForm() {
       return true
     }
 
-    return selectedFramework.value === 'html' ? touchedHtmlSource.value : touchedFile.value
+    return selectedFramework.value === 'HTML' ? touchedHtmlSource.value : touchedFile.value
   })
 
   const isFormValid = computed(() => {
     return (
-      !frameworkError.value &&
       !uploadError.value &&
       !appNameError.value &&
       !appSubDomainError.value &&
@@ -135,10 +120,10 @@ export function useCreateApplicationForm() {
     )
   })
 
-  function setFramework(value: FrameworkValue) {
+  function setFramework(value: string) {
     selectedFramework.value = value
 
-    if (value === 'html') {
+    if (value === 'HTML') {
       files.value = []
       touchedFile.value = false
       return
@@ -178,7 +163,7 @@ export function useCreateApplicationForm() {
   }
 
   async function buildRequest(): Promise<CreateApplicationRequest> {
-    const framework = selectedFramework.value as FrameworkValue
+    const framework = selectedFramework.value.toLowerCase()
     const htmlSourceSnapshot = htmlSource.value
     const filesSnapshot = files.value.map(({ file, relativePath }) => ({ file, relativePath }))
     const requestSnapshot = {
@@ -212,12 +197,10 @@ export function useCreateApplicationForm() {
     appSubDomain,
     visibility,
     appDescription,
-    frameworkError,
     uploadError,
     displayedAppNameError,
     displayedAppSubDomainError,
     displayedAppDescriptionError,
-    showFrameworkError,
     showUploadError,
     setFramework,
     setFiles,
